@@ -1,0 +1,37 @@
+package(default_visibility = ["//visibility:public"])
+
+# Data.
+filegroup(
+    name = "cycles",
+    srcs = glob([
+        "cycles/*.pbtxt",
+    ]),
+)
+
+filegroup(
+    name = "connections",
+    srcs = glob([
+        "connections/*.pbtxt",
+    ]),
+)
+
+filegroup(
+    name = "msts",
+    srcs = glob([
+        "msts/*.pbtxt",
+    ]),
+)
+
+filegroup(
+    name = "generic",
+    srcs = glob([
+        "generic/*.pbtxt",
+    ]),
+)
+
+filegroup(
+	name = "tokens",
+	srcs = glob([
+		"tokens/*.pbtxt",
+	]),
+)

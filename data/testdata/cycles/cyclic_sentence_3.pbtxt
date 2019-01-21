@@ -1,0 +1,39 @@
+token {
+  word: "None"
+  lemma: "None"
+  category: "TOP"
+  pos: "TOP"
+  index: 0
+}
+token {
+  word: "token_1"
+  selected_head {
+    address: 2
+    arc_score: 30
+  }
+  index: 1
+}
+token {
+  word: "token_2"
+  selected_head {
+    address: 3
+    arc_score: 20
+  }
+  index: 2
+}
+token {
+  word: "token_3"
+  selected_head {
+    address: 4
+    arc_score: 30
+  }
+  index: 3
+}
+token {
+  word: "token_4"
+  selected_head {
+    address: 2
+    arc_score: 30
+  }
+  index: 4
+}

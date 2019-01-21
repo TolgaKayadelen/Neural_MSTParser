@@ -1,0 +1,82 @@
+# Represents the sentence in the book
+
+token {
+  word: "None"
+  lemma: "None"
+  category: "TOP"
+  pos: "TOP"
+  selected_head {
+    address: -1
+    arc_score: 0.0
+  }
+  index: 0
+}
+token {
+  word: "John"
+  lemma: "John"
+  category: "NOUN"
+  pos: "Noun"
+  candidate_head {
+  	address: 0
+	arc_score: 9
+  }
+  candidate_head {
+  	address: 2
+	arc_score: 30
+  }
+  candidate_head {
+  	address: 3
+	arc_score: 11
+  }
+  selected_head {
+    address: 2
+    arc_score: 30
+  }
+  index: 1
+}
+token {
+  word: "saw"
+  lemma: "see"
+  category: "VERB"
+  pos: "Verb"
+  candidate_head {
+  	address: 0
+	arc_score: 10
+  }
+  candidate_head {
+  	address: 1
+	arc_score: 20
+  }
+  candidate_head {
+  	address: 3
+	arc_score: 0
+  }
+  selected_head {
+    address: 1
+    arc_score: 20
+  }
+  index: 2
+}
+token {
+  word: "Mary"
+  lemma: "Mary"
+  category: "NOUN"
+  pos: "Noun"
+  candidate_head {
+  	address: 0
+	arc_score: 9
+  }
+  candidate_head {
+  	address: 1
+	arc_score: 3
+  }
+  candidate_head {
+  	address: 2
+	arc_score: 30
+  }
+  selected_head {
+    address: 2
+    arc_score: 30
+  }
+  index: 3
+}

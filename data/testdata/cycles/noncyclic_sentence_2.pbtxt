@@ -1,0 +1,199 @@
+text: "Herkes istediği gibi sevişiyor, her şey serbest."
+sent_id: "mst-0019"
+token {
+  word: "ROOT"
+  category: "TOP"
+  pos: "TOP"
+  selected_head {
+    address: -1
+  }
+  index: 0
+}
+token {
+  word: "Herkes"
+  lemma: "herkes"
+  category: "NOUN"
+  pos: "Noun"
+  morphology {
+    name: "case"
+    value: "nom"
+  }
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  morphology {
+    name: "person"
+    value: "3"
+  }
+  selected_head {
+    address: 4
+    arc_score: 0.0
+  }
+  label: "nsubj"
+  index: 1
+}
+token {
+  word: "istediği"
+  lemma: "iste"
+  category: "VERB"
+  pos: "Verb"
+  morphology {
+    name: "aspect"
+    value: "perf"
+  }
+  morphology {
+    name: "mood"
+    value: "ind"
+  }
+  morphology {
+    name: "number[psor]"
+    value: "sing"
+  }
+  morphology {
+    name: "person[psor]"
+    value: "3"
+  }
+  morphology {
+    name: "polarity"
+    value: "pos"
+  }
+  morphology {
+    name: "tense"
+    value: "past"
+  }
+  morphology {
+    name: "verbform"
+    value: "part"
+  }
+  selected_head {
+    address: 4
+    arc_score: 0.0
+  }
+  label: "advmod:emph"
+  index: 2
+}
+token {
+  word: "gibi"
+  lemma: "gibi"
+  category: "ADP"
+  pos: "PCNom"
+  selected_head {
+    address: 2
+    arc_score: 0.0
+  }
+  label: "case"
+  index: 3
+}
+token {
+  word: "sevişiyor"
+  lemma: "seviş"
+  category: "VERB"
+  pos: "Verb"
+  morphology {
+    name: "aspect"
+    value: "prog"
+  }
+  morphology {
+    name: "mood"
+    value: "ind"
+  }
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  morphology {
+    name: "person"
+    value: "3"
+  }
+  morphology {
+    name: "polarity"
+    value: "pos"
+  }
+  morphology {
+    name: "polite"
+    value: "infm"
+  }
+  morphology {
+    name: "tense"
+    value: "pres"
+  }
+  selected_head {
+    address: 0
+    arc_score: 0.0
+  }
+  label: "root"
+  index: 4
+}
+token {
+  word: ","
+  lemma: ","
+  category: "PUNCT"
+  pos: "Punc"
+  selected_head {
+    address: 8
+    arc_score: 0.0
+  }
+  label: "punct"
+  index: 5
+}
+token {
+  word: "her"
+  lemma: "her"
+  category: "DET"
+  pos: "Det"
+  selected_head {
+    address: 8
+    arc_score: 0.0
+  }
+  label: "nsubj"
+  index: 6
+}
+token {
+  word: "şey"
+  lemma: "şey"
+  category: "NOUN"
+  pos: "Noun"
+  morphology {
+    name: "case"
+    value: "nom"
+  }
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  morphology {
+    name: "person"
+    value: "3"
+  }
+  selected_head {
+    address: 6
+    arc_score: 0.0
+  }
+  label: "compound"
+  index: 7
+}
+token {
+  word: "serbest"
+  lemma: "serbest"
+  category: "ADJ"
+  pos: "Adj"
+  selected_head {
+    address: 4
+    arc_score: 0.0
+  }
+  label: "conj"
+  index: 8
+}
+token {
+  word: "."
+  lemma: "."
+  category: "PUNCT"
+  pos: "Punc"
+  selected_head {
+    address: 8
+    arc_score: 0.0
+  }
+  label: "punct"
+  index: 9
+}

@@ -1,0 +1,88 @@
+
+// Protocol buffer specification for Treebank. 
+
+syntax = "proto2";
+
+package data.treebank;
+
+// A sentence is just a sequence of tokens. It contains annotations for tokenization, PoS,  
+// morphological features of the tokens, and the dependency relations between tokens. 
+// We store the token address of the head of the token 
+// and dependency label connecting the token to its head. We also store a confidence
+// score for the arc between each token and its candidate heads, which is then used to 
+// compute the best incoming arc for each head and thus the maximum spanning tree for the 
+// sentence. 
+message Sentence {
+	// the text of the sentence
+	optional string text = 1;
+	// the sentence id
+	optional string sent_id = 2;
+	// the number of tokens in the sentence.
+	optional int32 length = 3;
+	// a token in the sentence.
+	repeated Token token = 4; /*actually required*/
+	// whether the sentence is annotated with inflectional groups or not.
+	optional bool inflectional_groups = 5;
+	// the confidence score of this sentence as outputted by the classifier, 
+	// based on the predictions of the dependency relations. 
+	optional float score = 6;
+}
+
+// A token stores all the required information that is needed to process a word
+// from a sentence. The values for "word", "lemma", "category", "pos", and "morphology"
+// "selected head" and "label" are read from the training data and is used in training
+// the classifier. During the prediction stage, the classifier can use fieilds except for
+// selected_head and label as features and aims to predict a head and a dependency label
+// for each token. Note that the classifier actually predicts a probability score for 
+// each token being the head of every other token and this information is then saved in
+// candidate_head field. We then choose the argmax of these candidates and save it into
+// selected_head field.
+message Token {
+	optional string word = 1;
+	optional string lemma = 2;
+	optional string category = 3;
+	optional string pos = 4;
+	repeated Morphology morphology = 5;
+	repeated Head candidate_head = 6;
+	optional Head selected_head = 7;
+	optional string label = 8;
+	optional int32 index = 9;
+	
+	// Morphology is represented as a list of name:value pairs.
+	message Morphology {
+	// The name of the morphological feature.
+	optional string name = 1;
+	// The value of the morphological feature.
+	optional string value = 2;
+	}
+	
+	// Head of a token is represented as an (address, arc_score) pair, where the address
+	// points to the index of the head token and score represents the probability score
+	// of that token being the head for this token.
+	message Head {
+		// The token index of the head.
+		optional int32 address = 1;
+		// The score of the arc from this token to its head.
+		optional float arc_score = 2;
+	}
+}
+
+// The maximum spanning tree is the highest scoring tree among the possible trees, 
+// computed based on the arc scores of the dependency relations in the sentence.
+// There can only be one maximum_spanning_tree per sentence, which represents the 
+// argmax of the classifier predictions. 
+message maximum_spanning_tree {
+	// The highest scoring tree representation of the sentence.
+	optional Sentence sentence = 1;
+	// Score of the highest scoring tree.
+	optional float score = 2;
+	}
+
+// The k-best list of maximum spanning trees. 
+message k_best_list {
+	// the size of k
+	optional int32 size = 1;
+	// the list of k-best maximum spanning trees.
+	repeated Sentence sentence = 2;
+	}
+

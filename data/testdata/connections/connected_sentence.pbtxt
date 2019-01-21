@@ -1,0 +1,69 @@
+token {
+  word: "Root"
+  selected_head {
+    address: -1
+    arc_score: 0.0
+  }
+  index: 0
+}
+token {
+  word: "token_1"
+  candidate_head {
+  	address: 3
+	arc_score: 0.0
+  }
+  candidate_head {
+  	address: 2
+	arc_score: 0.0
+  }
+  candidate_head {
+  	address: 0
+	arc_score: 0.0
+  }
+  selected_head {
+    address: 2
+    arc_score: 30
+  }
+  index: 1
+}
+token {
+  word: "token_2"
+  candidate_head {
+    address: 3
+    arc_score: 0.0
+  }
+  candidate_head {
+    address: 1
+    arc_score: 0.0
+  }
+  candidate_head {
+    address: 0
+    arc_score: 0.0
+  }
+  selected_head {
+    address: 0
+    arc_score: 20.0
+  }
+  index: 2
+}
+token {
+  word: "token_3"
+  candidate_head {
+    address: 2
+    arc_score: 0.0
+  }
+  candidate_head {
+    address: 1
+    arc_score: 0.0
+  }
+  candidate_head {
+    address: 0
+    arc_score: 0.0
+  }
+  selected_head {
+    address: 2
+    arc_score: 30.0
+  }
+  index: 3
+}
+

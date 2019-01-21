@@ -1,0 +1,53 @@
+# This is what remains of cyclic_sentence_1.pbtxt after _Contract() applied to it.
+
+length: 3
+token {
+  word: "None"
+  lemma: "None"
+  category: "TOP"
+  pos: "TOP"
+  selected_head {
+    address: -1
+    arc_score: 0.0
+  }
+  index: 0
+}
+token {
+  word: "Mary"
+  lemma: "Mary"
+  category: "NOUN"
+  pos: "Noun"
+  candidate_head {
+    address: 0
+    arc_score: 9.0
+  }
+  candidate_head {
+    address: 4
+    arc_score: 3.0
+  }
+  candidate_head {
+    address: 4
+    arc_score: 30.0
+  }
+  index: 3
+}
+token {
+  word: "cycle_token_4"
+  candidate_head {
+    address: 0
+    arc_score: 29.0
+  }
+  candidate_head {
+    address: 3
+    arc_score: 31.0
+  }
+  candidate_head {
+    address: 0
+    arc_score: 40.0
+  }
+  candidate_head {
+    address: 3
+    arc_score: 30.0
+  }
+  index: 4
+}

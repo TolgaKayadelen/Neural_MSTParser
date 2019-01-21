@@ -1,0 +1,25 @@
+# Represents an target token that is used while breaking a cycle. 
+# This is used to test _RedirectIncomingArcs and _RedirectOutgoingArcs in 
+# max_span_tree.
+
+word: "cycle_token"
+candidate_head {
+  address: 0
+  arc_score: 29.0
+}
+candidate_head {
+  address: 3
+  arc_score: 31.0
+}
+candidate_head {
+  address: 0
+  arc_score: 40.0
+}
+candidate_head {
+  address: 3
+  arc_score: 30.0
+}
+index: 4
+
+
+
