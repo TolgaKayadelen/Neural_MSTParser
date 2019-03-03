@@ -47,16 +47,17 @@ def _GreedyMst(sentence):
     for each candidate head in each token we find the one that has the highest
     score and write it to the selected head. 
     This function does not guarantee that the resulting MST will be cycle free. If 
-    there are cycle, they are handled later by the Contact function.
+    there are cycles, they are handled later by the _Contact() function.
+    
     args:
-        sentence, a protocol buffer object representation of a sentence.
+        sentence, a sentence_pb2.Sentence object.
     returns:
         sentence where the selected heads are computed based on argmax of 
         candidate heads. 
     """
     
     for token in sentence.token:
-        if token.index == 0:
+        if token.index == 0:    # the 0th token is the ROOT, has no head.
             continue
         max_arc_score = 0.0
         max_head = 0
@@ -126,7 +127,7 @@ def _DropCandidateHeads(sentence):
 def _ClearSelectedHeads(sentence):
     """Removes the selected head fields from a sentence that is contracted.
     
-    This is useful just for clarift. After contraction, selected heads will be
+    This is useful just for clarity. After contraction, selected heads will be
     re-determined with ChuLiuEdmonds based on recalculated arc scores. 
     
     Args:
@@ -144,7 +145,7 @@ def _Cycle(sentence):
     """Checks whether there is a cycle in the sentence.
     
     args:
-        sentence: a protocol buffer Sentence object.
+        sentence: a sentence_pb2.Sentence object.
 
     returns:
         cycle: boolean, whether the sentence has cycle.
@@ -170,7 +171,7 @@ def _GetCyclePath(start_token, sentence, p):
     
     Args:
         start_token: token, the token from which the tree traversal starts.
-        sentence: a protocol buffer Sentence to traverse.
+        sentence: a sentence_pb2.Sentence object to traverse.
         p: list
     Returns:
         cycle: boolean, whether the tree contains a cycle.
@@ -181,7 +182,7 @@ def _GetCyclePath(start_token, sentence, p):
     token = start_token
     path.append(_GetTokenIndex(tokens, token))
     #print(path)
-    # base case: if the token is ROOT, there can't be no more haed to visit.
+    # base case: if the token is ROOT, there can't be no more head to visit.
     if token.selected_head.address == -1:
         return False, path
     # base case: if the token is already in the visited list of heads, there's cycle.
@@ -202,22 +203,29 @@ def _Contract(sentence, cycle_path):
     """Contracts the cycle in the sentence. 
     
     Args: 
-        sentence: a protocol buffer Sentence object.
+        sentence: a sentence_pb2.Sentence object.
         cycle_path: list, the path of the cycle. 
     """
     if not sentence.length:
         sentence.length = len(sentence.token)
+    # Get the score of the cycle and the tokens that make up the cycle.
     cycle_tokens, cycle_score = _GetCycleScore(sentence, cycle_path)
+    # Get the tokens that are outside the cycle.
     outcycle_tokens = [token for token in sentence.token if not token in cycle_tokens]
+    # Add a new token to the tree to represent the cycle.
     new_token_index = sentence.token[-1].index + 1
     new_token = sentence.token.add()
     new_token.index = new_token_index
     new_token.word = "cycle_token_" + str(new_token_index)
     sentence.length += 1
+    # Register the original edges in the sentence. We will need this when we want to
+    # reconstruct the sentence after breaking the cycle.
     original_edges = _GetOriginalEdges(sentence)
+    # Redirect the incoming and outgoing arcs to the new token. 
     _RedirectIncomingArcs(cycle_tokens, new_token, cycle_score)
     _RedirectOutgoingArcs(cycle_tokens, outcycle_tokens, new_token)
     pruned = _DropCycleTokens(sentence, cycle_tokens)
+    #(TODO): make sure you don't need selected_heads for reconstruction.
     contracted = _ClearSelectedHeads(pruned)
     contracted.length = len(contracted.token)
     #print(contracted)
@@ -231,8 +239,8 @@ def _GetCycleScore(sentence, cycle_path):
         sentence: a protocol buffer Sentence object.
         cycle_path: list, path of the cycle. 
     Returns:
-        cycle_tokens: list, list of sentence_pb2.Token() that constitute that cycle.
-        cycle_score: float, the weight of the cycle in Sentence.
+        cycle_tokens: list, list of sentence_pb2.Token() objects that constitute a cycle.
+        cycle_score: float, the weight of the cycle.
     """
     cycle_tokens = [sentence.token[i] for i in set(cycle_path)]
     #print(cycle_tokens)
@@ -246,7 +254,7 @@ def _GetCycleScore(sentence, cycle_path):
     return cycle_tokens, cycle_score
 
 def _GetOriginalEdges(sentence):
-    """Creates some convenience information about the edges and edge scores. 
+    """Logs the edges and edge scores of a graph. 
     
     This information will be useful when reconstructing the graph after
     _Contract if a cycle is found. 
@@ -258,6 +266,7 @@ def _GetOriginalEdges(sentence):
     """
     original_edges = defaultdict(list)
     for token in sentence.token:
+        # skip the ROOT token
         if token.index == 0 or token.selected_head.address == -1:
             continue
         for ch in token.candidate_head:
@@ -275,6 +284,7 @@ def _RedirectIncomingArcs(cycle_tokens, new_token, cycle_score):
     """
     for token in cycle_tokens:
         for candidate_head in token.candidate_head:
+            # the original selected_head is within the cycle, so skip it. 
             if candidate_head.address != token.selected_head.address:
                 ch = new_token.candidate_head.add()
                 ch.address = candidate_head.address
@@ -285,9 +295,10 @@ def _RedirectOutgoingArcs(cycle_tokens, outcycle_tokens, new_token):
     """Redirect any outgoing arcs from the cycle to the new target token. 
     
     For each token outside the cycle that has as head one of the tokens
-    inside the cycle, craete an arc between the new_target to the token
-    where the new target is the head of the token outside the cycle and
-    set the arc score appropriately. 
+    inside the cycle, craete an arc between the new_target to the outcycle
+    token where the new target is the head of the outcycle token. This way
+    we make sure that each token outside the cycle that has a head in the cycle
+    now has the new_target as head. Set the arc scores appropriately. 
     
     
     Args:   
@@ -321,7 +332,7 @@ def _Reconstruct(sentence, new_token, original_edges, cycle_path):
     
     """
     #print("Printing in reconstruct function: ")
-    print(sentence)
+    #print(sentence)
     candidate_sources, candidate_scores = [], []
     for token in sentence.token:
         # Handle outgoing edges from the cycle to outside the cycle.
@@ -331,7 +342,7 @@ def _Reconstruct(sentence, new_token, original_edges, cycle_path):
                     if target[0] == token.index:
                         candidate_sources.append(source)
                         candidate_scores.append(target[1])
-            print(candidate_sources, candidate_scores)
+            #print(candidate_sources, candidate_scores)
         #del candidate_sources[:]
         #del candidate_scores[:]        
 

@@ -1,6 +1,5 @@
 # Represents an target token that is used while breaking a cycle. 
-# This is used to test _RedirectIncomingArcs and _RedirectOutgoingArcs in 
-# max_span_tree.
+# Used for testing _RedirectOutgoingArcs in max_span_tree.
 
 word: "Mary"
 lemma: "Mary"
