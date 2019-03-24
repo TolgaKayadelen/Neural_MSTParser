@@ -1,4 +1,4 @@
-# Represents an target token that is used while breaking a cycle. 
+# Represents a target token that is used while breaking a cycle. 
 # Used for testing _RedirectOutgoingArcs in max_span_tree.
 
 word: "Mary"

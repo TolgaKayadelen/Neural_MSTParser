@@ -32,12 +32,20 @@ def ChuLiuEdmonds(sentence):
     # Find if there are any cycles in the returned MST, if so contract.
     cycle, cycle_path = _Cycle(mst.sentence)
     if not cycle:
-        _DropCandidateHeads(mst.sentence)
+        mst.sentence.CopyFrom(_DropCandidateHeads(mst.sentence))
         return mst.sentence
     
     new_token, original_edges, contracted = _Contract(mst.sentence, cycle_path)
-    reconstructed = _Reconstruct(ChuLiuEdmonds(contracted), new_token, original_edges, cycle_path)
-    return reconstructed
+    reconstructed_edges = _Reconstruct(
+        ChuLiuEdmonds(contracted),
+        new_token,
+        original_edges,
+        cycle_path
+        )
+    reconstructed_sentence = _Merge(reconstructed_edges, sentence)
+    mst.sentence.CopyFrom(reconstructed_sentence)
+    print("mst_sentence_after_reconstruction: ", mst.sentence)
+    return mst.sentence
 
 
 def _GreedyMst(sentence):
@@ -119,10 +127,12 @@ def _DropCandidateHeads(sentence):
     """Removes the candidate head fields from a sentence where mst is computed. 
     Args:
         sentence, sentence in mst.sentence protocol buffer representation. 
+    Returns: 
+        sentence where the candidate_head field is cleared from tokens.
     """
     for token in sentence.token:
         token.ClearField("candidate_head")
-
+    return sentence
 
 def _ClearSelectedHeads(sentence):
     """Removes the selected head fields from a sentence that is contracted.
@@ -188,6 +198,10 @@ def _GetCyclePath(start_token, sentence, p):
     # base case: if the token is already in the visited list of heads, there's cycle.
     if token.selected_head.address in path:
         path.append(token.selected_head.address)
+        #(TODO): the following only works because of the way the python interpreter works.
+        # When there are multiple occurences of the same item in a list, list.index(item)
+        # returns the index for the first occurence. Consider moving to a safer 
+        # implementation.
         cycle_start_index = path.index(token.selected_head.address)
         cycle_path = path[cycle_start_index:]
         # print("There is cycle: ", cycle_path)
@@ -257,7 +271,11 @@ def _GetOriginalEdges(sentence):
     """Logs the edges and edge scores of a graph. 
     
     This information will be useful when reconstructing the graph after
-    _Contract if a cycle is found. 
+    _Contract if a cycle is found.
+    
+    This is structured as a default dict, where each key is a head and each value is a list
+    of tuples registering the candidate children and edge scores for the head, i.e. 
+    {0: [(1, 9.0), (2, 10.0), (3, 9.0)]} etc.  
     
     Args: 
         sentence: sentence_pb2.Sentence(), the sentence to get edge information for.
@@ -298,7 +316,7 @@ def _RedirectOutgoingArcs(cycle_tokens, outcycle_tokens, new_token):
     inside the cycle, craete an arc between the new_target to the outcycle
     token where the new target is the head of the outcycle token. This way
     we make sure that each token outside the cycle that has a head in the cycle
-    now has the new_target as head. Set the arc scores appropriately. 
+    now has the new_target as head. 
     
     
     Args:   
@@ -324,32 +342,118 @@ def _DropCycleTokens(sentence, cycle_tokens):
         sentence.token.remove(token)
     return sentence
 
-def _Reconstruct(sentence, new_token, original_edges, cycle_path):
+def _Reconstruct(cont_sentence, new_token, original_edges, cycle_path):
     """Reconstruct.
     
     Args:
-        sentence: A contracted sentence from which to reconstruct MST.
+        cont_sentence: sentence_pb2.Sentence, a contracted sentence from which to reconstruct MST.
+        new_token: sentence_pb2.Token, the new token that was added to the original sentence,
+             to represent the cycle.
+        original_edges: defaultdict, the edges between the nodes of the original sentence.
+        cycle_path: list, the path of the cycle.
     
+    Returns:
+        reconstructed_edges: defaultdict, the edges of the original tree reconstructed after
+            breaking the cycle. 
     """
-    #print("Printing in reconstruct function: ")
-    #print(sentence)
-    candidate_sources, candidate_scores = [], []
-    for token in sentence.token:
-        # Handle outgoing edges from the cycle to outside the cycle.
-        if token.selected_head.address == new_token.index:
-            for source, targets in original_edges.items():
-                for target in targets:
-                    if target[0] == token.index:
-                        candidate_sources.append(source)
-                        candidate_scores.append(target[1])
-            #print(candidate_sources, candidate_scores)
-        #del candidate_sources[:]
-        #del candidate_scores[:]        
+    reconstructed_edges = defaultdict(list)
+    cont_edges = defaultdict(list)
+    cycle_edges = dict(zip(cycle_path, cycle_path[1:]))
+    
+    # a convenience function to find the edge score for a given source and target node index
+    # from an edges dictionary; can be used to find edge score for a source and target in
+    # original_edges or contracted edges. 
+    get_edge_score = lambda source, target, edges_dict: [
+        t[1] for t in edges_dict[source] if t[0] == target][0]
+    
+    # populate the defaultdict for contracted_edges.
+    for token in cont_sentence.token:
+        cont_edges[token.selected_head.address].append((token.index, token.selected_head.arc_score))
+    
+    #print("cont_sentence", cont_sentence)
+    #print("original_edges", original_edges)
+    #print("cont_edges: ", cont_edges)
+    
+    for source, target in cont_edges.items():
+        
+        # Handle arcs outgoing from the cycle.
+        if source == new_token.index:
+            # This arc points from the cycle to outside. There might be more than one of these.
+            # Find all the original nodes in the cycle that are responsible for such edges and
+            # add them to the reconstructed_edges.
+            cycle_target_index = cont_edges[source][0][0]
+            cycle_target_score = cont_edges[source][0][1] 
+            #print("target_edge_score ", cycle_target_score)
+            #print("target_edge_index", cycle_target_index)
+            # To find the original node, we look at the original_edges dict to understand which
+            # node goes to the same target with the same arc_score in the original graph.
+            for original_node_index in set(cycle_path):
+                if get_edge_score(
+                    original_node_index,
+                    cycle_target_index,
+                    original_edges) == cycle_target_score:
+                    reconstructed_edges[original_node_index].append(
+                        (cycle_target_index, cycle_target_score)
+                    )
+        
+        # Handle arcs incoming to the cycle. 
+        if target[0][0] == new_token.index:
+            # This arc points at the cycle. Use the original_edges to find out which node
+            # exactly in the cycle it points, then add all the edges in the cycle to the 
+            # reconstructed_edges except for the one that completes the cycle loop. 
+            original_target = max(original_edges[source], key=lambda x:x[1])
+            reconstructed_edges[source].append(original_target)
+            cycle_source = original_target[0]
+            cycle_target = cycle_edges[cycle_source]
+            while cycle_target != original_target[0]:
+                cycle_target_edge_score = get_edge_score(cycle_source, cycle_target, original_edges)
+                reconstructed_edges[cycle_source].append(
+                    (cycle_target, get_edge_score(cycle_source, cycle_target, original_edges))
+                )
+                cycle_source = cycle_target
+                cycle_target = cycle_edges[cycle_source]
+    
+    return reconstructed_edges
 
 
-def _SentenceWeight(sentence):
+def _Merge(edges, sentence):
+    """Merge the reconstructed edges into the original sentence.
+    
+    Args: 
+        edges: defaultdict, the edges to merge into the sentence.
+        sentence: the sentences which will be redone using the edges dict. 
+    Returns:
+        sentence
+    """
+    print("edges: ", edges)
+    print("sentence before: ", sentence)
+    tokens = sentence.token
+    for source, targets in edges.items():
+        for token in tokens:
+            for target in targets:
+                if not token.index == target[0]:
+                    continue
+                print("Determining head for token: ", token.index)
+                if token.selected_head.address != source:
+                    print("""Changing the head for {} from {} --> {}""".format(
+                        token.index, token.selected_head.address, source
+                        ))
+                    print("""Changing the arc score for {} from {} --> {}""".format(
+                        token.index, token.selected_head.arc_score, target[1]
+                        ))
+                    token.selected_head.address = source
+                    token.selected_head.arc_score = target[1]
+                else:
+                    print("token ", token.index, " already had correct head.")
+    return _DropCandidateHeads(sentence)            
+
+
+def _GetSentenceWeight(sentence):
     """Computes the total weight of the sentence."""
-    pass
+    weight = 0.0
+    for token in sentence.token:
+        weight += token.selected_head.arc_score
+    return weight
 
 def _GetTokenIndex(tokens, token):
     """Return the index of a token in the sentence.
