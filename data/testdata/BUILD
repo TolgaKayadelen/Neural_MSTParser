@@ -35,3 +35,10 @@ filegroup(
 		"tokens/*.pbtxt",
 	]),
 )
+
+filegroup(
+	name = "chuliuedmonds",
+	srcs = glob([
+		"chuliuedmonds/*.pbtxt",
+	]),
+)

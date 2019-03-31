@@ -20,17 +20,19 @@ def ChuLiuEdmonds(sentence):
     Args:
         sentence_proto_path: path to a protocol buffer Sentence object.
     Returns:
-        The maximum spanning tree of the sentence.
+        mst, sentence_pb2.maximum_spanning_tree. Gives the mst and the mst score
+            of the sentence.
     """
     if not sentence.HasField("length"):
         sentence.length = len(sentence.token)
         #print(sentence.length)
     mst = sentence_pb2.maximum_spanning_tree()
     mst.sentence.CopyFrom(_GreedyMst(sentence))
-    #print(mst.sentence)
+    #print("mst_sentence ", mst.sentence)
     
     # Find if there are any cycles in the returned MST, if so contract.
     cycle, cycle_path = _Cycle(mst.sentence)
+    #print("cycle path: ", cycle_path)
     if not cycle:
         mst.sentence.CopyFrom(_DropCandidateHeads(mst.sentence))
         return mst.sentence
@@ -43,9 +45,11 @@ def ChuLiuEdmonds(sentence):
         cycle_path
         )
     reconstructed_sentence = _Merge(reconstructed_edges, sentence)
+    #print("reconstructed_edges: ", reconstructed_edges)
     mst.sentence.CopyFrom(reconstructed_sentence)
-    print("mst_sentence_after_reconstruction: ", mst.sentence)
-    return mst.sentence
+    assert mst.sentence.length == len(mst.sentence.token)
+    mst.score = _GetSentenceWeight(mst.sentence)
+    return mst
 
 
 def _GreedyMst(sentence):
@@ -342,6 +346,30 @@ def _DropCycleTokens(sentence, cycle_tokens):
         sentence.token.remove(token)
     return sentence
 
+
+
+def _GetCycleEdgesAndScores(original_edges, cycle_path):
+    """Return cycle edges and edge scores for tokens in the cycle path.
+    
+    This function should only be called from _Reconstruct function. 
+    
+    Args:
+        original_edges: defaultdict, the edges between the nodes of the original sentence.
+        cycle_path: list, the path of the cycle.
+    
+    Returns:
+        cycle_edges: dict, edges and edge_scores for nodes in the cycle. Useful during
+            recontstruction.
+    """
+    cycle_edges = {}
+    for source in set(cycle_path):
+        targets = [target for target in original_edges[source] if target[0] in cycle_path]
+        cycle_target = max(targets, key=lambda x:x[1])
+        #print("_GetCycleEdges cycle_targets: ", source, cycle_target)
+        cycle_edges[source] = cycle_target
+    return cycle_edges
+                 
+
 def _Reconstruct(cont_sentence, new_token, original_edges, cycle_path):
     """Reconstruct.
     
@@ -358,7 +386,8 @@ def _Reconstruct(cont_sentence, new_token, original_edges, cycle_path):
     """
     reconstructed_edges = defaultdict(list)
     cont_edges = defaultdict(list)
-    cycle_edges = dict(zip(cycle_path, cycle_path[1:]))
+    #cycle_edges = dict(zip(cycle_path, cycle_path[1:]))
+    cycle_edges = _GetCycleEdgesAndScores(original_edges, cycle_path)
     
     # a convenience function to find the edge score for a given source and target node index
     # from an edges dictionary; can be used to find edge score for a source and target in
@@ -368,7 +397,11 @@ def _Reconstruct(cont_sentence, new_token, original_edges, cycle_path):
     
     # populate the defaultdict for contracted_edges.
     for token in cont_sentence.token:
-        cont_edges[token.selected_head.address].append((token.index, token.selected_head.arc_score))
+        if token.index == 0 or token.selected_head.address == -1:
+            continue
+        cont_edges[token.selected_head.address].append(
+            (token.index, token.selected_head.arc_score)
+        )
     
     #print("cont_sentence", cont_sentence)
     #print("original_edges", original_edges)
@@ -404,15 +437,16 @@ def _Reconstruct(cont_sentence, new_token, original_edges, cycle_path):
             original_target = max(original_edges[source], key=lambda x:x[1])
             reconstructed_edges[source].append(original_target)
             cycle_source = original_target[0]
+            #print("cycle_source: ", cycle_source)
             cycle_target = cycle_edges[cycle_source]
-            while cycle_target != original_target[0]:
-                cycle_target_edge_score = get_edge_score(cycle_source, cycle_target, original_edges)
-                reconstructed_edges[cycle_source].append(
-                    (cycle_target, get_edge_score(cycle_source, cycle_target, original_edges))
-                )
-                cycle_source = cycle_target
+            #print("cycle_target: ", cycle_target)
+            while cycle_target[0] != original_target[0]:
+                reconstructed_edges[cycle_source].append(cycle_target)
+                cycle_source = cycle_target[0]
+                #print("cycle source: ", cycle_source)
                 cycle_target = cycle_edges[cycle_source]
-    
+                #print("cycle_target: ", cycle_target)
+    #print("reconstructed_edges: ", reconstructed_edges)
     return reconstructed_edges
 
 
@@ -425,8 +459,8 @@ def _Merge(edges, sentence):
     Returns:
         sentence
     """
-    print("edges: ", edges)
-    print("sentence before: ", sentence)
+    #print("edges: ", edges)
+    #print("sentence before: ", sentence)
     tokens = sentence.token
     for source, targets in edges.items():
         for token in tokens:
@@ -444,7 +478,7 @@ def _Merge(edges, sentence):
                     token.selected_head.address = source
                     token.selected_head.arc_score = target[1]
                 else:
-                    print("token ", token.index, " already had correct head.")
+                    print("Token ", token.index, " already had correct head.")
     return _DropCandidateHeads(sentence)            
 
 

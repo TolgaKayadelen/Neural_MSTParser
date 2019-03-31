@@ -15,6 +15,7 @@ _CONNECTION_DIR = os.path.join(_TESTDATA_DIR, "connections")
 _MST_DIR = os.path.join(_TESTDATA_DIR, "msts")
 _TOKEN_DIR = os.path.join(_TESTDATA_DIR, "tokens")
 _GENERIC_DIR = os.path.join(_TESTDATA_DIR, "generic")
+_CHULIUEDMONDS_DIR = os.path.join(_TESTDATA_DIR, "chuliuedmonds")
 
 
 def _read_file(path):
@@ -42,7 +43,27 @@ def _read_test_token(basename):
     path = os.path.join(_TOKEN_DIR, "{}.pbtxt".format(basename))
     return text_format.Parse(_read_file(path), sentence_pb2.Token())
 
+def _read_chuliuedmonds_test_sentence(basename):
+    path = os.path.join(_CHULIUEDMONDS_DIR, "{}.pbtxt".format(basename))
+    return text_format.Parse(_read_file(path), sentence_pb2.Sentence())
+
 class MaximumSpanningTreeTest(unittest.TestCase):
+    
+    def test_ChuLiuEdmonds(self):
+        # cycle [1,2,1], tokens: [0,1,2,3]
+        cyclic_1 = _read_chuliuedmonds_test_sentence("cyclic_sentence_1")
+        expected_mst = _read_chuliuedmonds_test_sentence("cyclic_sentence_1_mst")
+        function_mst = max_span_tree.ChuLiuEdmonds(cyclic_1)
+        self.assertEqual(function_mst.sentence, expected_mst)
+        self.assertEqual(function_mst.score, 70)
+        
+        # cycle: [2,3,4,2], tokens: [0,1,2,3,4]
+        cyclic_2 = _read_chuliuedmonds_test_sentence("cyclic_sentence_2")
+        expected_mst = _read_chuliuedmonds_test_sentence("cyclic_sentence_2_mst")
+        function_mst = max_span_tree.ChuLiuEdmonds(cyclic_2)
+        self.assertEqual(function_mst.sentence, expected_mst)
+        self.assertEqual(function_mst.score, 105)
+        
     
     def test_GreedyMst(self):
         sentence = _read_mst_test_sentence("cyclic_no_selected_head")
@@ -78,6 +99,11 @@ class MaximumSpanningTreeTest(unittest.TestCase):
         cyclic, path = max_span_tree._Cycle(cyclic_5)
         self.assertTrue(cyclic)
         self.assertListEqual(path, [2,3,2])
+        
+        cyclic_6 = _read_cycle_test_sentence("cyclic_sentence_6")
+        cyclic, path = max_span_tree._Cycle(cyclic_6)
+        self.assertTrue(cyclic)
+        self.assertListEqual(path, [2,3,4,2])
         
         # Test sentences that don't have a cycle
         noncyclic_1 = _read_cycle_test_sentence("noncyclic_sentence_1")
@@ -182,13 +208,6 @@ class MaximumSpanningTreeTest(unittest.TestCase):
         self.assertTrue(len(expected_sentence.token) == 2)
         self.assertTrue(expected_sentence.token[0].word == "None")
         self.assertTrue(expected_sentence.token[1].word == "Mary")
-    
-    def test_Reconstruct(self):
-        cyclic = _read_cycle_test_sentence("cyclic_sentence_1")
-        cycle_tokens, cycle_path = max_span_tree._Cycle(cyclic)
-        #new_token, original_edges, contracted = max_span_tree._Contract(cyclic, cycle_path)
-        new_sentence = max_span_tree.ChuLiuEdmonds(cyclic)
-        #print(new_sentence)
         
     def test_GetTokenIndex(self):
         pass

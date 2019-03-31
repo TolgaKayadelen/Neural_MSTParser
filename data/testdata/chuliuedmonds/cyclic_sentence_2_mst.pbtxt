@@ -1,0 +1,45 @@
+
+  length: 5
+  token {
+    word: "None"
+    lemma: "None"
+    category: "TOP"
+    pos: "TOP"
+    selected_head {
+      address: -1
+      arc_score: 0.0
+    }
+    index: 0
+  }
+  token {
+    word: "I"
+    selected_head {
+      address: 2
+      arc_score: 30.0
+    }
+    index: 1
+  }
+  token {
+    word: "saw"
+    selected_head {
+      address: 0
+      arc_score: 15.0
+    }
+    index: 2
+  }
+  token {
+    word: "a"
+    selected_head {
+      address: 4
+      arc_score: 30.0
+    }
+    index: 3
+  }
+  token {
+    word: "cat"
+    selected_head {
+      address: 2
+      arc_score: 30.0
+    }
+    index: 4
+  }
