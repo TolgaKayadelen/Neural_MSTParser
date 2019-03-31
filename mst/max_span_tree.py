@@ -28,16 +28,17 @@ def ChuLiuEdmonds(sentence):
         #print(sentence.length)
     mst = sentence_pb2.maximum_spanning_tree()
     mst.sentence.CopyFrom(_GreedyMst(sentence))
-    #print("mst_sentence ", mst.sentence)
     
     # Find if there are any cycles in the returned MST, if so contract.
     cycle, cycle_path = _Cycle(mst.sentence)
-    #print("cycle path: ", cycle_path)
+    #print("cycle path: ", cycle, cycle_path)
     if not cycle:
         mst.sentence.CopyFrom(_DropCandidateHeads(mst.sentence))
-        return mst.sentence
+        mst.score = _GetSentenceWeight(mst.sentence)
+        return mst
     
     new_token, original_edges, contracted = _Contract(mst.sentence, cycle_path)
+    #print("cycle_path {}".format(cycle_path))
     reconstructed_edges = _Reconstruct(
         ChuLiuEdmonds(contracted),
         new_token,
@@ -169,11 +170,12 @@ def _Cycle(sentence):
     p = []
     # start iterating from token 1 since 0 is ROOT with no head.
     for token in sentence.token[1:]:
-        #print(_GetTokenIndex(sentence.token, token))
+        #print("token is {}".format(token.word))
         cycle, cycle_path = _GetCyclePath(token, sentence, p)
-        #print(cycle)
+        #print("cycle path: ", cycle, cycle_path)
         del p[:]
         if cycle == True:
+            #print("breaking... ")
             break
     return cycle, cycle_path
     
@@ -192,10 +194,11 @@ def _GetCyclePath(start_token, sentence, p):
         path: list, the path of the cycle that exists.
     """
     path = p
+    #print("path: {}".format(path))
     tokens = sentence.token
     token = start_token
-    path.append(_GetTokenIndex(tokens, token))
-    #print(path)
+    path.append(token.index)
+    print("path: {}".format(path))
     # base case: if the token is ROOT, there can't be no more head to visit.
     if token.selected_head.address == -1:
         return False, path
@@ -208,10 +211,10 @@ def _GetCyclePath(start_token, sentence, p):
         # implementation.
         cycle_start_index = path.index(token.selected_head.address)
         cycle_path = path[cycle_start_index:]
-        # print("There is cycle: ", cycle_path)
+        print("There is cycle: {}".format(cycle_path))
         return True, cycle_path
     # recursive step
-    #print("word: ", token.word, "address: ", token.selected_head.address)
+    #print("word: ", token.word, "selected_head_address: ", token.selected_head.address)
     next_token = _GetTokenByAddressAlt(tokens, token.selected_head.address)
     #print("next token: ", next_token)
     return _GetCyclePath(next_token, sentence, p=path)
@@ -246,7 +249,6 @@ def _Contract(sentence, cycle_path):
     #(TODO): make sure you don't need selected_heads for reconstruction.
     contracted = _ClearSelectedHeads(pruned)
     contracted.length = len(contracted.token)
-    #print(contracted)
     return new_token, original_edges, contracted
     
        
@@ -260,11 +262,12 @@ def _GetCycleScore(sentence, cycle_path):
         cycle_tokens: list, list of sentence_pb2.Token() objects that constitute a cycle.
         cycle_score: float, the weight of the cycle.
     """
-    cycle_tokens = [sentence.token[i] for i in set(cycle_path)]
+    cycle_tokens = [token for token in sentence.token if token.index in set(cycle_path)]
     #print(cycle_tokens)
     cycle_score = 0.0
     for ind in set(cycle_path):
-        token = sentence.token[ind]
+        #token = sentence.token[ind]
+        token = _GetTokenByAddressAlt(sentence.token, ind)
         if token.selected_head.address == ind:
             break
         cycle_score += token.selected_head.arc_score
@@ -362,19 +365,22 @@ def _GetCycleEdgesAndScores(original_edges, cycle_path):
             recontstruction.
     """
     cycle_edges = {}
+    print("original_edges: ", original_edges)
     for source in set(cycle_path):
         targets = [target for target in original_edges[source] if target[0] in cycle_path]
+        #print("cycle_path ", cycle_path)
+        #print("targets: ", source, targets)
         cycle_target = max(targets, key=lambda x:x[1])
         #print("_GetCycleEdges cycle_targets: ", source, cycle_target)
         cycle_edges[source] = cycle_target
     return cycle_edges
                  
 
-def _Reconstruct(cont_sentence, new_token, original_edges, cycle_path):
+def _Reconstruct(cont_mst, new_token, original_edges, cycle_path):
     """Reconstruct.
     
     Args:
-        cont_sentence: sentence_pb2.Sentence, a contracted sentence from which to reconstruct MST.
+        cont_mst: sentence_pb2.maximum_spanning_tree, a contracted mst from which to reconstruct MST.
         new_token: sentence_pb2.Token, the new token that was added to the original sentence,
              to represent the cycle.
         original_edges: defaultdict, the edges between the nodes of the original sentence.
@@ -396,7 +402,7 @@ def _Reconstruct(cont_sentence, new_token, original_edges, cycle_path):
         t[1] for t in edges_dict[source] if t[0] == target][0]
     
     # populate the defaultdict for contracted_edges.
-    for token in cont_sentence.token:
+    for token in cont_mst.sentence.token:
         if token.index == 0 or token.selected_head.address == -1:
             continue
         cont_edges[token.selected_head.address].append(
@@ -446,7 +452,7 @@ def _Reconstruct(cont_sentence, new_token, original_edges, cycle_path):
                 #print("cycle source: ", cycle_source)
                 cycle_target = cycle_edges[cycle_source]
                 #print("cycle_target: ", cycle_target)
-    #print("reconstructed_edges: ", reconstructed_edges)
+    print("reconstructed_edges: ".format(reconstructed_edges))
     return reconstructed_edges
 
 
@@ -533,6 +539,7 @@ def _GetTokenByAddressAlt(tokens, address):
 
 def main(args):
     sentence = reader.ReadSentenceProto(args.input_file)
+    print("sentence: ", sentence)
     ConnectSentenceNodes(sentence)
     ChuLiuEdmonds(sentence)
     #sentence = sentence_pb2.Sentence()

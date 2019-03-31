@@ -1,5 +1,6 @@
-# Sentence: I saw a cat
-# Cycle: [2,4,3,2]
+# Sentence: John saw Mary.
+# This sentence leads to recursive cycles due to its candidate head weights.
+# cycles: first [1,2,1], then [3,4,3]
 
 token {
   word: "None"
@@ -13,10 +14,13 @@ token {
   index: 0
 }
 token {
-  word: "I"
+  word: "John"
+  lemma: "John"
+  category: "NOUN"
+  pos: "Noun"
   candidate_head {
   	address: 0
-	arc_score: 10
+	arc_score: 9
   }
   candidate_head {
   	address: 2
@@ -24,11 +28,7 @@ token {
   }
   candidate_head {
   	address: 3
-	arc_score: 10
-  }
-  candidate_head {
-  	address: 4
-	arc_score: 15
+	arc_score: 25
   }
   selected_head {
     address: 2
@@ -38,73 +38,47 @@ token {
 }
 token {
   word: "saw"
+  lemma: "see"
+  category: "VERB"
+  pos: "Verb"
   candidate_head {
   	address: 0
-	arc_score: 15
-  }
-  candidate_head {
-  	address: 1
 	arc_score: 10
   }
   candidate_head {
-  	address: 3
+  	address: 1
 	arc_score: 20
   }
   candidate_head {
-  	address: 4
-	arc_score: 5 
+  	address: 3
+	arc_score: 0
   }
   selected_head {
-    address: 3
+    address: 1
     arc_score: 20
   }
   index: 2
 }
 token {
-  word: "a"
+  word: "Mary"
+  lemma: "Mary"
+  category: "NOUN"
+  pos: "Noun"
   candidate_head {
   	address: 0
-	arc_score: 10
+	arc_score: 9
   }
   candidate_head {
   	address: 1
-	arc_score: 10
-  }
-  candidate_head {
-  	address: 2
-	arc_score: 10
-  }
-  candidate_head {
-  	address: 4
-	arc_score: 30
-  }
-  selected_head {
-    address: 4
-    arc_score: 30
-  }
-  index: 3
-}
-token {
-  word: "cat"
-  candidate_head {
-  	address: 0
-	arc_score: 10
-  }
-  candidate_head {
-  	address: 1
-	arc_score: 15
+	arc_score: 3
   }
   candidate_head {
   	address: 2
 	arc_score: 30
-  }
-  candidate_head {
-  	address: 3
-	arc_score: 10
   }
   selected_head {
     address: 2
     arc_score: 30
   }
-  index: 4
+  index: 3
 }
