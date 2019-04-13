@@ -13,7 +13,7 @@ py_binary(
 # Tests.
 py_test(
 	name = "max_span_tree_test",
-	size = "medium",
+	size = "large",
 	srcs = ["max_span_tree_test.py"],
 	data = [
 	"//data/testdata:cycles",

@@ -1,6 +1,7 @@
 # Sentence: John saw Mary.
 # This sentence leads to recursive cycles due to its candidate head weights.
 # cycles: first [1,2,1], then [3,4,3]
+# (TODO): trace this in paper. 
 
 token {
   word: "None"

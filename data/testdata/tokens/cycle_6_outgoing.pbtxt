@@ -1,0 +1,30 @@
+# Represents a target token that is used while breaking a cycle. 
+# Used for testing _RedirectOutgoingArcs in max_span_tree.
+# Input sentence is cycles/cyclic_sentence_6. Changed token is token 1, 
+# which is outside the cycle ([2,3,4,2]), whose candidate heads are redirected to new token 5
+
+  word: "I"
+  candidate_head {
+    address: 0
+    arc_score: 10.0
+  }
+  candidate_head {
+    address: 5
+    arc_score: 30.0
+  }
+  candidate_head {
+    address: 5
+    arc_score: 10.0
+  }
+  candidate_head {
+    address: 5
+    arc_score: 15.0
+  }
+  selected_head {
+    address: 2
+    arc_score: 30.0
+  }
+  index: 1
+
+
+
