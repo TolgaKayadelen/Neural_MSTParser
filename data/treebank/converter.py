@@ -11,6 +11,14 @@ Protocol Buffer             conll-X (not implemented yet!)
 
 Can also keep or remove igs based on the keep_igs parameter.
 
+Usage: 
+Convert from conll to protobuf and write as proto
+bazel-bin/data/treebank/converter 
+--input_file=/path/to/input/conll/corpus 
+--output_file=/path/to/output_file # do not give file extension
+--writetext=True
+--writeproto=True
+
 """
 
 from __future__ import print_function
@@ -37,7 +45,7 @@ class Converter:
         #self.sentence_list = self._ReadSentences(self._corpus)
         self.sentence_list = reader.ReadConllX(self._corpus)
         
-    def ConvertConllToProto(self, conll_sentences, keep_igs=True, writetext=None, writeproto=None):
+    def ConvertConllToProto(self, conll_sentences, output_file, writetext, writeproto, keep_igs=True):
         """Converts conll-X formatted sentences to proto buffer objects.    
         Args:
             dep_graphs: list of dependency graphs.
@@ -88,12 +96,15 @@ class Converter:
         assert len(conll_sentences) == len(sentence_protos)
         logging.debug("%d sentences converted to protocol buffer." % len(conll_sentences))
         
-        if writetext != None:
+        if writetext:
+            text_output = output_file + ".pbtxt"
+            print("text_output_file: {}".format(os.path.basename(text_output)))
             for sentence_proto in sentence_protos:
-                writer.write_proto_as_text(sentence_proto, writetext)
-        if writeproto != None:
+                writer.write_proto_as_text(sentence_proto, text_output)
+        if writeproto:
+            proto_output = output_file + ".protobuf"
             for sentence_proto in sentence_protos:
-                writer.write_proto_as_proto(sentence_proto, writeproto)    
+                writer.write_proto_as_proto(sentence_proto, proto_output)    
         
         return sentence_protos        
     
@@ -229,7 +240,12 @@ class Converter:
 def main(args):
     converter = Converter(args.input_file)
     sentences = [converter.sentence_list[4]]
-    protos = converter.ConvertConllToProto(sentences, writetext=args.output_file)
+    protos = converter.ConvertConllToProto(
+        conll_sentences = sentences, 
+        output_file = args.output_file, 
+        writetext = args.writetext, 
+        writeproto = args.writeproto
+        )
     #written_proto = reader.ReadSentenceProto(args.output_file)
     # DO NOT DELETE THIS FOR THE SAKE OF FUTURE REFERENCE
     #print(text_format.MessageToString(written_proto, as_utf8=True))
@@ -239,5 +255,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input_file", help="Path to input file.")
     parser.add_argument("--output_file", help="The output file to write the data.")
+    parser.add_argument("--writetext", help="wheter to save the output also in .pbtxt format", default=True)
+    parser.add_argument("--writeproto", help="whether to save the output in proto format.", default=False)
     args = parser.parse_args()
     main(args)
