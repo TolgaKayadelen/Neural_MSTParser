@@ -52,40 +52,36 @@ class MaximumSpanningTreeTest(unittest.TestCase):
 
     def test_ChuLiuEdmonds(self):
         # cycle [1,2,1], tokens: [0,1,2,3]
-        #cyclic_1 = _read_chuliuedmonds_test_sentence("cyclic_sentence_1")
-        #expected_mst = _read_chuliuedmonds_test_sentence("cyclic_sentence_1_mst")
-        #function_mst = max_span_tree.ChuLiuEdmonds(cyclic_1)
-        #self.assertEqual(function_mst.sentence, expected_mst)
-        #self.assertEqual(function_mst.score, 70)
+        cyclic_1 = _read_chuliuedmonds_test_sentence("cyclic_sentence_1")
+        expected_mst = _read_chuliuedmonds_test_sentence("cyclic_sentence_1_mst")
+        function_mst = max_span_tree.ChuLiuEdmonds(cyclic_1)
+        self.assertEqual(function_mst.sentence, expected_mst)
+        self.assertEqual(function_mst.score, 70)
         
         #cycle: [2,3,4,2], tokens: [0,1,2,3,4]
-        #cyclic_2 = _read_chuliuedmonds_test_sentence("cyclic_sentence_2")
-        #expected_mst = _read_chuliuedmonds_test_sentence("cyclic_sentence_2_mst")
-        #function_mst = max_span_tree.ChuLiuEdmonds(cyclic_2)
-        #self.assertEqual(function_mst.sentence, expected_mst)
-        #self.assertEqual(function_mst.score, 105)
+        cyclic_2 = _read_chuliuedmonds_test_sentence("cyclic_sentence_2")
+        expected_mst = _read_chuliuedmonds_test_sentence("cyclic_sentence_2_mst")
+        function_mst = max_span_tree.ChuLiuEdmonds(cyclic_2)
+        self.assertEqual(function_mst.sentence, expected_mst)
+        self.assertEqual(function_mst.score, 105)
         
+        # cycle: [1,2,1] and then [3,4,3]
         cyclic_recursive = _read_chuliuedmonds_test_sentence("cyclic_sentence_3")
         function_mst = max_span_tree.ChuLiuEdmonds(cyclic_recursive)
         expected_mst = _read_chuliuedmonds_test_sentence("cyclic_sentence_3_mst")
         self.assertEqual(function_mst.sentence, expected_mst)
-        self.assertEqual(function_mst.score, 70)
-        print(function_mst)    
+        self.assertEqual(function_mst.score, 70)  
     
     def test_GreedyMst(self):
-        #pass
-        """
         sentence = _read_mst_test_sentence("cyclic_no_selected_head")
         expected_mst_sentence = max_span_tree._GreedyMst(sentence)
         cyclic, path = max_span_tree._Cycle(expected_mst_sentence)
         self.assertTrue(cyclic)
         cyclic_mst = _read_mst_test_sentence("cyclic_mst")
         self.assertEqual(expected_mst_sentence, cyclic_mst)
-        """
+        
         
     def test_Cycle(self):
-        pass
-        """
         # Test sentences that have a cycle.
         cyclic_1 = _read_cycle_test_sentence("cyclic_sentence_1")
         cyclic, path = max_span_tree._Cycle(cyclic_1)
@@ -129,7 +125,7 @@ class MaximumSpanningTreeTest(unittest.TestCase):
         noncyclic_3 = _read_cycle_test_sentence("noncyclic_sentence_3")
         cyclic, path = max_span_tree._Cycle(noncyclic_3)
         self.assertFalse(cyclic)
-        """
+        
         
     def test_ConnectSentenceNodes(self):
         non_connected = _read_connection_test_sentence("non_connected_sentence")
@@ -147,8 +143,6 @@ class MaximumSpanningTreeTest(unittest.TestCase):
     
     
     def test_Contract(self):
-        #pass
-        
         cyclic = _read_cycle_test_sentence("cyclic_sentence_1")
         _, cycle_path = max_span_tree._Cycle(cyclic)
         _, original_edges, contracted = max_span_tree._Contract(cyclic, cycle_path)
@@ -218,7 +212,7 @@ class MaximumSpanningTreeTest(unittest.TestCase):
         cyclic_1.length += 1
         max_span_tree._RedirectOutgoingArcs(cycle_tokens, outcycle_tokens, new_token)
         expected_token = _read_test_token("cycle_1_outgoing")
-        changed_token = max_span_tree._GetTokenByAddressAlt(cyclic_1.token, 3)
+        changed_token = max_span_tree.GetTokenByAddressAlt(cyclic_1.token, 3)
         self.assertEqual(expected_token, changed_token)
         
         
@@ -235,7 +229,7 @@ class MaximumSpanningTreeTest(unittest.TestCase):
         cyclic_2.length += 1
         max_span_tree._RedirectOutgoingArcs(cycle_tokens, outcycle_tokens, new_token)
         expected_token = _read_test_token("cycle_6_outgoing")
-        changed_token = max_span_tree._GetTokenByAddressAlt(cyclic_2.token, 1)
+        changed_token = max_span_tree.GetTokenByAddressAlt(cyclic_2.token, 1)
         self.assertEqual(expected_token, changed_token)
         
     
@@ -267,7 +261,7 @@ class MaximumSpanningTreeTest(unittest.TestCase):
     def test_GetTokenIndex(self):
         pass
     
-    def test_GetTokenByAddressAlt(self):
+    def testGetTokenByAddressAlt(self):
         pass
   
        

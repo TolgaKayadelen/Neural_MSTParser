@@ -19,6 +19,13 @@ bazel-bin/data/treebank/converter
 --writetext=True
 --writeproto=True
 
+Example:
+bazel-bin/data/treebank/converter 
+--input_file=./data/UDv23/UD_Turkish_IMST/tr_imst_ud_dev.conllu 
+--output_file=./data/treebank/sentence_5 
+--writetext=True
+
+
 """
 
 from __future__ import print_function
@@ -98,7 +105,6 @@ class Converter:
         
         if writetext:
             text_output = output_file + ".pbtxt"
-            print("text_output_file: {}".format(os.path.basename(text_output)))
             for sentence_proto in sentence_protos:
                 writer.write_proto_as_text(sentence_proto, text_output)
         if writeproto:

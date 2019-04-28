@@ -23,7 +23,9 @@ def ChuLiuEdmonds(sentence):
         mst, sentence_pb2.maximum_spanning_tree. Gives the mst and the mst score
             of the sentence.
     """
-    logging.info("Processing sentence --> {}\n".format(" ".join([token.word for token in sentence.token[1:]])))
+    print("\n")
+    logging.info("Processing sentence --> {}".format(
+        " ".join([token.word for token in sentence.token[1:]])))
     if not sentence.HasField("length"):
         sentence.length = len(sentence.token)
         #logging.info("Sentence length: {}".format(sentence.length))
@@ -31,22 +33,27 @@ def ChuLiuEdmonds(sentence):
     mst.sentence.CopyFrom(_GreedyMst(sentence))
     
     # Find if there are any cycles in the returned MST, if so contract.
+    logging.info("Checking for cycles...")
     cycle, cycle_path = _Cycle(mst.sentence)
     if not cycle:
+        logging.info("No cycle found in the sentence\n")
         mst.sentence.CopyFrom(_DropCandidateHeads(mst.sentence))
         mst.score = _GetSentenceWeight(mst.sentence)
         return mst
-    
+
+    logging.info("There is cycle in the sentence, cycle_path: {}".format(cycle_path))
+    logging.info("Contracting the sentence...")
     new_token, original_edges, contracted = _Contract(mst.sentence, cycle_path)
-    #print("cycle_path {}".format(cycle_path))
+    logging.info("Contracted sentence: {}".format(
+        " ".join([token.word for token in contracted.token[1:]])))
     reconstructed_edges = _Reconstruct(
         ChuLiuEdmonds(contracted),
         new_token,
         original_edges,
         cycle_path
         )
+    logging.info("Merging the reconstructed edges into the original sentence...")
     reconstructed_sentence = _Merge(reconstructed_edges, sentence)
-    #logging.info("Reconstructed Edges: {}".format(reconstructed_edges))
     mst.sentence.CopyFrom(reconstructed_sentence)
     assert mst.sentence.length == len(mst.sentence.token)
     mst.score = _GetSentenceWeight(mst.sentence)
@@ -157,7 +164,6 @@ def _Cycle(sentence):
         cycle: boolean, whether the sentence has cycle.
         path: list, start and end indexes of the cycle.
     """
-    logging.info("Checking for cycles...")
     p = []
     # start iterating from token 1 since 0 is ROOT with no head.
     for token in sentence.token[1:]:
@@ -189,7 +195,7 @@ def _GetCyclePath(start_token, sentence, p):
     tokens = sentence.token
     token = start_token
     path.append(token.index)
-    logging.info("path: {}".format(path))
+    #logging.info("path: {}".format(path))
     # base case: if the token is ROOT, there can't be no more head to visit.
     if token.selected_head.address == -1:
         return False, path
@@ -202,12 +208,11 @@ def _GetCyclePath(start_token, sentence, p):
         # implementation.
         cycle_start_index = path.index(token.selected_head.address)
         cycle_path = path[cycle_start_index:]
-        logging.info("There is cycle in the sentence, cycle_path: {}".format(cycle_path))
         return True, cycle_path
     # recursive step
     #logging.info("""No cycle found yet until word: {}, checking for next head: {} """.format(
     #    token.word, token.selected_head.address))
-    next_token = _GetTokenByAddressAlt(tokens, token.selected_head.address)
+    next_token = GetTokenByAddressAlt(tokens, token.selected_head.address)
     #logging.info("Next token for recursion: {}".format(next_token))
     return _GetCyclePath(next_token, sentence, p=path)
     
@@ -219,7 +224,6 @@ def _Contract(sentence, cycle_path):
         sentence: a sentence_pb2.Sentence object.
         cycle_path: list, the path of the cycle. 
     """
-    #logging.info("Contracting the cyclic sentence...")
     if not sentence.length:
         sentence.length = len(sentence.token)
     # Get the score of the cycle and the tokens that make up the cycle.
@@ -259,10 +263,11 @@ def _GetCycleScore(sentence, cycle_path):
     cycle_score = 0.0
     for ind in set(cycle_path):
         #token = sentence.token[ind]
-        token = _GetTokenByAddressAlt(sentence.token, ind)
+        token = GetTokenByAddressAlt(sentence.token, ind)
         if token.selected_head.address == ind:
             break
         cycle_score += token.selected_head.arc_score
+    #logging.info("cycle score: {}".format(cycle_score))
     return cycle_tokens, cycle_score
 
 def _GetOriginalEdges(sentence):
@@ -289,6 +294,7 @@ def _GetOriginalEdges(sentence):
             original_edges[ch.address].append((token.index, ch.arc_score))
     #print(original_edges)
     return original_edges
+
     
 def _RedirectIncomingArcs(cycle_tokens, new_token, cycle_score):
     """Redirect any incoming arcs to the cycle to the new target token.
@@ -381,7 +387,8 @@ def _Reconstruct(cont_mst, new_token, original_edges, cycle_path):
         reconstructed_edges: defaultdict, the edges of the original tree reconstructed after
             breaking the cycle. 
     """
-    #logging.info("Reconstructing the edges for mst...")
+    print("\n")
+    logging.info("Reconstructing the edges for mst...")
     reconstructed_edges = defaultdict(list)
     cont_edges = defaultdict(list)
     cycle_edges = _GetCycleEdgesAndScores(original_edges, cycle_path)
@@ -446,7 +453,7 @@ def _Reconstruct(cont_mst, new_token, original_edges, cycle_path):
                 #logging.info("cycle_source: {}".format(cycle_source))
                 cycle_target = cycle_edges[cycle_source]
                 #logging.info("cycle_target: {}".format(cycle_target))
-    #logging.info("Reconstructed Edges: {}".format(reconstructed_edges))
+    logging.info("Reconstructed Edges: {}".format(reconstructed_edges))
     return reconstructed_edges
 
 
@@ -477,6 +484,7 @@ def _Merge(edges, sentence):
                     token.selected_head.arc_score = target[1]
                 else:
                     logging.info("""Token {} already had correct head""".format(token.index))
+    #print(_DropCandidateHeads(sentence))
     return _DropCandidateHeads(sentence)            
 
 
@@ -516,7 +524,7 @@ def _GetTokenByAddress(tokens, address):
     return tokens[address]
 
 
-def _GetTokenByAddressAlt(tokens, address):
+def GetTokenByAddressAlt(tokens, address):
     """Alternative to the above function."""
     #TODO: Once it is clear that everything works fine, kill the other function
     # and change the code as necessary.
