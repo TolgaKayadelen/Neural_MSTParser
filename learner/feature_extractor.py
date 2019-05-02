@@ -15,6 +15,7 @@ import argparse
 
 from google.protobuf import text_format
 from util import reader
+from util import common
 from mst.max_span_tree import GetTokenByAddressAlt
 from data.treebank import sentence_pb2 
 from collections import OrderedDict
@@ -66,110 +67,40 @@ class FeatureSet:
             print k, v
     
     def _GetFeatureValue(self, feature, sentence=None, child=None, head=None, use_tree_features=True):
-        feature = [t for t in feature if t != "+"]
-        #print("feature is: {}".format(feature))
+        """Get Feature Value. 
+        Args:   
+            child = sentence_pb2.Token()
+            head = sentence_pb2.Token()
+            sentence = sentence_pb2.Sentence()
+        """
+        #TODO: between features
+        feature = [f for f in feature if f != "+"]
+        print("feature is: {}".format(feature))
         value = []
         for subfeat in feature:
             subfeat = subfeat.split("_")
             offset = int(subfeat[1])
             is_tree_feature = subfeat[2] in ["up", "down"]
+            is_between_feature = subfeat[0] == "between"
             t = [child, head][subfeat[0] == "head"]
-            if not is_tree_feature:
-                if subfeat[-1] == "word":
-                    #print sentence.token[t.index+offset].word.encode("utf-8")
-                    value.append(sentence.token[t.index+offset].word.encode("utf-8"))
-                elif subfeat[-1] == "lemma":
-                    #print sentence.token[t.index+offset].lemma.encode("utf-8")
-                    value.append(sentence.token[t.index+offset].lemma.encode("utf-8"))
-                elif subfeat[-1] == "pos":
-                    #print sentence.token[t.index+offset].pos.encode("utf-8")
-                    value.append(sentence.token[t.index+offset].pos.encode("utf-8"))
-            else:
+            #if not is_tree_feature:
+            #    value.append(common.GetValue(sentence.token[t.index+offset], subfeat[-1]))
+            if is_tree_feature:
                 if subfeat[2] == "up":
                     head_token = GetTokenByAddressAlt(
                         sentence.token,
                         sentence.token[t.index+offset].selected_head.address
                         )
-                    if subfeat[-1] == "word":
-                        value.append(head_token.word.encode("utf-8"))
-                    elif subfeat[-1] == "lemma":
-                        value.append(head_token.lemma.encode("utf-8"))
-                    elif subfeat[-1] == "pos":
-                        value.append(head_token.pos.encode("utf-8"))
+                    value.append(common.GetValue(head_token, subfeat[-1]))
                 elif subfeat[2] == "down":
-                    pass
-                    #TODO: child_token = common.GetRightmostChild(sentence.token, t)
+                    child_token = common.GetRightMostChild(sentence, t)
+                    value.append(common.GetValue(child_token, subfeat[-1]))
+            elif is_between_feature:
+                for btw_token in common.GetBetweenTokens(sentence, head, child):
+                    value.append(common.GetValue(btw_token, subfeat[-1]))
+            else:
+                value.append(common.GetValue(sentence.token[t.index+offset], subfeat[-1]))
         return "_".join(value)
-            #if subfeat[0] == "head":
-            #    if subfeat[-1] == "word":
-            #        print sentence.token[head.index+offset].word.encode("utf-8")
-            #    elif subfeat[-1] == "pos":
-            #        print sentence.token[head.index+offset].pos.encode("utf-8")
-            #else:
-            #    pass
-        
-    
-            
-
-class Rule:
-    """A rule describes how to extract features from a sentence."""
-    
-    def __init__(self, raw):
-        """Initialize with a raw rule decsription string."""
-        names = []
-        subrules = []
-        #for chunk in raw.split("+"):
-        #    r, n = self._parse(chunk)
-        #    subrules.append(r)
-        #    names.append(n)
-        #self._subrules = subrules
-        #self._name = "+".join(names)
-        #print("subrules: {}, features: {}".format(self._subrules, self._name))
-    
-    def apply(self, sentence, head, child, use_tree_features=True):
-        pass
-        
-    def _parse(self, chunk):
-        """Parse a chunk of subrule string."""
-        tokens = [t.strip() for t in re.split(r'[\.\s\[\]\(\)]+', chunk.strip()) if t.strip()]
-        print("tokens: {}".format(tokens))
-        # Whether it is a word, lemma, or postag feature
-        feature_type = tokens.pop()
-        print("feature type: {}".format(feature_type))
-        feature = self._parse_feature(feature_type)
-        print("feature: {}".format(feature))
-        
-        start_from_head = None
-        offset = None
-        motions = []
-        i = 0
-        
-        while i < len(tokens):
-            token = tokens[i]
-            print("token is {}".format(token))
-            i += 1
-            if token == "head":
-                assert start_from_head is None
-                start_from_head = True
-                offset = int(tokens[i])
-                i += 1
-            elif token == "child":
-                assert start_from_head is None
-                start_from_head = False
-                offset = int(tokens[i])
-                i += 1
-            elif token == "up":
-                motions.append(MOTION_UP)
-                self.is_tree_feature = True
-
-    def _parse_feature(self, token):
-        """Convert a feature name into a feature index."""
-        #if token == "deprel":
-        #    self.is_tree_feature = TRUE
-        #    return sentence.FEATURE_LABEL
-        if token in FEATURES:
-            return FEATURES.index(token)
-        raise NameError("unknown feature {}".format(token))
                     
 def main(args):
     feature_set = FeatureSet(filename=args.featureset_file)

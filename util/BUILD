@@ -6,8 +6,17 @@ py_library(
     srcs = ["writer.py"],
 )
 
-# Libraries
 py_library(
     name = "reader",
     srcs = ["reader.py"],
+)
+
+# Binaries
+py_binary(
+	name = "common",
+	srcs = ["common.py"],
+	deps = [
+		"//data/treebank:sentence_py_pb2",
+		":reader"
+		],
 )
