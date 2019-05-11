@@ -20,14 +20,14 @@ from mst.max_span_tree import GetTokenByAddressAlt
 from data.treebank import sentence_pb2 
 from collections import OrderedDict
 
-class FeatureSet:
+class FeatureExtractor:
     """A ruleset is a dictionary of feature extraction rules."""
     
-    def __init__(self, filename, postag_window = 5, log_distance = 1.5):
+    def __init__(self, filename, postag_window=5, log_distance=1.5):
         """Initialize a feature set from a given filename.
         
         Args:
-            filename = the name of the file to read the features from. 
+            filename = the name of the file to read the requested features from. 
             postag_window = include a feature for each word pair that contains this many POS tags. 
             log_distance = if not None, "bin" the distance between mod and head, otherwise use 
                  linear distance. 
@@ -44,38 +44,49 @@ class FeatureSet:
                 continue
             try:
                  self._featureset[l.lower()] = None
-                 #self.append(Rule(l.lower()))
             except:
                 raise
                 logging.critical("%s line %d: cannot parse rule: %r", filename, i, l)
                 sys.exit(1)
-        self.GetFeatures()
     
-    
-    def GetFeatures(self, sentence=None, head=None, child=None, use_tree_features=True):
-        test_sentence = reader.ReadSentenceProto("./data/treebank/sentence_4.protobuf")
-        #print(text_format.MessageToString(test_sentence, as_utf8=True))
-        #print(sentence)
-        child = test_sentence.token[1]
-        head = test_sentence.token[3]
-        print("head is: {}', child is: {}'".format(head.word.encode("utf-8"), child.word.encode("utf-8")))
+    def GetFeatures(self, sentence, head, child, use_tree_features=True):
+        """Return features requested in the featureset for two tokens.
+        
+        Args:
+            sentence: sentence_pb2.Sentence object.
+            head: sentence_pb2.Token, the head token.
+            child: sentence_pb2.Token, the child token.
+            use_tree_features: if True, uses the head and child features of the token as well. 
+        Returns:
+            featureset: dict, a dictionanty of feature names and values. 
+        """
+        #TODO: implement the case where use_tree_features = False.
+        #print("head is: {}', child is: {}'".format(head.word.encode("utf-8"), child.word.encode("utf-8")))
         for key in self._featureset:
             feature = [t.strip() for t in re.split(r'[\.\s\[\]\(\)]+', key.strip()) if t.strip()]
-            value = self._GetFeatureValue(feature, sentence=test_sentence, child=child, head=head)
+            value = self._GetFeatureValue(feature, 
+                sentence=sentence, 
+                child=child, 
+                head=head,
+                use_tree_features = use_tree_features)
             self._featureset[key] = value
-        for k, v in self._featureset.items():
-            print k, v
+        #for k, v in self._featureset.items():
+        #    print k, v
+        return self._featureset
     
     def _GetFeatureValue(self, feature, sentence=None, child=None, head=None, use_tree_features=True):
         """Get Feature Value. 
-        Args:   
-            child = sentence_pb2.Token()
-            head = sentence_pb2.Token()
+        Args:
+            feature: the feature whose value we are interested in.
+            child = sentence_pb2.Token(), the child token.
+            head = sentence_pb2.Token(), the head token.
             sentence = sentence_pb2.Sentence()
+        Returns:
+            value: string, the value for the requested feature. 
         """
-        #TODO: between features
+        #TODO: ensure this works correctly when there's more than one token btw head and child.
         feature = [f for f in feature if f != "+"]
-        print("feature is: {}".format(feature))
+        #print("feature is: {}".format(feature))
         value = []
         for subfeat in feature:
             subfeat = subfeat.split("_")
@@ -83,8 +94,6 @@ class FeatureSet:
             is_tree_feature = subfeat[2] in ["up", "down"]
             is_between_feature = subfeat[0] == "between"
             t = [child, head][subfeat[0] == "head"]
-            #if not is_tree_feature:
-            #    value.append(common.GetValue(sentence.token[t.index+offset], subfeat[-1]))
             if is_tree_feature:
                 if subfeat[2] == "up":
                     head_token = GetTokenByAddressAlt(
@@ -102,8 +111,13 @@ class FeatureSet:
                 value.append(common.GetValue(sentence.token[t.index+offset], subfeat[-1]))
         return "_".join(value)
                     
+
 def main(args):
-    feature_set = FeatureSet(filename=args.featureset_file)
+    extractor = FeatureExtractor(filename=args.featureset_file)
+    test_sentence = reader.ReadSentenceProto("./data/treebank/sentence_4.protobuf")
+    head = test_sentence.token[3]
+    child = test_sentence.token[1]
+    features = extractor.GetFeatures(test_sentence, head, child, use_tree_features=True)
     
 
 if __name__ == "__main__":
