@@ -1,5 +1,14 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
+
+#Protos.
+py_proto_library(
+	name = "featureset_py_pb2",
+	srcs = ["featureset.proto"],
+	protoc = "@com_google_protobuf//:protoc",
+	default_runtime = "@com_google_protobuf//:protobuf_python",
+)
 
 # Binaries.
 py_binary(
@@ -13,6 +22,10 @@ py_binary(
 py_binary(
 	name = "perceptron",
 	srcs = ["perceptron.py"],
+	deps = [
+		"//learner:featureset_py_pb2",
+		"//learner:feature_extractor_lib",
+	],
 )
 
 
@@ -23,6 +36,7 @@ py_library(
 	srcs = ["feature_extractor.py"],
 	deps = [
 		"//data/treebank:sentence_py_pb2",
+		"//learner:featureset_py_pb2",
 		"//mst:max_span_tree",
 		"//util:reader",
 		"//util:common",

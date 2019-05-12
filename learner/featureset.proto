@@ -1,0 +1,36 @@
+
+// Protocol buffer specification for features. 
+
+syntax = "proto2";
+
+package learner;
+
+
+// A feature set is a list of features that we use to train the classififer. 
+message FeatureSet { 
+	
+	repeated Feature feature = 1; /* Actually required */
+}
+
+// A feature is a name-value pair that has a weight.
+message Feature {
+	// The name of the feature.
+	optional string name = 1; /* Actually required */
+	// The value of the feature.
+	optional string value = 2; /* Actually required */ 
+	// The weight of the feature.
+	optional float weight = 3 [default = 0.0]; /* Actually required */  
+}
+
+// Another way to implement this feature proto is to have Value another repeated message
+// that has a value string and a float weight, i.e. 
+// optional string name = 1;
+// repeated Value value = 2;
+// Each feature name can appear with multiple values depending on the actual sentence. 
+// This way the implementation mimics a data structure of defaultdict(dict) where key
+// is the feature.name and values are the feature.value. This can probably save a level of
+// indirection where we read from the feature proto to a defaultdict.
+//message Value {
+//	optional string val = 1; /* Actually required */
+//	optional float weight = 2 [default=0.0]; /* Actually required */
+//}
