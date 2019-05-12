@@ -67,7 +67,7 @@ class FeatureExtractor:
         for feature in self._featureset.feature:
             #feature = [t.strip() for t in re.split(r'[\.\s\[\]\(\)]+', key.strip()) if t.strip()]
             feats = [t.strip() for t in feature.name.split("+")]
-            print("feature {}".format(feats))
+            #print("feature {}".format(feats))
             value = self._GetFeatureValue(feats, 
                 sentence=sentence, 
                 child=child, 
