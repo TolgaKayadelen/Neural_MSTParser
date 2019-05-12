@@ -17,7 +17,8 @@ from google.protobuf import text_format
 from util import reader
 from util import common
 from mst.max_span_tree import GetTokenByAddressAlt
-from data.treebank import sentence_pb2 
+from data.treebank import sentence_pb2
+from learner import featureset_pb2 
 from collections import OrderedDict
 
 class FeatureExtractor:
@@ -33,7 +34,8 @@ class FeatureExtractor:
                  linear distance. 
         
         """
-        self._featureset = OrderedDict()
+        #self._featureset = OrderedDict()
+        self._featureset = featureset_pb2.FeatureSet()
         self._postag_window = postag_window
         self._log_distance = log_distance
         
@@ -43,7 +45,7 @@ class FeatureExtractor:
             if not l:
                 continue
             try:
-                 self._featureset[l.lower()] = None
+                 self._featureset.feature.add(name=l.lower())
             except:
                 raise
                 logging.critical("%s line %d: cannot parse rule: %r", filename, i, l)
@@ -62,16 +64,17 @@ class FeatureExtractor:
         """
         #TODO: implement the case where use_tree_features = False.
         #print("head is: {}', child is: {}'".format(head.word.encode("utf-8"), child.word.encode("utf-8")))
-        for key in self._featureset:
-            feature = [t.strip() for t in re.split(r'[\.\s\[\]\(\)]+', key.strip()) if t.strip()]
-            value = self._GetFeatureValue(feature, 
+        for feature in self._featureset.feature:
+            #feature = [t.strip() for t in re.split(r'[\.\s\[\]\(\)]+', key.strip()) if t.strip()]
+            feats = [t.strip() for t in feature.name.split("+")]
+            print("feature {}".format(feats))
+            value = self._GetFeatureValue(feats, 
                 sentence=sentence, 
                 child=child, 
                 head=head,
                 use_tree_features = use_tree_features)
-            self._featureset[key] = value
-        #for k, v in self._featureset.items():
-        #    print k, v
+            feature.value = value
+            feature.weight = 0.0
         return self._featureset
     
     def _GetFeatureValue(self, feature, sentence=None, child=None, head=None, use_tree_features=True):
@@ -118,7 +121,7 @@ def main(args):
     head = test_sentence.token[3]
     child = test_sentence.token[1]
     features = extractor.GetFeatures(test_sentence, head, child, use_tree_features=True)
-    
+    print(text_format.MessageToString(features, as_utf8=True))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
