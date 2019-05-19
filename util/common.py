@@ -1,9 +1,30 @@
 # -*- coding: utf-8 -*-
 
 """Common utility functions."""
-
+#TODO: unit tests for all functions here. 
 
 from util import reader
+from data.treebank import sentence_pb2
+from copy import deepcopy
+
+#type: sentence util
+def ExtendSentence(sentence):
+    """Adds a dummy start and end node (tokens) to the sentence.
+    
+    Args: 
+        sentence: sentence_pb2.Sentence()
+    Returns:
+        sentence: sentence_pb2.Sentence()
+    """
+    start_token = sentence_pb2.Token(word="START_TOK", lemma="START_TOK", category="START_POS", pos="START_POS", index=-1)
+    end_token = sentence_pb2.Token(word="END_TOK", lemma="END_TOK", category="START_POS", pos="START_POS", index=-2)
+    tokens = deepcopy(sentence.token)
+    del sentence.token[:]
+    sentence.token.extend([start_token])
+    for token in tokens:
+        sentence.token.extend([token])
+    sentence.token.extend([end_token])
+    return sentence
 
 # type: sentence util
 def GetRightMostChild(sentence, token):
@@ -31,13 +52,13 @@ def GetRightMostChild(sentence, token):
 
 
 #type: sentence util
-def GetBetweenTokens(sentence, head, child):
+def GetBetweenTokens(sentence, head, child, dummy):
     """Returns a list of tokens between the head and the child"""
     assert head.HasField("index") and child.HasField("index"), "Token has no index"
     if head.index > child.index:
         btw_tokens = sentence.token[child.index+1:head.index]
     else:
-        btw_tokens = sentence.token[head.index:child.index-1]
+        btw_tokens = sentence.token[head.index+1+dummy:child.index+dummy]
     return btw_tokens if btw_tokens else [None]
 
 

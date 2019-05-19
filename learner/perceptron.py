@@ -11,7 +11,8 @@ from collections import OrderedDict
 from copy import deepcopy
 from data.treebank import sentence_pb2
 from learner import featureset_pb2
-from learner.feature_extractor import FeatureExtractor 
+from learner.feature_extractor import FeatureExtractor
+from mst.max_span_tree import GetTokenByAddressAlt 
 from google.protobuf import text_format
 from util import reader
 from util import common
@@ -19,28 +20,20 @@ from util import common
 class AveragedPerceptron(object):
     """Base methods for the Averaged Perceptron."""
     def __init__(self):
-        """Initialize the perceptron with a featureset"""
-        pass
+        self.weights = defaultdict(OrderedDict)
+        self._timestamps = defaultdict(OrderedDict)
+        self._accumulator = defaultdict(OrderedDict)
     
-    def InitializeWeightsDict(self, featureset=None):
+    def InitializeWeights(self, featureset=None):
         """Initialize the weights with zero. 
         This function initializes three dictionaries, whose keys are feature_value pairs
         and whose values are weights. 
         
         featureset = featureset.FeatureSet() object. A proto of features.
         """
-        self.weights = defaultdict(OrderedDict)
-        # read features from the features proto to default dict.
-        #w = 0.0
         for f in featureset.feature:
-            self.weights[f.name].update({f.value:f.weights})
-            #w += 1
-        
-        # Initialize an accumulator dictionary.
-        self._totals = deepcopy(self.weights)
-        
-        # Initialize a timestamp dictionary to log when each feature is last updated. 
-        self._timestamps = deepcopy(self.weights)
+            self.weights[f.name].update({f.value:f.weight})
+
     
     def AverageWeights(self, weights):
         """Average the weights over all iterations.""" 
@@ -95,22 +88,90 @@ class AveragedPerceptron(object):
         return self.featureset
                     
     # TODO: implement save and load methods. 
+
+
+class ArcPerceptron(AveragedPerceptron):
+    """A perceptron for scoring dependency arcs."""
     
+    def __init__(self, feature_options={}):
+        super(ArcPerceptron, self).__init__()
+        self.feature_options = feature_options
+        self.iterations = 0
+        self._extractor = FeatureExtractor(filename="./learner/features.txt")
+        
+    def MakeFeaturesFromGold(self, training_data):
+        """Create a feature set from the gold head-dependent pairs in the data.
+        Args:
+            training_data: list of sentence_pb2.Sentence() objects.
+            TODO: in the future this will be a treebank proto. 
+        """
+        # assert isinstance(training_data, treebank_pb2.Treebank())
+        for sentence in training_data:
+            assert isinstance(sentence, sentence_pb2.Sentence), "Unaccapted data type."
+            sentence = common.ExtendSentence(sentence)
+            for token in sentence.token:
+                # skip where token is the dummy start token, dummy end token, or the root token. 
+                if not token.selected_head or token.selected_head.address == -1:
+                    continue
+                # just another safety check to make sure that we catch everything we need to skip.
+                if token.index <= 0:
+                    continue
+                #print("child: {}".format(token.word))
+                head = GetTokenByAddressAlt(sentence.token, token.selected_head.address)
+                #print("head: {}".format(head.word))
+                #features.append(extractor.GetFeatures(sentence, head=head, child=token, use_tree_features=True))
+                print("head {}, child {}".format(head.word, token.word))
+                self.InitializeWeights(self._extractor.GetFeatures(
+                    sentence,
+                    head=head,
+                    child=token,
+                    use_tree_features=True)
+                )
+        #for k, v in self.weights.items():
+        #    print(k, v)
     
-    
+    def MakeAllFeatures(self, training_data):
+        """Create a features set from --all-- head-dependent pairs in the data.
+        Args:
+            training_data: list of sentence_pb2.Sentence() objects.
+        """
+        for sentence in training_data:
+            assert isinstance(sentence, sentence_pb2.Sentence), "Unaccepted data type."
+            sentence = common.ExtendSentence(sentence)
+            for token in sentence.token:
+                # skip where token is the dummy start token, dummy end token, or the root token. 
+                if not token.selected_head or token.selected_head.address == -1:
+                    continue
+                # just another safety check to make sure that we catch everything we need to skip.
+                if token.index <= 0:
+                    continue
+                # ch = candidate_head
+                for ch in token.candidate_head:
+                    head = GetTokenByAddressAlt(sentence.token, ch.address)
+                    print("head {}, child {}".format(head.word, token.word))
+                    self.InitializeWeights(self._extractor.GetFeatures(
+                        sentence,
+                        head=head,
+                        child=token,
+                        use_tree_features=True)
+                    )
+        for k, v in self.weights.items():
+            print(k,v)
+            print("\n")
     
 
 def main():
-    perceptron = AveragedPerceptron()
-    extractor = FeatureExtractor(filename="./learner/features.txt")
-    test_sentence = reader.ReadSentenceProto("./data/treebank/sentence_4.protobuf")
-    head = test_sentence.token[3]
-    child = test_sentence.token[1]
-    features = extractor.GetFeatures(test_sentence, head, child, use_tree_features=True)
-    perceptron.InitializeWeightsDict(features)
+    perceptron = ArcPerceptron()
+    #extractor = FeatureExtractor(filename="./learner/features.txt")
+    test_sentence = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
+    #head = test_sentence.token[3]
+    #child = test_sentence.token[1]
+    #features = extractor.GetFeatures(test_sentence, head, child, use_tree_features=True)
+    #perceptron.MakeFeaturesFromGold([test_sentence])
+    perceptron.MakeAllFeatures([test_sentence])
     #top_features = perceptron.TopFeatures(5)
-    sorted_features = perceptron.SortFeatures()
-    print(perceptron.TopFeatures(10))
+    #sorted_features = perceptron.SortFeatures()
+    #print(perceptron.TopFeatures(10))
     #print(text_format.MessageToString(sorted_features, as_utf8=True))
     
 

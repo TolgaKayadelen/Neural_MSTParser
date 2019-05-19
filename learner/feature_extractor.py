@@ -13,13 +13,13 @@ import re
 import sys
 import argparse
 
+from collections import OrderedDict
 from google.protobuf import text_format
 from util import reader
 from util import common
 from mst.max_span_tree import GetTokenByAddressAlt
 from data.treebank import sentence_pb2
 from learner import featureset_pb2 
-from collections import OrderedDict
 
 class FeatureExtractor:
     """A ruleset is a dictionary of feature extraction rules."""
@@ -70,14 +70,14 @@ class FeatureExtractor:
             #print("feature {}".format(feats))
             value = self._GetFeatureValue(feats, 
                 sentence=sentence, 
-                child=child, 
-                head=head,
+                head=head, 
+                child=child,
                 use_tree_features = use_tree_features)
             feature.value = value
             feature.weight = 0.0
         return self._featureset
     
-    def _GetFeatureValue(self, feature, sentence=None, child=None, head=None, use_tree_features=True):
+    def _GetFeatureValue(self, feature, sentence=None, head=None, child=None, use_tree_features=True):
         """Get Feature Value. 
         Args:
             feature: the feature whose value we are interested in.
@@ -87,7 +87,7 @@ class FeatureExtractor:
         Returns:
             value: string, the value for the requested feature. 
         """
-        #TODO: ensure this works correctly when there's more than one token btw head and child.
+        #TODO: ensure this method works correctly when there's more than one token btw head and child.
         feature = [f for f in feature if f != "+"]
         #print("feature is: {}".format(feature))
         value = []
@@ -96,22 +96,24 @@ class FeatureExtractor:
             offset = int(subfeat[1])
             is_tree_feature = subfeat[2] in ["up", "down"]
             is_between_feature = subfeat[0] == "between"
-            t = [child, head][subfeat[0] == "head"]
+            t = [child, head][subfeat[0] == "head"] # t = token.
+            dummy_start_token = 1 if sentence.token[0].word == "START_TOK" else 0
             if is_tree_feature:
                 if subfeat[2] == "up":
                     head_token = GetTokenByAddressAlt(
                         sentence.token,
-                        sentence.token[t.index+offset].selected_head.address
+                        sentence.token[t.index+offset+dummy_start_token].selected_head.address
                         )
                     value.append(common.GetValue(head_token, subfeat[-1]))
                 elif subfeat[2] == "down":
                     child_token = common.GetRightMostChild(sentence, t)
                     value.append(common.GetValue(child_token, subfeat[-1]))
             elif is_between_feature:
-                for btw_token in common.GetBetweenTokens(sentence, head, child):
+                for btw_token in common.GetBetweenTokens(sentence, head, child, dummy_start_token):
                     value.append(common.GetValue(btw_token, subfeat[-1]))
             else:
-                value.append(common.GetValue(sentence.token[t.index+offset], subfeat[-1]))
+                value.append(common.GetValue(sentence.token[t.index+offset+dummy_start_token], subfeat[-1]))
+        #print("value {}".format(value))
         return "_".join(value)
                     
 

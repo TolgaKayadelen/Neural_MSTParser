@@ -1,6 +1,6 @@
 token {
-  word: "None"
-  lemma: "None"
+  word: "ROOT"
+  lemma: "ROOT"
   category: "TOP"
   pos: "TOP"
   selected_head {
