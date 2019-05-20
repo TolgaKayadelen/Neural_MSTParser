@@ -16,8 +16,8 @@ def ExtendSentence(sentence):
     Returns:
         sentence: sentence_pb2.Sentence()
     """
-    start_token = sentence_pb2.Token(word="START_TOK", lemma="START_TOK", category="START_POS", pos="START_POS", index=-1)
-    end_token = sentence_pb2.Token(word="END_TOK", lemma="END_TOK", category="START_POS", pos="START_POS", index=-2)
+    start_token = sentence_pb2.Token(word="START_TOK", lemma="START_TOK", category="START_CAT", pos="START_POS", index=-1)
+    end_token = sentence_pb2.Token(word="END_TOK", lemma="END_TOK", category="END_CAT", pos="END_POS", index=-2)
     tokens = deepcopy(sentence.token)
     del sentence.token[:]
     sentence.token.extend([start_token])
@@ -52,7 +52,7 @@ def GetRightMostChild(sentence, token):
 
 
 #type: sentence util
-def GetBetweenTokens(sentence, head, child, dummy):
+def GetBetweenTokens(sentence, head, child, dummy=0):
     """Returns a list of tokens between the head and the child"""
     assert head.HasField("index") and child.HasField("index"), "Token has no index"
     if head.index > child.index:
@@ -84,7 +84,6 @@ def GetValue(token, feat):
             return token.lemma.encode("utf-8")
 
 if __name__ == "__main__":
-    # TODO: write proper tests for this. 
     sentence = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
     token = sentence.token[2] # saw
     assert token.word == "saw"

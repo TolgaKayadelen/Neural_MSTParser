@@ -42,3 +42,9 @@ filegroup(
 		"chuliuedmonds/*.pbtxt",
 	]),
 )
+filegroup(
+	name = "common",
+	srcs = glob([
+		"common/*.pbtxt",
+	]),
+)

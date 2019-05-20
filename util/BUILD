@@ -20,3 +20,18 @@ py_binary(
 		":reader"
 		],
 )
+
+
+#Test
+# Tests.
+py_test(
+	name = "common_test",
+	size = "small",
+	srcs = ["common_test.py"],
+	data = [
+	"//data/testdata:common",
+	],
+	deps = [
+		":common"
+	],
+)

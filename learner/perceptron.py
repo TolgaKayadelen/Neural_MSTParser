@@ -159,6 +159,17 @@ class ArcPerceptron(AveragedPerceptron):
             print(k,v)
             print("\n")
     
+    def Score(self, features):
+        """Score a feature vector.
+        features = featureset_pb2.FeatureSet()
+        """
+        score = 0.0
+        for feature in features:
+            if feature.name not in self.weights:
+                continue
+        score += self.weights[feature.name][feature.value]
+        return score
+    
 
 def main():
     perceptron = ArcPerceptron()
