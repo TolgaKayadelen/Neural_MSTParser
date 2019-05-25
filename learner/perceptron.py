@@ -23,6 +23,7 @@ class AveragedPerceptron(object):
         self.weights = defaultdict(OrderedDict)
         self._timestamps = defaultdict(OrderedDict)
         self._accumulator = defaultdict(OrderedDict)
+        self._total_features = 0
     
     def InitializeWeights(self, featureset=None):
         """Initialize the weights with zero. 
@@ -32,7 +33,7 @@ class AveragedPerceptron(object):
         featureset = featureset.FeatureSet() object. A proto of features.
         """
         for f in featureset.feature:
-            self.weights[f.name].update({f.value:f.weight})
+            self.weights[f.name].update({f.value:0.0})
 
     
     def AverageWeights(self, weights):
@@ -80,11 +81,15 @@ class AveragedPerceptron(object):
         assert not hasattr(self, "featureset"), "Weights already converted to proto in self.featureset"
         self.featureset = featureset_pb2.FeatureSet()
         for name, v in self.weights.iteritems():
-            feature = self.featureset.feature.add(name=name)
             for value, weight in v.iteritems():
-                feature.value = value
-                feature.weight = weight
+                feature = self.featureset.feature.add(
+                    name=name,
+                    value=value,
+                    weight=weight,
+                    )
         #print(text_format.MessageToString(featureset, as_utf8=True))
+        error = "Number of converted features and total_features don't match."
+        assert len(self.featureset.feature) == self._total_features, error
         return self.featureset
                     
     # TODO: implement save and load methods. 
@@ -96,8 +101,8 @@ class ArcPerceptron(AveragedPerceptron):
     def __init__(self, feature_options={}):
         super(ArcPerceptron, self).__init__()
         self.feature_options = feature_options
-        self.iterations = 0
-        self._extractor = FeatureExtractor(filename="./learner/features.txt")
+        self.iters = 0
+        self._extractor = FeatureExtractor()
         
     def MakeFeaturesFromGold(self, training_data):
         """Create a feature set from the gold head-dependent pairs in the data.
@@ -155,22 +160,72 @@ class ArcPerceptron(AveragedPerceptron):
                         child=token,
                         use_tree_features=True)
                     )
-        for k, v in self.weights.items():
-            print(k,v)
-            print("\n")
+        # compute the number of total features
+        totals = [len(self.weights[key]) for key in self.weights.keys()]
+        self._total_features = sum(totals)
+        
     
-    def Score(self, features):
+    def _Score(self, features):
         """Score a feature vector.
+        
         features = featureset_pb2.FeatureSet()
         """
         score = 0.0
-        for feature in features:
+        for feature in features.feature:
             if feature.name not in self.weights:
+                #print("not in weights {}, {}".format(feature.name, feature.value))
                 continue
-        score += self.weights[feature.name][feature.value]
+            #print("feature is {}".format(self.weights[feature.name][feature.value]))
+            score += self.weights[feature.name][feature.value]
         return score
     
-
+    def _Predict(self, sentence, token, weights=None):
+        """Greedy head prediction used for training.
+        
+        Dot product the features and current weights to return the best label.
+        
+        Args:
+            sentence = sentence_pb2.Sentence()
+            token = sentence_pb2.Token()
+            weights = the weights dictionary.
+        """
+        scores = []
+        features = []
+        for head in sentence.token:
+            featureset = self._extractor.GetFeatures(sentence, head, token, use_tree_features=True)
+            score = self._Score(featureset)
+            features.append(featureset)
+            scores.append(score)
+        prediction = np.argmax(scores)
+        return prediction, features
+    
+    def UpdateWeights(self, prediction_features, true_features):
+        """Update the feature weights based on prediction.
+        
+        If the active features give you the correct prediction, increase
+        self.weights[feature.name][feature.value] by 1, else decrease them by 1.
+        
+        Args:
+            true_features = featureset_pb2.FeatureSet()
+            guess_features = featureset_pb2.FeatureSet()
+        """
+        def upd_feat(fname, fvalue, w):
+            if fname not in self.weights:
+                pass
+            else:
+                nr_iters_at_this_weight = self.iters - self._timestamps[f]
+                self._accumulator[f] += nr_iters_at_this_weight + self.weights[f]
+                self._weights[fname][fvalue] += w 
+                self._timestamps[f] += self.iters
+        
+        self.iters += 1
+        for feature in true_features.feature:
+            upd_feat(feature.name, feature.value, 1.0)
+        for feature in guess_features.feature:
+            upd_feat(feature.name, feature.value -1.0)
+        
+        
+        
 def main():
     perceptron = ArcPerceptron()
     #extractor = FeatureExtractor(filename="./learner/features.txt")
