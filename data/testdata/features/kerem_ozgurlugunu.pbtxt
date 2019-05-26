@@ -1,0 +1,135 @@
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "özgürlüğünü_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "özgür_Noun"
+  weight: 1.0
+}
+feature {
+  name: "head_0_word"
+  value: "özgürlüğünü"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos"
+  value: "Noun"
+  weight: 2.0
+}
+feature {
+  name: "child_0_word+child_0_pos"
+  value: "Kerem_Prop"
+  weight: 1.0
+}
+feature {
+  name: "child_0_word"
+  value: "Kerem"
+  weight: 1.0
+}
+feature {
+  name: "child_0_pos"
+  value: "Prop"
+  weight: 1.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "özgürlüğünü_Noun_Kerem_Prop"
+  weight: 1.0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Noun_Kerem_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "özgürlüğünü_Kerem_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "özgürlüğünü_Noun_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "özgürlüğünü_Noun_Kerem"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "özgürlüğünü_Kerem"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Noun_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_Punc_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_ROOT_Prop"
+  weight: 3.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_ROOT_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Prop_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Prop_Punc"
+  weight: 4.0
+}
+feature {
+  name: "head_0_word+head_0_up_word"
+  value: "özgürlüğünü_teslim"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_up_pos"
+  value: "Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_down_word"
+  value: "özgürlüğünü_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_down_pos"
+  value: "Noun_None"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_up_word"
+  value: "Kerem_rahatlamıştı"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos+child_0_up_pos"
+  value: "Prop_Verb"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_down_word"
+  value: "Kerem_None"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos+child_0_down_pos"
+  value: "Prop_None"
+  weight: 1.0
+}
