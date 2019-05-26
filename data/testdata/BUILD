@@ -48,3 +48,15 @@ filegroup(
 		"common/*.pbtxt",
 	]),
 )
+filegroup(
+	name = "features",
+	srcs = glob([
+		"features/*.pbtxt",
+	]),
+)
+filegroup(
+	name = "perceptron",
+	srcs = glob([
+		"perceptron/*.pbtxt",
+	]),
+)
