@@ -17,6 +17,7 @@ py_binary(
 	srcs = ["common.py"],
 	deps = [
 		"//data/treebank:sentence_py_pb2",
+		"//learner:featureset_py_pb2",
 		":reader"
 		],
 )

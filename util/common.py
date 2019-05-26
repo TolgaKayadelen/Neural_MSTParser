@@ -3,9 +3,13 @@
 """Common utility functions."""
 #TODO: unit tests for all functions here. 
 
-from util import reader
-from data.treebank import sentence_pb2
+
 from copy import deepcopy
+from data.treebank import sentence_pb2
+from learner import featureset_pb2
+from util import reader
+
+
 
 #type: sentence util
 def ExtendSentence(sentence):
@@ -61,7 +65,7 @@ def GetBetweenTokens(sentence, head, child, dummy=0):
         btw_tokens = sentence.token[head.index+1+dummy:child.index+dummy]
     return btw_tokens if btw_tokens else [None]
 
-
+# type: token util
 def GetValue(token, feat):
     """Returns the desired value for a feature of a token.
     
@@ -82,6 +86,28 @@ def GetValue(token, feat):
             return token.pos.encode("utf-8")
         if feat == "lemma":
             return token.lemma.encode("utf-8")
+
+# type: featureset proto util
+def SortFeatures(featureset):
+    print("Sorting FeatureSet proto..")
+    unsorted_list = []
+    for feature in featureset.feature:
+        unsorted_list.append(feature)
+    sorted_list = sorted(unsorted_list, key=lambda f: f.weight, reverse=True)
+    sorted_featureset = featureset_pb2.FeatureSet()
+    for f in sorted_list:
+        sorted_featureset.feature.add(name=f.name, value=f.value, weight=f.weight)
+    del sorted_list
+    del unsorted_list
+    featureset.CopyFrom(sorted_featureset)
+    return featureset
+
+
+# type: featureset proto util
+def TopFeatures(featureset, n):
+    """Return the n features with the largest weight."""
+    featureset = SortFeatures(featureset)
+    return featureset.feature[:n]
 
 if __name__ == "__main__":
     sentence = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
