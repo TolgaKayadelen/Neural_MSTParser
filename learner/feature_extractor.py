@@ -22,13 +22,11 @@ from data.treebank import sentence_pb2
 from learner import featureset_pb2 
 
 class FeatureExtractor:
-    """A ruleset is a dictionary of feature extraction rules."""
     
-    def __init__(self, filename, postag_window=5, log_distance=1.5):
-        """Initialize a feature set from a given filename.
+    def __init__(self, postag_window=5, log_distance=1.5):
+        """Initialize a feature set from the features file.
         
         Args:
-            filename = the name of the file to read the requested features from. 
             postag_window = include a feature for each word pair that contains this many POS tags. 
             log_distance = if not None, "bin" the distance between mod and head, otherwise use 
                  linear distance. 
@@ -36,23 +34,25 @@ class FeatureExtractor:
         """
         #self._featureset = OrderedDict()
         self._featureset = featureset_pb2.FeatureSet()
+        self._feature_file = "./learner/features.txt"
         self._postag_window = postag_window
         self._log_distance = log_distance
         
-        for i, l in enumerate(open(filename, "r")):
+        for i, l in enumerate(open(self._feature_file, "r")):
             l = l.split('#')[0].split('//')[0].strip()
             #print("l is: {}".format(l))
             if not l:
                 continue
             try:
+                 # Initialize the featureset vector only with feature names.     
                  self._featureset.feature.add(name=l.lower())
             except:
                 raise
-                logging.critical("%s line %d: cannot parse rule: %r", filename, i, l)
+                logging.critical("%s line %d: cannot parse rule: %r", self._feature_file, i, l)
                 sys.exit(1)
     
     def GetFeatures(self, sentence, head, child, use_tree_features=True):
-        """Return features requested in the featureset for two tokens.
+        """Return the values for the features in the featureset for head and child tokens.
         
         Args:
             sentence: sentence_pb2.Sentence object.
@@ -60,7 +60,8 @@ class FeatureExtractor:
             child: sentence_pb2.Token, the child token.
             use_tree_features: if True, uses the head and child features of the token as well. 
         Returns:
-            featureset: dict, a dictionanty of feature names and values. 
+            featureset: featureset_pb2.FeatureSet(), a proto of feature names and values.
+            Note that this doesn't return any weight for the features.
         """
         #TODO: implement the case where use_tree_features = False.
         #print("head is: {}', child is: {}'".format(head.word.encode("utf-8"), child.word.encode("utf-8")))
@@ -74,7 +75,6 @@ class FeatureExtractor:
                 child=child,
                 use_tree_features = use_tree_features)
             feature.value = value
-            feature.weight = 0.0
         return self._featureset
     
     def _GetFeatureValue(self, feature, sentence=None, head=None, child=None, use_tree_features=True):

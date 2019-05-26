@@ -17,14 +17,14 @@ class FeatureExtractorTest(unittest.TestCase):
         # Initialize a base document and a feature set for testing
         self.test_sentence_tr = reader.ReadSentenceProto("./data/treebank/sentence_4.protobuf")
         self.test_sentence_en = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
-        self.feature_file = "./learner/features.txt"
+        self.extractor = FeatureExtractor()
     
     def test_GetFeatures(self):
         head = self.test_sentence_tr.token[3]
         child = self.test_sentence_tr.token[1]
         # Initialize the extractor with a feature file
-        extractor = FeatureExtractor(self.feature_file)
-        function_features = extractor.GetFeatures(self.test_sentence_tr, head, child, use_tree_features=True)
+        function_features = self.extractor.GetFeatures(self.test_sentence_tr, head, child, use_tree_features=True)
+        #print(text_format.MessageToString(function_features, as_utf8=True))
         features_dict = dict((feature.name, feature.value) for feature in function_features.feature)
         expected_features = {
             'head_0_word+head_0_pos': 'özgürlüğünü_Noun',
@@ -61,8 +61,7 @@ class FeatureExtractorTest(unittest.TestCase):
         head = self.test_sentence_en.token[2] # saw
         child = self.test_sentence_en.token[1] # john
         sentence = common.ExtendSentence(self.test_sentence_en)
-        extractor = FeatureExtractor(self.feature_file)
-        function_features = extractor.GetFeatures(sentence, head=head, child=child, use_tree_features=True)
+        function_features = self.extractor.GetFeatures(sentence, head=head, child=child, use_tree_features=True)
         features_dict = dict((feature.name, feature.value) for feature in function_features.feature)
         expected_features = {
             'child_0_pos+child_0_down_pos':'Noun_None',
