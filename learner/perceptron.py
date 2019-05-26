@@ -4,18 +4,22 @@
 The perceptron is a an online margin-based linear classifier."""
 
 import argparse
-import re
+import os
+import pickle
 
 from collections import defaultdict
 from collections import OrderedDict
 from copy import deepcopy
 from data.treebank import sentence_pb2
+from google.protobuf import text_format
 from learner import featureset_pb2
 from learner.feature_extractor import FeatureExtractor
 from mst.max_span_tree import GetTokenByAddressAlt 
-from google.protobuf import text_format
-from util import reader
 from util import common
+from util import reader
+from util import writer
+
+_MODEL_DIR = "model/pretrained"
 
 class AveragedPerceptron(object):
     """Base methods for the Averaged Perceptron."""
@@ -23,17 +27,25 @@ class AveragedPerceptron(object):
         self.weights = defaultdict(OrderedDict)
         self._timestamps = defaultdict(OrderedDict)
         self._accumulator = defaultdict(OrderedDict)
-        self._total_features = 0
+        self._feature_count = 0
     
-    def InitializeWeights(self, featureset=None):
-        """Initialize the weights with zero. 
-        This function initializes three dictionaries, whose keys are feature_value pairs
-        and whose values are weights. 
+    def InitializeWeights(self, featureset, load=False):
+        """Initialize the weights with zero or a pretrained value. 
         
-        featureset = featureset.FeatureSet() object. A proto of features.
+        Args:
+            featureset: featureset_pb2.FeatureSet(), set of features. 
+            load: boolean, if True, loads a featureset with pretrained weights.
         """
-        for f in featureset.feature:
-            self.weights[f.name].update({f.value:0.0})
+        if load:
+            for f in featureset.feature:
+                self.weights[f.name].update({f.value:f.weight})
+        else:
+            for f in featureset.feature:
+                self.weights[f.name].update({f.value:0.0})
+        
+        # compute the number of total features
+        totals = [len(self.weights[key]) for key in self.weights.keys()]
+        self._feature_count = sum(totals)
 
     
     def AverageWeights(self, weights):
@@ -43,36 +55,12 @@ class AveragedPerceptron(object):
             if isinstance(value, dict):
                 self._AverageWeights(weights)
             else:
-                weights[name] = weights[name] / self.iterations
+                weights[name] = weights[name] / self.iters
         del self._totals
         del self._timestamps
         return weights
     
-    def SortFeatures(self):
-        """Sort features by weight"""
-        if not hasattr(self, "featureset"):
-            print("Converting weights dict to featureset proto first..")
-            self.featureset = self._ConvertWeightsToProto()
-        print("Sorting FeatureSet proto..")
-        unsorted_list = []
-        for feature in self.featureset.feature:
-            unsorted_list.append(feature)
-        sorted_list = sorted(unsorted_list, key=lambda f: f.weight, reverse=True)
-        sorted_featureset = featureset_pb2.FeatureSet()
-        for f in sorted_list:
-            sorted_featureset.feature.add(name=f.name, value=f.value, weight=f.weight)
-        del sorted_list
-        del unsorted_list
-        self.featureset.CopyFrom(sorted_featureset)
-        return self.featureset
-        
-    def TopFeatures(self, n):
-        """Return the n features with the largest weight."""
-        if not hasattr(self, "featureset"):
-            self.featureset = self._ConvertWeightsToProto()
-            self.SortFeatures()
-        return self.featureset.feature[:n]
-        
+    
     def _ConvertWeightsToProto(self):
         """Convert the weights dictionary to featureset proto.
         
@@ -89,11 +77,69 @@ class AveragedPerceptron(object):
                     )
         #print(text_format.MessageToString(featureset, as_utf8=True))
         error = "Number of converted features and total_features don't match."
-        assert len(self.featureset.feature) == self._total_features, error
+        assert len(self.featureset.feature) == self._feature_count, error
         return self.featureset
-                    
-    # TODO: implement save and load methods. 
+        
+        
+    def LoadFeatures(self, filename, as_text=False):
+        """Load pretrained features and their weights.
+        
+        Populates self.weights with the read object. The read object
+        is a featureset_pb2.FeatureSet() proto.
+        Args:
+            filename: string, the filename to load the features from.
+            as_text: boolean, if True, tries to read a .pbtxt file
+        """
+        if as_text:
+            path = os.path.join(_MODEL_DIR, "{}.pbtxt".format(filename))
+            with open(path, "r") as f:
+                featureset = text_format.Parse(f.read(), featureset_pb2.FeatureSet())
+        else:
+            path = os.path.join(_MODEL_DIR, "{}.pkl".format(filename))
+            with open(path, "rb") as inp:
+                featureset = pickle.load(inp)
+        print("features read from {}".format(path))
+        self.InitializeWeights(featureset, load=True)
 
+           
+    def SaveFeatures(self, filename, as_text=False):
+        """Save trained features and their weights to a .pkl file.
+        
+        The saved object is a featureset_pb2.FeatureSet proto.
+        Args:
+            weights = defaultdict, the feature weights to save.
+            filename: string, path to save the trained features into.
+        """            
+        if not hasattr(self, "featureset"):
+            self.featureset = self._ConvertWeightsToProto()
+        
+        assert filename, "No output filename!"
+        
+        if as_text:
+            output_file = os.path.join(_MODEL_DIR, "{}.pbtxt".format(filename))
+            writer.write_proto_as_text(self.featureset, output_file)
+        else:
+            output_file = os.path.join(_MODEL_DIR, "{}.pkl".format(filename))
+            with open(output_file, 'wb') as output:
+                pickle.dump(self.featureset, output)
+        print("saved features to {}".format(output_file))       
+
+    
+    def Sort(self):
+        """Sort features by weight."""
+        #TODO: write a test
+        error = "No featureset to sort, convert weights to featureset proto first."
+        assert hasattr(self, "featureset"), error
+        self.featureset = common.SortFeatures(self.featureset)
+        return self.featureset
+
+        
+    def TopN(self, n):
+        """Return the n features with the largest weight."""
+        error = "No featureset to sort, convert weights to featureset proto first."
+        assert hasattr(self, "featureset"), error
+        return common.TopFeatures(self.featureset)
+                    
 
 class ArcPerceptron(AveragedPerceptron):
     """A perceptron for scoring dependency arcs."""
@@ -123,17 +169,13 @@ class ArcPerceptron(AveragedPerceptron):
                     continue
                 #print("child: {}".format(token.word))
                 head = GetTokenByAddressAlt(sentence.token, token.selected_head.address)
-                #print("head: {}".format(head.word))
-                #features.append(extractor.GetFeatures(sentence, head=head, child=token, use_tree_features=True))
-                print("head {}, child {}".format(head.word, token.word))
+                #print("head {}, child {}".format(head.word, token.word))
                 self.InitializeWeights(self._extractor.GetFeatures(
                     sentence,
                     head=head,
                     child=token,
                     use_tree_features=True)
                 )
-        #for k, v in self.weights.items():
-        #    print(k, v)
     
     def MakeAllFeatures(self, training_data):
         """Create a features set from --all-- head-dependent pairs in the data.
@@ -153,18 +195,14 @@ class ArcPerceptron(AveragedPerceptron):
                 # ch = candidate_head
                 for ch in token.candidate_head:
                     head = GetTokenByAddressAlt(sentence.token, ch.address)
-                    print("head {}, child {}".format(head.word, token.word))
+                    #print("head {}, child {}".format(head.word, token.word))
                     self.InitializeWeights(self._extractor.GetFeatures(
                         sentence,
                         head=head,
                         child=token,
                         use_tree_features=True)
                     )
-        # compute the number of total features
-        totals = [len(self.weights[key]) for key in self.weights.keys()]
-        self._total_features = sum(totals)
-        
-    
+   
     def _Score(self, features):
         """Score a feature vector.
         
@@ -178,6 +216,7 @@ class ArcPerceptron(AveragedPerceptron):
             #print("feature is {}".format(self.weights[feature.name][feature.value]))
             score += self.weights[feature.name][feature.value]
         return score
+
     
     def _Predict(self, sentence, token, weights=None):
         """Greedy head prediction used for training.
@@ -198,6 +237,7 @@ class ArcPerceptron(AveragedPerceptron):
             scores.append(score)
         prediction = np.argmax(scores)
         return prediction, features
+
     
     def UpdateWeights(self, prediction_features, true_features):
         """Update the feature weights based on prediction.
@@ -225,7 +265,6 @@ class ArcPerceptron(AveragedPerceptron):
             upd_feat(feature.name, feature.value -1.0)
         
         
-        
 def main():
     perceptron = ArcPerceptron()
     #extractor = FeatureExtractor(filename="./learner/features.txt")
@@ -239,7 +278,6 @@ def main():
     #sorted_features = perceptron.SortFeatures()
     #print(perceptron.TopFeatures(10))
     #print(text_format.MessageToString(sorted_features, as_utf8=True))
-    
 
 
 if __name__ == "__main__":

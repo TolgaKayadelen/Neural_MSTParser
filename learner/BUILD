@@ -23,12 +23,9 @@ py_binary(
 	name = "perceptron",
 	srcs = ["perceptron.py"],
 	deps = [
-		"//learner:featureset_py_pb2",
-		"//learner:feature_extractor_lib",
+		":perceptron_lib",
 	],
 )
-
-
 
 # Libraries.
 py_library(
@@ -43,6 +40,19 @@ py_library(
 	],
 )
 
+py_library(
+	name = "perceptron_lib",
+	srcs = ["perceptron.py"],
+	data = [
+		"//data/testdata:features",
+		"//data/testdata:perceptron",
+	],
+	deps = [
+		"//learner:feature_extractor_lib",
+		"//util:writer",
+	],
+)
+
 # Tests.
 py_test(
 	name = "feature_extractor_test",
@@ -50,5 +60,14 @@ py_test(
 	srcs = ["feature_extractor_test.py"],
 	deps = [
 		":feature_extractor_lib"
+	],
+)
+
+py_test(
+	name = "perceptron_test",
+	size = "small",
+	srcs = ["perceptron_test.py"],
+	deps = [
+		":perceptron_lib",
 	],
 )
