@@ -30,6 +30,7 @@ def ExtendSentence(sentence):
     sentence.token.extend([end_token])
     return sentence
 
+
 # type: sentence util
 def GetRightMostChild(sentence, token):
     """Returns the rightmost child of token in sentence. 
@@ -105,6 +106,18 @@ def PPrintWeights(weights, features):
 
 
 # type: featureset proto util
+def GetFeatureWeights(weights, features):
+    """Utility function to return the weights for selected features. 
+    Args:
+        weights: defaultdict(dict), the weights dict.
+        features: featureset_pb2.FeaturSet, the featureset whose weights
+            to return.
+    Returns:
+        list of weights.
+    """
+    return [weights[f.name][f.value] for f in features.feature]
+
+
 def SortFeatures(featureset):
     print("Sorting FeatureSet proto..")
     unsorted_list = []
@@ -125,6 +138,7 @@ def TopFeatures(featureset, n):
     """Return the n features with the largest weight."""
     featureset = SortFeatures(featureset)
     return featureset.feature[:n]
+
 
 if __name__ == "__main__":
     sentence = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")

@@ -100,7 +100,7 @@ class AveragedPerceptron(object):
             path = os.path.join(_MODEL_DIR, "{}.pkl".format(filename))
             with open(path, "rb") as inp:
                 featureset = pickle.load(inp)
-        print("Features read from {}".format(path))
+        #print("Features read from {}".format(path))
         self.InitializeWeights(featureset, load=True)
 
            
@@ -238,7 +238,6 @@ class ArcPerceptron(AveragedPerceptron):
         scores = []
         features = []
         for head in sentence.token:
-            #extractor = FeatureExtractor()
             if head.word in ['START_TOK', 'END_TOK']:
                 continue
             if head.index == token.index:
@@ -249,18 +248,9 @@ class ArcPerceptron(AveragedPerceptron):
                 continue
             #print("head: {}, child: {}".format(head.word, token.word))
             featureset = self._extractor.GetFeatures(sentence, head, token, use_tree_features=True)
-            #print("featureset {}".format(featureset))
-            #print("--------------------------------")
             score = self._Score(featureset)
-            #print("score {}".format(score))
+            #print("score for this head-child {}".format(score))
             features.append(featureset)
-            #print("features after adding token {}".format(head.word))
-            #print"--------------------------------"
-            #for featureset in features:
-            #    print(featureset)
-            #    print("++++++++++++++++++++++++++")
-            #print(len(features))
-            #print("*******************************")
             scores.append(score)
         # index of the highest scoring features
         prediction = np.argmax(scores)
@@ -279,13 +269,15 @@ class ArcPerceptron(AveragedPerceptron):
         """
         def upd_feat(fname, fvalue, w):
             if fname not in self.weights:
-                #print("passing")
+                print("fname {}, passing".format(fname))
                 pass
             else:
-                #print("updating")
+                #print("updating the feature {}: {}".format(fname, fvalue))
+                #print("which has the weight of {}".format(self.weights[feature.name][feature.value]))
                 nr_iters_at_this_weight = self.iters - self._timestamps[fname][fvalue]
                 self._accumulator[fname][fvalue] += nr_iters_at_this_weight * self.weights[fname][fvalue]
-                self.weights[fname][fvalue] += w 
+                self.weights[fname][fvalue] += w
+                #print("updated value {}".format(self.weights[fname][fvalue])) 
                 self._timestamps[fname][fvalue] += self.iters
         
         self.iters += 1
@@ -294,36 +286,25 @@ class ArcPerceptron(AveragedPerceptron):
         for feature in prediction_features.feature:
             upd_feat(feature.name, feature.value, -1.0)
     
-    def Train(self, nr_iters, training_data):
-        c = 0
-        n = 0
+    def Train(self, training_data):
+        correct = 0
+        nr_child = 0
         for sentence in training_data:
             for token in sentence.token:
+                # skip the dummy start and end tokens
+                if token.word in ['START_TOK', 'END_TOK']:
+                    continue
                 # we don't try to predict a head for ROOT token.
                 if token.word == "ROOT":
                     continue
-                if not token.word == "saw":
-                    continue
                 prediction, features, _ = self._PredictHead(sentence, token)
-                print("prediction {}".format(prediction))
-                print("selected head address {}".format(token.selected_head.address))
-                print("---FEATURES BEFORE UPDATE----\n")
-                print("features for predicted head: \n")
-                common.PPrintWeights(self.weights, features[prediction])
-                #print(features[prediction])
-                print("------------------------------")
-                print("features for selected head: \n")
-                common.PPrintWeights(self.weights, features[token.selected_head.address])
-                print(features[token.selected_head.address])
-                self.UpdateWeights(features[prediction], features[token.selected_head.address])
-                c += prediction == token.selected_head.address
-                n += 1
-                print("\n\n---FEATURES AFTER UPDATE---\n")
-                print("features for predicted head: \n")
-                common.PPrintWeights(self.weights, features[prediction])
-                print("------------------------------")
-                print("features for selected head: \n")
-                common.PPrintWeights(self.weights, features[token.selected_head.address])
+                #print("prediction {}".format(prediction))
+                #print("selected head address {}".format(token.selected_head.address))
+                if not prediction == token.selected_head.address:
+                    self.UpdateWeights(features[prediction], features[token.selected_head.address])
+                correct += prediction == token.selected_head.address
+                nr_child += 1
+        return correct, nr_child
         
         
 def main():

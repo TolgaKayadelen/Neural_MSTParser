@@ -69,6 +69,8 @@ class PerceptronTest(unittest.TestCase):
     '''
     def testTrain(self):
         percept = perceptron.ArcPerceptron()
+        weights_before_train = {}
+        weights_after_train = {}
         percept.MakeAllFeatures([self.en_test])
         init_w = 0.1
         for key in percept.weights.keys():
@@ -76,12 +78,44 @@ class PerceptronTest(unittest.TestCase):
                 percept.weights[key][value] += init_w
                 #print(key, value, percept.weights[key][value])
                 init_w += 0.1
-        '''
-        f_weights_before_train[saw_root] = GetFeatureWeights(extractor.GetFeatures(..))
-        f_weights_after_train[saw_root] = GetFeatureWeights(extractor.GetFeatures(..))
-        assertTrue(f_weights_after_train[saw_root] == map(lambda x:x+1, f_weights_before_train[saw_root]))
-        '''
-        percept.Train(1, [self.en_test])
+        #print(self.en_test)
+        extractor = feature_extractor.FeatureExtractor()
+        #head = Root, child=saw
+        f_root_saw = extractor.GetFeatures(self.en_test, self.en_test.token[1], self.en_test.token[3])
+        weights_before_train["root_saw"] = common.GetFeatureWeights(percept.weights, f_root_saw)
+        # run one iteration of training.
+        nr_correct, _ = percept.Train([self.en_test])
+        weights_after_train["root_saw"] = common.GetFeatureWeights(percept.weights, f_root_saw)
+        expected_weights_after_train =  [
+            5.3, 1.8, 6.0, 1.6, 2.3, 4.3, 7.8, 2.8, 12.7, 13.9, 0.9, 10.9, 3.6, 6.9, 11.8,
+            9.6, 4.7, 8.7, 10.2, 5.7, 3.8, 6.3, 0.4, 7.4, 13.4, 0.2]
+        function_weights_after_train = [round(w, 1) for w in weights_after_train["root_saw"]]
+        # Note that some weights looks like didn't change because in a later iteration
+        # they caused wrong prediction and hence were reduced by 1.0 again.
+        self.assertListEqual(function_weights_after_train, expected_weights_after_train)
+        self.assertEqual(nr_correct, 2)
+    
+    def testLearn(self):
+        """Test that the perceptron actually learns."""
+        percept = perceptron.ArcPerceptron()
+        weights_before_train = {}
+        weights_after_train = {}
+        percept.MakeAllFeatures([self.en_test])
+        init_w = 0.1
+        for key in percept.weights.keys():
+            for value in percept.weights[key].keys():
+                percept.weights[key][value] += init_w
+                #print(key, value, percept.weights[key][value])
+                init_w += 0.1
+        for i in range(3):
+            nr_correct_heads, nr_childs = percept.Train([self.en_test])
+            accuracy = nr_correct_heads * 100 / nr_childs
+            print("accuracy after iter {} = %{}".format(i, accuracy))
+            if accuracy == 100:
+                break
+        # we expect accuracy be 100 after the second iter.
+        self.assertListEqual([i, accuracy], [1, 100])
+            
     
     def test_LoadFeatures(self):
         percept = perceptron.ArcPerceptron()
