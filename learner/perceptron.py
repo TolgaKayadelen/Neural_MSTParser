@@ -52,14 +52,14 @@ class AveragedPerceptron(object):
     
     def AverageWeights(self, weights):
         """Average the weights over all iterations.""" 
-        assert self.iterations > 0, "Cannot average weights"
-        for name, value in weights.iteritems():
+        assert self.iters > 0, "Cannot average weights"
+        for name, value in weights.items():
             if isinstance(value, dict):
-                self._AverageWeights(weights)
+                self.AverageWeights(value)
             else:
                 weights[name] = weights[name] / self.iters
-        del self._totals
-        del self._timestamps
+        #del self._accumulator
+        #del self._timestamps
         return weights
     
     
@@ -257,7 +257,7 @@ class ArcPerceptron(AveragedPerceptron):
         return prediction, features, scores
 
     
-    def UpdateWeights(self, prediction_features, true_features):
+    def UpdateWeights(self, prediction_features, true_features, c=None):
         """Update the feature weights based on prediction.
         
         If the active features give you the correct prediction, increase
@@ -266,6 +266,10 @@ class ArcPerceptron(AveragedPerceptron):
         Args:
             true_features = featureset_pb2.FeatureSet()
             guess_features = featureset_pb2.FeatureSet()
+            c = whether the prediction was correct.
+        
+        NOTE: For debugging, turn on the commented out lines. This helps you track
+        how a selected feature changes over time.
         """
         def upd_feat(fname, fvalue, w):
             if fname not in self.weights:
@@ -274,13 +278,34 @@ class ArcPerceptron(AveragedPerceptron):
             else:
                 #print("updating the feature {}: {}".format(fname, fvalue))
                 #print("which has the weight of {}".format(self.weights[feature.name][feature.value]))
+                #if fname == 'head_0_pos' and fvalue == 'Verb':
+                #    print("weight before ", self.weights[fname][fvalue])
+                
                 nr_iters_at_this_weight = self.iters - self._timestamps[fname][fvalue]
+                
+                #if fname == 'head_0_pos' and fvalue == 'Verb':
+                #    print("nr_iters_here {}".format(nr_iters_at_this_weight))
+                
                 self._accumulator[fname][fvalue] += nr_iters_at_this_weight * self.weights[fname][fvalue]
+                
+                #if fname == 'head_0_pos' and fvalue == 'Verb':
+                #    print("accumulated {}".format(self._accumulator[fname][fvalue]))
+                
                 self.weights[fname][fvalue] += w
                 #print("updated value {}".format(self.weights[fname][fvalue])) 
-                self._timestamps[fname][fvalue] += self.iters
+                self._timestamps[fname][fvalue] = self.iters
+                
+                #if fname == 'head_0_pos' and fvalue == 'Verb':
+                #    print("weight after ", self.weights[fname][fvalue])
+                #    print("timestamp for feat {}".format(self._timestamps[fname][fvalue]))
         
         self.iters += 1
+        #print("-----")
+        #print("iteration {}".format(self.iters))
+        #if c:
+        #    print("correct prediction")
+        #else:
+        #    print("incorrect prediction")
         for feature in true_features.feature:
             upd_feat(feature.name, feature.value, 1.0)
         for feature in prediction_features.feature:
@@ -300,10 +325,12 @@ class ArcPerceptron(AveragedPerceptron):
                 prediction, features, _ = self._PredictHead(sentence, token)
                 #print("prediction {}".format(prediction))
                 #print("selected head address {}".format(token.selected_head.address))
-                if not prediction == token.selected_head.address:
-                    self.UpdateWeights(features[prediction], features[token.selected_head.address])
+                #if not prediction == token.selected_head.address:
+                c = prediction == token.selected_head.address
+                self.UpdateWeights(features[prediction], features[token.selected_head.address], c)
                 correct += prediction == token.selected_head.address
                 nr_child += 1
+        #common.PPrintWeights(self._timestamps)
         return correct, nr_child
         
         

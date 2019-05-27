@@ -90,7 +90,7 @@ def GetValue(token, feat):
 
 
 # type: print util
-def PPrintWeights(weights, features):
+def PPrintWeights(weights, features=None):
     """Utility function to pretty print weights for selected features.
     
     Args:
@@ -98,11 +98,21 @@ def PPrintWeights(weights, features):
         features: featureset_pb2.FeatureSet, the featureset whose weights 
             to print.
     """
-    for f in features.feature:
-        print("f.name: {}\n f.value: {}\n f.weight: {}\n".format(
-            f.name, f.value, weights[f.name][f.value])
-        )
-        print("***---------***")    
+    # if there are no specifically requested features,
+    # just print all that's in weights.
+    if not features:
+        for name in weights.keys():
+            for value in weights[name].keys():
+                print("name: {}\n value: {}\n wta: {}\n".format(
+                    name, value, weights[name][value])
+                )
+        print("***---------***")
+    else:
+        for f in features.feature:
+            print("f.name: {}\n f.value: {}\n f.weight: {}\n".format(
+                f.name, f.value, weights[f.name][f.value])
+                )
+            print("***---------***")    
 
 
 # type: featureset proto util
@@ -119,7 +129,7 @@ def GetFeatureWeights(weights, features):
 
 
 def SortFeatures(featureset):
-    print("Sorting FeatureSet proto..")
+    #print("Sorting FeatureSet proto..")
     unsorted_list = []
     for feature in featureset.feature:
         unsorted_list.append(feature)

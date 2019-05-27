@@ -33,25 +33,28 @@ class PerceptronTest(unittest.TestCase):
     def setUp(self):
         self.en_test = _read_perceptron_test_data("john_saw_mary")
     
-    
+    '''
     def test_MakeFeaturesFromGold(self):
         pass
     '''
     def test_MakeAllFeatures(self):
+        print("Running test_MakeAllFeatures..")
         percept = perceptron.ArcPerceptron()
         percept.MakeAllFeatures([self.en_test])
         sorted_features = common.SortFeatures(percept._ConvertWeightsToProto())
         expected_features = _read_features_test_data("john_saw_mary_features")
         self.assertEqual(sorted_features, expected_features)
-    '''    
-    '''
+        print("Passed!")
+        
     def test_Score(self):
+        print("Running test_Score..")
         percept = perceptron.ArcPerceptron()
         percept.LoadFeatures("kerem_ozgurlugunu_load_test")
         self.assertEqual(15, percept._Score(percept._ConvertWeightsToProto()))
-    '''
-    '''
+        print("Passed!")
+      
     def test_PredictHead(self):
+        print("Running test_PredictHead..")
         percept = perceptron.ArcPerceptron()
         percept.MakeAllFeatures([self.en_test])
         init_w = 1
@@ -66,8 +69,10 @@ class PerceptronTest(unittest.TestCase):
         #print(prediction)
         self.assertEqual(scores, [1630, 1660, None, 1665])
         self.assertEqual(prediction, 3)
-    '''
+        print("Passed!")
+    
     def testTrain(self):
+        print("Running testTrain..")
         percept = perceptron.ArcPerceptron()
         weights_before_train = {}
         weights_after_train = {}
@@ -94,9 +99,11 @@ class PerceptronTest(unittest.TestCase):
         # they caused wrong prediction and hence were reduced by 1.0 again.
         self.assertListEqual(function_weights_after_train, expected_weights_after_train)
         self.assertEqual(nr_correct, 2)
+        print("Passed!")
     
     def testLearn(self):
         """Test that the perceptron actually learns."""
+        print("Running testLearn..")
         percept = perceptron.ArcPerceptron()
         weights_before_train = {}
         weights_after_train = {}
@@ -115,9 +122,49 @@ class PerceptronTest(unittest.TestCase):
                 break
         # we expect accuracy be 100 after the second iter.
         self.assertListEqual([i, accuracy], [1, 100])
+        print("Passed!")
             
+    def test_TimeStampsAndAveraging(self):
+        """Test to make sure that timestamp dictionary is populated properly"""
+        print("Running test_TimeStampsAndAveraging..")
+        percept = perceptron.ArcPerceptron()
+        percept.MakeAllFeatures([self.en_test])
+        init_w = 0.1
+        for key in percept.weights.keys():
+            for value in percept.weights[key].keys():
+                percept.weights[key][value] += init_w
+                #print(key, value, percept.weights[key][value])
+                init_w += 0.1
+        # set up a feature for tracking when it's getting changed.
+        feat_name = 'head_0_pos'
+        feat_value = 'Verb'
+        feat_timestamp = 0
+        iters = 0
+        for i in range(3):
+            iters += 1
+            feat_init_weight = percept.weights[feat_name][feat_value]
+            #print("val at iter {}: {}".format(iters, feat_init_weight))
+            nr_correct_heads, nr_childs = percept.Train([self.en_test])
+            accuracy = nr_correct_heads * 100 / nr_childs
+            if percept.weights[feat_name][feat_value] != feat_init_weight:
+            #print("val changed to {} ".format(percept.weights[feat_name][feat_value]))
+                feat_timestamp = iters
+            if accuracy == 100:
+                break
+        
+        self.assertEqual(41.6, round(percept._accumulator[feat_name][feat_value], 1))
+        self.assertEqual(6, percept._timestamps[feat_name][feat_value])
+        
+        # test averaging
+        acc_weights_for_feat = defaultdict(OrderedDict)
+        acc_weights_for_feat[feat_name][feat_value] = percept._accumulator[feat_name][feat_value]
+        averaged = percept.AverageWeights(acc_weights_for_feat)
+        self.assertEqual(6.9, round(averaged[feat_name][feat_value], 1))
+        print("Passed!")
     
+        
     def test_LoadFeatures(self):
+        print("Running test_LoadFeatures..")
         percept = perceptron.ArcPerceptron()
         percept.LoadFeatures("kerem_ozgurlugunu_load_test", as_text=True)
         percept._ConvertWeightsToProto()
@@ -134,6 +181,7 @@ class PerceptronTest(unittest.TestCase):
         percept_fweights = [f.weight for f in percept.featureset.feature]
         expected_fweights = [f.weight for f in expected_featureset.feature]
         self.assertListEqual(sorted(percept_fweights), sorted(expected_fweights))
+        print("Passed!")
         
 if __name__ == "__main__":
   unittest.main()
