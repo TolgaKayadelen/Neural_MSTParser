@@ -4,6 +4,7 @@
 The perceptron is a an online margin-based linear classifier."""
 
 import argparse
+import numpy as np
 import os
 import pickle
 
@@ -36,11 +37,12 @@ class AveragedPerceptron(object):
             featureset: featureset_pb2.FeatureSet(), set of features. 
             load: boolean, if True, loads a featureset with pretrained weights.
         """
-        if load:
-            for f in featureset.feature:
+        for f in featureset.feature:
+            self._timestamps[f.name].update({f.value:0})
+            self._accumulator[f.name].update({f.value:0})
+            if load:
                 self.weights[f.name].update({f.value:f.weight})
-        else:
-            for f in featureset.feature:
+            else:
                 self.weights[f.name].update({f.value:0.0})
         
         # compute the number of total features
@@ -98,7 +100,7 @@ class AveragedPerceptron(object):
             path = os.path.join(_MODEL_DIR, "{}.pkl".format(filename))
             with open(path, "rb") as inp:
                 featureset = pickle.load(inp)
-        print("features read from {}".format(path))
+        print("Features read from {}".format(path))
         self.InitializeWeights(featureset, load=True)
 
            
@@ -122,7 +124,7 @@ class AveragedPerceptron(object):
             output_file = os.path.join(_MODEL_DIR, "{}.pkl".format(filename))
             with open(output_file, 'wb') as output:
                 pickle.dump(self.featureset, output)
-        print("saved features to {}".format(output_file))       
+        print("Saved features to {}".format(output_file))       
 
     
     def Sort(self):
@@ -184,6 +186,7 @@ class ArcPerceptron(AveragedPerceptron):
         """
         for sentence in training_data:
             assert isinstance(sentence, sentence_pb2.Sentence), "Unaccepted data type."
+            # TODO: should sentence extension be done when we read the sentence.
             sentence = common.ExtendSentence(sentence)
             for token in sentence.token:
                 # skip where token is the dummy start token, dummy end token, or the root token. 
@@ -215,10 +218,11 @@ class ArcPerceptron(AveragedPerceptron):
                 continue
             #print("feature is {}".format(self.weights[feature.name][feature.value]))
             score += self.weights[feature.name][feature.value]
+            #print("weights for the features {}".format(self.weights[feature.name][feature.value]))
         return score
 
     
-    def _Predict(self, sentence, token, weights=None):
+    def _PredictHead(self, sentence, token):
         """Greedy head prediction used for training.
         
         Dot product the features and current weights to return the best label.
@@ -226,17 +230,41 @@ class ArcPerceptron(AveragedPerceptron):
         Args:
             sentence = sentence_pb2.Sentence()
             token = sentence_pb2.Token()
-            weights = the weights dictionary.
+        Returns:
+            prediction: int, index of the highest scoring features.
+            features: list, list of featureset protos, used in prediction and scoring.
+            scores: list, list of scores for features.
         """
         scores = []
         features = []
         for head in sentence.token:
+            #extractor = FeatureExtractor()
+            if head.word in ['START_TOK', 'END_TOK']:
+                continue
+            if head.index == token.index:
+                # we don't make features for case where head = token
+                # as no token can be its own head. So there's nothing to score.
+                scores.append(None)
+                features.append(None)
+                continue
+            #print("head: {}, child: {}".format(head.word, token.word))
             featureset = self._extractor.GetFeatures(sentence, head, token, use_tree_features=True)
+            #print("featureset {}".format(featureset))
+            #print("--------------------------------")
             score = self._Score(featureset)
+            #print("score {}".format(score))
             features.append(featureset)
+            #print("features after adding token {}".format(head.word))
+            #print"--------------------------------"
+            #for featureset in features:
+            #    print(featureset)
+            #    print("++++++++++++++++++++++++++")
+            #print(len(features))
+            #print("*******************************")
             scores.append(score)
+        # index of the highest scoring features
         prediction = np.argmax(scores)
-        return prediction, features
+        return prediction, features, scores
 
     
     def UpdateWeights(self, prediction_features, true_features):
@@ -251,33 +279,58 @@ class ArcPerceptron(AveragedPerceptron):
         """
         def upd_feat(fname, fvalue, w):
             if fname not in self.weights:
+                #print("passing")
                 pass
             else:
-                nr_iters_at_this_weight = self.iters - self._timestamps[f]
-                self._accumulator[f] += nr_iters_at_this_weight + self.weights[f]
-                self._weights[fname][fvalue] += w 
-                self._timestamps[f] += self.iters
+                #print("updating")
+                nr_iters_at_this_weight = self.iters - self._timestamps[fname][fvalue]
+                self._accumulator[fname][fvalue] += nr_iters_at_this_weight * self.weights[fname][fvalue]
+                self.weights[fname][fvalue] += w 
+                self._timestamps[fname][fvalue] += self.iters
         
         self.iters += 1
         for feature in true_features.feature:
             upd_feat(feature.name, feature.value, 1.0)
-        for feature in guess_features.feature:
-            upd_feat(feature.name, feature.value -1.0)
+        for feature in prediction_features.feature:
+            upd_feat(feature.name, feature.value, -1.0)
+    
+    def Train(self, nr_iters, training_data):
+        c = 0
+        n = 0
+        for sentence in training_data:
+            for token in sentence.token:
+                # we don't try to predict a head for ROOT token.
+                if token.word == "ROOT":
+                    continue
+                if not token.word == "saw":
+                    continue
+                prediction, features, _ = self._PredictHead(sentence, token)
+                print("prediction {}".format(prediction))
+                print("selected head address {}".format(token.selected_head.address))
+                print("---FEATURES BEFORE UPDATE----\n")
+                print("features for predicted head: \n")
+                common.PPrintWeights(self.weights, features[prediction])
+                #print(features[prediction])
+                print("------------------------------")
+                print("features for selected head: \n")
+                common.PPrintWeights(self.weights, features[token.selected_head.address])
+                print(features[token.selected_head.address])
+                self.UpdateWeights(features[prediction], features[token.selected_head.address])
+                c += prediction == token.selected_head.address
+                n += 1
+                print("\n\n---FEATURES AFTER UPDATE---\n")
+                print("features for predicted head: \n")
+                common.PPrintWeights(self.weights, features[prediction])
+                print("------------------------------")
+                print("features for selected head: \n")
+                common.PPrintWeights(self.weights, features[token.selected_head.address])
         
         
 def main():
     perceptron = ArcPerceptron()
     #extractor = FeatureExtractor(filename="./learner/features.txt")
     test_sentence = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
-    #head = test_sentence.token[3]
-    #child = test_sentence.token[1]
-    #features = extractor.GetFeatures(test_sentence, head, child, use_tree_features=True)
-    #perceptron.MakeFeaturesFromGold([test_sentence])
     perceptron.MakeAllFeatures([test_sentence])
-    #top_features = perceptron.TopFeatures(5)
-    #sorted_features = perceptron.SortFeatures()
-    #print(perceptron.TopFeatures(10))
-    #print(text_format.MessageToString(sorted_features, as_utf8=True))
 
 
 if __name__ == "__main__":

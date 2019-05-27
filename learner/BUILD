@@ -65,7 +65,7 @@ py_test(
 
 py_test(
 	name = "perceptron_test",
-	size = "small",
+	size = "medium",
 	srcs = ["perceptron_test.py"],
 	deps = [
 		":perceptron_lib",

@@ -4,6 +4,7 @@ import os
 from collections import defaultdict
 from collections import OrderedDict
 from data.treebank import sentence_pb2
+from learner import feature_extractor
 from learner import featureset_pb2
 from learner import perceptron
 from google.protobuf import text_format
@@ -35,25 +36,52 @@ class PerceptronTest(unittest.TestCase):
     
     def test_MakeFeaturesFromGold(self):
         pass
-        #TODO
-    
+    '''
     def test_MakeAllFeatures(self):
         percept = perceptron.ArcPerceptron()
         percept.MakeAllFeatures([self.en_test])
         sorted_features = common.SortFeatures(percept._ConvertWeightsToProto())
         expected_features = _read_features_test_data("john_saw_mary_features")
         self.assertEqual(sorted_features, expected_features)
-        
-    
+    '''    
+    '''
     def test_Score(self):
         percept = perceptron.ArcPerceptron()
         percept.LoadFeatures("kerem_ozgurlugunu_load_test")
         self.assertEqual(15, percept._Score(percept._ConvertWeightsToProto()))
-    
-    def test_Predict(self):
-        pass
-        #percept = perceptron.ArcPerceptron()
-        #percept.MakeAllFeatures([test_sentence])
+    '''
+    '''
+    def test_PredictHead(self):
+        percept = perceptron.ArcPerceptron()
+        percept.MakeAllFeatures([self.en_test])
+        init_w = 1
+        for key in percept.weights.keys():
+            for value in percept.weights[key].keys():
+                percept.weights[key][value] += init_w
+                #print(key, value, percept.weights[key][value])
+                init_w += 1
+        test_token = self.en_test.token[3] # saw
+        prediction, features, scores = percept._PredictHead(self.en_test, test_token)
+        #print(scores)
+        #print(prediction)
+        self.assertEqual(scores, [1630, 1660, None, 1665])
+        self.assertEqual(prediction, 3)
+    '''
+    def testTrain(self):
+        percept = perceptron.ArcPerceptron()
+        percept.MakeAllFeatures([self.en_test])
+        init_w = 0.1
+        for key in percept.weights.keys():
+            for value in percept.weights[key].keys():
+                percept.weights[key][value] += init_w
+                #print(key, value, percept.weights[key][value])
+                init_w += 0.1
+        '''
+        f_weights_before_train[saw_root] = GetFeatureWeights(extractor.GetFeatures(..))
+        f_weights_after_train[saw_root] = GetFeatureWeights(extractor.GetFeatures(..))
+        assertTrue(f_weights_after_train[saw_root] == map(lambda x:x+1, f_weights_before_train[saw_root]))
+        '''
+        percept.Train(1, [self.en_test])
     
     def test_LoadFeatures(self):
         percept = perceptron.ArcPerceptron()
@@ -61,17 +89,17 @@ class PerceptronTest(unittest.TestCase):
         percept._ConvertWeightsToProto()
         
         expected_featureset = _read_features_test_data("kerem_ozgurlugunu")
-        percept_keys = [f.name for f in percept.featureset.feature]
-        expected_keys = [f.name for f in expected_featureset.feature]
-        self.assertListEqual(sorted(percept_keys), sorted(expected_keys))
+        percept_fkeys = [f.name for f in percept.featureset.feature]
+        expected_fkeys = [f.name for f in expected_featureset.feature]
+        self.assertListEqual(sorted(percept_fkeys), sorted(expected_fkeys))
         
-        percept_values = [f.value for f in percept.featureset.feature]
-        expected_values = [f.value for f in expected_featureset.feature]
-        self.assertListEqual(sorted(percept_values), sorted(expected_values))
+        percept_fvalues = [f.value for f in percept.featureset.feature]
+        expected_fvalues = [f.value for f in expected_featureset.feature]
+        self.assertListEqual(sorted(percept_fvalues), sorted(expected_fvalues))
         
-        percept_weights = [f.weight for f in percept.featureset.feature]
-        expected_weights = [f.weight for f in expected_featureset.feature]
-        self.assertListEqual(sorted(percept_weights), sorted(expected_weights))
+        percept_fweights = [f.weight for f in percept.featureset.feature]
+        expected_fweights = [f.weight for f in expected_featureset.feature]
+        self.assertListEqual(sorted(percept_fweights), sorted(expected_fweights))
         
 if __name__ == "__main__":
   unittest.main()
