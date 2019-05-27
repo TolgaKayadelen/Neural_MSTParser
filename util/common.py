@@ -87,6 +87,23 @@ def GetValue(token, feat):
         if feat == "lemma":
             return token.lemma.encode("utf-8")
 
+
+# type: print util
+def PPrintWeights(weights, features):
+    """Utility function to pretty print weights for selected features.
+    
+    Args:
+        weights: defaultdict(dict), the weights dict.
+        features: featureset_pb2.FeatureSet, the featureset whose weights 
+            to print.
+    """
+    for f in features.feature:
+        print("f.name: {}\n f.value: {}\n f.weight: {}\n".format(
+            f.name, f.value, weights[f.name][f.value])
+        )
+        print("***---------***")    
+
+
 # type: featureset proto util
 def SortFeatures(featureset):
     print("Sorting FeatureSet proto..")
