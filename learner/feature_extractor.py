@@ -24,7 +24,7 @@ from learner import featureset_pb2
 class FeatureExtractor:
     
     def __init__(self, postag_window=5, log_distance=1.5):
-        """Initialize a feature set from the features file.
+        """Initialize this feature extractor with a featureset file.
         
         Args:
             postag_window = include a feature for each word pair that contains this many POS tags. 
@@ -32,12 +32,18 @@ class FeatureExtractor:
                  linear distance. 
         
         """
-        #self._featureset = OrderedDict()
-        self._featureset = featureset_pb2.FeatureSet()
+        #TODO: create a data dependency for it to be available in unit tests.
         self._feature_file = "./learner/features.txt"
         self._postag_window = postag_window
         self._log_distance = log_distance
         
+    def InitializeFeatureNames(self):
+        """Initialize a featureset proto with the feature names read from featureset file.
+        
+        Returns:
+            featureset: featureset_pb2.FeatureSet(), only has feature_names.
+        """
+        featureset = featureset_pb2.FeatureSet()    
         for i, l in enumerate(open(self._feature_file, "r")):
             l = l.split('#')[0].split('//')[0].strip()
             #print("l is: {}".format(l))
@@ -45,12 +51,13 @@ class FeatureExtractor:
                 continue
             try:
                  # Initialize the featureset vector only with feature names.     
-                 self._featureset.feature.add(name=l.lower())
+                 featureset.feature.add(name=l.lower())
             except:
                 raise
                 logging.critical("%s line %d: cannot parse rule: %r", self._feature_file, i, l)
                 sys.exit(1)
-    
+        return featureset
+        
     def GetFeatures(self, sentence, head, child, use_tree_features=True):
         """Return the values for the features in the featureset for head and child tokens.
         
@@ -65,7 +72,8 @@ class FeatureExtractor:
         """
         #TODO: implement the case where use_tree_features = False.
         #print("head is: {}', child is: {}'".format(head.word.encode("utf-8"), child.word.encode("utf-8")))
-        for feature in self._featureset.feature:
+        featureset = self.InitializeFeatureNames()
+        for feature in featureset.feature:
             #feature = [t.strip() for t in re.split(r'[\.\s\[\]\(\)]+', key.strip()) if t.strip()]
             feats = [t.strip() for t in feature.name.split("+")]
             #print("feature {}".format(feats))
@@ -75,7 +83,7 @@ class FeatureExtractor:
                 child=child,
                 use_tree_features = use_tree_features)
             feature.value = value
-        return self._featureset
+        return featureset
     
     def _GetFeatureValue(self, feature, sentence=None, head=None, child=None, use_tree_features=True):
         """Get Feature Value. 
