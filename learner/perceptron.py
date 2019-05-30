@@ -206,7 +206,7 @@ class ArcPerceptron(AveragedPerceptron):
                         use_tree_features=True)
                     )
    
-    def _Score(self, features):
+    def Score(self, features):
         """Score a feature vector.
         
         features = featureset_pb2.FeatureSet()
@@ -248,7 +248,7 @@ class ArcPerceptron(AveragedPerceptron):
                 continue
             #print("head: {}, child: {}".format(head.word, token.word))
             featureset = self._extractor.GetFeatures(sentence, head, token, use_tree_features=True)
-            score = self._Score(featureset)
+            score = self.Score(featureset)
             #print("score for this head-child {}".format(score))
             features.append(featureset)
             scores.append(score)

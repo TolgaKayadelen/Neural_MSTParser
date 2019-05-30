@@ -46,11 +46,11 @@ class PerceptronTest(unittest.TestCase):
         self.assertEqual(sorted_features, expected_features)
         print("Passed!")
         
-    def test_Score(self):
-        print("Running test_Score..")
+    def testScore(self):
+        print("Running testScore..")
         percept = perceptron.ArcPerceptron()
         percept.LoadFeatures("kerem_ozgurlugunu_load_test")
-        self.assertEqual(15, percept._Score(percept._ConvertWeightsToProto()))
+        self.assertEqual(15, percept.Score(percept._ConvertWeightsToProto()))
         print("Passed!")
       
     def test_PredictHead(self):
