@@ -22,6 +22,9 @@ def _read_common_test_sentence(basename):
     path = os.path.join(_COMMON_DIR, "{}.pbtxt".format(basename))
     return text_format.Parse(_read_file(path), sentence_pb2.Sentence())
 
+def _read_connection_test_sentence(basename):
+    path = os.path.join(_CONNECTION_DIR, "{}.pbtxt".format(basename))
+    return text_format.Parse(_read_file(path), sentence_pb2.Sentence())
 
 class CommonTest(unittest.TestCase):
     
@@ -71,6 +74,13 @@ class CommonTest(unittest.TestCase):
         function_lemmas = [common.GetValue(token, "lemma") for token in tokens]
         self.assertEqual(expected_lemmas, function_lemmas)
         self.assertEqual(expected_categories, function_categories)
+    
+    def test_ConnectSentenceNodes(self):
+        non_connected = _read_connection_test_sentence("non_connected_sentence")
+        connected = _read_connection_test_sentence("connected_sentence")
+        test_connected = common.ConnectSentenceNodes(non_connected)
+        #print(text_format.MessageToString(test_connected, as_utf8=True))
+        self.assertEqual(connected, test_connected)
 
         
 if __name__ == "__main__":

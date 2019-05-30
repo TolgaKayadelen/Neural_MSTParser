@@ -6,6 +6,7 @@ py_binary(
 	srcs = ["max_span_tree.py"],
 	deps = [
 		"//data/treebank:sentence_py_pb2",
+		"//util:common",
 		"//util:reader",
 	],
 )

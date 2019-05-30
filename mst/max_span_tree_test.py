@@ -23,12 +23,12 @@ def _read_file(path):
         read = f.read()
     return read
 
-def _read_connection_test_sentence(basename):
-    path = os.path.join(_CONNECTION_DIR, "{}.pbtxt".format(basename))
-    return text_format.Parse(_read_file(path), sentence_pb2.Sentence())
-
 def _read_cycle_test_sentence(basename):
     path = os.path.join(_CYCLE_DIR, "{}.pbtxt".format(basename))
+    return text_format.Parse(_read_file(path), sentence_pb2.Sentence())
+
+def _read_connection_test_sentence(basename):
+    path = os.path.join(_CONNECTION_DIR, "{}.pbtxt".format(basename))
     return text_format.Parse(_read_file(path), sentence_pb2.Sentence())
 
 def _read_mst_test_sentence(basename):
@@ -125,14 +125,7 @@ class MaximumSpanningTreeTest(unittest.TestCase):
         noncyclic_3 = _read_cycle_test_sentence("noncyclic_sentence_3")
         cyclic, path = max_span_tree._Cycle(noncyclic_3)
         self.assertFalse(cyclic)
-        
-        
-    def test_ConnectSentenceNodes(self):
-        non_connected = _read_connection_test_sentence("non_connected_sentence")
-        connected = _read_connection_test_sentence("connected_sentence")
-        test_connected = max_span_tree.ConnectSentenceNodes(non_connected)
-        #print(text_format.MessageToString(test_connected, as_utf8=True))
-        self.assertEqual(connected, test_connected)
+
     
     def test_DropCandidateHeads(self):
         no_ch = _read_connection_test_sentence("non_connected_sentence")
@@ -257,9 +250,7 @@ class MaximumSpanningTreeTest(unittest.TestCase):
         self.assertTrue(len(expected_sentence.token) == 2)
         self.assertTrue(expected_sentence.token[0].word == "None")
         self.assertTrue(expected_sentence.token[1].word == "Mary")
-        
-    def test_GetTokenIndex(self):
-        pass
+
     
     def testGetTokenByAddressAlt(self):
         pass

@@ -66,6 +66,44 @@ def GetBetweenTokens(sentence, head, child, dummy=0):
         btw_tokens = sentence.token[head.index+1+dummy:child.index+dummy]
     return btw_tokens if btw_tokens else [None]
 
+
+# type: sentence util
+def ConnectSentenceNodes(sentence):
+    """Connect the tokens (nodes) of a sentence to every other token.
+    
+    Every token has every other token as a head candidate, except for itself. 
+    The ROOT token has no head candidates. 
+    
+    Args:
+        sentence: A protocol buffer Sentence object. 
+    Returns:
+        The sentence where all tokens are connected.
+    """
+    token_connections = [
+        (i, j) 
+        for i in sentence.token for j in sentence.token[::-1] 
+        if i.word != j.word and i.word.lower() != "root"
+        ]
+    
+    for edge in token_connections:
+        # ch: candidate_head
+        ch = edge[0].candidate_head.add()
+        # ch.address = _GetTokenIndex(sentence.token, edge[1])
+        ch.address = edge[1].index
+        ch.arc_score = 0.0 # default
+    
+    # Sanity checking:
+    # Each token should have sentence.length - 1 number of candidate heads, i.e. 
+    # all other tokens except for itself. The root token (indexed 0) should not
+    # have any candidate heads. 
+    for token in sentence.token:
+        if token.index == 0:
+            assert len(token.candidate_head) == 0
+        else:
+            assert len(token.candidate_head) == len(sentence.token) - 1
+    return sentence
+
+
 # type: token util
 def GetValue(token, feat):
     """Returns the desired value for a feature of a token.

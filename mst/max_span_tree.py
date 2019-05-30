@@ -7,7 +7,8 @@ The algorithm used for finding the MST is Chu-Liu-Edmonds.
 
 import argparse
 from collections import defaultdict
-from data.treebank import sentence_pb2 
+from data.treebank import sentence_pb2
+from util import common 
 from util import reader
 
 import logging
@@ -89,42 +90,6 @@ def _GreedyMst(sentence):
         token.selected_head.arc_score = max_arc_score
     return sentence
                 
-
-def ConnectSentenceNodes(sentence):
-    """Connect the tokens (nodes) of a sentence to every other token.
-    
-    Every token has every other token as a head candidate, except for itself. 
-    The ROOT token has no head candidates. 
-    
-    Args:
-        sentence: A protocol buffer Sentence object. 
-    Returns:
-        The sentence where all tokens are connected.
-    """
-    token_connections = [
-        (i, j) 
-        for i in sentence.token for j in sentence.token[::-1] 
-        if i.word != j.word and i.word.lower() != "root"
-        ]
-    
-    for edge in token_connections:
-        # ch: candidate_head
-        ch = edge[0].candidate_head.add()
-        # ch.address = _GetTokenIndex(sentence.token, edge[1])
-        ch.address = edge[1].index
-        ch.arc_score = 0.0 # default
-    
-    # Sanity checking:
-    # Each token should have sentence.length - 1 number of candidate heads, i.e. 
-    # all other tokens except for itself. The root token (indexed 0) should not
-    # have any candidate heads. 
-    for token in sentence.token:
-        if _GetTokenIndex(sentence.token, token) == 0:
-            assert len(token.candidate_head) == 0
-        else:
-            assert len(token.candidate_head) == len(sentence.token) - 1
-    return sentence
-    
 
 def _DropCandidateHeads(sentence):
     """Removes the candidate head fields from a sentence where mst is computed. 
@@ -496,23 +461,6 @@ def _GetSentenceWeight(sentence):
     return weight
 
 
-def _GetTokenIndex(tokens, token):
-    """Return the index of a token in the sentence.
-    
-    Note that this is safer than calling token.index from the proto and
-    should be preferred where possible. The reason is that index is an
-    optional field and might not have been initialized at all. In that
-    case the proto returns 0, which can break the code. 
-    
-    Args:
-        tokens: list of tokens in a protocol buffer Sentence object.
-        token: the token of which we want to get the index.
-    Returns:
-        int, the index of the token.
-    """
-    return list(tokens).index(token)
-
-
 def _GetTokenByAddress(tokens, address):
     """Returns the token in this address.
     args: 
@@ -541,7 +489,7 @@ def GetTokenByAddressAlt(tokens, address):
 def main(args):
     sentence = reader.ReadSentenceProto(args.input_file)
     logging.info("""Input sentence is: {}""".format(sentence))
-    graph = ConnectSentenceNodes(sentence)
+    graph = common.ConnectSentenceNodes(sentence)
     mst = ChuLiuEdmonds(graph)
     #sentence = sentence_pb2.Sentence()
     #with open(args.input_file, "rb") as sentence_proto:
