@@ -185,7 +185,7 @@ class ArcPerceptron(AveragedPerceptron):
             training_data: list of sentence_pb2.Sentence() objects.
         """
         for sentence in training_data:
-            assert isinstance(sentence, sentence_pb2.Sentence), "Unaccepted data type."
+            assert isinstance(sentence, sentence_pb2.Sentence), "Unexpected data type!!"
             # TODO: should sentence extension be done when we read the sentence.
             sentence = common.ExtendSentence(sentence)
             for token in sentence.token:
@@ -312,6 +312,15 @@ class ArcPerceptron(AveragedPerceptron):
             upd_feat(feature.name, feature.value, -1.0)
     
     def Train(self, training_data):
+        """Trains arc perceptron for one epoch.
+        
+        Args: 
+            training_data: list, list of sentence_pb2.Sentence()
+
+        Returns:
+            correct: int, number of correct heads
+            nr_child: number of arcs in the sentence. 
+        """
         correct = 0
         nr_child = 0
         for sentence in training_data:
@@ -337,7 +346,7 @@ class ArcPerceptron(AveragedPerceptron):
 def main():
     perceptron = ArcPerceptron()
     #extractor = FeatureExtractor(filename="./learner/features.txt")
-    test_sentence = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
+    test_sentence = reader.ReadSentenceTextProto("./data/testdata/perceptron/john_saw_mary.pbtxt")
     perceptron.MakeAllFeatures([test_sentence])
 
 
