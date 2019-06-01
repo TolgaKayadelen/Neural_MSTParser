@@ -9,6 +9,8 @@ from data.treebank import sentence_pb2
 from learner import featureset_pb2
 from util import reader
 
+import logging
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
 
 #type: sentence util
@@ -104,6 +106,33 @@ def ConnectSentenceNodes(sentence):
     return sentence
 
 
+#type: sentence util
+def DropDummyTokens(sentence):
+    """Drops the dummy START and END tokens from the sentence. 
+    
+    Args:
+        sentence: sentence_pb2.Sentence()
+    Returns: 
+        sentence: sentence where the dummy tokens are dropped. 
+    """
+    logging.info("Dropping dummy START and END tokens.")
+    if not sentence.token[0].index == -1 and sentence.token[-1].index == -2:
+        assert sentence.length == len(sentence.token), """Sentence token count 
+            doesn't match sentence.length attribute!"""
+        logging.warning("The sentence doesn't have any dummy tokens.")
+        return sentence
+    else:
+        new_s = sentence_pb2.Sentence()
+        new_s.length = sentence.length
+        for token in sentence.token:
+            if token.index in [-1, -2] or token.word in ["START_TOK", "END_TOK"]:
+                continue
+            t = new_s.token.add()
+            t.CopyFrom(token)
+        assert new_s.length == len(new_s.token), """Sentence token count
+            doesn't match sentence.length attribute!"""
+        return new_s
+
 # type: token util
 def GetValue(token, feat):
     """Returns the desired value for a feature of a token.
@@ -165,7 +194,7 @@ def GetFeatureWeights(weights, features):
     """
     return [weights[f.name][f.value] for f in features.feature]
 
-
+# type: featureset proto util
 def SortFeatures(featureset):
     #print("Sorting FeatureSet proto..")
     unsorted_list = []
