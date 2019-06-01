@@ -187,7 +187,10 @@ class ArcPerceptron(AveragedPerceptron):
         for sentence in training_data:
             assert isinstance(sentence, sentence_pb2.Sentence), "Unexpected data type!!"
             # TODO: should sentence extension be done when we read the sentence.
+            sentence.length = len(sentence.token)
             sentence = common.ExtendSentence(sentence)
+            # we add one dummy token to the begin and another one to the end.
+            assert len(sentence.token) == sentence.length + 2
             for token in sentence.token:
                 # skip where token is the dummy start token, dummy end token, or the root token. 
                 if not token.selected_head or token.selected_head.address == -1:
