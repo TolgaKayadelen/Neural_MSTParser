@@ -2,7 +2,6 @@
 
 """Dependency Parser."""
 
-
 import numpy as np
 from learner.perceptron import ArcPerceptron
 from data.treebank import sentence_pb2

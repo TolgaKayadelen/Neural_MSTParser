@@ -39,9 +39,16 @@ class DependencyParserTest(unittest.TestCase):
         self.assertTrue(acc == 100)
     
     def testParse(self):
+        # parse on the training data
         eval_data = common.ConnectSentenceNodes(self.en_eval)
         eval_data = common.ExtendSentence(eval_data)
         parsed, predicted_heads = self.parser.Parse(eval_data)
+        self.assertEqual(predicted_heads, [-1, 2, 0, 2])
+        
+        # test on some other test data
+        test_data = common.ConnectSentenceNodes(_read_parser_test_data("sam_killed_pam_eval"))
+        test_data = common.ExtendSentence(test_data)
+        parsed, predicted_heads = self.parser.Parse(test_data)
         self.assertEqual(predicted_heads, [-1, 2, 0, 2])
 
 
