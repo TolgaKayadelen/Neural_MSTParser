@@ -60,7 +60,6 @@ class DependencyParser:
                     child = token,
                     use_tree_features=True
                 )
-                #w+=1
                 score = self.arc_perceptron.Score(features)
                 score_matrix[token.index][head.index] = score
                 #print("score {}".format(score))
@@ -70,7 +69,8 @@ class DependencyParser:
         #print(probs)
         #print(probs.sum(axis=1))
         parsed, predicted_heads = self.decoder(sentence, probs)
-        return predicted_heads
+        #print(parsed)
+        return parsed, predicted_heads
         
     def Train(self, niters, training_data, dev_data=None, approx=1):
         """Train the arc perceptron."""
@@ -78,17 +78,14 @@ class DependencyParser:
             #Train arc perceptron for one epoch.
             nr_correct_heads, nr_childs = self.arc_perceptron.Train(training_data)
             #Evaluate the arc perceptron
-            #accuracy = nr_correct_heads * 100 / nr_childs
-            #print("accuracy after iter {} = %{}".format(i, accuracy))
-            #print(training_data[:approx])
-            train_acc = self.Evaluate(training_data[:approx])
-            logging.info("Train acc after iter {}: {}".format(i, train_acc))
+            train_acc = self._Evaluate(training_data[:approx])
+            logging.info("Train acc after iter {}: {}".format(i+1, train_acc))
             #dev_acc = self.Evaluate(dev_data[:approx])
             if train_acc == 100:
                 break
             np.random.shuffle(training_data)
     
-    def Evaluate(self, eval_data):
+    def _Evaluate(self, eval_data):
         """Evaluates the performance of arc perceptron on data.
         
         Args:
@@ -98,16 +95,18 @@ class DependencyParser:
         
         """
         acc = 0.0
-        print(len(eval_data))
+        #print(len(eval_data))
         for sentence in eval_data:
             assert sentence.token[0].index == -1 and sentence.token[-1].index == -2
             assert sentence.HasField("length"), "Sentence must have a length!" 
-            predicted_heads = self.Parse(sentence)
+            _, predicted_heads = self.Parse(sentence)
             # get the gold heads for tokens except for the dummy ones.
             gold_heads = [token.selected_head.address for token in sentence.token[1:-1]]
             #print(predicted_heads, gold_heads)
-            assert len(predicted_heads) == len(gold_heads), "Number of predicted and gold heads don't match!!!"
+            assert len(predicted_heads) == len(gold_heads), """Number of predicted and
+                gold heads don't match!!!"""
             acc += self._Accuracy(predicted_heads, gold_heads)
+            print(acc)
         return acc / len(eval_data)
     
     
@@ -126,19 +125,6 @@ class DependencyParser:
 
 def main():
     parser = DependencyParser()
-    #extractor = FeatureExtractor(filename="./learner/features.txt")
-    test_sentence = reader.ReadSentenceTextProto("./data/testdata/parser/john_saw_mary.pbtxt")
-    test_sentence = common.ConnectSentenceNodes(test_sentence)
-    parser.MakeFeatures([test_sentence])
-    init_w = 0.1
-    for key in parser.arc_perceptron.weights.keys():
-        for value in parser.arc_perceptron.weights[key].keys():
-            parser.arc_perceptron.weights[key][value] += init_w
-            init_w += 0.1
-    parser.Train(3, [test_sentence])
-    #parser.Parse(test_sentence)
-    #common.PPrintWeights(parser.arc_perceptron.weights)
-
 
 if __name__ == "__main__":
     main()

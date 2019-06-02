@@ -119,7 +119,7 @@ def DropDummyTokens(sentence):
     if not sentence.token[0].index == -1 and sentence.token[-1].index == -2:
         assert sentence.length == len(sentence.token), """Sentence token count 
             doesn't match sentence.length attribute!"""
-        logging.warning("The sentence doesn't have any dummy tokens.")
+        logging.info("The sentence doesn't have any dummy tokens.")
         return sentence
     else:
         new_s = sentence_pb2.Sentence()

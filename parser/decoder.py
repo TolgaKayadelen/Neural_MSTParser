@@ -23,6 +23,7 @@ class Decoder:
                         arc_score = scores[token.index, i],
                         address = i
                     )
+            #print(sentence)
             #print(cle(sentence)), [token.selected_head.address for token in sentence.token]
             return cle(sentence), [token.selected_head.address for token in sentence.token]
         else:
