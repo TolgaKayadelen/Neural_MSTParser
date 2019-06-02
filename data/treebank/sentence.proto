@@ -1,5 +1,5 @@
 
-// Protocol buffer specification for Treebank. 
+// Protocol buffer specification for Sentence. 
 
 syntax = "proto2";
 

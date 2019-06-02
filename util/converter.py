@@ -13,16 +13,16 @@ Can also keep or remove igs based on the keep_igs parameter.
 
 Usage: 
 Convert from conll to protobuf and write as proto
-bazel-bin/data/treebank/converter 
+bazel-bin/util/converter 
 --input_file=/path/to/input/conll/corpus 
 --output_file=/path/to/output_file # do not give file extension
 --writetext=True
 --writeproto=True
 
 Example:
-bazel-bin/data/treebank/converter 
---input_file=./data/UDv23/UD_Turkish_IMST/tr_imst_ud_dev.conllu 
---output_file=./data/treebank/sentence_5 
+bazel-bin/util/converter 
+--input_file=./data/UDv23/Turkish/UD_Turkish_IMST/tr_imst_ud_dev.conllu 
+--output_file=./data/UDv23/Turkish/protos/sentence_4 
 --writetext=True
 
 
@@ -30,6 +30,7 @@ bazel-bin/data/treebank/converter
 
 from __future__ import print_function
 from data.treebank import sentence_pb2
+from data.treebank import treebank_pb2
 from util import reader, writer
 from collections import defaultdict, OrderedDict
 from copy import deepcopy
@@ -52,7 +53,7 @@ class Converter:
         #self.sentence_list = self._ReadSentences(self._corpus)
         self.sentence_list = reader.ReadConllX(self._corpus)
         
-    def ConvertConllToProto(self, conll_sentences, output_file, writetext, writeproto, keep_igs=True):
+    def ConvertConllToProto(self, conll_sentences, output_file, writetext, writeproto, prototype, keep_igs=True):
         """Converts conll-X formatted sentences to proto buffer objects.    
         Args:
             dep_graphs: list of dependency graphs.
@@ -103,14 +104,32 @@ class Converter:
         assert len(conll_sentences) == len(sentence_protos)
         logging.debug("%d sentences converted to protocol buffer." % len(conll_sentences))
         
-        if writetext:
-            text_output = output_file + ".pbtxt"
-            for sentence_proto in sentence_protos:
-                writer.write_proto_as_text(sentence_proto, text_output)
-        if writeproto:
-            proto_output = output_file + ".protobuf"
-            for sentence_proto in sentence_protos:
-                writer.write_proto_as_proto(sentence_proto, proto_output)    
+        assert prototype in ["sentence", "treebank"], "Unknown prototype!!"
+        
+        if prototype == "sentence":
+            if writetext:
+                text_output = output_file + ".pbtxt"
+                for sentence_proto in sentence_protos:
+                    writer.write_proto_as_text(sentence_proto, text_output)
+            if writeproto:
+                proto_output = output_file + ".protobuf"
+                for sentence_proto in sentence_protos:
+                    writer.write_proto_as_proto(sentence_proto, proto_output)
+        else:
+            if writetext:
+                text_output = output_file + ".pbtxt"
+                treebank = treebank_pb2.Treebank()
+                for sentence_proto in sentence_protos:
+                    s = treebank.sentence.add()
+                    s.CopyFrom(sentence_proto)
+                writer.write_proto_as_text(treebank, text_output)
+            if writeproto:
+                proto_output = output_file + ".protobuf"
+                treebank = treebank_pb2.Treebank()
+                for sentence_proto in sentence_protos:
+                    s = treebank.sentence.add()
+                    s.CopyFrom(sentence_proto)
+                writer.write_proto_as_proto(treebank, proto_output)            
         
         return sentence_protos        
     
@@ -180,6 +199,8 @@ class Converter:
         metadata = {}
         token = 0
         for line in sentence:
+            if line.startswith('# newdoc id'):
+                continue
             if line.startswith("# sent_id"):
                 metadata["sent_id"] = line.split("=")[1].strip()
                 continue
@@ -245,12 +266,13 @@ class Converter:
 
 def main(args):
     converter = Converter(args.input_file)
-    sentences = [converter.sentence_list[4]]
+    sentences = converter.sentence_list[0:10]
     protos = converter.ConvertConllToProto(
         conll_sentences = sentences, 
         output_file = args.output_file, 
         writetext = args.writetext, 
-        writeproto = args.writeproto
+        writeproto = args.writeproto,
+        prototype = args.prototype
         )
     #written_proto = reader.ReadSentenceProto(args.output_file)
     # DO NOT DELETE THIS FOR THE SAKE OF FUTURE REFERENCE
@@ -263,5 +285,6 @@ if __name__ == "__main__":
     parser.add_argument("--output_file", help="The output file to write the data.")
     parser.add_argument("--writetext", help="wheter to save the output also in .pbtxt format", default=True)
     parser.add_argument("--writeproto", help="whether to save the output in proto format.", default=False)
+    parser.add_argument("--prototype", help="whether sentence or treebank proto.", default="sentence")
     args = parser.parse_args()
     main(args)

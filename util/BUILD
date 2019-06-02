@@ -26,9 +26,10 @@ py_binary(
 	name = "converter",
 	srcs = ["converter.py"],
 	deps = [
-	"//data/treebank:sentence_py_pb2",
-	"//util:reader",
-	"//util:writer",
+		"//data/treebank:sentence_py_pb2",
+		"//data/treebank:treebank_py_pb2",
+		"//util:reader",
+		"//util:writer",
 	],
 )
 
