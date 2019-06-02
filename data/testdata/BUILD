@@ -42,21 +42,38 @@ filegroup(
 		"chuliuedmonds/*.pbtxt",
 	]),
 )
+
 filegroup(
 	name = "common",
 	srcs = glob([
 		"common/*.pbtxt",
 	]),
 )
+
 filegroup(
 	name = "features",
 	srcs = glob([
 		"features/*.pbtxt",
 	]),
 )
+
 filegroup(
 	name = "perceptron",
 	srcs = glob([
 		"perceptron/*.pbtxt",
 	]),
 )
+
+filegroup(
+	name = "parser",
+	srcs = glob([
+		"parser/*.pbtxt",
+	]),
+)
+
+
+
+
+
+
+
