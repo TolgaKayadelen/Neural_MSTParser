@@ -11,14 +11,3 @@ py_proto_library(
 )
 
 
-# Binaries.
-py_binary(
-	name = "converter",
-	srcs = ["converter.py"],
-	deps = [
-	"//data/treebank:sentence_py_pb2",
-	"//util:reader",
-	"//util:writer",
-	],
-)
-

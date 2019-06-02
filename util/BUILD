@@ -22,6 +22,16 @@ py_binary(
 		],
 )
 
+py_binary(
+	name = "converter",
+	srcs = ["converter.py"],
+	deps = [
+	"//data/treebank:sentence_py_pb2",
+	"//util:reader",
+	"//util:writer",
+	],
+)
+
 
 #Test
 # Tests.
