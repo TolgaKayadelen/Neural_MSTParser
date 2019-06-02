@@ -216,10 +216,11 @@ class ArcPerceptron(AveragedPerceptron):
         """
         score = 0.0
         for feature in features.feature:
-            if feature.name not in self.weights:
+            #if feature.name not in self.weights:
+            if feature.value not in self.weights[feature.name]:
                 #print("not in weights {}, {}".format(feature.name, feature.value))
                 continue
-            #print("feature is {}".format(self.weights[feature.name][feature.value]))
+            #print("feature is {} {}".format(feature.name, feature.value))
             score += self.weights[feature.name][feature.value]
             #print("weights for the features {}".format(self.weights[feature.name][feature.value]))
         return score
