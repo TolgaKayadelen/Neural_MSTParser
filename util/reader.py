@@ -4,6 +4,7 @@
 
 from __future__ import print_function
 from data.treebank import sentence_pb2
+from data.treebank import treebank_pb2
 from google.protobuf import text_format
 import argparse
 import logging
@@ -61,6 +62,18 @@ def ReadSentenceProto(path):
     with open(path, "rb") as sentence_proto:
         sentence.ParseFromString(sentence_proto.read())
     return sentence
+
+def ReadTreebankProto(path):
+    """Read proto buffer (binary) formatted treebank message from path.
+    Args:
+        path: path to binary proto file.
+    Returns:
+        a protocol buffer object
+    """
+    treebank = treebank_pb2.Treebank()
+    with open(path, "rb") as trb_proto:
+        treebank.ParseFromString(trb_proto.read())
+    return treebank
     
 
 def _ReadFile(path):

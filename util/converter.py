@@ -266,7 +266,7 @@ class Converter:
 
 def main(args):
     converter = Converter(args.input_file)
-    sentences = converter.sentence_list[0:10]
+    sentences = [converter.sentence_list[0]]
     protos = converter.ConvertConllToProto(
         conll_sentences = sentences, 
         output_file = args.output_file, 

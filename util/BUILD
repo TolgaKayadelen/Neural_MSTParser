@@ -9,6 +9,10 @@ py_library(
 py_library(
     name = "reader",
     srcs = ["reader.py"],
+	deps = [
+		"//data/treebank:sentence_py_pb2",
+		"//data/treebank:treebank_py_pb2",
+	],
 )
 
 # Binaries
@@ -19,7 +23,7 @@ py_binary(
 		"//data/treebank:sentence_py_pb2",
 		"//learner:featureset_py_pb2",
 		":reader"
-		],
+	],
 )
 
 py_binary(
