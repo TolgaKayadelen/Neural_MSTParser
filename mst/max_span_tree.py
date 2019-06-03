@@ -26,7 +26,7 @@ def ChuLiuEdmonds(sentence):
     """
     print("\n")
     logging.info("Processing sentence --> {}".format(
-        " ".join([token.word for token in sentence.token[1:]])))
+        " ".join([token.word.encode("utf-8") for token in sentence.token[1:]])))
     if not sentence.HasField("length"):
         sentence.length = len(sentence.token)
         #logging.info("Sentence length: {}".format(sentence.length))

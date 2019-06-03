@@ -27,30 +27,49 @@ class DependencyParserTest(unittest.TestCase):
     """Tests for the dependency parser module."""
     
     def setUp(self):
+        # Train an English parser with an English sentence.
+        
         self.en_train = _read_parser_test_data("john_saw_mary_train")
         self.en_eval = _read_parser_test_data("john_saw_mary_eval")
-        self.parser = depparse.DependencyParser()
-        self.training_data = map(common.ConnectSentenceNodes, [self.en_train])
-        self.parser.MakeFeatures(self.training_data)
-        self.parser.Train(3, self.training_data)
+        self.en_parser = depparse.DependencyParser()
+        self.en_training_data = map(common.ConnectSentenceNodes, [self.en_train])
+        self.en_parser.MakeFeatures(self.en_training_data)
+        self.en_parser.Train(3, self.en_training_data)
+        
+        
+        #Train a Turkish parser with a Turkish sentence.
+        self.tr_train = _read_parser_test_data("kerem_train")
+        self.tr_eval = _read_parser_test_data("kerem_eval")
+        self.tr_parser = depparse.DependencyParser()
+        self.tr_training_data = map(common.ConnectSentenceNodes, [self.tr_train])
+        self.tr_parser.MakeFeatures(self.tr_training_data)
+        self.tr_parser.Train(3, self.tr_training_data)
     
     def testEvaluate(self):        
-        acc = self.parser._Evaluate(self.training_data)
-        self.assertTrue(acc == 100)
+        en_acc = self.en_parser._Evaluate(self.en_training_data)
+        self.assertTrue(en_acc == 100)
+        
+        tr_acc = self.tr_parser._Evaluate(self.tr_training_data)
+        self.assertTrue(tr_acc == 100)
     
     def testParse(self):
         # parse on the training data
-        eval_data = common.ConnectSentenceNodes(self.en_eval)
-        eval_data = common.ExtendSentence(eval_data)
-        parsed, predicted_heads = self.parser.Parse(eval_data)
-        self.assertEqual(predicted_heads, [-1, 2, 0, 2])
+        en_eval_data = common.ConnectSentenceNodes(self.en_eval)
+        en_eval_data = common.ExtendSentence(en_eval_data)
+        en_parsed, en_predicted_heads = self.en_parser.Parse(en_eval_data)
+        self.assertEqual(en_predicted_heads, [-1, 2, 0, 2])
         
         # test on some other test data
-        test_data = common.ConnectSentenceNodes(_read_parser_test_data("sam_killed_pam_eval"))
-        test_data = common.ExtendSentence(test_data)
-        parsed, predicted_heads = self.parser.Parse(test_data)
-        self.assertEqual(predicted_heads, [-1, 2, 0, 2])
-
+        en_test_data = common.ConnectSentenceNodes(_read_parser_test_data("sam_killed_pam_eval"))
+        en_test_data = common.ExtendSentence(en_test_data)
+        en_parsed, en_predicted_heads = self.en_parser.Parse(en_test_data)
+        self.assertEqual(en_predicted_heads, [-1, 2, 0, 2])
+        
+        tr_eval_data = common.ConnectSentenceNodes(self.tr_eval)
+        tr_eval_data = common.ExtendSentence(tr_eval_data)
+        tr_parsed, tr_predicted_heads = self.tr_parser.Parse(tr_eval_data)
+        self.assertEqual(tr_predicted_heads, [-1, 8, 8, 4, 8, 4, 4, 8, 0, 8])
+    
 
 if __name__ == "__main__":
   unittest.main()

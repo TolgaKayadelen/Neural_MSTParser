@@ -2,6 +2,7 @@
 
 """Dependency Tree Decoder."""
 
+from google.protobuf import text_format
 from mst.max_span_tree import ChuLiuEdmonds as cle
 from util.common import DropDummyTokens
 
@@ -24,7 +25,10 @@ class Decoder:
                         address = i
                     )
             #print(sentence)
-            #print(cle(sentence)), [token.selected_head.address for token in sentence.token]
-            return cle(sentence), [token.selected_head.address for token in sentence.token]
+            cle_sentence = cle(sentence)
+            heads = [token.selected_head.address for token in sentence.token]
+            #print(text_format.MessageToString(cle_sentence, as_utf8=True))
+            #print(heads)
+            return cle_sentence, heads
         else:
             raise Exception("Only mst decoding is available at this moment!")
