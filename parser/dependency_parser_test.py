@@ -44,6 +44,8 @@ class DependencyParserTest(unittest.TestCase):
         self.tr_training_data = map(common.ConnectSentenceNodes, [self.tr_train])
         self.tr_parser.MakeFeatures(self.tr_training_data)
         self.tr_parser.Train(3, self.tr_training_data)
+        
+        #common.PPrintWeights(self.tr_parser.arc_perceptron.weights)
     
     def testEvaluate(self):        
         en_acc = self.en_parser._Evaluate(self.en_training_data)

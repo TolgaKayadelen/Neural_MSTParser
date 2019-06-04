@@ -171,7 +171,7 @@ def PPrintWeights(weights, features=None):
         for name in weights.keys():
             for value in weights[name].keys():
                 print("name: {}\n value: {}\n wta: {}\n".format(
-                    name, value, weights[name][value])
+                    name.encode("utf-8"), value.encode("utf-8"), weights[name][value])
                 )
         print("***---------***")
     else:
