@@ -20,15 +20,21 @@ import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
 
-def _get_data(args):
+def _get_data(args, split=[75,25]):
+    assert split[0] + split[1] == 100, "Cannot split data!!"
     _TREEBANK_DIR = "data/UDv23"
     _TRAIN_DATA_DIR = os.path.join(_TREEBANK_DIR, args.language, "training")
     logging.info("Loading dataset")
     path = os.path.join(_TRAIN_DATA_DIR, "{}.protobuf".format(args.data))
     treebank = reader.ReadTreebankProto(path)
-    training_data = [sentence for sentence in treebank.sentence]
+    sentence_list = list(treebank.sentence)
+    training_portion = split[0]/len(sentence_list)
+    dev_portion = split[1]/len(sentence_list)
+    training_data = sentence_list[:training_portion]
+    dev_data = sentence_list[-dev_portion:]
+    #print(dev_data)
     #print(text_format.MessageToString(training_data[0], as_utf8=True))
-    return training_data
+    return training_data, dev_data
 
 def _get_size(object):
     """Dump a pickle of object to accurately get the size."""
@@ -43,9 +49,19 @@ def _get_size(object):
     gigabytes = bytes / 1e9
     return gigabytes
 
-def train(args):
-    training_data = map(common.ConnectSentenceNodes, _get_data(args))
+def train(args, split=[90,10]):
+    t,d = _get_data(args, split)
+    training_data = map(common.ConnectSentenceNodes, t)
     logging.info("Training Data Size {}".format(len(training_data)))
+    if split[1] > 0:
+        dev_data = map(common.ConnectSentenceNodes, d)
+        dev_data = map(common.ExtendSentence, dev_data)
+        logging.info("Dev Data Size {}".format(len(d)))
+    else:
+        dev_data=None
+    del t,d
+   
+    
     #feature_opts = get_feature_opts(args.features)
     
     # Make the model
@@ -62,7 +78,7 @@ def train(args):
     print("Number of features {}".format(sum(totals)))
     #print("Memory used by model: {} GB.".format(_get_size(model)))
     
-    model.Train(5, training_data, approx=7)
+    model.Train(args.epochs, training_data, dev_data=dev_data, approx=len(training_data)/2)
 
     
 

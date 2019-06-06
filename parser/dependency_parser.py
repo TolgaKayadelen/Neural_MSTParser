@@ -78,9 +78,12 @@ class DependencyParser:
             #Train arc perceptron for one epoch.
             nr_correct_heads, nr_childs = self.arc_perceptron.Train(training_data)
             #Evaluate the arc perceptron
-            train_acc = self._Evaluate(training_data[:approx])
+            train_acc = self._Evaluate(training_data)
             logging.info("Train acc after iter {}: {}".format(i+1, train_acc))
-            #dev_acc = self.Evaluate(dev_data[:approx])
+            if dev_data:
+                logging.info("Evaluating on dev data..")
+                dev_acc = self._Evaluate(dev_data)
+                logging.info("Dev acc after iter {}: {}".format(i+1, dev_acc))
             if train_acc == 100:
                 break
             np.random.shuffle(training_data)
@@ -98,7 +101,8 @@ class DependencyParser:
         #print(len(eval_data))
         for sentence in eval_data:
             assert sentence.token[0].index == -1 and sentence.token[-1].index == -2
-            assert sentence.HasField("length"), "Sentence must have a length!" 
+            assert sentence.HasField("length"), "Sentence must have a length!"
+            #common.PPrintTextProto(sentence) 
             _, predicted_heads = self.Parse(sentence)
             # get the gold heads for tokens except for the dummy ones.
             gold_heads = [token.selected_head.address for token in sentence.token[1:-1]]

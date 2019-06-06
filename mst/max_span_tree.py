@@ -494,6 +494,8 @@ def GetTokenByAddressAlt(tokens, address):
     for token in tokens:
         assert token.HasField("index"), "Token doesn't have index."
         list_indices.append(token.index)
+        #common.PPrintTextProto(token)
+        #print(list_indices)
         assert list_indices.count(token.index) == 1, "Can't have two tokens with same index."
         #print("searching for: {}, token_index: {}".format(address, str(token.index)))
         if token.index == address:

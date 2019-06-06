@@ -32,6 +32,7 @@ class DependencyParserTest(unittest.TestCase):
         self.en_train = _read_parser_test_data("john_saw_mary_train")
         self.en_eval = _read_parser_test_data("john_saw_mary_eval")
         self.en_parser = depparse.DependencyParser()
+        # NOTE: connecting sentence nodes is something we need to make features.
         self.en_training_data = map(common.ConnectSentenceNodes, [self.en_train])
         self.en_parser.MakeFeatures(self.en_training_data)
         self.en_parser.Train(3, self.en_training_data)
