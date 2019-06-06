@@ -8,6 +8,7 @@ from copy import deepcopy
 from data.treebank import sentence_pb2
 from learner import featureset_pb2
 from util import reader
+from google.protobuf import text_format
 
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
@@ -84,7 +85,7 @@ def ConnectSentenceNodes(sentence):
     token_connections = [
         (i, j) 
         for i in sentence.token for j in sentence.token[::-1] 
-        if i.word != j.word and i.word.lower() != "root"
+        if i.index != j.index and i.word.lower() != "root"
         ]
     
     for edge in token_connections:
@@ -97,7 +98,7 @@ def ConnectSentenceNodes(sentence):
     # Sanity checking:
     # Each token should have sentence.length - 1 number of candidate heads, i.e. 
     # all other tokens except for itself. The root token (indexed 0) should not
-    # have any candidate heads. 
+    # have any candidate heads.
     for token in sentence.token:
         if token.index == 0:
             assert len(token.candidate_head) == 0
@@ -181,6 +182,10 @@ def PPrintWeights(weights, features=None):
                 )
             print("***---------***")    
 
+
+#type: print util
+def PPrintTextProto(message):
+    print(text_format.MessageToString(message, as_utf8=True))
 
 # type: featureset proto util
 def GetFeatureWeights(weights, features):

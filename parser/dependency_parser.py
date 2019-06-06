@@ -71,9 +71,10 @@ class DependencyParser:
         #print(parsed)
         return parsed, predicted_heads
         
-    def Train(self, niters, training_data, dev_data=None, approx=1):
+    def Train(self, niters, training_data, dev_data=None, approx=10):
         """Train the arc perceptron."""
         for i in range(niters+1):
+            logging.info("iteration {}".format(i+1))
             #Train arc perceptron for one epoch.
             nr_correct_heads, nr_childs = self.arc_perceptron.Train(training_data)
             #Evaluate the arc perceptron

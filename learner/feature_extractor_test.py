@@ -15,7 +15,7 @@ class FeatureExtractorTest(unittest.TestCase):
     
     def setUp(self):
         # Initialize a base document and a feature set for testing
-        self.test_sentence_tr = reader.ReadSentenceProto("./data/treebank/sentence_4.protobuf")
+        self.test_sentence_tr = reader.ReadSentenceTextProto("./data/UDv23/Turkish/training/sentence_4.pbtxt")
         self.test_sentence_en = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
         self.extractor = FeatureExtractor()
     

@@ -27,7 +27,7 @@ def _get_data(args):
     path = os.path.join(_TRAIN_DATA_DIR, "{}.protobuf".format(args.data))
     treebank = reader.ReadTreebankProto(path)
     training_data = [sentence for sentence in treebank.sentence]
-    print(text_format.MessageToString(training_data[0], as_utf8=True))
+    #print(text_format.MessageToString(training_data[0], as_utf8=True))
     return training_data
 
 def _get_size(object):
@@ -45,7 +45,7 @@ def _get_size(object):
 
 def train(args):
     training_data = map(common.ConnectSentenceNodes, _get_data(args))
-    print(len(training_data))
+    logging.info("Training Data Size {}".format(len(training_data)))
     #feature_opts = get_feature_opts(args.features)
     
     # Make the model
@@ -62,7 +62,7 @@ def train(args):
     print("Number of features {}".format(sum(totals)))
     #print("Memory used by model: {} GB.".format(_get_size(model)))
     
-    model.Train(3, training_data)
+    model.Train(5, training_data, approx=7)
 
     
 

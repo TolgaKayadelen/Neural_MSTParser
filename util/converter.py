@@ -38,6 +38,7 @@ from google.protobuf import text_format
 
 import argparse
 import os
+import re
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -207,6 +208,9 @@ class Converter:
             if line.startswith("# text"):
                 metadata["text"] = line.split("=")[1].strip()
                 continue
+            if re.match("([0-9]|[1-9][0-9])-([0-9]|[1-9][0-9])", line):
+                print("skipping {}".format(line))
+                continue
             values = [item.strip() for item in line.split("\t")]
             sentence_dict[token]["idx"] = int(values[0])
             sentence_dict[token]["word"] = values[1]
@@ -266,7 +270,7 @@ class Converter:
 
 def main(args):
     converter = Converter(args.input_file)
-    sentences = [converter.sentence_list[0]]
+    sentences = converter.sentence_list
     protos = converter.ConvertConllToProto(
         conll_sentences = sentences, 
         output_file = args.output_file, 

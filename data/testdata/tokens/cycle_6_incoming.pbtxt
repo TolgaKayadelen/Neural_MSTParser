@@ -12,10 +12,6 @@ candidate_head {
 	address: 1
 	arc_score: 75
 }
-candidate_head {
-	address: 4
-	arc_score: 65 
-}
 # redirections of token 3
 candidate_head {
 	address: 0
@@ -23,10 +19,6 @@ candidate_head {
 }
 candidate_head {
 	address: 1
-	arc_score: 60
-}
-candidate_head {
-	address: 2
 	arc_score: 60
 }
 # redirections of token 4
@@ -37,10 +29,6 @@ candidate_head {
 candidate_head {
 	address: 1
 	arc_score: 65
-}
-candidate_head {
-	address: 3
-	arc_score: 60
 }
 index: 5
 

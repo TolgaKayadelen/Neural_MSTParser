@@ -25,8 +25,9 @@ def ChuLiuEdmonds(sentence):
             of the sentence.
     """
     print("\n")
-    logging.info("Processing sentence --> {}".format(
-        " ".join([token.word.encode("utf-8") for token in sentence.token[1:]])))
+    #logging.info("Processing sentence --> {}".format(
+    #    " ".join([token.word.encode("utf-8") for token in sentence.token[1:]])))
+    #common.PPrintTextProto(sentence)
     if not sentence.HasField("length"):
         sentence.length = len(sentence.token)
         #logging.info("Sentence length: {}".format(sentence.length))
@@ -37,16 +38,16 @@ def ChuLiuEdmonds(sentence):
     logging.info("Checking for cycles...")
     cycle, cycle_path = _Cycle(mst.sentence)
     if not cycle:
-        logging.info("No cycle found in the sentence\n")
+        print("No cycle found in the sentence\n")
         mst.sentence.CopyFrom(_DropCandidateHeads(mst.sentence))
         mst.score = _GetSentenceWeight(mst.sentence)
         return mst
 
-    logging.info("There is cycle in the sentence, cycle_path: {}".format(cycle_path))
+    print("There is cycle in the sentence, cycle_path: {}".format(cycle_path))
     logging.info("Contracting the sentence...")
     new_token, original_edges, contracted = _Contract(mst.sentence, cycle_path)
     logging.info("Contracted sentence: {}".format(
-        " ".join([token.word for token in contracted.token[1:]])))
+        " ".join([token.word.encode("utf-8") for token in contracted.token[1:]])))
     reconstructed_edges = _Reconstruct(
         ChuLiuEdmonds(contracted),
         new_token,
@@ -269,13 +270,26 @@ def _RedirectIncomingArcs(cycle_tokens, new_token, cycle_score):
     token outside the cycle that has a dependant in the cycle is now the
     head of this new token. Also recalculate the arc scores.
     """
+    cycle_token_indexes = [token.index for token in cycle_tokens]
     for token in cycle_tokens:
         for candidate_head in token.candidate_head:
+            # TODO: clean up these comments later.
             # the original selected_head is within the cycle, so skip it. 
-            if candidate_head.address != token.selected_head.address:
-                ch = new_token.candidate_head.add()
-                ch.address = candidate_head.address
-                ch.arc_score = candidate_head.arc_score - token.selected_head.arc_score + cycle_score
+            #if candidate_head.address == token.selected_head.address:
+            #    print("?", candidate_head.address)
+            #    continue
+            # because we normalize the scores on a token being dependent on itself
+            # during softmax, also skip the case where candidate head of a token is itself.
+            #if candidate_head.address == token.index:
+            #    print("??", candidate_head.address, token.word, token.index)
+            #    continue
+            ### experimental
+            if candidate_head.address in cycle_token_indexes:
+                continue
+            ##end experimental
+            ch = new_token.candidate_head.add()
+            ch.address = candidate_head.address
+            ch.arc_score = candidate_head.arc_score - token.selected_head.arc_score + cycle_score
     #print(new_token)        
 
 def _RedirectOutgoingArcs(cycle_tokens, outcycle_tokens, new_token):
@@ -481,8 +495,11 @@ def GetTokenByAddressAlt(tokens, address):
         assert token.HasField("index"), "Token doesn't have index."
         list_indices.append(token.index)
         assert list_indices.count(token.index) == 1, "Can't have two tokens with same index."
+        #print("searching for: {}, token_index: {}".format(address, str(token.index)))
         if token.index == address:
             found = token
+    if not found:
+        print("searching for: {}, token_index: {}".format(address, str(token.index)))
     return found
 
 
