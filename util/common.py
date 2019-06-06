@@ -186,6 +186,30 @@ def PPrintWeights(weights, features=None):
 #type: print util
 def PPrintTextProto(message):
     print(text_format.MessageToString(message, as_utf8=True))
+    
+    
+# type: weights util
+def CompareWeights(weights1, weights2):
+    """Utility function prints comparison of two weights dicts."""
+    weights1_ = featureset_pb2.FeatureSet()
+    weights2_ = featureset_pb2.FeatureSet()
+    
+    for name in weights1.keys():
+        for value in weights1[name].keys():
+            weights1_.feature.add(name=name, value=value, weight=weights1[name][value])
+    
+    for name in weights2.keys():
+        for value in weights2[name].keys():
+            weights2_.feature.add(name=name, value=value, weight=weights2[name][value])
+    
+    print(zip(list(weights1_.feature), list(weights2_.feature)))
+
+# type: weights util
+def ValidateAveragedWeights(unaveraged, accumulated, averaged, iters):
+    """Checks that averaging is valid and correct."""
+    for name in unaveraged.keys():
+        for value in unaveraged[name].keys():
+            assert averaged[name][value] == accumulated[name][value] / iters
 
 # type: featureset proto util
 def GetFeatureWeights(weights, features):

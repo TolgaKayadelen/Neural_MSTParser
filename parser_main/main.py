@@ -6,7 +6,7 @@ import argparse
 import os
 import pickle
 import tempfile
-
+from copy import deepcopy
 from data.treebank import sentence_pb2
 from parser.dependency_parser import DependencyParser
 from util import common
@@ -78,9 +78,51 @@ def train(args, split=[90,10]):
     print("Number of features {}".format(sum(totals)))
     #print("Memory used by model: {} GB.".format(_get_size(model)))
     
-    model.Train(args.epochs, training_data, dev_data=dev_data, approx=len(training_data)/2)
-
     
+    
+    model.Train(args.epochs, training_data, dev_data=None, approx=len(training_data)/2)
+    
+    
+    logging.info("Evaluating on Dev Data..")
+    logging.info("Weights not averaged..")
+    dev_acc = model._Evaluate(dev_data)
+    print("Accuracy before averaging weights on dev: {}".format(dev_acc))
+    unaveraged_weights = deepcopy(model.arc_perceptron.weights)
+    accumulated_weights = deepcopy(model.arc_perceptron._accumulator)
+    
+    feat_name = 'head_0_pos+head_1_pos+child_0_pos+child_1_pos'
+    feat_value = 'Noun_Verb_Noun_Conj'
+    
+    
+    #Average weights and evaluate again
+    averaged_weights = model.arc_perceptron.AverageWeights(accumulated_weights)
+    iters = model.arc_perceptron.iters
+    common.ValidateAveragedWeights(unaveraged_weights, model.arc_perceptron._accumulator, averaged_weights, iters)
+    model.arc_perceptron.weights = deepcopy(averaged_weights)
+    logging.info("Evaluating after Averaged Weights..")
+    dev_acc = model._Evaluate(dev_data)
+    print("Accuracy after averaging weights on dev: {}".format(dev_acc))
+    
+    
+    
+    
+    #feat_name = "head_0_pos"
+    #feat_value = "Noun"
+    unaveraged_weights_for_feat = unaveraged_weights[feat_name][feat_value]
+    accumulated_weights_for_feat = model.arc_perceptron._accumulator[feat_name][feat_value]
+    averaged_weights_for_feat = averaged_weights[feat_name][feat_value]
+    print("feat name {}, feat value {}".format(feat_name, feat_value))
+    print("total iterations= {}".format(iters))
+    print("unaveraged value= {}".format(unaveraged_weights_for_feat))
+    print("accumulated value= {}".format(accumulated_weights_for_feat))
+    print("averaged_weights_for_feat= {}".format(averaged_weights_for_feat))
+    print("averaging is determined as {} = {} / {}".format(averaged_weights_for_feat, 
+                                                           accumulated_weights_for_feat,
+                                                           iters))
+    print("Equality Check: ")
+    print("averaging is determined as {} = {} / {}".format(model.arc_perceptron.weights[feat_name][feat_value], 
+                                                           accumulated_weights_for_feat,
+                                                           iters))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
