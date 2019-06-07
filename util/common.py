@@ -116,7 +116,7 @@ def DropDummyTokens(sentence):
     Returns: 
         sentence: sentence where the dummy tokens are dropped. 
     """
-    logging.info("Dropping dummy START and END tokens.")
+    #logging.info("Dropping dummy START and END tokens.")
     if not sentence.token[0].index == -1 and sentence.token[-1].index == -2:
         assert sentence.length == len(sentence.token), """Sentence token count 
             doesn't match sentence.length attribute!"""
@@ -182,7 +182,6 @@ def PPrintWeights(weights, features=None):
                 )
             print("***---------***")    
 
-
 #type: print util
 def PPrintTextProto(message):
     print(text_format.MessageToString(message, as_utf8=True))
@@ -210,6 +209,22 @@ def ValidateAveragedWeights(unaveraged, accumulated, averaged, iters):
     for name in unaveraged.keys():
         for value in unaveraged[name].keys():
             assert averaged[name][value] == accumulated[name][value] / iters
+    
+    # uncomment to see an example
+    '''
+    feat_name = "head_0_pos"
+    feat_value = "Noun"
+    unaveraged_weights_for_feat = unaveraged[feat_name][feat_value]
+    accumulated_weights_for_feat = accumulated[feat_name][feat_value]
+    averaged_weights_for_feat = averaged[feat_name][feat_value]
+    print("feat name {}, feat value {}".format(feat_name, feat_value))
+    print("unaveraged value= {}".format(unaveraged_weights_for_feat))
+    print("accumulated value= {}".format(accumulated_weights_for_feat))
+    print("averaged_weights_for_feat= {}".format(averaged_weights_for_feat))
+    print("average is equal to {} = {} / {}".format(averaged_weights_for_feat, 
+                                                    accumulated_weights_for_feat,
+                                                    iters))
+    '''
 
 # type: featureset proto util
 def GetFeatureWeights(weights, features):

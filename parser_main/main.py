@@ -21,6 +21,15 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
 
 def _get_data(args, split=[75,25]):
+    """Function to retrieve training and dev data from args.
+    
+    Args:
+        args = command line arguments.
+        split = the split between training and dev data.
+    Returns:
+        training_data: list, sentence_pb2.Sentence objects.
+        dev_data: list, sentence_pb2.Sentence objects.
+    """
     assert split[0] + split[1] == 100, "Cannot split data!!"
     _TREEBANK_DIR = "data/UDv23"
     _TRAIN_DATA_DIR = os.path.join(_TREEBANK_DIR, args.language, "training")
@@ -32,12 +41,15 @@ def _get_data(args, split=[75,25]):
     dev_portion = split[1]/len(sentence_list)
     training_data = sentence_list[:training_portion]
     dev_data = sentence_list[-dev_portion:]
-    #print(dev_data)
-    #print(text_format.MessageToString(training_data[0], as_utf8=True))
     return training_data, dev_data
 
 def _get_size(object):
-    """Dump a pickle of object to accurately get the size."""
+    """Dump a pickle of object to accurately get the size of the model.
+    Args:
+        object: the model. 
+    Returns:
+        gigabytes: the size of the model. 
+    """
     tmp = tempfile.gettempdir()
     path = os.path.join(tmp, 'object.pkl')
     print(path)
@@ -50,6 +62,12 @@ def _get_size(object):
     return gigabytes
 
 def train(args, split=[90,10]):
+    """Trains a dependency parser.
+    
+    Args:
+        args: the command line arguments.
+        split: the split between training and dev data. 
+    """
     t,d = _get_data(args, split)
     training_data = map(common.ConnectSentenceNodes, t)
     logging.info("Training Data Size {}".format(len(training_data)))
@@ -61,7 +79,6 @@ def train(args, split=[90,10]):
         dev_data=None
     del t,d
    
-    
     #feature_opts = get_feature_opts(args.features)
     
     # Make the model
@@ -73,56 +90,37 @@ def train(args, split=[90,10]):
     else:
         logging.info("Creating featureset..")
         model.MakeFeatures(training_data)
-    #common.PPrintWeights(model.arc_perceptron.weights)
     totals = [len(model.arc_perceptron.weights[key]) for key in model.arc_perceptron.weights.keys()]
-    print("Number of features {}".format(sum(totals)))
+    logging.info("Number of features {}".format(sum(totals)))
     #print("Memory used by model: {} GB.".format(_get_size(model)))
     
     
-    
+    # Train
     model.Train(args.epochs, training_data, dev_data=None, approx=len(training_data)/2)
     
-    
+    # Evaluate
     logging.info("Evaluating on Dev Data..")
     logging.info("Weights not averaged..")
     dev_acc = model._Evaluate(dev_data)
-    print("Accuracy before averaging weights on dev: {}".format(dev_acc))
+    logging.info("Accuracy before averaging weights on dev: {}".format(dev_acc))
+    
+    
+    # Average the weights and evaluate again
     unaveraged_weights = deepcopy(model.arc_perceptron.weights)
     accumulated_weights = deepcopy(model.arc_perceptron._accumulator)
-    
-    feat_name = 'head_0_pos+head_1_pos+child_0_pos+child_1_pos'
-    feat_value = 'Noun_Verb_Noun_Conj'
-    
-    
-    #Average weights and evaluate again
     averaged_weights = model.arc_perceptron.AverageWeights(accumulated_weights)
     iters = model.arc_perceptron.iters
-    common.ValidateAveragedWeights(unaveraged_weights, model.arc_perceptron._accumulator, averaged_weights, iters)
+    
+    # Sanity check to ensure averaging worked as intended.
+    common.ValidateAveragedWeights(unaveraged_weights, 
+                                   model.arc_perceptron._accumulator,
+                                   averaged_weights,
+                                   iters)
     model.arc_perceptron.weights = deepcopy(averaged_weights)
     logging.info("Evaluating after Averaged Weights..")
     dev_acc = model._Evaluate(dev_data)
-    print("Accuracy after averaging weights on dev: {}".format(dev_acc))
+    logging.info("Accuracy after averaging weights on dev: {}".format(dev_acc))
     
-    
-    
-    
-    #feat_name = "head_0_pos"
-    #feat_value = "Noun"
-    unaveraged_weights_for_feat = unaveraged_weights[feat_name][feat_value]
-    accumulated_weights_for_feat = model.arc_perceptron._accumulator[feat_name][feat_value]
-    averaged_weights_for_feat = averaged_weights[feat_name][feat_value]
-    print("feat name {}, feat value {}".format(feat_name, feat_value))
-    print("total iterations= {}".format(iters))
-    print("unaveraged value= {}".format(unaveraged_weights_for_feat))
-    print("accumulated value= {}".format(accumulated_weights_for_feat))
-    print("averaged_weights_for_feat= {}".format(averaged_weights_for_feat))
-    print("averaging is determined as {} = {} / {}".format(averaged_weights_for_feat, 
-                                                           accumulated_weights_for_feat,
-                                                           iters))
-    print("Equality Check: ")
-    print("averaging is determined as {} = {} / {}".format(model.arc_perceptron.weights[feat_name][feat_value], 
-                                                           accumulated_weights_for_feat,
-                                                           iters))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

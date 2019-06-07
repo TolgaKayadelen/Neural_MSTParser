@@ -46,13 +46,9 @@ class DependencyParser:
         assert sentence.token[0].index == -1 and sentence.token[-1].index == -2
         assert sentence.HasField("length"), "Sentence must have a length."
         score_matrix = np.zeros((sentence.length, sentence.length))
-        #print(score_matrix.shape)
-        #w = 0
         for token in sentence.token:
             for ch in token.candidate_head:
                 head = GetTokenByAddressAlt(sentence.token, ch.address)
-                #print("child {}".format(token.word))
-                #print("head {}".format(head.word))
                 features = self.feature_extractor.GetFeatures(
                     sentence = sentence,
                     head = head,
@@ -61,20 +57,15 @@ class DependencyParser:
                 )
                 score = self.arc_perceptron.Score(features)
                 score_matrix[token.index][head.index] = score
-                #print("score {}".format(score))
-                #print("--------------------------------------")
-        #print(score_matrix)
         probs = self._Softmax(score_matrix)
-        #print(probs)
-        #print(probs.sum(axis=1))
         parsed, predicted_heads = self.decoder(sentence, probs)
-        #print(parsed)
         return parsed, predicted_heads
         
     def Train(self, niters, training_data, dev_data=None, approx=10):
         """Train the arc perceptron."""
         for i in range(niters+1):
-            logging.info("iteration {}".format(i+1))
+            print("\n**************-------------------*************")
+            logging.info("Starting Training Epoch {}".format(i+1))
             #Train arc perceptron for one epoch.
             nr_correct_heads, nr_childs = self.arc_perceptron.Train(training_data)
             #Evaluate the arc perceptron
@@ -110,7 +101,6 @@ class DependencyParser:
             assert len(predicted_heads) == len(gold_heads), """Number of predicted and
                 gold heads don't match!!!"""
             acc += self._Accuracy(predicted_heads, gold_heads)
-            print(acc)
         return acc / len(eval_data)
     
     

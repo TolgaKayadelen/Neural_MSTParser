@@ -20,6 +20,9 @@ from util import common
 from util import reader
 from util import writer
 
+import logging
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
+
 _MODEL_DIR = "model/pretrained"
 
 class AveragedPerceptron(object):
@@ -124,7 +127,7 @@ class AveragedPerceptron(object):
             output_file = os.path.join(_MODEL_DIR, "{}.pkl".format(filename))
             with open(output_file, 'wb') as output:
                 pickle.dump(self.featureset, output)
-        print("Saved features to {}".format(output_file))       
+        logging.info("Saved features to {}".format(output_file))       
 
     
     def Sort(self):
@@ -156,9 +159,7 @@ class ArcPerceptron(AveragedPerceptron):
         """Create a feature set from the gold head-dependent pairs in the data.
         Args:
             training_data: list of sentence_pb2.Sentence() objects.
-            TODO: in the future this will be a treebank proto. 
         """
-        # assert isinstance(training_data, treebank_pb2.Treebank())
         for sentence in training_data:
             assert isinstance(sentence, sentence_pb2.Sentence), "Unaccapted data type."
             sentence = common.ExtendSentence(sentence)
@@ -277,7 +278,7 @@ class ArcPerceptron(AveragedPerceptron):
         """
         def upd_feat(fname, fvalue, w):
             if fname not in self.weights:
-                print("fname {}, passing".format(fname))
+                logging.info("fname {}, passing this feature".format(fname))
                 pass
             else:
                 #print("updating the feature {}: {}".format(fname, fvalue))

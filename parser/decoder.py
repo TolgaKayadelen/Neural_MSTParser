@@ -6,12 +6,16 @@ from google.protobuf import text_format
 from mst.max_span_tree import ChuLiuEdmonds as cle
 from util.common import DropDummyTokens
 
+import logging
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
+
 class Decoder:
     def __init__(self, decoding="mst"):
         assert decoding in ("mst", "eisner")
         self.decoding = decoding
         
     def __call__(self, sentence, scores):
+        logging.info("Starting decoding the tree..")
         if self.decoding == "mst":
             sentence = DropDummyTokens(sentence)
             for token in sentence.token:
