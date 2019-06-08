@@ -22,7 +22,7 @@ bazel-bin/util/converter
 Example:
 bazel-bin/util/converter 
 --input_file=./data/UDv23/Turkish/UD_Turkish_IMST/tr_imst_ud_dev.conllu 
---output_file=./data/UDv23/Turkish/protos/sentence_4 
+--output_file=./data/UDv23/Turkish/training/treebank 
 --writetext=True
 
 
@@ -202,6 +202,8 @@ class Converter:
         for line in sentence:
             if line.startswith('# newdoc id'):
                 continue
+            if line.startswith('# Change'):
+                continue
             if line.startswith("# sent_id"):
                 metadata["sent_id"] = line.split("=")[1].strip()
                 continue
@@ -270,7 +272,7 @@ class Converter:
 
 def main(args):
     converter = Converter(args.input_file)
-    sentences = converter.sentence_list
+    sentences = converter.sentence_list[:50]
     protos = converter.ConvertConllToProto(
         conll_sentences = sentences, 
         output_file = args.output_file, 

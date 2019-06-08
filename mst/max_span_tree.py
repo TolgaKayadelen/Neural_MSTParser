@@ -4,7 +4,7 @@
 
 The algorithm used for finding the MST is Chu-Liu-Edmonds.
 """
-
+import sys
 import argparse
 from collections import defaultdict
 from data.treebank import sentence_pb2
@@ -26,26 +26,27 @@ def ChuLiuEdmonds(sentence):
     """
     print("\n")
     print("-----------------------------------------")
-    logging.info("Processing sentence --> {}".format(
+    this_s = " ".join([token.word.encode("utf-8") for token in sentence.token[1:]])
+    print("Processing sentence --> {}".format(
         " ".join([token.word.encode("utf-8") for token in sentence.token[1:]])))
-    if not sentence.HasField("length"):
-        sentence.length = len(sentence.token)
+    #assert not this_s.startswith("İnşaatta")
+    sentence.length = len(sentence.token)
     mst = sentence_pb2.maximum_spanning_tree()
     mst.sentence.CopyFrom(_GreedyMst(sentence))
     
     # Find if there are any cycles in the returned MST, if so contract.
-    logging.info("Checking for cycles...")
+    print("Checking for cycles...")
     cycle, cycle_path = _Cycle(mst.sentence)
     if not cycle:
         logging.info("No cycle found in the sentence\n")
         mst.sentence.CopyFrom(_DropCandidateHeads(mst.sentence))
         mst.score = _GetSentenceWeight(mst.sentence)
         return mst
-
-    logging.info("There is cycle in the sentence, cycle_path: {}".format(cycle_path))
-    logging.info("Contracting the sentence...")
+    print("There is cycle in the sentence, cycle_path: {}".format(cycle_path))
+    print("Contracting the sentence...")
     new_token, original_edges, contracted = _Contract(mst.sentence, cycle_path)
-    logging.info("Contracted sentence: {}".format(
+    #print("original edges in AFTER CONT {}".format(original_edges))
+    print("Contracted sentence: {}".format(
         " ".join([token.word.encode("utf-8") for token in contracted.token[1:]])))
     reconstructed_edges = _Reconstruct(
         ChuLiuEdmonds(contracted),
@@ -53,11 +54,12 @@ def ChuLiuEdmonds(sentence):
         original_edges,
         cycle_path
         )
-    logging.info("Merging the reconstructed edges into the original sentence...")
+    print("Merging the reconstructed edges into the original sentence...")
     reconstructed_sentence = _Merge(reconstructed_edges, sentence)
     mst.sentence.CopyFrom(reconstructed_sentence)
     assert mst.sentence.length == len(mst.sentence.token)
     mst.score = _GetSentenceWeight(mst.sentence)
+    common.PPrintTextProto(mst)
     return mst
 
 
@@ -166,12 +168,15 @@ def _GetCyclePath(start_token, sentence, p):
         # When there are multiple occurences of the same item in a list, list.index(item)
         # returns the index for the first occurence. Consider moving to a safer 
         # implementation.
+        print("path is {}".format(path))
         cycle_start_index = path.index(token.selected_head.address)
         cycle_path = path[cycle_start_index:]
         return True, cycle_path
     # recursive step
-    #logging.info("""No cycle found yet until word: {}, checking for next head: {} """.format(
-    #    token.word, token.selected_head.address))
+    logging.info("""No cycle found yet until word: {}, checking for next head: {} """.format(
+        token.word.encode("utf-8"), token.selected_head.address))
+    if token.word == "cycle_token_14":
+        print(token)
     next_token = GetTokenByAddressAlt(tokens, token.selected_head.address)
     #logging.info("Next token for recursion: {}".format(next_token))
     return _GetCyclePath(next_token, sentence, p=path)
@@ -202,8 +207,9 @@ def _Contract(sentence, cycle_path):
     # Redirect the incoming and outgoing arcs to the new token. 
     _RedirectIncomingArcs(cycle_tokens, new_token, cycle_score)
     _RedirectOutgoingArcs(cycle_tokens, outcycle_tokens, new_token)
-    pruned = _DropCycleTokens(sentence, cycle_tokens)
-    contracted = _ClearSelectedHeads(pruned)
+    #pruned = _DropCycleTokens(sentence, cycle_tokens)
+    #contracted = _ClearSelectedHeads(pruned)
+    contracted = _DropCycleTokens(sentence, cycle_tokens)
     contracted.length = len(contracted.token)
     return new_token, original_edges, contracted
     
@@ -228,6 +234,7 @@ def _GetCycleScore(sentence, cycle_path):
             break
         cycle_score += token.selected_head.arc_score
     #logging.info("cycle score: {}".format(cycle_score))
+    #common.PPrintTextProto(sentence)
     return cycle_tokens, cycle_score
 
 def _GetOriginalEdges(sentence):
@@ -263,6 +270,7 @@ def _RedirectIncomingArcs(cycle_tokens, new_token, cycle_score):
     token outside the cycle that has a dependant in the cycle is now the
     head of this new token. Also recalculate the arc scores.
     """
+    print("Redirecting inc args")
     cycle_token_indexes = [token.index for token in cycle_tokens]
     for token in cycle_tokens:
         for candidate_head in token.candidate_head:
@@ -283,6 +291,9 @@ def _RedirectIncomingArcs(cycle_tokens, new_token, cycle_score):
             ch = new_token.candidate_head.add()
             ch.address = candidate_head.address
             ch.arc_score = candidate_head.arc_score - token.selected_head.arc_score + cycle_score
+            #print(new_token.index,
+            #token.index, ch.address, ch.arc_score," = ",
+            #candidate_head.arc_score, "- ", token.selected_head.arc_score,"+", "cycle_score")
     #print(new_token)        
 
 def _RedirectOutgoingArcs(cycle_tokens, outcycle_tokens, new_token):
@@ -300,6 +311,7 @@ def _RedirectOutgoingArcs(cycle_tokens, outcycle_tokens, new_token):
         outcycle_tokens: the tokens outside the cycle. 
         new_token: the new target token. 
     """
+    print("Redirecting outg. arcs")
     cycle_token_indexes = [token.index for token in cycle_tokens]
     for token in outcycle_tokens:
         # ignore if the token is ROOT.
@@ -337,9 +349,10 @@ def _GetCycleEdgesAndScores(original_edges, cycle_path):
     for source in set(cycle_path):
         targets = [target for target in original_edges[source] if target[0] in cycle_path]
         cycle_target = max(targets, key=lambda x:x[1])
+        #print("source in f: {}, target in f {}".format(source, cycle_target))
         cycle_edges[source] = cycle_target
     return cycle_edges
-                 
+
 
 def _Reconstruct(cont_mst, new_token, original_edges, cycle_path):
     """Reconstruct.
@@ -356,10 +369,12 @@ def _Reconstruct(cont_mst, new_token, original_edges, cycle_path):
             breaking the cycle. 
     """
     print("\n")
-    logging.info("Reconstructing the edges for mst...")
+    print("Reconstructing the edges for mst...")
     reconstructed_edges = defaultdict(list)
     cont_edges = defaultdict(list)
     cycle_edges = _GetCycleEdgesAndScores(original_edges, cycle_path)
+    #print("cycle_path: {}".format(cycle_path))
+    #print("cycle edges: {}".format(cycle_edges))
     
     # a convenience function to find the edge score for a given source and target node index
     # from an edges dictionary; can be used to find edge score for a source and target in
@@ -376,50 +391,73 @@ def _Reconstruct(cont_mst, new_token, original_edges, cycle_path):
         )
     
     #logging.info("Contracted sentence: {}".format(cont_sentence))
-    #logging.info("Original edges: {}".format(original_edges))
-    #logging.info("Contracted edges: {}".format(cont_edges))
+    #print("Original edges: {}".format(original_edges))
+    #print("Contracted edges: {}".format(cont_edges))
     
-    for source, target in cont_edges.items():
+    #for source, target in cont_edges.items(): #experimental
+    for source in cont_edges.keys():
+        print("source {}".format(source))
+        print("new token id: {}".format(new_token.index))
         # Handle arcs outgoing from the cycle.
         # logging.info("Handling arcs OUTGOING from the cycle.")
-        if source == new_token.index:
-            # This arc points from the cycle to outside. There might be more than one of these.
-            # Find all the original nodes in the cycle that are responsible for such edges and
-            # add them to the reconstructed_edges.
-            cycle_target_index = cont_edges[source][0][0]
-            cycle_target_score = cont_edges[source][0][1]
-            #logging.info("target_edge_index: {}".format(cycle_target_index)) 
-            #logging.info("target_edge_score: {}".format(cycle_target_score))
-
-            # To find the original node, we look at the original_edges dict to understand which
-            # node goes to the same target with the same arc_score in the original graph.
-            for original_node_index in set(cycle_path):
-                if get_edge_score(
-                    original_node_index,
-                    cycle_target_index,
-                    original_edges) == cycle_target_score:
-                    reconstructed_edges[original_node_index].append(
-                        (cycle_target_index, cycle_target_score)
-                    )
-        
+        for target in cont_edges[source]:
+            print("target {}".format(target))
+            
         # Handle arcs incoming to the cycle. 
         # logging.info("Handling arcs INCOMING to the cycle...")
-        if target[0][0] == new_token.index:
-            # This arc points at the cycle. Use the original_edges to find out which node
+            if target[0] == new_token.index: #experimental
+            # This arc points at the cycle. That is, it has a dependent which
+            # is in the cycle. Use the original_edges to find out which node
             # exactly in the cycle it points, then add all the edges in the cycle to the 
-            # reconstructed_edges except for the one that completes the cycle loop. 
-            original_target = max(original_edges[source], key=lambda x:x[1])
-            reconstructed_edges[source].append(original_target)
-            cycle_source = original_target[0]
-            #logging.info("cycle_source: {}".format(cycle_source))
-            cycle_target = cycle_edges[cycle_source]
-            #logging.info("cycle_target: {}".format(cycle_target))
-            while cycle_target[0] != original_target[0]:
-                reconstructed_edges[cycle_source].append(cycle_target)
-                cycle_source = cycle_target[0]
-                #logging.info("cycle_source: {}".format(cycle_source))
+            # reconstructed_edges except for the one that completes the cycle loop.
+                print("cycle_path {}".format(cycle_path))
+
+                original_target = max(original_edges[source], key=lambda x:x[1])
+                if not original_target[0] in cycle_path:
+                    print("Checking if there was duplication..")
+                    for target in original_edges[source]:
+                        if target[0] in cycle_path:
+                            original_target = target
+                #print("original target {}".format(original_target))
+                reconstructed_edges[source].append(original_target)
+                cycle_source = original_target[0]
+                #print("cycle_dep: {}".format(cycle_source))
+                #print("cycle_edges {}".format(cycle_edges))
+                #print("original_edges {}".format(original_edges))
                 cycle_target = cycle_edges[cycle_source]
-                #logging.info("cycle_target: {}".format(cycle_target))
+                #print("cycle_target: {}".format(cycle_target))
+                while cycle_target[0] != original_target[0]:
+                    reconstructed_edges[cycle_source].append(cycle_target)
+                    #print("reconstructed_edges {}".format(reconstructed_edges))
+                    cycle_source = cycle_target[0]
+                    #logging.info("cycle_source: {}".format(cycle_source))
+                    cycle_target = cycle_edges[cycle_source]
+                    #logging.info("cycle_target: {}".format(cycle_target))
+        
+        
+            if source == new_token.index:
+                # This arc points from the cycle to outside. There might be more than one of these.
+                # Find all the original nodes in the cycle that are responsible for such edges and
+                # add them to the reconstructed_edges. 
+                cycle_target_index = cont_edges[source][0][0]
+                cycle_target_score = cont_edges[source][0][1]
+                #print("target_edge_index: {}".format(cycle_target_index)) 
+                #print("target_edge_score: {}".format(cycle_target_score))
+
+                # To find the original node, we look at the original_edges dict to understand which
+                # node goes to the same target with the same arc_score in the original graph.
+                for original_node_index in set(cycle_path):
+                    #print("cycle index: {}".format(original_node_index))
+                    if get_edge_score(
+                        original_node_index,
+                        cycle_target_index,
+                        original_edges) == cycle_target_score:
+                        reconstructed_edges[original_node_index].append(
+                            (cycle_target_index, cycle_target_score)
+                        )
+                        #print("reconstructed_edges {}".format(reconstructed_edges))
+                #else:
+                    #print("found nothing!!!")
     #logging.info("Reconstructed Edges: {}".format(reconstructed_edges))
     return reconstructed_edges
 
@@ -435,10 +473,14 @@ def _Merge(edges, sentence):
     """
     tokens = sentence.token
     for source, targets in edges.items():
+        #print("source in merge {}".format(source))
         for token in tokens:
+            #print("token index in merge {}".format(token.index))
             for target in targets:
+                #print("targets in merge {}".format(targets))
                 if not token.index == target[0]:
                     continue
+                #print("token index in Merge {}".format(token.index))
                 logging.info("Determining head for token {} """.format(token.index))
                 if token.selected_head.address != source:
                     logging.info("""Changing the head for {} from {} --> {}""".format(
@@ -482,13 +524,11 @@ def GetTokenByAddressAlt(tokens, address):
         assert token.HasField("index"), "Token doesn't have index."
         list_indices.append(token.index)
         #common.PPrintTextProto(token)
-        #print(list_indices)
+        print(list_indices)
         assert list_indices.count(token.index) == 1, "Can't have two tokens with same index."
-        #print("searching for: {}, token_index: {}".format(address, str(token.index)))
+        print("searching for: {}, token_index: {}".format(address, str(token.index)))
         if token.index == address:
             found = token
-    if not found:
-        logging.error("searching for: {}, token_index: {}".format(address, str(token.index)))
     return found
 
 

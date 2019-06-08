@@ -57,8 +57,8 @@ class DependencyParser:
                 )
                 score = self.arc_perceptron.Score(features)
                 score_matrix[token.index][head.index] = score
-        probs = self._Softmax(score_matrix)
-        parsed, predicted_heads = self.decoder(sentence, probs)
+        #probs = self._Softmax(score_matrix)
+        parsed, predicted_heads = self.decoder(sentence, score_matrix) 
         return parsed, predicted_heads
         
     def Train(self, niters, training_data, dev_data=None, approx=10):
@@ -75,8 +75,8 @@ class DependencyParser:
                 logging.info("Evaluating on dev data..")
                 dev_acc = self._Evaluate(dev_data)
                 logging.info("Dev acc after iter {}: {}".format(i+1, dev_acc))
-            if train_acc == 100:
-                break
+            #if train_acc == 100:
+            #    break
             np.random.shuffle(training_data)
     
     def _Evaluate(self, eval_data):

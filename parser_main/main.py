@@ -20,7 +20,7 @@ import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
 
-def _get_data(args, split=[75,25]):
+def _get_data(args, split=[0.75,0.25]):
     """Function to retrieve training and dev data from args.
     
     Args:
@@ -30,15 +30,15 @@ def _get_data(args, split=[75,25]):
         training_data: list, sentence_pb2.Sentence objects.
         dev_data: list, sentence_pb2.Sentence objects.
     """
-    assert split[0] + split[1] == 100, "Cannot split data!!"
+    assert split[0] + split[1] == 1, "Cannot split data!!"
     _TREEBANK_DIR = "data/UDv23"
     _TRAIN_DATA_DIR = os.path.join(_TREEBANK_DIR, args.language, "training")
     logging.info("Loading dataset")
-    path = os.path.join(_TRAIN_DATA_DIR, "{}.protobuf".format(args.data))
-    treebank = reader.ReadTreebankProto(path)
+    path = os.path.join(_TRAIN_DATA_DIR, "{}.pbtxt".format(args.data))
+    treebank = reader.ReadTreebankTextProto(path)
     sentence_list = list(treebank.sentence)
-    training_portion = split[0]/len(sentence_list)
-    dev_portion = split[1]/len(sentence_list)
+    training_portion = int(split[0] * len(sentence_list))
+    dev_portion = int(split[1] * len(sentence_list))
     training_data = sentence_list[:training_portion]
     dev_data = sentence_list[-dev_portion:]
     return training_data, dev_data
@@ -61,7 +61,7 @@ def _get_size(object):
     gigabytes = bytes / 1e9
     return gigabytes
 
-def train(args, split=[90,10]):
+def train(args, split=[0.9,0.1]):
     """Trains a dependency parser.
     
     Args:
@@ -99,8 +99,10 @@ def train(args, split=[90,10]):
     model.Train(args.epochs, training_data, dev_data=None, approx=len(training_data)/2)
     
     # Evaluate
-    logging.info("Evaluating on Dev Data..")
+    print("\n*******----------------------*******")
+    logging.info("Start Evaluation on Dev Data..")
     logging.info("Weights not averaged..")
+    #dev_data = training_data
     dev_acc = model._Evaluate(dev_data)
     logging.info("Accuracy before averaging weights on dev: {}".format(dev_acc))
     

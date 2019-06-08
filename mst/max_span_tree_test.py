@@ -52,7 +52,7 @@ def _read_chuliuedmonds_test_sentence(basename):
 
 class MaximumSpanningTreeTest(unittest.TestCase):
     
-
+    '''
     def test_ChuLiuEdmonds(self):
         logging.info("Running ChuLiuEdmondsTest..")
         # cycle [1,2,1], tokens: [0,1,2,3]
@@ -91,10 +91,11 @@ class MaximumSpanningTreeTest(unittest.TestCase):
         self.assertEqual(expected_mst_sentence, cyclic_mst)
         logging.info("Passed!")
         
-        
+    '''    
     def test_Cycle(self):
         logging.info("Running CycleTest..")
         # Test sentences that have a cycle.
+        
         cyclic_1 = _read_cycle_test_sentence("cyclic_sentence_1")
         cyclic, path = max_span_tree._Cycle(cyclic_1)
         self.assertTrue(cyclic)
@@ -139,7 +140,7 @@ class MaximumSpanningTreeTest(unittest.TestCase):
         self.assertFalse(cyclic)
         logging.info("Passed!")
 
-    
+
     def test_DropCandidateHeads(self):
         logging.info("Running DropCandidateHeadsTest..")
         no_ch = _read_connection_test_sentence("non_connected_sentence")

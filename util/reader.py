@@ -74,6 +74,16 @@ def ReadTreebankProto(path):
     with open(path, "rb") as trb_proto:
         treebank.ParseFromString(trb_proto.read())
     return treebank
+
+def ReadTreebankTextProto(path):
+    """Read proto text formatted treebank message from the path.
+    Args:
+        path: path to the pbtxt file.
+    Returns:
+        a protocol buffer object.
+    """
+    file_content = _ReadFile(path)
+    return text_format.Parse(file_content, treebank_pb2.Treebank())
     
 
 def _ReadFile(path):
