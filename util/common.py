@@ -144,6 +144,8 @@ def GetValue(token, feat):
        
     Returns: the desired value for a feature of the token
     """
+    morph_features = ["case", "number", "number[psor]"]
+    morph_value = "None"
     if token == None:
         return "None"
     elif token.index == 0 or token.pos == "TOP":
@@ -155,6 +157,18 @@ def GetValue(token, feat):
             return token.pos.encode("utf-8")
         if feat == "lemma":
             return token.lemma.encode("utf-8")
+        if feat in morph_features: # check whether the request is valid.
+            if not len(token.morphology):
+                return morph_value
+            morphology = token.morphology
+            for morph_feat in morphology:
+                if morph_feat.name == feat:
+                    morph_value = morph_feat.value.encode("utf-8")
+                    break
+            return morph_value
+        else:
+            logging.error("Can't extract value for this feature: {}".format(feat))
+            
 
 
 # type: print util
