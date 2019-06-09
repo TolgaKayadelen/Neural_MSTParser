@@ -20,7 +20,7 @@ import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
 
-def _get_data(args, split=[0.75,0.25]):
+def _get_data(args):
     """Function to retrieve training and dev data from args.
     
     Args:
@@ -30,6 +30,7 @@ def _get_data(args, split=[0.75,0.25]):
         training_data: list, sentence_pb2.Sentence objects.
         dev_data: list, sentence_pb2.Sentence objects.
     """
+    split = [float(args.split[0]), float(args.split[1])]
     assert split[0] + split[1] == 1, "Cannot split data!!"
     _TREEBANK_DIR = "data/UDv23"
     _TRAIN_DATA_DIR = os.path.join(_TREEBANK_DIR, args.language, "training")
@@ -61,17 +62,17 @@ def _get_size(object):
     gigabytes = bytes / 1e9
     return gigabytes
 
-def train(args, split=[0.9,0.1]):
+def train(args):
     """Trains a dependency parser.
     
     Args:
         args: the command line arguments.
         split: the split between training and dev data. 
     """
-    t,d = _get_data(args, split)
+    t,d = _get_data(args)
     training_data = map(common.ConnectSentenceNodes, t)
     logging.info("Training Data Size {}".format(len(training_data)))
-    if split[1] > 0:
+    if args.split[1] > 0:
         dev_data = map(common.ConnectSentenceNodes, d)
         dev_data = map(common.ExtendSentence, dev_data)
         logging.info("Dev Data Size {}".format(len(d)))
@@ -133,6 +134,7 @@ if __name__ == "__main__":
     parser.add_argument("--language", type=str, choices=["English", "Turkish"],
                         help="language")
     parser.add_argument("--data", type=str, help="The data to read (.protobuf)")
+    parser.add_argument("--split", '--list', action="append", help="Split training and test")
     
     # Model args.
     parser.add_argument("--decoder", type=str, choices=["mst", "eisner"],
