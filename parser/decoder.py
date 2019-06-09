@@ -25,14 +25,13 @@ class Decoder:
                 token.ClearField("selected_head")
                 for i in range(scores.shape[1]):
                     if token.index == i:
-                        print(token.index, i)
+                        #print(token.index, i)
                         continue
                     token.candidate_head.add(
                         arc_score = scores[token.index, i],
                         address = i
                     )
-            print(text_format.MessageToString(sentence, as_utf8=True))
-            #print(sentence)
+            #print(text_format.MessageToString(sentence, as_utf8=True))
             cle_sentence = cle(sentence)
             heads = [token.selected_head.address for token in sentence.token]
             #print(text_format.MessageToString(cle_sentence, as_utf8=True))
