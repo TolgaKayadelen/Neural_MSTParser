@@ -1,0 +1,1077 @@
+token {
+  word: "ROOT"
+  category: "TOP"
+  pos: "TOP"
+  selected_head {
+    address: -1
+  }
+  index: 0
+}
+token {
+  word: "Borsada"
+  lemma: "borsa"
+  category: "NOUN"
+  pos: "Noun"
+  morphology {
+    name: "case"
+    value: "loc"
+  }
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  morphology {
+    name: "person"
+    value: "3"
+  }
+  candidate_head {
+    address: 0
+    arc_score: 0.00207554118195
+  }
+  candidate_head {
+    address: 1
+    arc_score: 0.00207554118195
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.113320708852
+  }
+  candidate_head {
+    address: 3
+    arc_score: 0.00207554118195
+  }
+  candidate_head {
+    address: 4
+    arc_score: 1.39848864784e-05
+  }
+  candidate_head {
+    address: 5
+    arc_score: 0.000280893953729
+  }
+  candidate_head {
+    address: 6
+    arc_score: 3.80148627874e-05
+  }
+  candidate_head {
+    address: 17
+    arc_score: 3.80148627874e-05
+  }
+  candidate_head {
+    address: 8
+    arc_score: 1.39848864784e-05
+  }
+  candidate_head {
+    address: 9
+    arc_score: 0.000280893953729
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.0416883590457
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.000763548930145
+  }
+  candidate_head {
+    address: 12
+    arc_score: 0.83733307488
+  }
+  candidate_head {
+    address: 13
+    arc_score: 4.69140676897e-09
+  }
+  candidate_head {
+    address: 14
+    arc_score: 1.89264857259e-06
+  }
+  selected_head {
+    address: 12
+    arc_score: 0.83733307488
+  }
+  label: "obl"
+  index: 1
+}
+token {
+  word: "yukarı"
+  lemma: "yukarı"
+  category: "ADP"
+  pos: "PCAbl"
+  candidate_head {
+    address: 0
+    arc_score: 0.010224329842
+  }
+  candidate_head {
+    address: 1
+    arc_score: 0.00376132074864
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.010224329842
+  }
+  candidate_head {
+    address: 3
+    arc_score: 0.00376132074864
+  }
+  candidate_head {
+    address: 4
+    arc_score: 6.88909925767e-05
+  }
+  candidate_head {
+    address: 5
+    arc_score: 0.205361154557
+  }
+  candidate_head {
+    address: 6
+    arc_score: 0.00138371257507
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.000187265133266
+  }
+  candidate_head {
+    address: 8
+    arc_score: 9.32338199282e-06
+  }
+  candidate_head {
+    address: 9
+    arc_score: 0.205361154557
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.558229494703
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.00138371257507
+  }
+  candidate_head {
+    address: 12
+    arc_score: 9.32338199282e-06
+  }
+  candidate_head {
+    address: 13
+    arc_score: 2.53435798509e-05
+  }
+  candidate_head {
+    address: 14
+    arc_score: 9.32338199282e-06
+  }
+  selected_head {
+    address: 17
+    arc_score: 0.558229494703
+  }
+  label: "case"
+  index: 3
+}
+token {
+  word: "dönmesi"
+  lemma: "dön"
+  category: "VERB"
+  pos: "Verb"
+  morphology {
+    name: "aspect"
+    value: "perf"
+  }
+  morphology {
+    name: "case"
+    value: "nom"
+  }
+  morphology {
+    name: "mood"
+    value: "ind"
+  }
+  morphology {
+    name: "number[psor]"
+    value: "sing"
+  }
+  morphology {
+    name: "person[psor]"
+    value: "3"
+  }
+  morphology {
+    name: "polarity"
+    value: "pos"
+  }
+  morphology {
+    name: "tense"
+    value: "pres"
+  }
+  morphology {
+    name: "verbform"
+    value: "vnoun"
+  }
+  candidate_head {
+    address: 0
+    arc_score: 0.0126775700154
+  }
+  candidate_head {
+    address: 1
+    arc_score: 8.54207948408e-05
+  }
+  candidate_head {
+    address: 17
+    arc_score: 8.54207948408e-05
+  }
+  candidate_head {
+    address: 3
+    arc_score: 0.00171572252878
+  }
+  candidate_head {
+    address: 4
+    arc_score: 0.00171572252878
+  }
+  candidate_head {
+    address: 5
+    arc_score: 0.692171869755
+  }
+  candidate_head {
+    address: 6
+    arc_score: 0.000631179045094
+  }
+  candidate_head {
+    address: 17
+    arc_score: 8.54207948408e-05
+  }
+  candidate_head {
+    address: 8
+    arc_score: 1.56453643189e-06
+  }
+  candidate_head {
+    address: 9
+    arc_score: 0.25463580064
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.0344612082018
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.00171572252878
+  }
+  candidate_head {
+    address: 12
+    arc_score: 1.56453643189e-06
+  }
+  candidate_head {
+    address: 13
+    arc_score: 1.15604474641e-05
+  }
+  candidate_head {
+    address: 14
+    arc_score: 4.25285095278e-06
+  }
+  selected_head {
+    address: 5
+    arc_score: 0.692171869755
+  }
+  label: "nmod:poss"
+  index: 4
+}
+token {
+  word: "durumunda"
+  lemma: "durum"
+  category: "NOUN"
+  pos: "Noun"
+  morphology {
+    name: "case"
+    value: "loc"
+  }
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  morphology {
+    name: "number[psor]"
+    value: "sing"
+  }
+  morphology {
+    name: "person"
+    value: "3"
+  }
+  morphology {
+    name: "person[psor]"
+    value: "3"
+  }
+  candidate_head {
+    address: 0
+    arc_score: 4.53704613895e-05
+  }
+  candidate_head {
+    address: 1
+    arc_score: 1.12462129925e-07
+  }
+  candidate_head {
+    address: 17
+    arc_score: 2.25886226308e-06
+  }
+  candidate_head {
+    address: 3
+    arc_score: 4.53704613895e-05
+  }
+  candidate_head {
+    address: 4
+    arc_score: 1.12462129925e-07
+  }
+  candidate_head {
+    address: 5
+    arc_score: 4.53704613895e-05
+  }
+  candidate_head {
+    address: 6
+    arc_score: 0.000123329700744
+  }
+  candidate_head {
+    address: 17
+    arc_score: 1.52200942069e-08
+  }
+  candidate_head {
+    address: 8
+    arc_score: 4.13725055099e-08
+  }
+  candidate_head {
+    address: 9
+    arc_score: 4.53704613895e-05
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.000335244884441
+  }
+  candidate_head {
+    address: 17
+    arc_score: 6.14022424272e-06
+  }
+  candidate_head {
+    address: 12
+    arc_score: 0.99935091589
+  }
+  candidate_head {
+    address: 13
+    arc_score: 3.05703764166e-07
+  }
+  candidate_head {
+    address: 14
+    arc_score: 4.13725055099e-08
+  }
+  selected_head {
+    address: 12
+    arc_score: 0.99935091589
+  }
+  label: "obl"
+  index: 5
+}
+token {
+  word: "likit"
+  lemma: "likit"
+  category: "NOUN"
+  pos: "Noun"
+  morphology {
+    name: "case"
+    value: "nom"
+  }
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  morphology {
+    name: "person"
+    value: "3"
+  }
+  candidate_head {
+    address: 0
+    arc_score: 3.05339460006e-07
+  }
+  candidate_head {
+    address: 1
+    arc_score: 2.05736109825e-09
+  }
+  candidate_head {
+    address: 17
+    arc_score: 1.66709696485e-05
+  }
+  candidate_head {
+    address: 3
+    arc_score: 1.12328109915e-07
+  }
+  candidate_head {
+    address: 4
+    arc_score: 1.3862390038e-11
+  }
+  candidate_head {
+    address: 5
+    arc_score: 2.2561703992e-06
+  }
+  candidate_head {
+    address: 6
+    arc_score: 1.12328109915e-07
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.998159999262
+  }
+  candidate_head {
+    address: 8
+    arc_score: 1.52019565707e-08
+  }
+  candidate_head {
+    address: 9
+    arc_score: 5.59248728795e-09
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.000910204102064
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.000910204102064
+  }
+  candidate_head {
+    address: 12
+    arc_score: 1.12328109915e-07
+  }
+  candidate_head {
+    address: 13
+    arc_score: 1.02429977656e-10
+  }
+  candidate_head {
+    address: 14
+    arc_score: 1.02429977656e-10
+  }
+  selected_head {
+    address: 17
+    arc_score: 0.998159999262
+  }
+  label: "nmod"
+  index: 6
+}
+token {
+  word: "bekleyen"
+  lemma: "bekle"
+  category: "VERB"
+  pos: "Verb"
+  morphology {
+    name: "aspect"
+    value: "perf"
+  }
+  morphology {
+    name: "mood"
+    value: "ind"
+  }
+  morphology {
+    name: "polarity"
+    value: "pos"
+  }
+  morphology {
+    name: "tense"
+    value: "pres"
+  }
+  morphology {
+    name: "verbform"
+    value: "part"
+  }
+  candidate_head {
+    address: 0
+    arc_score: 0.000524400720825
+  }
+  candidate_head {
+    address: 1
+    arc_score: 7.09699200823e-05
+  }
+  candidate_head {
+    address: 17
+    arc_score: 2.61083745399e-05
+  }
+  candidate_head {
+    address: 3
+    arc_score: 0.000524400720825
+  }
+  candidate_head {
+    address: 4
+    arc_score: 9.60473423562e-06
+  }
+  candidate_head {
+    address: 5
+    arc_score: 0.211558350109
+  }
+  candidate_head {
+    address: 6
+    arc_score: 7.09699200823e-05
+  }
+  candidate_head {
+    address: 17
+    arc_score: 2.61083745399e-05
+  }
+  candidate_head {
+    address: 8
+    arc_score: 0.000524400720825
+  }
+  candidate_head {
+    address: 9
+    arc_score: 0.575075218761
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.211558350109
+  }
+  candidate_head {
+    address: 17
+    arc_score: 2.61083745399e-05
+  }
+  candidate_head {
+    address: 12
+    arc_score: 1.75916843882e-07
+  }
+  candidate_head {
+    address: 13
+    arc_score: 3.5333842632e-06
+  }
+  candidate_head {
+    address: 14
+    arc_score: 1.29985942819e-06
+  }
+  selected_head {
+    address: 9
+    arc_score: 0.575075218761
+  }
+  label: "acl"
+  index: 8
+}
+token {
+  word: "paranın"
+  lemma: "para"
+  category: "NOUN"
+  pos: "Noun"
+  morphology {
+    name: "case"
+    value: "gen"
+  }
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  morphology {
+    name: "person"
+    value: "3"
+  }
+  candidate_head {
+    address: 0
+    arc_score: 9.01836571255e-05
+  }
+  candidate_head {
+    address: 1
+    arc_score: 2.235429364e-07
+  }
+  candidate_head {
+    address: 17
+    arc_score: 4.48997990297e-06
+  }
+  candidate_head {
+    address: 3
+    arc_score: 9.01836571255e-05
+  }
+  candidate_head {
+    address: 4
+    arc_score: 3.02532466132e-08
+  }
+  candidate_head {
+    address: 5
+    arc_score: 9.01836571255e-05
+  }
+  candidate_head {
+    address: 6
+    arc_score: 6.07652701895e-07
+  }
+  candidate_head {
+    address: 17
+    arc_score: 4.09433169922e-09
+  }
+  candidate_head {
+    address: 8
+    arc_score: 6.07652701895e-07
+  }
+  candidate_head {
+    address: 9
+    arc_score: 9.01836571255e-05
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.268833693009
+  }
+  candidate_head {
+    address: 17
+    arc_score: 3.31767133861e-05
+  }
+  candidate_head {
+    address: 12
+    arc_score: 0.730765742584
+  }
+  candidate_head {
+    address: 13
+    arc_score: 6.07652701895e-07
+  }
+  candidate_head {
+    address: 14
+    arc_score: 8.22368505205e-08
+  }
+  selected_head {
+    address: 12
+    arc_score: 0.730765742584
+  }
+  label: "nmod:poss"
+  index: 9
+}
+token {
+  word: "kayacağı"
+  lemma: "kay"
+  category: "VERB"
+  pos: "Verb"
+  morphology {
+    name: "aspect"
+    value: "perf"
+  }
+  morphology {
+    name: "mood"
+    value: "ind"
+  }
+  morphology {
+    name: "number[psor]"
+    value: "sing"
+  }
+  morphology {
+    name: "person[psor]"
+    value: "3"
+  }
+  morphology {
+    name: "polarity"
+    value: "pos"
+  }
+  morphology {
+    name: "tense"
+    value: "fut"
+  }
+  morphology {
+    name: "verbform"
+    value: "part"
+  }
+  candidate_head {
+    address: 0
+    arc_score: 0.00376797277113
+  }
+  candidate_head {
+    address: 1
+    arc_score: 0.00138615971739
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.000509939662208
+  }
+  candidate_head {
+    address: 3
+    arc_score: 0.0102424119139
+  }
+  candidate_head {
+    address: 4
+    arc_score: 0.000187596317964
+  }
+  candidate_head {
+    address: 5
+    arc_score: 0.205724342679
+  }
+  candidate_head {
+    address: 6
+    arc_score: 0.00138615971739
+  }
+  candidate_head {
+    address: 17
+    arc_score: 9.33987070805e-06
+  }
+  candidate_head {
+    address: 8
+    arc_score: 3.43594641669e-06
+  }
+  candidate_head {
+    address: 9
+    arc_score: 0.205724342679
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.559216742375
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.000187596317964
+  }
+  candidate_head {
+    address: 12
+    arc_score: 0.0102424119139
+  }
+  candidate_head {
+    address: 13
+    arc_score: 0.00138615971739
+  }
+  candidate_head {
+    address: 14
+    arc_score: 2.53884008258e-05
+  }
+  selected_head {
+    address: 17
+    arc_score: 0.559216742375
+  }
+  label: "nsubj"
+  index: 12
+}
+token {
+  word: "söylenebilir"
+  lemma: "söyle"
+  category: "VERB"
+  pos: "Verb"
+  morphology {
+    name: "aspect"
+    value: "hab"
+  }
+  morphology {
+    name: "mood"
+    value: "pot"
+  }
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  morphology {
+    name: "person"
+    value: "3"
+  }
+  morphology {
+    name: "polarity"
+    value: "pos"
+  }
+  morphology {
+    name: "tense"
+    value: "pres"
+  }
+  morphology {
+    name: "voice"
+    value: "pass"
+  }
+  candidate_head {
+    address: 0
+    arc_score: 0.999999577125
+  }
+  candidate_head {
+    address: 1
+    arc_score: 2.78946691327e-10
+  }
+  candidate_head {
+    address: 17
+    arc_score: 7.58255722144e-10
+  }
+  candidate_head {
+    address: 3
+    arc_score: 4.13993596811e-08
+  }
+  candidate_head {
+    address: 4
+    arc_score: 2.78946691327e-10
+  }
+  candidate_head {
+    address: 5
+    arc_score: 1.12535127131e-07
+  }
+  candidate_head {
+    address: 6
+    arc_score: 2.78946691327e-10
+  }
+  candidate_head {
+    address: 17
+    arc_score: 1.38879379921e-11
+  }
+  candidate_head {
+    address: 8
+    arc_score: 6.91439718302e-13
+  }
+  candidate_head {
+    address: 9
+    arc_score: 1.12535127131e-07
+  }
+  candidate_head {
+    address: 17
+    arc_score: 1.12535127131e-07
+  }
+  candidate_head {
+    address: 17
+    arc_score: 7.58255722144e-10
+  }
+  candidate_head {
+    address: 12
+    arc_score: 6.30511409387e-16
+  }
+  candidate_head {
+    address: 13
+    arc_score: 4.13993596811e-08
+  }
+  candidate_head {
+    address: 14
+    arc_score: 1.02618752922e-10
+  }
+  selected_head {
+    address: 0
+    arc_score: 0.999999577125
+  }
+  label: "root"
+  index: 13
+}
+token {
+  word: "."
+  lemma: "."
+  category: "PUNCT"
+  pos: "Punc"
+  candidate_head {
+    address: 0
+    arc_score: 5.85067463908e-12
+  }
+  candidate_head {
+    address: 1
+    arc_score: 0.000384155116235
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.000384155116235
+  }
+  candidate_head {
+    address: 3
+    arc_score: 0.000384155116235
+  }
+  candidate_head {
+    address: 4
+    arc_score: 5.19897414624e-05
+  }
+  candidate_head {
+    address: 5
+    arc_score: 0.421277238443
+  }
+  candidate_head {
+    address: 6
+    arc_score: 0.000384155116235
+  }
+  candidate_head {
+    address: 17
+    arc_score: 5.19897414624e-05
+  }
+  candidate_head {
+    address: 8
+    arc_score: 1.91259570358e-05
+  }
+  candidate_head {
+    address: 9
+    arc_score: 0.421277238443
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.154979235057
+  }
+  candidate_head {
+    address: 17
+    arc_score: 0.000384155116235
+  }
+  candidate_head {
+    address: 12
+    arc_score: 1.91259570358e-05
+  }
+  candidate_head {
+    address: 13
+    arc_score: 1.91259570358e-05
+  }
+  candidate_head {
+    address: 14
+    arc_score: 0.000384155116235
+  }
+  selected_head {
+    address: 5
+    arc_score: 0.421277238443
+  }
+  label: "punct"
+  index: 14
+}
+token {
+  word: "cycle_token_17"
+  candidate_head {
+    address: 0
+    arc_score: 1.46054638202
+  }
+  candidate_head {
+    address: 1
+    arc_score: 1.46460644184
+  }
+  candidate_head {
+    address: 3
+    arc_score: 1.45850330013
+  }
+  candidate_head {
+    address: 4
+    arc_score: 1.47564282869
+  }
+  candidate_head {
+    address: 5
+    arc_score: 1.45850330013
+  }
+  candidate_head {
+    address: 6
+    arc_score: 1.45905276948
+  }
+  candidate_head {
+    address: 8
+    arc_score: 1.4581994426
+  }
+  candidate_head {
+    address: 9
+    arc_score: 1.45850330013
+  }
+  candidate_head {
+    address: 12
+    arc_score: 1.45818352711
+  }
+  candidate_head {
+    address: 13
+    arc_score: 1.4581994426
+  }
+  candidate_head {
+    address: 14
+    arc_score: 1.45818381337
+  }
+  candidate_head {
+    address: 0
+    arc_score: 2.12190416688
+  }
+  candidate_head {
+    address: 1
+    arc_score: 1.95336949709
+  }
+  candidate_head {
+    address: 3
+    arc_score: 1.95449747451
+  }
+  candidate_head {
+    address: 4
+    arc_score: 1.95341838493
+  }
+  candidate_head {
+    address: 5
+    arc_score: 1.95449747451
+  }
+  candidate_head {
+    address: 6
+    arc_score: 2.12190416688
+  }
+  candidate_head {
+    address: 8
+    arc_score: 2.12190416688
+  }
+  candidate_head {
+    address: 9
+    arc_score: 1.95449747451
+  }
+  candidate_head {
+    address: 12
+    arc_score: 1.95336288084
+  }
+  candidate_head {
+    address: 13
+    arc_score: 1.95377961993
+  }
+  candidate_head {
+    address: 14
+    arc_score: 1.95336288084
+  }
+  candidate_head {
+    address: 0
+    arc_score: 2.41138624867
+  }
+  candidate_head {
+    address: 1
+    arc_score: 2.41138399436
+  }
+  candidate_head {
+    address: 3
+    arc_score: 2.41138482013
+  }
+  candidate_head {
+    address: 4
+    arc_score: 2.41138399436
+  }
+  candidate_head {
+    address: 5
+    arc_score: 2.41138400399
+  }
+  candidate_head {
+    address: 6
+    arc_score: 2.41138624867
+  }
+  candidate_head {
+    address: 8
+    arc_score: 2.41138429461
+  }
+  candidate_head {
+    address: 9
+    arc_score: 2.41139013182
+  }
+  candidate_head {
+    address: 12
+    arc_score: 2.41139013182
+  }
+  candidate_head {
+    address: 13
+    arc_score: 2.41138399082
+  }
+  candidate_head {
+    address: 14
+    arc_score: 2.41138398952
+  }
+  candidate_head {
+    address: 0
+    arc_score: 2.41120995086
+  }
+  candidate_head {
+    address: 1
+    arc_score: 2.41120380745
+  }
+  candidate_head {
+    address: 3
+    arc_score: 2.41120384809
+  }
+  candidate_head {
+    address: 4
+    arc_score: 2.41120380876
+  }
+  candidate_head {
+    address: 5
+    arc_score: 2.41120384809
+  }
+  candidate_head {
+    address: 6
+    arc_score: 2.41120384809
+  }
+  candidate_head {
+    address: 8
+    arc_score: 2.4112038068
+  }
+  candidate_head {
+    address: 9
+    arc_score: 2.41120391923
+  }
+  candidate_head {
+    address: 12
+    arc_score: 2.41120382193
+  }
+  candidate_head {
+    address: 13
+    arc_score: 2.41120382193
+  }
+  candidate_head {
+    address: 14
+    arc_score: 2.41120380673
+  }
+  selected_head {
+    address: 9
+    arc_score: 2.41139013182
+  }
+  index: 17
+}
