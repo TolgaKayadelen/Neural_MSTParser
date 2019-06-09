@@ -66,6 +66,7 @@ class DependencyParserTest(unittest.TestCase):
         en_test_data = common.ConnectSentenceNodes(_read_parser_test_data("sam_killed_pam_eval"))
         en_test_data = common.ExtendSentence(en_test_data)
         en_parsed, en_predicted_heads = self.en_parser.Parse(en_test_data)
+        common.PPrintTextProto(en_parsed)
         self.assertEqual(en_predicted_heads, [-1, 2, 0, 2])
         
         tr_eval_data = common.ConnectSentenceNodes(self.tr_eval)
