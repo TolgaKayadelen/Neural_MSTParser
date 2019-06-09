@@ -26,7 +26,7 @@ def ChuLiuEdmonds(sentence):
     """
     print("\n")
     print("-----------------------------------------")
-    this_s = " ".join([token.word.encode("utf-8") for token in sentence.token[1:]])
+    #this_s = " ".join([token.word.encode("utf-8") for token in sentence.token[1:]])
     print("Processing sentence --> {}".format(
         " ".join([token.word.encode("utf-8") for token in sentence.token[1:]])))
     #assert not this_s.startswith("İnşaatta")
@@ -59,7 +59,7 @@ def ChuLiuEdmonds(sentence):
     mst.sentence.CopyFrom(reconstructed_sentence)
     assert mst.sentence.length == len(mst.sentence.token)
     mst.score = _GetSentenceWeight(mst.sentence)
-    common.PPrintTextProto(mst)
+    #common.PPrintTextProto(mst)
     return mst
 
 
@@ -168,15 +168,15 @@ def _GetCyclePath(start_token, sentence, p):
         # When there are multiple occurences of the same item in a list, list.index(item)
         # returns the index for the first occurence. Consider moving to a safer 
         # implementation.
-        print("path is {}".format(path))
+        #print("path is {}".format(path))
         cycle_start_index = path.index(token.selected_head.address)
         cycle_path = path[cycle_start_index:]
         return True, cycle_path
     # recursive step
-    logging.info("""No cycle found yet until word: {}, checking for next head: {} """.format(
-        token.word.encode("utf-8"), token.selected_head.address))
-    if token.word == "cycle_token_14":
-        print(token)
+    #logging.info("""No cycle found yet until word: {}, checking for next head: {} """.format(
+    #    token.word.encode("utf-8"), token.selected_head.address))
+    #if token.word == "cycle_token_14":
+    #    print(token)
     next_token = GetTokenByAddressAlt(tokens, token.selected_head.address)
     #logging.info("Next token for recursion: {}".format(next_token))
     return _GetCyclePath(next_token, sentence, p=path)
@@ -270,24 +270,12 @@ def _RedirectIncomingArcs(cycle_tokens, new_token, cycle_score):
     token outside the cycle that has a dependant in the cycle is now the
     head of this new token. Also recalculate the arc scores.
     """
-    print("Redirecting inc args")
+    #print("Redirecting inc args")
     cycle_token_indexes = [token.index for token in cycle_tokens]
     for token in cycle_tokens:
         for candidate_head in token.candidate_head:
-            # TODO: clean up these comments later.
-            # the original selected_head is within the cycle, so skip it. 
-            #if candidate_head.address == token.selected_head.address:
-            #    print("?", candidate_head.address)
-            #    continue
-            # because we normalize the scores on a token being dependent on itself
-            # during softmax, also skip the case where candidate head of a token is itself.
-            #if candidate_head.address == token.index:
-            #    print("??", candidate_head.address, token.word, token.index)
-            #    continue
-            ### experimental
             if candidate_head.address in cycle_token_indexes:
                 continue
-            ##end experimental
             ch = new_token.candidate_head.add()
             ch.address = candidate_head.address
             ch.arc_score = candidate_head.arc_score - token.selected_head.arc_score + cycle_score
@@ -311,7 +299,7 @@ def _RedirectOutgoingArcs(cycle_tokens, outcycle_tokens, new_token):
         outcycle_tokens: the tokens outside the cycle. 
         new_token: the new target token. 
     """
-    print("Redirecting outg. arcs")
+    #print("Redirecting outg. arcs")
     cycle_token_indexes = [token.index for token in cycle_tokens]
     for token in outcycle_tokens:
         # ignore if the token is ROOT.
@@ -396,12 +384,12 @@ def _Reconstruct(cont_mst, new_token, original_edges, cycle_path):
     
     #for source, target in cont_edges.items(): #experimental
     for source in cont_edges.keys():
-        print("source {}".format(source))
-        print("new token id: {}".format(new_token.index))
+        #print("source {}".format(source))
+        #print("new token id: {}".format(new_token.index))
         # Handle arcs outgoing from the cycle.
         # logging.info("Handling arcs OUTGOING from the cycle.")
         for target in cont_edges[source]:
-            print("target {}".format(target))
+            #print("target {}".format(target))
             
         # Handle arcs incoming to the cycle. 
         # logging.info("Handling arcs INCOMING to the cycle...")
@@ -410,14 +398,15 @@ def _Reconstruct(cont_mst, new_token, original_edges, cycle_path):
             # is in the cycle. Use the original_edges to find out which node
             # exactly in the cycle it points, then add all the edges in the cycle to the 
             # reconstructed_edges except for the one that completes the cycle loop.
-                print("cycle_path {}".format(cycle_path))
+                #print("cycle_path {}".format(cycle_path))
 
                 original_target = max(original_edges[source], key=lambda x:x[1])
                 if not original_target[0] in cycle_path:
-                    print("Checking if there was duplication..")
+                    #print("Checking if there was duplication..")
                     for target in original_edges[source]:
                         if target[0] in cycle_path:
                             original_target = target
+                            break
                 #print("original target {}".format(original_target))
                 reconstructed_edges[source].append(original_target)
                 cycle_source = original_target[0]
@@ -524,11 +513,12 @@ def GetTokenByAddressAlt(tokens, address):
         assert token.HasField("index"), "Token doesn't have index."
         list_indices.append(token.index)
         #common.PPrintTextProto(token)
-        print(list_indices)
+        #print(list_indices)
         assert list_indices.count(token.index) == 1, "Can't have two tokens with same index."
-        print("searching for: {}, token_index: {}".format(address, str(token.index)))
+        #print("searching for: {}, token_index: {}".format(address, str(token.index)))
         if token.index == address:
             found = token
+            break
     return found
 
 

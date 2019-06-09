@@ -29,6 +29,10 @@ token {
     address: 4
     arc_score: 30.0
   }
+  selected_head {
+  	address: 2
+	arc_score: 30
+  }
   index: 3
 }
 token {
