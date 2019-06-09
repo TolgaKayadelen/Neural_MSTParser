@@ -95,7 +95,7 @@ class FeatureExtractor:
         Returns:
             value: string, the value for the requested feature. 
         """
-        #TODO: ensure this method works correctly when there's more than one token btw head and child.
+        #TODO: ensure this method works correctly when more than one token btw head and child.
         feature = [f for f in feature if f != "+"]
         #print("feature is: {}".format(feature))
         value = []
@@ -104,6 +104,7 @@ class FeatureExtractor:
             offset = int(subfeat[1])
             is_tree_feature = subfeat[2] in ["up", "down"]
             is_between_feature = subfeat[0] == "between"
+            #is_morphology_feature = subfeat[2] == "morph"
             t = [child, head][subfeat[0] == "head"] # t = token.
             dummy_start_token = 1 if sentence.token[0].word == "START_TOK" else 0
             if is_tree_feature:

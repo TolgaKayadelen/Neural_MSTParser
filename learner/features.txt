@@ -10,6 +10,13 @@ head_0_lemma
 child_0_word+child_0_lemma
 child_0_lemma
 
+# Morphological Features
+head_0_morph_case
+child_0_morph_case
+head_0_pos+head_0_morph_case
+child_0_pos+child_0_morph_case
+head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case
+
 # Basic Bigram Features
 head_0_word+head_0_pos+child_0_word+child_0_pos
 head_0_pos+child_0_word+child_0_pos
