@@ -13,29 +13,50 @@ token {
   word: "token_1"
   candidate_head {
   	address: 0
-	arc_score: 9
+	arc_score: -1
   }
-  selected_head {
-    address: 2
-    arc_score: 30
+  candidate_head {
+  	address: 2
+	arc_score: 30
+  }
+  candidate_head {
+  	address: 3
+	arc_score: 3
   }
   index: 1
 }
 token {
   word: "token_2"
   lemma: "token_2"
-  selected_head {
-    address: 3
-    arc_score: 20
+  candidate_head {
+  	address: 0
+	arc_score: -1
   }
+  candidate_head {
+  	address: 1
+	arc_score: 10
+  }
+  candidate_head {
+  	address: 3
+	arc_score: 20
+  }
+
   index: 2
 }
 token {
   word: "token_3"
   lemma: "token_3"
-  selected_head {
-    address: 1
-    arc_score: 30
+  candidate_head {
+  	address: 0
+	arc_score: -1
+  }
+  candidate_head {
+  	address: 1
+	arc_score: 30 
+  }
+  candidate_head {
+  	address: 0
+	arc_score: 0
   }
   index: 3
 }

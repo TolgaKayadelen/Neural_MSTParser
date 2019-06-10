@@ -27,15 +27,15 @@ class MST:
         self.length = scores.shape[0]
         #self.scores = scores * (1 - np.eye(self.length))
         self.scores = scores
-        print("scores: {}".format(self.scores))
+        #print("scores: {}".format(self.scores))
         self.heads = np.argmax(self.scores, axis=1)
         self.heads[0] = 0 # root has no haed.
         logging.info("Initial heads: {}".format(self.heads))
         self.tokens = np.arange(1, self.length)
-        print("tokens: {}".format(self.tokens))
+        #print("tokens: {}".format(self.tokens))
         # find the tokens whose head is the root (i.e node 0)
         self.roots = np.where(self.heads[self.tokens] == 0)[0] + 1
-        print("Initial roots: {}".format(self.roots))
+        #print("Initial roots: {}".format(self.roots))
         
     
     def Decode(self):
@@ -48,27 +48,27 @@ class MST:
             logging.info("No token is pointing to the root, choosing one")
             # the score for each token selecting the root as head.
             root_scores = self.scores[self.tokens, 0]
-            print("root_scores: {}".format(root_scores))
+            #print("root_scores: {}".format(root_scores))
             # the score for each token pointing to its head
             head_scores = self.scores[self.tokens, self.heads[self.tokens]]
-            print("head_scores: {}".format(head_scores))
+            #print("head_scores: {}".format(head_scores))
             # find the most likely token that can be pointing to the root.
             new_root = self.tokens[np.argmax(root_scores / head_scores)]
             logging.info("New root is {}".format(new_root))
             # change the head of the new root token to be 0.
             self.heads[new_root] = 0
-            print("new_heads: {}".format(self.heads))
+            #print("new_heads: {}".format(self.heads))
         
         elif len(self.roots) > 1:
             logging.info("Multiple tokens are pointing to root, choosing one")
             # get the score for each token pointing to the head
             root_scores = self.scores[self.roots, 0]
-            print("root_scores: {}".format(root_scores))
+            #print("root_scores: {}".format(root_scores))
             # turn the head scores for the multiple tokens pointing to root to 0.
             self.scores[self.roots, 0] = 0
             # pick new heads for these tokens.
             new_heads = np.argmax(self.scores[self.roots][:, self.tokens], axis=1) + 1
-            print("New candidate heads for the roots: {}".format(new_heads))
+            #print("New candidate heads for the roots: {}".format(new_heads))
             # find the new root.
             new_root = self.roots[np.argmin(self.scores[self.roots, new_heads] / root_scores)]
             logging.info("New root is {}".format(new_root))
@@ -76,15 +76,45 @@ class MST:
             self.heads[self.roots] = new_heads
             # change the head of the new root token to be 0.
             self.heads[new_root] = 0
-            print("new_heads: {}".format(self.heads))
+            #print("new_heads: {}".format(self.heads))
         
-        edges = defaultdict(set)
         vertices = set((0,))
+        edges = defaultdict(set)
         for dep, head in enumerate(self.heads[self.tokens]):
             vertices.add(dep+1)
             edges[head].add(dep+1)
-        print("vertices: {}".format(vertices))
-        print("edges: {}".format(edges))
+        #print("vertices: {}".format(vertices))
+        #print("edges: {}".format(edges))
+        
+        # Identify cycles and contract.
+        for cycle in self._GetCycle(vertices, edges):
+            logging.info("Found cycle! - {}".format(cycle))
+            dependents = set()
+            to_visit = set(cycle)
+            while len(to_visit) > 0:
+                node = to_visit.pop()
+                logging.info("Contraction, visiting node: {}".format(node))
+                if node not in dependents:
+                    dependents.add(node)
+                    to_visit.update(edges[node])
+            cycle = np.array(list(cycle))
+            old_heads = self.heads[cycle]
+            old_scores = self.scores[cycle, old_heads]
+            non_heads = np.array(list(dependents))
+            self.scores[np.repeat(cycle, len(non_heads)),
+                        np.repeat([non_heads], len(cycle), axis=0).flatten()] = 0
+            new_heads = np.argmax(self.scores[cycle][:, self.tokens], axis=1) + 1
+            new_scores = self.scores[cycle, new_heads] / old_scores
+            change = np.argmax(new_scores)
+            changed_cycle = cycle[change]
+            old_head = old_heads[change]
+            new_head = new_heads[change]
+            self.heads[changed_cycle] = new_head
+            edges[new_head].add(changed_cycle)
+            edges[old_head].remove(changed_cycle)
+        
+        logging.info("Final Heads! {}".format(self.heads))
+        return self.heads
     
     
     def _GetCycle(self, vertices, edges):
@@ -134,32 +164,9 @@ class MST:
                 _strongconnect(v)
         
         return [SCC for SCC in _SCCs if len(SCC) > 1]
-            
-            
-
-
-
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
-    # this matrix has no token pointing to the head
-    '''
-    test_1 = np.array([ 
-       [ -1.,   9.,  10.,   9.],
-       [ -1.,  -1.,  20.,   3.],
-       [ -1.,  30.,  -1.,  30.],
-       [ -1.,  11.,   0.,  -1.]]
-       )
-    decoder = MST(test_1)
-    decoder.Decode()
-    '''
     #this matrix has multiple tokens pointing to the head
     test_2 = np.array([
        [-1., 9., 10., 9.],

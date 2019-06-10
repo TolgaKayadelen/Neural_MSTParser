@@ -30,7 +30,7 @@
     }
     candidate_head {
     	address: 0
-  	arc_score: 9
+  		arc_score: 9
     }
     candidate_head {
     	address: 2
@@ -38,7 +38,7 @@
     }
     candidate_head {
     	address: 3
-  	arc_score: 11
+  		arc_score: 11
     }
     selected_head {
       address: 2
