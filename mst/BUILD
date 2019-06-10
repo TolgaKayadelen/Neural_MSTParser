@@ -11,6 +11,12 @@ py_binary(
 	],
 )
 
+# Binaries.
+py_binary(
+	name = "max_span_tree_simple",
+	srcs = ["max_span_tree_simple.py"],
+)
+
 # Tests.
 py_test(
 	name = "max_span_tree_test",
@@ -28,3 +34,18 @@ py_test(
 		":max_span_tree"
 	],
 )
+
+# Tests.
+py_test(
+	name = "max_span_tree_simple_test",
+	size = "small",
+	srcs = ["max_span_tree_simple_test.py"],
+	data = [
+		"//data/testdata:cycles",
+	],
+	deps = [
+		":max_span_tree_simple",
+		"//data/treebank:sentence_py_pb2",
+	],
+)
+
