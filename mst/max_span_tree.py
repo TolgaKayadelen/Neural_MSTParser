@@ -361,8 +361,8 @@ def _Reconstruct(cont_mst, new_token, original_edges, cycle_path):
     reconstructed_edges = defaultdict(list)
     cont_edges = defaultdict(list)
     cycle_edges = _GetCycleEdgesAndScores(original_edges, cycle_path)
-    #print("cycle_path: {}".format(cycle_path))
-    #print("cycle edges: {}".format(cycle_edges))
+    print("cycle_path: {}".format(cycle_path))
+    print("cycle edges: {}".format(cycle_edges))
     
     # a convenience function to find the edge score for a given source and target node index
     # from an edges dictionary; can be used to find edge score for a source and target in
@@ -407,7 +407,7 @@ def _Reconstruct(cont_mst, new_token, original_edges, cycle_path):
                         if target[0] in cycle_path:
                             original_target = target
                             break
-                #print("original target {}".format(original_target))
+                print("original target {}".format(original_target))
                 reconstructed_edges[source].append(original_target)
                 cycle_source = original_target[0]
                 #print("cycle_dep: {}".format(cycle_source))
@@ -417,11 +417,11 @@ def _Reconstruct(cont_mst, new_token, original_edges, cycle_path):
                 #print("cycle_target: {}".format(cycle_target))
                 while cycle_target[0] != original_target[0]:
                     reconstructed_edges[cycle_source].append(cycle_target)
-                    #print("reconstructed_edges {}".format(reconstructed_edges))
+                    print("reconstructed_edges {}".format(reconstructed_edges))
                     cycle_source = cycle_target[0]
-                    #logging.info("cycle_source: {}".format(cycle_source))
+                    logging.info("cycle_source: {}".format(cycle_source))
                     cycle_target = cycle_edges[cycle_source]
-                    #logging.info("cycle_target: {}".format(cycle_target))
+                    logging.info("cycle_target: {}".format(cycle_target))
         
         
             if source == new_token.index:
@@ -472,15 +472,16 @@ def _Merge(edges, sentence):
                 #print("token index in Merge {}".format(token.index))
                 logging.info("Determining head for token {} """.format(token.index))
                 if token.selected_head.address != source:
-                    logging.info("""Changing the head for {} from {} --> {}""".format(
-                        token.index, token.selected_head.address, source
-                        ))
-                    logging.info("""Changing the arc score for {} from {} --> {}""".format(
-                        token.index, token.selected_head.arc_score, target[1]
-                        ))
+                    #logging.info("""Changing the head for {} from {} --> {}""".format(
+                    #    token.index, token.selected_head.address, source
+                    #    ))
+                    #logging.info("""Changing the arc score for {} from {} --> {}""".format(
+                    #    token.index, token.selected_head.arc_score, target[1]
+                    #    ))
                     token.selected_head.address = source
                     token.selected_head.arc_score = target[1]
                 else:
+                    #print("\n")
                     logging.info("""Token {} already had correct head""".format(token.index))
     return _DropCandidateHeads(sentence)            
 
