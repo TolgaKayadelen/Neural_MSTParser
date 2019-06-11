@@ -204,6 +204,12 @@ class Converter:
                 continue
             if line.startswith('# Change'):
                 continue
+            if line.startswith("# Fixed"):
+                continue
+            if line.startswith("# Fix"):
+                continue
+            if line.startswith('# Checktree'):
+                continue
             if line.startswith("# sent_id"):
                 metadata["sent_id"] = line.split("=")[1].strip()
                 continue
@@ -272,7 +278,7 @@ class Converter:
 
 def main(args):
     converter = Converter(args.input_file)
-    sentences = converter.sentence_list[:50]
+    sentences = converter.sentence_list[2000:2500]
     protos = converter.ConvertConllToProto(
         conll_sentences = sentences, 
         output_file = args.output_file, 
@@ -291,6 +297,6 @@ if __name__ == "__main__":
     parser.add_argument("--output_file", help="The output file to write the data.")
     parser.add_argument("--writetext", help="wheter to save the output also in .pbtxt format", default=True)
     parser.add_argument("--writeproto", help="whether to save the output in proto format.", default=False)
-    parser.add_argument("--prototype", help="whether sentence or treebank proto.", default="sentence")
+    parser.add_argument("--prototype", help="whether sentence or treebank proto.", default="treebank")
     args = parser.parse_args()
     main(args)

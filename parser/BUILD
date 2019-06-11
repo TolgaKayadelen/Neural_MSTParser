@@ -15,6 +15,7 @@ py_library(
 	srcs = ["decoder.py"],
 	deps = [
 		"//mst:max_span_tree",
+		"//mst:max_span_tree_simple",
 		"//util:common",
 	],
 )

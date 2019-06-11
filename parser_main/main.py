@@ -37,6 +37,7 @@ def _get_data(args):
     logging.info("Loading dataset")
     path = os.path.join(_TRAIN_DATA_DIR, "{}.pbtxt".format(args.data))
     treebank = reader.ReadTreebankTextProto(path)
+    logging.info("Total sentences in treebank {}".format(len(treebank.sentence)))
     sentence_list = list(treebank.sentence)
     training_portion = int(split[0] * len(sentence_list))
     dev_portion = int(split[1] * len(sentence_list))
@@ -72,7 +73,7 @@ def train(args):
     t,d = _get_data(args)
     training_data = map(common.ConnectSentenceNodes, t)
     logging.info("Training Data Size {}".format(len(training_data)))
-    if args.split[1] > 0:
+    if float(args.split[1]) > 0:
         dev_data = map(common.ConnectSentenceNodes, d)
         dev_data = map(common.ExtendSentence, dev_data)
         logging.info("Dev Data Size {}".format(len(d)))
@@ -103,12 +104,14 @@ def train(args):
     print("\n*******----------------------*******")
     logging.info("Start Evaluation on Dev Data..")
     logging.info("Weights not averaged..")
-    #dev_data = training_data
+    if not dev_data:
+        dev_data = training_data
     dev_acc = model._Evaluate(dev_data)
     logging.info("Accuracy before averaging weights on dev: {}".format(dev_acc))
-    
+    raw_input("Press any key to continue: ")
     
     # Average the weights and evaluate again
+    logging.info("Averaging perpceptring weights and evaluating on dev..")
     unaveraged_weights = deepcopy(model.arc_perceptron.weights)
     accumulated_weights = deepcopy(model.arc_perceptron._accumulator)
     averaged_weights = model.arc_perceptron.AverageWeights(accumulated_weights)
