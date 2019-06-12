@@ -30,19 +30,33 @@ def _get_data(args):
         training_data: list, sentence_pb2.Sentence objects.
         dev_data: list, sentence_pb2.Sentence objects.
     """
-    split = [float(args.split[0]), float(args.split[1])]
-    assert split[0] + split[1] == 1, "Cannot split data!!"
-    _TREEBANK_DIR = "data/UDv23"
-    _TRAIN_DATA_DIR = os.path.join(_TREEBANK_DIR, args.language, "training")
     logging.info("Loading dataset")
-    path = os.path.join(_TRAIN_DATA_DIR, "{}.pbtxt".format(args.data))
-    treebank = reader.ReadTreebankTextProto(path)
-    logging.info("Total sentences in treebank {}".format(len(treebank.sentence)))
-    sentence_list = list(treebank.sentence)
-    training_portion = int(split[0] * len(sentence_list))
-    dev_portion = int(split[1] * len(sentence_list))
-    training_data = sentence_list[:training_portion]
-    dev_data = sentence_list[-dev_portion:]
+    _TREEBANK_DIR = "data/UDv23"
+    
+    if not args.test_data:
+        split = [float(args.split[0]), float(args.split[1])]
+        assert split[0] + split[1] == 1, "Cannot split data!!"
+        _TRAIN_DATA_DIR = os.path.join(_TREEBANK_DIR, args.language, "training")
+        path = os.path.join(_TRAIN_DATA_DIR, "{}.pbtxt".format(args.train_data))
+        treebank = reader.ReadTreebankTextProto(path)
+        logging.info("Total sentences in treebank {}".format(len(treebank.sentence)))
+        sentence_list = list(treebank.sentence)
+        training_portion = int(split[0] * len(sentence_list))
+        dev_portion = int(split[1] * len(sentence_list))
+        training_data = sentence_list[:training_portion]
+        dev_data = sentence_list[-dev_portion:]
+    else:
+        _TRAIN_DATA_DIR = os.path.join(_TREEBANK_DIR, args.language, "training")
+        _TEST_DATA_DIR = os.path.join(_TREEBANK_DIR, args.language, "test")
+        train_path = os.path.join(_TRAIN_DATA_DIR, "{}.pbtxt".format(args.train_data))
+        train_treebank = reader.ReadTreebankTextProto(train_path)
+        logging.info("Total sentences in train data {}".format(len(train_treebank.sentence)))
+        training_data = list(train_treebank.sentence)
+        test_path = os.path.join(_TEST_DATA_DIR, "{}.pbtxt".format(args.test_data))
+        test_treebank = reader.ReadTreebankTextProto(test_path)
+        logging.info("Total sentences in test data {}".format(len(test_treebank.sentence)))
+        dev_data = list(test_treebank.sentence)
+        
     return training_data, dev_data
 
 def _get_size(object):
@@ -73,7 +87,7 @@ def train(args):
     t,d = _get_data(args)
     training_data = map(common.ConnectSentenceNodes, t)
     logging.info("Training Data Size {}".format(len(training_data)))
-    if float(args.split[1]) > 0:
+    if len(d) > 0:
         dev_data = map(common.ConnectSentenceNodes, d)
         dev_data = map(common.ExtendSentence, dev_data)
         logging.info("Dev Data Size {}".format(len(d)))
@@ -98,7 +112,7 @@ def train(args):
     
     
     # Train
-    model.Train(args.epochs, training_data, dev_data=None, approx=len(training_data)/2)
+    model.Train(args.epochs, training_data, dev_data=None, approx=50)
     
     # Evaluate
     print("\n*******----------------------*******")
@@ -111,7 +125,7 @@ def train(args):
     raw_input("Press any key to continue: ")
     
     # Average the weights and evaluate again
-    logging.info("Averaging perpceptring weights and evaluating on dev..")
+    logging.info("Averaging perpceptron weights and evaluating on dev..")
     unaveraged_weights = deepcopy(model.arc_perceptron.weights)
     accumulated_weights = deepcopy(model.arc_perceptron._accumulator)
     averaged_weights = model.arc_perceptron.AverageWeights(accumulated_weights)
@@ -136,7 +150,8 @@ if __name__ == "__main__":
     # Data args.
     parser.add_argument("--language", type=str, choices=["English", "Turkish"],
                         help="language")
-    parser.add_argument("--data", type=str, help="The data to read (.protobuf)")
+    parser.add_argument("--train_data", type=str, help="The train data to read (.protobuf)")
+    parser.add_argument("--test_data", type=str, help="The test data to read (.protobuf)")
     parser.add_argument("--split", '--list', action="append", help="Split training and test")
     
     # Model args.
