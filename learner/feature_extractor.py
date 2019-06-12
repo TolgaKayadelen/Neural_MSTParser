@@ -83,6 +83,7 @@ class FeatureExtractor:
                 child=child,
                 use_tree_features = use_tree_features)
             feature.value = value
+        #common.PPrintTextProto(featureset)
         return featureset
     
     def _GetFeatureValue(self, feature, sentence=None, head=None, child=None, use_tree_features=True):

@@ -208,6 +208,8 @@ class Converter:
                 continue
             if line.startswith("# Fix"):
                 continue
+            if line.startswith("# NOTE"):
+                continue
             if line.startswith('# Checktree'):
                 continue
             if line.startswith("# sent_id"):
@@ -278,7 +280,7 @@ class Converter:
 
 def main(args):
     converter = Converter(args.input_file)
-    sentences = converter.sentence_list[2000:2500]
+    sentences = converter.sentence_list
     protos = converter.ConvertConllToProto(
         conll_sentences = sentences, 
         output_file = args.output_file, 

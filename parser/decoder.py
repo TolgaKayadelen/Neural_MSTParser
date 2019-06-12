@@ -40,6 +40,7 @@ class Decoder:
                 # necessary in cases where we evaluate on train data.
                 token.ClearField("candidate_head")
                 token.ClearField("selected_head")
+                # insert the selected head into the token.
                 token.selected_head.address=head_token[i][0]
                 assert token.word == head_token[i][1].word, "Potential token mismatching!!"
                 #for i in range(scores.shape[1]):
