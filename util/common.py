@@ -82,6 +82,7 @@ def ConnectSentenceNodes(sentence):
     Returns:
         The sentence where all tokens are connected.
     """
+    #print("Sentence : {}".format(" ".join([token.word.encode("utf-8") for token in sentence.token])))
     token_connections = [
         (i, j) 
         for i in sentence.token for j in sentence.token[::-1] 
@@ -103,6 +104,7 @@ def ConnectSentenceNodes(sentence):
         if token.index == 0:
             assert len(token.candidate_head) == 0
         else:
+            #print("token {}, candidate heads: {}".format(token, len(token.candidate_head)))
             assert len(token.candidate_head) == len(sentence.token) - 1
     return sentence
 
@@ -185,7 +187,7 @@ def PPrintWeights(weights, features=None):
     if not features:
         for name in weights.keys():
             for value in weights[name].keys():
-                print("name: {}\n value: {}\n wta: {}\n".format(
+                print("name: {}\n value: {}\n weight: {}\n".format(
                     name.encode("utf-8"), value.encode("utf-8"), weights[name][value])
                 )
         print("***---------***")

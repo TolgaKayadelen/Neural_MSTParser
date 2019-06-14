@@ -30,7 +30,7 @@ class MST:
         #print("scores: {}".format(self.scores))
         self.heads = np.argmax(self.scores, axis=1)
         self.heads[0] = 0 # root has no haed.
-        logging.info("Initial heads: {}".format(self.heads))
+        #logging.info("Initial heads: {}".format(self.heads))
         self.tokens = np.arange(1, self.length)
         #print("tokens: {}".format(self.tokens))
         # find the tokens whose head is the root (i.e node 0)
@@ -113,7 +113,7 @@ class MST:
             edges[new_head].add(changed_cycle)
             edges[old_head].remove(changed_cycle)
         
-        logging.info("Final Heads! {}".format(self.heads))
+        #logging.info("Final Heads! {}".format(self.heads))
         return self.heads
     
     

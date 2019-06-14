@@ -108,6 +108,9 @@ def train(args):
         model.MakeFeatures(training_data)
     totals = [len(model.arc_perceptron.weights[key]) for key in model.arc_perceptron.weights.keys()]
     logging.info("Number of features {}".format(sum(totals)))
+    raw_input("Press any key to continue: ")
+    common.PPrintWeights(model.arc_perceptron.weights)
+    raw_input("Press any key to continue: ")
     #print("Memory used by model: {} GB.".format(_get_size(model)))
     
     
@@ -120,9 +123,16 @@ def train(args):
     logging.info("Weights not averaged..")
     if not dev_data:
         dev_data = training_data
+    
+    
+    # remove later
+    common.PPrintTextProto(dev_data[0])
+    raw_input("Press Any Key to Continue: ")
+    
+    
     dev_acc = model._Evaluate(dev_data)
     logging.info("Accuracy before averaging weights on dev: {}".format(dev_acc))
-    raw_input("Press any key to continue: ")
+    #raw_input("Press any key to continue: ")
     
     # Average the weights and evaluate again
     logging.info("Averaging perpceptron weights and evaluating on dev..")
@@ -137,7 +147,7 @@ def train(args):
                                    averaged_weights,
                                    iters)
     model.arc_perceptron.weights = deepcopy(averaged_weights)
-    logging.info("Evaluating after Averaged Weights..")
+    #logging.info("Evaluating after Averaged Weights..")
     dev_acc = model._Evaluate(dev_data)
     logging.info("Accuracy after averaging weights on dev: {}".format(dev_acc))
     

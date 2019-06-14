@@ -52,12 +52,16 @@ class DependencyParser:
                 features = self.feature_extractor.GetFeatures(
                     sentence = sentence,
                     head = head,
-                    child = token,
-                    use_tree_features=True
+                    child = token
                 )
                 score = self.arc_perceptron.Score(features)
                 score_matrix[token.index][head.index] = score
         #probs = self._Softmax(score_matrix)
+        
+        #remove later
+        if sentence.token[2].word == "Kerem":
+            print("head prediction matrix: {}".format(score_matrix))
+        
         parsed, predicted_heads = self.decoder(sentence, score_matrix) 
         return parsed, predicted_heads
         
@@ -71,12 +75,12 @@ class DependencyParser:
             #Evaluate the arc perceptron
             train_acc = self._Evaluate(training_data)
             logging.info("Train acc after iter {}: {}".format(i+1, train_acc))
-            #raw_input("Press a key to continue: ")
+            raw_input("Press a key to continue: ")
             if dev_data:
                 logging.info("Evaluating on dev data..")
                 dev_acc = self._Evaluate(dev_data)
                 logging.info("Dev acc after iter {}: {}".format(i+1, dev_acc))
-                raw_input("Press a key to continue: ")
+                #raw_input("Press a key to continue: ")
             #if train_acc == 100:
             #    break
             np.random.shuffle(training_data)
