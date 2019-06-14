@@ -4,6 +4,7 @@
 
 from google.protobuf import text_format
 from mst.max_span_tree import ChuLiuEdmonds as cle
+from util.common import PPrintTextProto
 from util.common import DropDummyTokens
 from mst.max_span_tree_simple import MST as mst_decoder
 from sys import maxint
@@ -43,6 +44,11 @@ class Decoder:
                 # insert the selected head into the token.
                 token.selected_head.address=head_token[i][0]
                 assert token.word == head_token[i][1].word, "Potential token mismatching!!"
+            
+            # remove later
+            if sentence.token[1].word == "Kerem":
+                print("Predicted Sentence: ")
+                PPrintTextProto(sentence)
                 #for i in range(scores.shape[1]):
                 #    if token.index == i:
                         #print(token.index, i)
