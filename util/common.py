@@ -82,7 +82,6 @@ def ConnectSentenceNodes(sentence):
     Returns:
         The sentence where all tokens are connected.
     """
-    #print("Sentence : {}".format(" ".join([token.word.encode("utf-8") for token in sentence.token])))
     token_connections = [
         (i, j) 
         for i in sentence.token for j in sentence.token[::-1] 

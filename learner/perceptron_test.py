@@ -70,7 +70,7 @@ class PerceptronTest(unittest.TestCase):
         prediction, features, scores = percept._PredictHead(self.en_test, test_token)
         #print(scores)
         #print(prediction)
-        self.assertEqual(scores, [2636.0, 2676.0, None, 2679.0])
+        self.assertEqual(scores, [1743.0, 1773.0, None, 1778.0])
         self.assertEqual(prediction, 3)
         print("Passed!")
     
@@ -94,15 +94,15 @@ class PerceptronTest(unittest.TestCase):
         # run one iteration of training.
         nr_correct, _ = percept.Train([self.en_test])
         weights_after_train["root_saw"] = common.GetFeatureWeights(percept.weights, f_root_saw)
-        expected_weights_after_train =  [
-            12.2, 2.7, 8.0, 2.5, 3.2, 5.3, 6.7, 6.3, 7.2, 7.8, 15.6, 4.2, 0.8, 2.3, 16.8,
-            9.8, 3.7, 14.7, 16.1, 1.4, 12.9, 4.6, 8.9, 13.8, 11.6, 5.7, 10.7, 0.1, 7.4,
-            4.8, 8.3, 0.6, 9.4, 15.4, 2.1]
+        expected_weights_after_train = [
+            11.1, 2.8, 7.4, 1.6, 2.3, 4.0, 6.4, 6.0, 5.9, 6.2, 14.2, 3.3, 1.1, 1.4, 15.4,
+            8.7, 3.8, 13.6, 14.7, 1.7, 11.8, 4.7, 8.0, 12.7, 10.5, 5.4, 9.6]
         function_weights_after_train = [round(w, 1) for w in weights_after_train["root_saw"]]
+        #print(function_weights_after_train)
         # Note that some weights looks like didn't change because in a later iteration
         # they caused wrong prediction and hence were reduced by 1.0 again.
         self.assertListEqual(function_weights_after_train, expected_weights_after_train)
-        self.assertEqual(nr_correct, 2)
+        self.assertEqual(nr_correct, 1)
         print("Passed!")
     
     def testLearn(self):
@@ -156,14 +156,14 @@ class PerceptronTest(unittest.TestCase):
             if accuracy == 100:
                 break
         
-        self.assertEqual(53.6, round(percept._accumulator[feat_name][feat_value], 1))
+        self.assertEqual(44.0, round(percept._accumulator[feat_name][feat_value], 1))
         self.assertEqual(6, percept._timestamps[feat_name][feat_value])
         
         # test averaging
         acc_weights_for_feat = defaultdict(OrderedDict)
         acc_weights_for_feat[feat_name][feat_value] = percept._accumulator[feat_name][feat_value]
         averaged = percept.AverageWeights(acc_weights_for_feat)
-        self.assertEqual(8.9, round(averaged[feat_name][feat_value], 1))
+        self.assertEqual(7.3, round(averaged[feat_name][feat_value], 1))
         print("Passed!")
     
         

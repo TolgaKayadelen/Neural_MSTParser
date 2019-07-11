@@ -7,6 +7,7 @@ import argparse
 import numpy as np
 import os
 import pickle
+import json
 
 from collections import defaultdict
 from collections import OrderedDict
@@ -106,29 +107,48 @@ class AveragedPerceptron(object):
         #print("Features read from {}".format(path))
         self.InitializeWeights(featureset, load=True)
 
-           
-    def SaveFeatures(self, filename, as_text=False):
-        """Save trained features and their weights to a .pkl file.
-        
-        The saved object is a featureset_pb2.FeatureSet proto.
+
+    def LoadModel(self, name, training=False):
+        """Load model features and weights from a json file.
         Args:
-            weights = defaultdict, the feature weights to save.
-            filename: string, path to save the trained features into.
-        """            
+            name = the name of the model to load. 
+        """
+        name = name + ".json" if not name.endswith(".json") else name
+        input_file = os.path.join(_MODEL_DIR, "{}".format(name))
+        with open(input_file, "r") as inp:
+            model = json.load(inp)
+        featureset = model["featureset"]
+        feature_opts = model["feature_opts"]
+        accuracy = model["accuracy"]
+        self.InitializeWeights(featureset, load=True)
+        if training:
+            # initialize timestamps and accumulator if you wish to resume training.
+            self._timestamps[f.name].update({f.value:0})
+            self._accumulator[f.name].update({f.value:0})
+        return accuracy    
+        
+    def SaveModel(self, model_name, data=None, epochs=None, accuracy=None):
+        """Save model features and weights in json format.
+        Args:
+            name: string, the name of the model.
+            data: string, the data path with which the model was trained.
+            epocsh: the training epochs. 
+            accuracy: the arc accuracy.
+        """
         if not hasattr(self, "featureset"):
             self.featureset = self._ConvertWeightsToProto()
-        
-        assert filename, "No output filename!"
-        
-        if as_text:
-            output_file = os.path.join(_MODEL_DIR, "{}.pbtxt".format(filename))
-            writer.write_proto_as_text(self.featureset, output_file)
-        else:
-            output_file = os.path.join(_MODEL_DIR, "{}.pkl".format(filename))
-            with open(output_file, 'wb') as output:
-                pickle.dump(self.featureset, output)
-        logging.info("Saved features to {}".format(output_file))       
-
+        name = name + ".json" if not name.endswith(".json") else name
+        model = {
+            "data": data,
+            "epochs": epochs,
+            "accuracy": accuracy,
+            "feature_opts": self.feature_opts,
+            "featureset": self.featureset
+        }
+        output_file = os.path.join(_MODEL_DIR, "{}".format(name))
+        with open(output_file, "w") as output:
+            json.dump(model, output, indent=4)
+    
     
     def Sort(self):
         """Sort features by weight."""
@@ -155,31 +175,6 @@ class ArcPerceptron(AveragedPerceptron):
         self.iters = 0
         self._extractor = FeatureExtractor()
         
-    def MakeFeaturesFromGold(self, training_data):
-        """Create a feature set from the gold head-dependent pairs in the data.
-        Args:
-            training_data: list of sentence_pb2.Sentence() objects.
-        """
-        for sentence in training_data:
-            assert isinstance(sentence, sentence_pb2.Sentence), "Unaccapted data type."
-            sentence = common.ExtendSentence(sentence)
-            for token in sentence.token:
-                # skip where token is the dummy start token, dummy end token, or the root token. 
-                if not token.selected_head or token.selected_head.address == -1:
-                    continue
-                # just another safety check to make sure that we catch everything we need to skip.
-                if token.index <= 0:
-                    continue
-                #print("child: {}".format(token.word))
-                head = GetTokenByAddressAlt(sentence.token, token.selected_head.address)
-                #print("head {}, child {}".format(head.word, token.word))
-                self.InitializeWeights(self._extractor.GetFeatures(
-                    sentence,
-                    head=head,
-                    child=token,
-                    use_tree_features=True)
-                )
-    
     def MakeAllFeatures(self, training_data):
         """Create a features set from --all-- head-dependent pairs in the data.
         Args:

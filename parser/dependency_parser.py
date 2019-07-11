@@ -57,11 +57,6 @@ class DependencyParser:
                 score = self.arc_perceptron.Score(features)
                 score_matrix[token.index][head.index] = score
         #probs = self._Softmax(score_matrix)
-        
-        #remove later
-        if sentence.token[2].word == "Kerem":
-            print("head prediction matrix: {}".format(score_matrix))
-        
         parsed, predicted_heads = self.decoder(sentence, score_matrix) 
         return parsed, predicted_heads
         
