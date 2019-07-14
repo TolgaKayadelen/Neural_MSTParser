@@ -74,8 +74,10 @@ class DependencyParser:
             if dev_data:
                 logging.info("Evaluating on dev data..")
                 dev_acc = self._Evaluate(dev_data)
+                # Comment out if you're not interested in seeing dev acc after
+                # each epoch.
                 logging.info("Dev acc after iter {}: {}".format(i+1, dev_acc))
-                #raw_input("Press a key to continue: ")
+                raw_input("Press a key to continue: ")
             #if train_acc == 100:
             #    break
             np.random.shuffle(training_data)
@@ -115,7 +117,16 @@ class DependencyParser:
       #print(matrix)
       matrix = np.exp(matrix)
       #print(matrix)
-      return matrix / np.sum(matrix, axis=1, keepdims=True)    
+      return matrix / np.sum(matrix, axis=1, keepdims=True)
+    
+    def Save(self, path, data_path=None, nr_epochs=None, accuracy=None):
+        assert isinstance(data_path, str), "Invalid Data Path!"
+        assert isinstance(nr_epochs, int), "Invalid number of epochs!"
+        assert isinstance(accuracy, dict), "Invalid data type for accuracy!"
+        self.arc_accuracy = accuracy
+        self.arc_perceptron.SaveModel(
+            name=path, data_path=data_path, nr_epochs=nr_epochs, accuracy=self.arc_accuracy
+        )
 
 
 def main():

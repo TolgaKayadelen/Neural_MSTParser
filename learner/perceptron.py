@@ -125,24 +125,26 @@ class AveragedPerceptron(object):
             # initialize timestamps and accumulator if you wish to resume training.
             self._timestamps[f.name].update({f.value:0})
             self._accumulator[f.name].update({f.value:0})
+        # TODO: do we need to return accuracy or anything else. 
         return accuracy    
         
-    def SaveModel(self, model_name, data=None, epochs=None, accuracy=None):
+    def SaveModel(self, name, data_path=None, nr_epochs=None, accuracy=None):
         """Save model features and weights in json format.
         Args:
             name: string, the name of the model.
-            data: string, the data path with which the model was trained.
+            data_path: string, the data path with which the model was trained.
             epocsh: the training epochs. 
             accuracy: the arc accuracy.
         """
         if not hasattr(self, "featureset"):
             self.featureset = self._ConvertWeightsToProto()
         name = name + ".json" if not name.endswith(".json") else name
+        # TODO: fix the json serialization problem.
         model = {
-            "data": data,
-            "epochs": epochs,
+            "data_path": data_path,
+            "epochs_trained": nr_epochs,
             "accuracy": accuracy,
-            "feature_opts": self.feature_opts,
+            "feature_options": self.feature_options,
             "featureset": self.featureset
         }
         output_file = os.path.join(_MODEL_DIR, "{}".format(name))

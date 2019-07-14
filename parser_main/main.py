@@ -19,6 +19,8 @@ from google.protobuf import text_format
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
+#TODO: use consistent naming for dev_data and test_data throughout.
+
 
 def _get_data(args):
     """Function to retrieve training and dev data from args.
@@ -114,7 +116,7 @@ def train(args):
     
     
     # Train
-    model.Train(args.epochs, training_data, dev_data=None, approx=50)
+    model.Train(args.epochs, training_data, dev_data=dev_data, approx=50)
     
     # Evaluate
     print("\n*******----------------------*******")
@@ -123,8 +125,8 @@ def train(args):
     if not dev_data:
         dev_data = training_data
         
-    dev_acc = model._Evaluate(dev_data)
-    logging.info("Accuracy before averaging weights on dev: {}".format(dev_acc))
+    dev_acc_unavg = model._Evaluate(dev_data)
+    logging.info("Accuracy before averaging weights on dev: {}".format(dev_acc_unavg))
     raw_input("Press any key to continue: ")
     
     # Average the weights and evaluate again
@@ -141,9 +143,20 @@ def train(args):
                                    iters)
     model.arc_perceptron.weights = deepcopy(averaged_weights)
     logging.info("Evaluating after Averaged Weights..")
-    dev_acc = model._Evaluate(dev_data)
+    dev_acc_avg = model._Evaluate(dev_data)
     raw_input("Press any key to continue: ")
-    logging.info("Accuracy after averaging weights on dev: {}".format(dev_acc))
+    logging.info("Accuracy after averaging weights on dev: {}".format(dev_acc_avg))
+    
+    #Save the model.
+    logging.info("Saving model to {}".format(args.model))
+    raw_input("Press any key to continue: ")
+    data_path = args.test_data if args.test_data else args.train_data
+    model.Save(
+        args.model, data_path=data_path, nr_epochs=args.epochs, accuracy=dict(
+            dev_unavg = round(dev_acc_unavg, 2),
+            dev_avg = round(dev_acc_avg, 2)
+            )
+        )
     
 
 if __name__ == "__main__":
@@ -161,7 +174,7 @@ if __name__ == "__main__":
     # Model args.
     parser.add_argument("--decoder", type=str, choices=["mst", "eisner"],
                         default="mst", help="decoder to extract tree from scores.")
-    parser.add_argument("--model", type=str, default="./model/model.pkl",
+    parser.add_argument("--model", type=str, default="model.json",
                         help="path to save the model to, or load the model from.")
     parser.add_argument("--load", type=bool,
                         help="Load a pretrained model, specify which one with --model.",
