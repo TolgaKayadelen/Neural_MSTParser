@@ -103,9 +103,9 @@ def train(args):
     # TODO: add feature_opts to the model call.
     model = DependencyParser(decoding="mst")
     if args.load:
-        logging.info("Loading model from args.model...")
+        logging.info("Loading model from {}".format(args.model))
         #TODO: implement load and save methods for the dependency parser
-        model.load(args.model)
+        model.Load(args.model)
     else:
         logging.info("Creating featureset..")
         model.MakeFeatures(training_data)
@@ -150,11 +150,13 @@ def train(args):
     #Save the model.
     logging.info("Saving model to {}".format(args.model))
     raw_input("Press any key to continue: ")
-    data_path = args.test_data if args.test_data else args.train_data
+    test_data_path = args.test_data if args.test_data else args.train_data
     model.Save(
-        args.model, data_path=data_path, nr_epochs=args.epochs, accuracy=dict(
-            dev_unavg = round(dev_acc_unavg, 2),
-            dev_avg = round(dev_acc_avg, 2)
+        args.model, train_data_path=args.train_data, 
+        test_data_path=test_data_path, nr_epochs=args.epochs, 
+        accuracy=dict(
+            test_unavg = round(dev_acc_unavg, 2),
+            test_avg = round(dev_acc_avg, 2)
             )
         )
     

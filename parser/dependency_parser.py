@@ -119,14 +119,21 @@ class DependencyParser:
       #print(matrix)
       return matrix / np.sum(matrix, axis=1, keepdims=True)
     
-    def Save(self, path, data_path=None, nr_epochs=None, accuracy=None):
-        assert isinstance(data_path, str), "Invalid Data Path!"
+    def Save(self, path, train_data_path=None, test_data_path=None, nr_epochs=None, accuracy=None):
+        assert isinstance(train_data_path, str), "Invalid Data Path!"
+        assert isinstance(test_data_path, str), "Invalid Data Path!"
         assert isinstance(nr_epochs, int), "Invalid number of epochs!"
         assert isinstance(accuracy, dict), "Invalid data type for accuracy!"
         self.arc_accuracy = accuracy
         self.arc_perceptron.SaveModel(
-            name=path, data_path=data_path, nr_epochs=nr_epochs, accuracy=self.arc_accuracy
+            name=path, train_data_path=train_data_path, test_data_path=test_data_path,
+            nr_epochs=nr_epochs, accuracy=self.arc_accuracy
         )
+    
+    def Load(self, path, training=False):
+        assert isinstance(path, str), "Invalid Path!"
+        assert isinstance(training, bool), "Invalid Value for training!"
+        accuracy = self.arc_perceptron.LoadModel(path, training)
 
 
 def main():

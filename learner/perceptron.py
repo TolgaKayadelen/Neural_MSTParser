@@ -14,6 +14,7 @@ from collections import OrderedDict
 from copy import deepcopy
 from data.treebank import sentence_pb2
 from google.protobuf import text_format
+from google.protobuf import json_format
 from learner import featureset_pb2
 from learner.feature_extractor import FeatureExtractor
 from mst.max_span_tree import GetTokenByAddressAlt 
@@ -109,6 +110,9 @@ class AveragedPerceptron(object):
 
 
     def LoadModel(self, name, training=False):
+        #TODO: fix the weird key error that occurs at feature extractor line:125.
+        # after loading features.
+        #TODO: make sure the model doesn't train if training=False.
         """Load model features and weights from a json file.
         Args:
             name = the name of the model to load. 
@@ -117,18 +121,14 @@ class AveragedPerceptron(object):
         input_file = os.path.join(_MODEL_DIR, "{}".format(name))
         with open(input_file, "r") as inp:
             model = json.load(inp)
-        featureset = model["featureset"]
-        feature_opts = model["feature_opts"]
+        featureset = json_format.Parse(model["featureset"], featureset_pb2.FeatureSet())
+        feature_options = model["feature_options"]
         accuracy = model["accuracy"]
         self.InitializeWeights(featureset, load=True)
-        if training:
-            # initialize timestamps and accumulator if you wish to resume training.
-            self._timestamps[f.name].update({f.value:0})
-            self._accumulator[f.name].update({f.value:0})
         # TODO: do we need to return accuracy or anything else. 
         return accuracy    
         
-    def SaveModel(self, name, data_path=None, nr_epochs=None, accuracy=None):
+    def SaveModel(self, name, train_data_path=None, test_data_path=None, nr_epochs=None, accuracy=None):
         """Save model features and weights in json format.
         Args:
             name: string, the name of the model.
@@ -139,13 +139,14 @@ class AveragedPerceptron(object):
         if not hasattr(self, "featureset"):
             self.featureset = self._ConvertWeightsToProto()
         name = name + ".json" if not name.endswith(".json") else name
-        # TODO: fix the json serialization problem.
         model = {
-            "data_path": data_path,
+            "train_data_path": train_data_path,
+            "test_data_path": test_data_path,
             "epochs_trained": nr_epochs,
             "accuracy": accuracy,
             "feature_options": self.feature_options,
-            "featureset": self.featureset
+            "featureset": json_format.MessageToJson(self.featureset,
+                                                    including_default_value_fields=True)
         }
         output_file = os.path.join(_MODEL_DIR, "{}".format(name))
         with open(output_file, "w") as output:
