@@ -88,6 +88,7 @@ def train(args):
     """
     t,d = _get_data(args)
     training_data = map(common.ConnectSentenceNodes, t)
+    training_data = map(common.ExtendSentence, training_data)
     logging.info("Training Data Size {}".format(len(training_data)))
     if len(d) > 0:
         dev_data = map(common.ConnectSentenceNodes, d)
@@ -104,13 +105,11 @@ def train(args):
     model = DependencyParser(decoding="mst")
     if args.load:
         logging.info("Loading model from {}".format(args.model))
-        #TODO: implement load and save methods for the dependency parser
         model.Load(args.model)
     else:
         logging.info("Creating featureset..")
         model.MakeFeatures(training_data)
-    totals = [len(model.arc_perceptron.weights[key]) for key in model.arc_perceptron.weights.keys()]
-    logging.info("Number of features {}".format(sum(totals)))
+    logging.info("Number of features: {}".format(model.arc_perceptron.feature_count))
     raw_input("Press any key to continue: ")
     #print("Memory used by model: {} GB.".format(_get_size(model)))
     

@@ -23,6 +23,7 @@ def ExtendSentence(sentence):
     Returns:
         sentence: sentence_pb2.Sentence()
     """
+    sentence.length = len(sentence.token)
     start_token = sentence_pb2.Token(word="START_TOK", lemma="START_TOK", category="START_CAT", pos="START_POS", index=-1)
     end_token = sentence_pb2.Token(word="END_TOK", lemma="END_TOK", category="END_CAT", pos="END_POS", index=-2)
     tokens = deepcopy(sentence.token)
@@ -31,6 +32,7 @@ def ExtendSentence(sentence):
     for token in tokens:
         sentence.token.extend([token])
     sentence.token.extend([end_token])
+    assert sentence.length == len(sentence.token) - 2, "Wrong sentence length after extension!"
     return sentence
 
 

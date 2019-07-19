@@ -133,7 +133,8 @@ class DependencyParser:
     def Load(self, path, training=False):
         assert isinstance(path, str), "Invalid Path!"
         assert isinstance(training, bool), "Invalid Value for training!"
-        accuracy = self.arc_perceptron.LoadModel(path, training)
+        self.arc_perceptron.LoadModel(path, training)
+        
 
 
 def main():

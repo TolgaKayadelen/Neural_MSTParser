@@ -33,7 +33,7 @@ class AveragedPerceptron(object):
         self.weights = defaultdict(OrderedDict)
         self._timestamps = defaultdict(OrderedDict)
         self._accumulator = defaultdict(OrderedDict)
-        self._feature_count = 0
+        self.feature_count = 0
     
     def InitializeWeights(self, featureset, load=False):
         """Initialize the weights with zero or a pretrained value. 
@@ -52,7 +52,7 @@ class AveragedPerceptron(object):
         
         # compute the number of total features
         totals = [len(self.weights[key]) for key in self.weights.keys()]
-        self._feature_count = sum(totals)
+        self.feature_count = sum(totals)
 
     
     def AverageWeights(self, weights):
@@ -84,7 +84,7 @@ class AveragedPerceptron(object):
                     )
         #print(text_format.MessageToString(featureset, as_utf8=True))
         error = "Number of converted features and total_features don't match."
-        assert len(self.featureset.feature) == self._feature_count, error
+        assert len(self.featureset.feature) == self.feature_count, error
         return self.featureset
         
         
@@ -110,8 +110,6 @@ class AveragedPerceptron(object):
 
 
     def LoadModel(self, name, training=False):
-        #TODO: fix the weird key error that occurs at feature extractor line:125.
-        # after loading features.
         #TODO: make sure the model doesn't train if training=False.
         """Load model features and weights from a json file.
         Args:
@@ -124,9 +122,9 @@ class AveragedPerceptron(object):
         featureset = json_format.Parse(model["featureset"], featureset_pb2.FeatureSet())
         feature_options = model["feature_options"]
         accuracy = model["accuracy"]
-        self.InitializeWeights(featureset, load=True)
-        # TODO: do we need to return accuracy or anything else. 
-        return accuracy    
+        logging.info("Arc accuracy of the loaded model: {}".format(accuracy))
+        logging.info("Feature options of the loaded model: {}".format(feature_options))
+        self.InitializeWeights(featureset, load=True)   
         
     def SaveModel(self, name, train_data_path=None, test_data_path=None, nr_epochs=None, accuracy=None):
         """Save model features and weights in json format.
@@ -151,6 +149,14 @@ class AveragedPerceptron(object):
         output_file = os.path.join(_MODEL_DIR, "{}".format(name))
         with open(output_file, "w") as output:
             json.dump(model, output, indent=4)
+        logging.info("""Saved model with the following specs: 
+            train_data: {},
+            test_data: {},
+            epochs: {},
+            accuracy: {},
+            feature_options: {},
+            feature_count: {}""".format(train_data_path, test_data_path, nr_epochs, accuracy,
+                        self.feature_options, self.feature_count)) 
     
     
     def Sort(self):
@@ -186,10 +192,10 @@ class ArcPerceptron(AveragedPerceptron):
         for sentence in training_data:
             assert isinstance(sentence, sentence_pb2.Sentence), "Unexpected data type!!"
             # TODO: should sentence extension be done when we read the sentence.
-            sentence.length = len(sentence.token)
-            sentence = common.ExtendSentence(sentence)
+            #sentence.length = len(sentence.token)
+            #sentence = common.ExtendSentence(sentence)
             # we add one dummy token to the begin and another one to the end.
-            assert len(sentence.token) == sentence.length + 2
+            assert len(sentence.token) == sentence.length + 2, "Unexpected sentence length!"
             for token in sentence.token:
                 # skip where token is the dummy start token, dummy end token, or the root token. 
                 if not token.selected_head or token.selected_head.address == -1:
