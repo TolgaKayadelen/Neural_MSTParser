@@ -494,35 +494,6 @@ def _GetSentenceWeight(sentence):
     return weight
 
 
-def _GetTokenByAddress(tokens, address):
-    """Returns the token in this address.
-    args: 
-        tokens: list of tokens
-        address: the address of the token which we want.
-    returns:
-        the token in the given address.
-    """
-    return tokens[address]
-
-
-def GetTokenByAddressAlt(tokens, address):
-    """Alternative to the above function."""
-    #TODO: Once it is clear that everything works fine, kill the other function
-    # and change the code as necessary.
-    list_indices = [] 
-    for token in tokens:
-        assert token.HasField("index"), "Token doesn't have index."
-        list_indices.append(token.index)
-        #common.PPrintTextProto(token)
-        #print(list_indices)
-        assert list_indices.count(token.index) == 1, "Can't have two tokens with same index."
-        #print("searching for: {}, token_index: {}".format(address, str(token.index)))
-        if token.index == address:
-            found = token
-            break
-    return found
-
-
 def main(args):
     sentence = reader.ReadSentenceProto(args.input_file)
     logging.info("""Input sentence is: {}""".format(sentence))

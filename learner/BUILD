@@ -34,7 +34,6 @@ py_library(
 	deps = [
 		"//data/treebank:sentence_py_pb2",
 		"//learner:featureset_py_pb2",
-		"//mst:max_span_tree",
 		"//util:reader",
 		"//util:common",
 	],

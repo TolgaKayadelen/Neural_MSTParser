@@ -137,6 +137,29 @@ def DropDummyTokens(sentence):
             doesn't match sentence.length attribute!"""
         return new_s
 
+# type: sentence util
+def GetTokenByAddress(tokens, address):
+    """Function to get the token in the specified address.
+    Args:
+        tokens: list, list of sentence_pb2.Token() objects.
+        address: int, the address we are searching for.
+    Returns:
+        token: sentence_pb2.Token(), the token at the specified address.
+    
+    """
+    list_indices = [] 
+    for token in tokens:
+        assert token.HasField("index"), "Token doesn't have index."
+        list_indices.append(token.index)
+        #common.PPrintTextProto(token)
+        #print(list_indices)
+        assert list_indices.count(token.index) == 1, "Can't have two tokens with same index."
+        #print("searching for: {}, token_index: {}".format(address, str(token.index)))
+        if token.index == address:
+            found = token
+            break
+    return found
+
 # type: token util
 def GetValue(token, feat):
     """Returns the desired value for a feature of a token.

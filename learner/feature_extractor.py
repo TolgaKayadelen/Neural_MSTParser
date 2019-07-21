@@ -17,7 +17,6 @@ from collections import OrderedDict
 from google.protobuf import text_format
 from util import reader
 from util import common
-from mst.max_span_tree import GetTokenByAddressAlt
 from data.treebank import sentence_pb2
 from learner import featureset_pb2 
 
@@ -110,7 +109,7 @@ class FeatureExtractor:
             dummy_start_token = 1 if sentence.token[0].word == "START_TOK" else 0
             if is_tree_feature:
                 if subfeat[2] == "up":
-                    head_token = GetTokenByAddressAlt(
+                    head_token = common.GetTokenByAddress(
                         sentence.token,
                         sentence.token[t.index+offset+dummy_start_token].selected_head.address
                         )

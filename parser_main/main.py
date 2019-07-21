@@ -2,6 +2,7 @@
 
 """Main module to train and parse sentences with dependency parser."""
 
+import argparse
 from parser_main.parse import parse
 from parser_main.train import train
 

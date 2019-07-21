@@ -9,7 +9,6 @@ from decoder import Decoder
 from google.protobuf import text_format
 from learner import featureset_pb2
 from learner.feature_extractor import FeatureExtractor
-from mst.max_span_tree import GetTokenByAddressAlt
 from util import common
 from util import reader
 from util import writer
@@ -49,7 +48,7 @@ class DependencyParser:
         for token in sentence.token:
             #print("token is {}".format(token.word.encode("utf-8")))
             for ch in token.candidate_head:
-                head = GetTokenByAddressAlt(sentence.token, ch.address)
+                head = common.GetTokenByAddress(sentence.token, ch.address)
                 #print("candidate head is {}".format(head.word.encode("utf-8")))
                 features = self.feature_extractor.GetFeatures(
                     sentence = sentence,

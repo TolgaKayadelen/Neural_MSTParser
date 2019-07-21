@@ -17,7 +17,6 @@ from google.protobuf import text_format
 from google.protobuf import json_format
 from learner import featureset_pb2
 from learner.feature_extractor import FeatureExtractor
-from mst.max_span_tree import GetTokenByAddressAlt 
 from util import common
 from util import reader
 from util import writer
@@ -199,7 +198,7 @@ class ArcPerceptron(AveragedPerceptron):
                     continue
                 # ch = candidate_head
                 for ch in token.candidate_head:
-                    head = GetTokenByAddressAlt(sentence.token, ch.address)
+                    head = common.GetTokenByAddress(sentence.token, ch.address)
                     #print("head {}, child {}".format(head.word, token.word))
                     self.InitializeWeights(self._extractor.GetFeatures(
                         sentence,
