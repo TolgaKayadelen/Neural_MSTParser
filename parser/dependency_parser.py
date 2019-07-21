@@ -47,8 +47,10 @@ class DependencyParser:
         assert sentence.HasField("length"), "Sentence must have a length."
         score_matrix = np.zeros((sentence.length, sentence.length))
         for token in sentence.token:
+            #print("token is {}".format(token.word.encode("utf-8")))
             for ch in token.candidate_head:
                 head = GetTokenByAddressAlt(sentence.token, ch.address)
+                #print("candidate head is {}".format(head.word.encode("utf-8")))
                 features = self.feature_extractor.GetFeatures(
                     sentence = sentence,
                     head = head,
@@ -130,10 +132,9 @@ class DependencyParser:
             nr_epochs=nr_epochs, accuracy=self.arc_accuracy
         )
     
-    def Load(self, path, training=False):
+    def Load(self, path):
         assert isinstance(path, str), "Invalid Path!"
-        assert isinstance(training, bool), "Invalid Value for training!"
-        self.arc_perceptron.LoadModel(path, training)
+        self.arc_perceptron.LoadModel(path)
         
 
 

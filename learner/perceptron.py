@@ -109,8 +109,7 @@ class AveragedPerceptron(object):
         self.InitializeWeights(featureset, load=True)
 
 
-    def LoadModel(self, name, training=False):
-        #TODO: make sure the model doesn't train if training=False.
+    def LoadModel(self, name):
         """Load model features and weights from a json file.
         Args:
             name = the name of the model to load. 
@@ -158,7 +157,6 @@ class AveragedPerceptron(object):
             feature_count: {}""".format(train_data_path, test_data_path, nr_epochs, accuracy,
                         self.feature_options, self.feature_count)) 
     
-    
     def Sort(self):
         """Sort features by weight."""
         #TODO: write a test
@@ -191,10 +189,6 @@ class ArcPerceptron(AveragedPerceptron):
         """
         for sentence in training_data:
             assert isinstance(sentence, sentence_pb2.Sentence), "Unexpected data type!!"
-            # TODO: should sentence extension be done when we read the sentence.
-            #sentence.length = len(sentence.token)
-            #sentence = common.ExtendSentence(sentence)
-            # we add one dummy token to the begin and another one to the end.
             assert len(sentence.token) == sentence.length + 2, "Unexpected sentence length!"
             for token in sentence.token:
                 # skip where token is the dummy start token, dummy end token, or the root token. 
@@ -346,6 +340,7 @@ class ArcPerceptron(AveragedPerceptron):
                 #if not prediction == token.selected_head.address:
                 c = prediction == token.selected_head.address
                 self.UpdateWeights(features[prediction], features[token.selected_head.address], c)
+                #TODO: do we need to return the correct and nr_child variables.
                 correct += prediction == token.selected_head.address
                 nr_child += 1
         #common.PPrintWeights(self._timestamps)
