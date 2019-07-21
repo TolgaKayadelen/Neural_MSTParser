@@ -49,14 +49,6 @@ class FeatureExtractorTest(unittest.TestCase):
             u'head_-1_pos+head_0_pos+child_-1_pos+child_0_pos': u'Punc_Noun_ROOT_Prop',
             u'head_0_pos+head_1_pos+child_0_pos+child_1_pos': u'Noun_Noun_Prop_Punc',
             u'head_-1_pos+head_0_pos+child_0_pos+child_1_pos': u'Punc_Noun_Prop_Punc',
-            u'head_0_word+head_0_up_word': u'özgürlüğünü_teslim',
-            u'head_0_pos+head_0_up_pos': u'Noun_Noun',
-            u'head_0_word+head_0_down_word': u'özgürlüğünü_None',
-            u'head_0_pos+head_0_down_pos': u'Noun_None',
-            u'child_0_word+child_0_up_word': u'Kerem_rahatlamıştı',
-            u'child_0_pos+child_0_up_pos': u'Prop_Verb',
-            u'child_0_word+child_0_down_word': u'Kerem_None',
-            u'child_0_pos+child_0_down_pos': u'Prop_None',
             u'child_0_lemma': u'Kerem',
             u'head_0_lemma': u'özgürlük',
             u'head_0_word+head_0_lemma': u'özgürlüğünü_özgürlük',
@@ -67,6 +59,7 @@ class FeatureExtractorTest(unittest.TestCase):
             u'head_0_morph_case': u'acc',
             u'head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case': u'Noun_acc_Prop_nom'     
         }
+        
         self.assertDictEqual(features_dict, expected_features)
         print("Passed!")
     
@@ -78,31 +71,23 @@ class FeatureExtractorTest(unittest.TestCase):
         function_features = self.extractor.GetFeatures(sentence, head=head, child=child, use_tree_features=True)
         features_dict = dict((feature.name, feature.value) for feature in function_features.feature)
         expected_features = {
-            u'child_0_pos+child_0_down_pos': u'Noun_None',
-            u'child_0_word+child_0_up_word': u'John_saw',
             u'head_0_word+head_0_pos+child_0_word': u'saw_Verb_John',
             u'child_0_word+child_0_pos': u'John_Noun',
             u'head_0_word': u'saw',
             u'child_0_word': u'John',
             u'head_0_pos+child_0_word+child_0_pos': u'Verb_John_Noun',
             u'head_0_pos+child_0_pos': u'Verb_Noun',
-            u'head_0_word+head_0_down_word': u'saw_Mary',
             u'child_0_pos': u'Noun',
             u'head_0_pos+head_1_pos+child_0_pos+child_1_pos': u'Verb_Noun_Noun_Verb',
             u'head_0_word+head_0_pos': u'saw_Verb',
-            u'head_0_pos+head_0_up_pos': u'Verb_ROOT',
             u'head_0_pos': u'Verb',
-            u'head_0_pos+head_0_down_pos': u'Verb_Noun',
             u'head_0_pos+between_0_pos+child_0_pos': u'Verb_None_Noun',
-            u'child_0_pos+child_0_up_pos': u'Noun_Verb',
             u'head_0_word+head_0_pos+child_0_word+child_0_pos': u'saw_Verb_John_Noun',
             u'head_-1_pos+head_0_pos+child_0_pos+child_1_pos': u'Noun_Verb_Noun_Verb',
             u'head_-1_pos+head_0_pos+child_-1_pos+child_0_pos': u'Noun_Verb_ROOT_Noun',
-            u'head_0_word+head_0_up_word': u'saw_ROOT',
             u'head_0_word+child_0_word': u'saw_John',
             u'head_0_pos+head_1_pos+child_-1_pos+child_0_pos': u'Verb_Noun_ROOT_Noun',
             u'head_0_word+child_0_word+child_0_pos': u'saw_John_Noun',
-            u'child_0_word+child_0_down_word': u'John_None',
             u'head_0_word+head_0_pos+child_0_pos': u'saw_Verb_Noun',
             u'child_0_lemma': u'John',
             u'head_0_lemma': u'see',
@@ -114,6 +99,7 @@ class FeatureExtractorTest(unittest.TestCase):
             u'head_0_morph_case': u'None',
             u'head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case': u'Verb_None_Noun_None'      
         }
+        
         self.assertDictEqual(features_dict, expected_features)
         print("Passed!")
         
