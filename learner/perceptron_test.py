@@ -33,7 +33,8 @@ class PerceptronTest(unittest.TestCase):
     """Tests for perceptron."""
     
     def setUp(self):
-        self.en_test = _read_perceptron_test_data("john_saw_mary")
+        temp = _read_perceptron_test_data("john_saw_mary")
+        self.en_test = common.ExtendSentence(temp)
     
     '''
     def test_MakeFeaturesFromGold(self):
