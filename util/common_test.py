@@ -33,11 +33,14 @@ class CommonTest(unittest.TestCase):
         self._kerem = _read_common_test_sentence("kerem")
     
     def test_ExtendSentence(self):
+        print("Running test_ExtendSentence")
         function_extended_sentence = common.ExtendSentence(self._john_saw_mary)
         expected_extended_sentence = _read_common_test_sentence("john_saw_mary_extended")
         self.assertEqual(function_extended_sentence, expected_extended_sentence)
+        print("Passed!")
 
     def test_GetRightMostChild(self):
+        print("Running test_GetRightMostChild")
         # main verb = rahatlamisti
         rm_main_verb = common.GetRightMostChild(self._kerem, self._kerem.token[8])
         # light verb = teslim
@@ -45,8 +48,10 @@ class CommonTest(unittest.TestCase):
         self.assertTrue(rm_main_verb.word == ".")
         #print(rm_light_verb.word)
         self.assertTrue(rm_light_verb.word == u"için")
+        print("Passed!")
     
     def test_GetBetweenTokens(self):
+        print("Running test_GetBetweenTokens")
         expected_tokens = [[u"John", u"saw"], [None], [None], [u"John",u"saw"]]
         start = 0
         end = 3
@@ -65,8 +70,10 @@ class CommonTest(unittest.TestCase):
         extended_sentence = common.ExtendSentence(self._john_saw_mary)
         between_tokens = common.GetBetweenTokens(self._john_saw_mary, head, child, dummy=1)
         self.assertEqual(expected_between_tokens, list(token.word for token in between_tokens))
+        print("Passed!")
     
     def test_GetValue(self):
+        print("Running test_GetValue")
         tokens = self._john_saw_mary.token
         expected_categories = ["ROOT", "Noun", "Verb", "Noun"]
         expected_lemmas = ["ROOT", u"John", u"see", u"Mary"]
@@ -74,13 +81,16 @@ class CommonTest(unittest.TestCase):
         function_lemmas = [common.GetValue(token, "lemma") for token in tokens]
         self.assertEqual(expected_lemmas, function_lemmas)
         self.assertEqual(expected_categories, function_categories)
+        print("Passed!")
     
     def test_ConnectSentenceNodes(self):
+        print("Running test_ConnectSentenceNodes")
         non_connected = _read_connection_test_sentence("non_connected_sentence")
         connected = _read_connection_test_sentence("connected_sentence")
         test_connected = common.ConnectSentenceNodes(non_connected)
         #print(text_format.MessageToString(test_connected, as_utf8=True))
         self.assertEqual(connected, test_connected)
+        print("Passed!")
 
         
 if __name__ == "__main__":
