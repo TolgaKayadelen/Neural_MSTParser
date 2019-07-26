@@ -203,8 +203,7 @@ class ArcPerceptron(AveragedPerceptron):
                     self.InitializeWeights(self._extractor.GetFeatures(
                         sentence,
                         head=head,
-                        child=token,
-                        use_tree_features=True)
+                        child=token)
                     )
    
     def Score(self, features):
@@ -249,7 +248,7 @@ class ArcPerceptron(AveragedPerceptron):
                 features.append(None)
                 continue
             #print("head: {}, child: {}".format(head.word, token.word))
-            featureset = self._extractor.GetFeatures(sentence, head, token, use_tree_features=True)
+            featureset = self._extractor.GetFeatures(sentence, head, token)
             score = self.Score(featureset)
             #print("score for this head-child {}".format(score))
             features.append(featureset)

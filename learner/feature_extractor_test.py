@@ -25,7 +25,7 @@ class FeatureExtractorTest(unittest.TestCase):
         head = self.test_sentence_tr.token[3]
         child = self.test_sentence_tr.token[1]
         # Initialize the extractor with a feature file
-        function_features = self.extractor.GetFeatures(self.test_sentence_tr, head, child, use_tree_features=True)
+        function_features = self.extractor.GetFeatures(self.test_sentence_tr, head, child)
         #print(text_format.MessageToString(function_features, as_utf8=True))
         features_dict = dict((feature.name, feature.value) for feature in function_features.feature)
         #for k, v in features_dict.items():
@@ -68,7 +68,7 @@ class FeatureExtractorTest(unittest.TestCase):
         head = self.test_sentence_en.token[2] # saw
         child = self.test_sentence_en.token[1] # john
         sentence = common.ExtendSentence(self.test_sentence_en)
-        function_features = self.extractor.GetFeatures(sentence, head=head, child=child, use_tree_features=True)
+        function_features = self.extractor.GetFeatures(sentence, head=head, child=child)
         features_dict = dict((feature.name, feature.value) for feature in function_features.feature)
         expected_features = {
             u'head_0_word+head_0_pos+child_0_word': u'saw_Verb_John',

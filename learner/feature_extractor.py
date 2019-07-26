@@ -57,19 +57,17 @@ class FeatureExtractor:
                 sys.exit(1)
         return featureset
         
-    def GetFeatures(self, sentence, head, child, use_tree_features=True):
+    def GetFeatures(self, sentence, head, child):
         """Return the values for the features in the featureset for head and child tokens.
         
         Args:
             sentence: sentence_pb2.Sentence object.
             head: sentence_pb2.Token, the head token.
             child: sentence_pb2.Token, the child token.
-            use_tree_features: if True, uses the head and child features of the token as well. 
         Returns:
             featureset: featureset_pb2.FeatureSet(), a proto of feature names and values.
             Note that this doesn't return any weight for the features.
         """
-        #TODO: implement the case where use_tree_features = False.
         #print("head is: {}', child is: {}'".format(head.word.encode("utf-8"), child.word.encode("utf-8")))
         featureset = self.InitializeFeatureNames()
         for feature in featureset.feature:
@@ -79,13 +77,12 @@ class FeatureExtractor:
             value = self._GetFeatureValue(feats, 
                 sentence=sentence, 
                 head=head, 
-                child=child,
-                use_tree_features = use_tree_features)
+                child=child)
             feature.value = value
         #common.PPrintTextProto(featureset)
         return featureset
     
-    def _GetFeatureValue(self, feature, sentence=None, head=None, child=None, use_tree_features=True):
+    def _GetFeatureValue(self, feature, sentence=None, head=None, child=None):
         """Get Feature Value. 
         Args:
             feature: the feature whose value we are interested in.
@@ -102,22 +99,10 @@ class FeatureExtractor:
         for subfeat in feature:
             subfeat = subfeat.split("_")
             offset = int(subfeat[1])
-            is_tree_feature = subfeat[2] in ["up", "down"]
             is_between_feature = subfeat[0] == "between"
-            #is_morphology_feature = subfeat[2] == "morph"
             t = [child, head][subfeat[0] == "head"] # t = token.
             dummy_start_token = 1 if sentence.token[0].word == "START_TOK" else 0
-            if is_tree_feature:
-                if subfeat[2] == "up":
-                    head_token = common.GetTokenByAddress(
-                        sentence.token,
-                        sentence.token[t.index+offset+dummy_start_token].selected_head.address
-                        )
-                    value.append(common.GetValue(head_token, subfeat[-1]))
-                elif subfeat[2] == "down":
-                    child_token = common.GetRightMostChild(sentence, t)
-                    value.append(common.GetValue(child_token, subfeat[-1]))
-            elif is_between_feature:
+            if is_between_feature:
                 for btw_token in common.GetBetweenTokens(sentence, head, child, dummy_start_token):
                     value.append(common.GetValue(btw_token, subfeat[-1]))
             else:
@@ -131,7 +116,7 @@ def main(args):
     test_sentence = reader.ReadSentenceProto("./data/treebank/sentence_4.protobuf")
     head = test_sentence.token[3]
     child = test_sentence.token[1]
-    features = extractor.GetFeatures(test_sentence, head, child, use_tree_features=True)
+    features = extractor.GetFeatures(test_sentence, head, child)
     print(text_format.MessageToString(features, as_utf8=True))
 
 if __name__ == "__main__":
