@@ -43,9 +43,9 @@ def _get_data(args):
         logging.info("Total sentences in treebank {}".format(len(treebank.sentence)))
         sentence_list = list(treebank.sentence)
         training_portion = int(split[0] * len(sentence_list))
-        dev_portion = int(split[1] * len(sentence_list))
+        test_portion = int(split[1] * len(sentence_list))
         training_data = sentence_list[:training_portion]
-        dev_data = sentence_list[-dev_portion:]
+        test_data = sentence_list[-test_portion:]
     else:
         _TRAIN_DATA_DIR = os.path.join(_TREEBANK_DIR, args.language, "training")
         _TEST_DATA_DIR = os.path.join(_TREEBANK_DIR, args.language, "test")
@@ -56,9 +56,9 @@ def _get_data(args):
         test_path = os.path.join(_TEST_DATA_DIR, "{}.pbtxt".format(args.test_data))
         test_treebank = reader.ReadTreebankTextProto(test_path)
         logging.info("Total sentences in test data {}".format(len(test_treebank.sentence)))
-        dev_data = list(test_treebank.sentence)
+        test_data = list(test_treebank.sentence)
         
-    return training_data, dev_data
+    return training_data, test_data
 
 def _get_size(object):
     """Dump a pickle of object to accurately get the size of the model.
@@ -86,17 +86,17 @@ def train(args):
     
     Saves a trained dependency parsing model. 
     """
-    t,d = _get_data(args)
-    training_data = map(common.ConnectSentenceNodes, t)
+    tr,te = _get_data(args)
+    training_data = map(common.ConnectSentenceNodes, tr)
     training_data = map(common.ExtendSentence, training_data)
     logging.info("Training Data Size {}".format(len(training_data)))
-    if len(d) > 0:
-        dev_data = map(common.ConnectSentenceNodes, d)
-        dev_data = map(common.ExtendSentence, dev_data)
-        logging.info("Dev Data Size {}".format(len(d)))
+    if len(te) > 0:
+        test_data = map(common.ConnectSentenceNodes, te)
+        test_data = map(common.ExtendSentence, test_data)
+        logging.info("Test Data Size {}".format(len(te)))
     else:
-        dev_data=None
-    del t,d
+        test_data=None
+    del tr,te
    
     #feature_opts = get_feature_opts(args.features)
     
@@ -115,21 +115,21 @@ def train(args):
     
     
     # Train
-    model.Train(args.epochs, training_data, dev_data=dev_data, approx=50)
+    model.Train(args.epochs, training_data, test_data=test_data, approx=50)
     
     # Evaluate
     print("\n*******----------------------*******")
-    logging.info("Start Evaluation on Dev Data..")
+    logging.info("Start Evaluation on Test Data..")
     logging.info("Weights not averaged..")
-    if not dev_data:
-        dev_data = training_data
+    if not test_data:
+        test_data = training_data
         
-    dev_acc_unavg = model._Evaluate(dev_data)
-    logging.info("Accuracy before averaging weights on dev: {}".format(dev_acc_unavg))
+    test_acc_unavg = model._Evaluate(test_data)
+    logging.info("Accuracy before averaging weights on test: {}".format(test_acc_unavg))
     raw_input("Press any key to continue: ")
     
     # Average the weights and evaluate again
-    logging.info("Averaging perpceptron weights and evaluating on dev..")
+    logging.info("Averaging perpceptron weights and evaluating on test..")
     unaveraged_weights = deepcopy(model.arc_perceptron.weights)
     accumulated_weights = deepcopy(model.arc_perceptron._accumulator)
     averaged_weights = model.arc_perceptron.AverageWeights(accumulated_weights)
@@ -142,9 +142,10 @@ def train(args):
                                    iters)
     model.arc_perceptron.weights = deepcopy(averaged_weights)
     logging.info("Evaluating after Averaged Weights..")
-    dev_acc_avg = model._Evaluate(dev_data)
+    #TODO: make model._Evaluate public.
+    test_acc_avg = model._Evaluate(test_data)
     raw_input("Press any key to continue: ")
-    logging.info("Accuracy after averaging weights on dev: {}".format(dev_acc_avg))
+    logging.info("Accuracy after averaging weights on dev: {}".format(test_acc_avg))
     
     #Save the model.
     logging.info("Saving model to {}".format(args.model))
@@ -154,7 +155,7 @@ def train(args):
         args.model, train_data_path=args.train_data, 
         test_data_path=test_data_path, nr_epochs=args.epochs, 
         accuracy=dict(
-            test_unavg = round(dev_acc_unavg, 2),
-            test_avg = round(dev_acc_avg, 2)
+            test_unavg = round(test_acc_unavg, 2),
+            test_avg = round(test_acc_avg, 2)
             )
         )

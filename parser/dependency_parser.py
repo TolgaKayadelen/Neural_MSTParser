@@ -61,7 +61,7 @@ class DependencyParser:
         parsed, predicted_heads = self.decoder(sentence, score_matrix) 
         return parsed, predicted_heads
         
-    def Train(self, niters, training_data, dev_data=None, approx=10):
+    def Train(self, niters, training_data, test_data=None, approx=10):
         """Train the arc perceptron."""
         for i in range(niters):
             print("\n**************-------------------*************")
@@ -72,12 +72,12 @@ class DependencyParser:
             train_acc = self._Evaluate(training_data)
             logging.info("Train acc after iter {}: {}".format(i+1, train_acc))
             raw_input("Press a key to continue: ")
-            if dev_data:
-                logging.info("Evaluating on dev data..")
-                dev_acc = self._Evaluate(dev_data)
-                # Comment out if you're not interested in seeing dev acc after
+            if test_data:
+                logging.info("Evaluating on test data..")
+                test_acc = self._Evaluate(test_data)
+                # Comment out if you're not interested in seeing test acc after
                 # each epoch.
-                logging.info("Dev acc after iter {}: {}".format(i+1, dev_acc))
+                logging.info("Test acc after iter {}: {}".format(i+1, test_acc))
                 raw_input("Press a key to continue: ")
             #if train_acc == 100:
             #    break
