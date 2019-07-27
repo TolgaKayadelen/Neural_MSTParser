@@ -91,6 +91,43 @@ class CommonTest(unittest.TestCase):
         #print(text_format.MessageToString(test_connected, as_utf8=True))
         self.assertEqual(connected, test_connected)
         print("Passed!")
+    
+    def test_GetTokenByAddress(self):
+        print("Running test GetTokenByAddress..")
+        test_sentence = _read_common_test_sentence("john_saw_mary")
+        tokens = list(test_sentence.token)
+        john = tokens[1]
+        search = john.selected_head.address #saw
+        function_head = common.GetTokenByAddress(tokens, search)
+        expected_head = text_format.Parse("""
+            word: "saw"
+            lemma: "see"
+            category: "VERB"
+            pos: "Verb"
+            candidate_head {
+                address: 0
+                arc_score: 10.0
+            }
+            candidate_head {
+                address: 1
+                arc_score: 5.0  
+            }
+            candidate_head {
+                address: 3
+                arc_score: 0.0
+            }
+            selected_head {
+                address: 0
+                arc_score: 10.0
+            }
+            index: 2
+            """, sentence_pb2.Token())
+        self.assertEqual(function_head, expected_head)
+        print("Passed!")
+        
+    def test_DropDummyTokens(self):
+        print("Running test DropDummyTokens..")
+        print("Passed!")
 
         
 if __name__ == "__main__":
