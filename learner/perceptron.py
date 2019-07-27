@@ -85,28 +85,6 @@ class AveragedPerceptron(object):
         error = "Number of converted features and total_features don't match."
         assert len(self.featureset.feature) == self.feature_count, error
         return self.featureset
-        
-        
-    def LoadFeatures(self, filename, as_text=False):
-        """Load pretrained features and their weights.
-        
-        Populates self.weights with the read object. The read object
-        is a featureset_pb2.FeatureSet() proto.
-        Args:
-            filename: string, the filename to load the features from.
-            as_text: boolean, if True, tries to read a .pbtxt file
-        """
-        if as_text:
-            path = os.path.join(_MODEL_DIR, "{}.pbtxt".format(filename))
-            with open(path, "r") as f:
-                featureset = text_format.Parse(f.read(), featureset_pb2.FeatureSet())
-        else:
-            path = os.path.join(_MODEL_DIR, "{}.pkl".format(filename))
-            with open(path, "rb") as inp:
-                featureset = pickle.load(inp)
-        #print("Features read from {}".format(path))
-        self.InitializeWeights(featureset, load=True)
-
 
     def LoadModel(self, name):
         """Load model features and weights from a json file.
@@ -154,7 +132,7 @@ class AveragedPerceptron(object):
             accuracy: {},
             feature_options: {},
             feature_count: {}""".format(train_data_path, test_data_path, nr_epochs, accuracy,
-                        self.feature_options, self.feature_count)) 
+                        self.feature_options, self.feature_count))
     
     def Sort(self):
         """Sort features by weight."""

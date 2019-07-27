@@ -53,7 +53,10 @@ class PerceptronTest(unittest.TestCase):
     def testScore(self):
         print("Running testScore..")
         percept = perceptron.ArcPerceptron()
-        percept.LoadFeatures("kerem_ozgurlugunu_load_test")
+        path = os.path.join("data/testdata/features", "kerem_ozgurlugunu_score_test.pbtxt")
+        with open(path, "r") as f:
+            featureset = text_format.Parse(f.read(), featureset_pb2.FeatureSet())
+        percept.InitializeWeights(featureset, load=True)
         self.assertEqual(15, percept.Score(percept._ConvertWeightsToProto()))
         print("Passed!")
       
@@ -167,26 +170,14 @@ class PerceptronTest(unittest.TestCase):
         self.assertEqual(7.3, round(averaged[feat_name][feat_value], 1))
         print("Passed!")
     
-        
-    def test_LoadFeatures(self):
-        print("Running test_LoadFeatures..")
+    def testLoadModel(self):
+        print("Running testLoadModel..")
         percept = perceptron.ArcPerceptron()
-        percept.LoadFeatures("kerem_ozgurlugunu_load_test", as_text=True)
-        percept._ConvertWeightsToProto()
-        
+        percept.LoadModel("test_model")
         expected_featureset = _read_features_test_data("kerem_features")
-        percept_fkeys = [f.name for f in percept.featureset.feature]
-        expected_fkeys = [f.name for f in expected_featureset.feature]
-        self.assertListEqual(sorted(percept_fkeys), sorted(expected_fkeys))
-        
-        percept_fvalues = [f.value for f in percept.featureset.feature]
-        expected_fvalues = [f.value for f in expected_featureset.feature]
-        self.assertListEqual(sorted(percept_fvalues), sorted(expected_fvalues))
-        
-        percept_fweights = [f.weight for f in percept.featureset.feature]
-        expected_fweights = [f.weight for f in expected_featureset.feature]
-        self.assertListEqual(sorted(percept_fweights), sorted(expected_fweights))
+        self.assertEqual(percept.feature_count, len(expected_featureset.feature))
         print("Passed!")
+        
         
 if __name__ == "__main__":
   unittest.main()

@@ -1,12 +1,567 @@
 feature {
-  name: "head_0_word+head_0_pos"
+  name: "head_0_pos+head_0_morph_case"
+  value: "Punc_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case"
+  value: "Verb_None"
+  weight: 0.555555555556
+}
+feature {
+  name: "head_0_pos+head_0_morph_case"
+  value: "Adverb_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case"
+  value: "PCNom_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case"
+  value: "Verb_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case"
+  value: "Noun_nom"
+  weight: 0.777777777778
+}
+feature {
+  name: "head_0_pos+head_0_morph_case"
+  value: "Noun_acc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case"
+  value: "ROOT_ROOT"
+  weight: -0.777777777778
+}
+feature {
+  name: "head_0_pos+head_0_morph_case"
+  value: "Prop_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "._Punc_Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "rahatlamıştı_Verb_Kerem"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "sanki_Adverb_Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "için_PCNom_Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ettiği_Verb_Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "teslim_Noun_Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "özgürlüğünü_Noun_Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: ",_Punc_Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ROOT_ROOT_Kerem"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "._Punc_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "rahatlamıştı_Verb_,"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "sanki_Adverb_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "için_PCNom_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ettiği_Verb_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "teslim_Noun_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "özgürlüğünü_Noun_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "Kerem_Prop_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ROOT_ROOT_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "._Punc_özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "rahatlamıştı_Verb_özgürlüğünü"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "sanki_Adverb_özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "için_PCNom_özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ettiği_Verb_özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "teslim_Noun_özgürlüğünü"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: ",_Punc_özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "Kerem_Prop_özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ROOT_ROOT_özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "._Punc_teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "rahatlamıştı_Verb_teslim"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "sanki_Adverb_teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "için_PCNom_teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ettiği_Verb_teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "özgürlüğünü_Noun_teslim"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: ",_Punc_teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "Kerem_Prop_teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ROOT_ROOT_teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "._Punc_ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "rahatlamıştı_Verb_ettiği"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "sanki_Adverb_ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "için_PCNom_ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "teslim_Noun_ettiği"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "özgürlüğünü_Noun_ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: ",_Punc_ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "Kerem_Prop_ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ROOT_ROOT_ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "._Punc_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "rahatlamıştı_Verb_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "sanki_Adverb_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ettiği_Verb_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "teslim_Noun_için"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "özgürlüğünü_Noun_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: ",_Punc_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "Kerem_Prop_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ROOT_ROOT_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "._Punc_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "rahatlamıştı_Verb_sanki"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "için_PCNom_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ettiği_Verb_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "teslim_Noun_sanki"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "özgürlüğünü_Noun_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: ",_Punc_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "Kerem_Prop_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ROOT_ROOT_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "._Punc_rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "sanki_Adverb_rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "için_PCNom_rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ettiği_Verb_rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "teslim_Noun_rahatlamıştı"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "özgürlüğünü_Noun_rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: ",_Punc_rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "Kerem_Prop_rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ROOT_ROOT_rahatlamıştı"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "rahatlamıştı_Verb_."
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "sanki_Adverb_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "için_PCNom_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ettiği_Verb_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "teslim_Noun_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "özgürlüğünü_Noun_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: ",_Punc_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "Kerem_Prop_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word"
+  value: "ROOT_ROOT_."
+  weight: 0
+}
+feature {
+  name: "child_0_pos+child_0_morph_case"
+  value: "Prop_nom"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos+child_0_morph_case"
+  value: "Punc_None"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos+child_0_morph_case"
+  value: "Noun_acc"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos+child_0_morph_case"
+  value: "Noun_nom"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos+child_0_morph_case"
+  value: "Verb_nom"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos+child_0_morph_case"
+  value: "PCNom_None"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos+child_0_morph_case"
+  value: "Adverb_None"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos+child_0_morph_case"
+  value: "Verb_None"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_pos"
+  value: "Kerem_Prop"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_pos"
+  value: ",_Punc"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_pos"
   value: "özgürlüğünü_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos"
-  value: "özgür_Noun"
-  weight: 1.0
+  name: "child_0_word+child_0_pos"
+  value: "teslim_Noun"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_pos"
+  value: "ettiği_Verb"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_pos"
+  value: "için_PCNom"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_pos"
+  value: "sanki_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_pos"
+  value: "rahatlamıştı_Verb"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_pos"
+  value: "._Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word"
+  value: "."
+  weight: 0
+}
+feature {
+  name: "head_0_word"
+  value: "rahatlamıştı"
+  weight: 0.555555555556
+}
+feature {
+  name: "head_0_word"
+  value: "sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word"
+  value: "için"
+  weight: 0
+}
+feature {
+  name: "head_0_word"
+  value: "ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word"
+  value: "teslim"
+  weight: 0.777777777778
 }
 feature {
   name: "head_0_word"
@@ -14,122 +569,4742 @@ feature {
   weight: 0.0
 }
 feature {
-  name: "head_0_pos"
-  value: "Noun"
-  weight: 2.0
+  name: "head_0_word"
+  value: ","
+  weight: 0
 }
 feature {
-  name: "child_0_word+child_0_pos"
-  value: "Kerem_Prop"
-  weight: 1.0
+  name: "head_0_word"
+  value: "ROOT"
+  weight: -0.777777777778
+}
+feature {
+  name: "head_0_word"
+  value: "Kerem"
+  weight: 0
 }
 feature {
   name: "child_0_word"
   value: "Kerem"
-  weight: 1.0
+  weight: 0.0
 }
 feature {
-  name: "child_0_pos"
-  value: "Prop"
-  weight: 1.0
+  name: "child_0_word"
+  value: ","
+  weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
-  value: "özgürlüğünü_Noun_Kerem_Prop"
-  weight: 1.0
+  name: "child_0_word"
+  value: "özgürlüğünü"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word"
+  value: "teslim"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word"
+  value: "ettiği"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word"
+  value: "için"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word"
+  value: "sanki"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word"
+  value: "rahatlamıştı"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word"
+  value: "."
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Punc_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Verb_Kerem_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Adverb_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "PCNom_Kerem_Prop"
+  weight: 0
 }
 feature {
   name: "head_0_pos+child_0_word+child_0_pos"
   value: "Noun_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_Kerem_Prop"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+child_0_word+child_0_pos"
-  value: "özgürlüğünü_Kerem_Prop"
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Punc_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Verb_,_Punc"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_pos"
-  value: "özgürlüğünü_Noun_Prop"
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Adverb_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "PCNom_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Noun_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Prop_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Punc_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Verb_özgürlüğünü_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_word"
-  value: "özgürlüğünü_Noun_Kerem"
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Adverb_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "PCNom_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Noun_özgürlüğünü_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+child_0_word"
-  value: "özgürlüğünü_Kerem"
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Prop_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Punc_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Verb_teslim_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Adverb_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "PCNom_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Noun_teslim_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Prop_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Punc_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Verb_ettiği_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Adverb_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "PCNom_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Noun_ettiği_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Prop_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Punc_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Verb_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Adverb_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Noun_için_PCNom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Prop_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Punc_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Verb_sanki_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "PCNom_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Noun_sanki_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Prop_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Punc_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Adverb_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "PCNom_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Verb_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Noun_rahatlamıştı_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Prop_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_rahatlamıştı_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Verb_._Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Adverb_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "PCNom_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Noun_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Punc_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Prop_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_._Punc"
+  weight: 0
+}
+feature {
+  name: "child_0_morph_case"
+  value: "nom"
+  weight: 0.0
+}
+feature {
+  name: "child_0_morph_case"
+  value: "None"
+  weight: 0.0
+}
+feature {
+  name: "child_0_morph_case"
+  value: "acc"
   weight: 0.0
 }
 feature {
   name: "head_0_pos+child_0_pos"
+  value: "Punc_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Verb_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Adverb_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "PCNom_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
   value: "Noun_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "ROOT_Prop"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos+between_0_pos+child_0_pos"
-  value: "Noun_Punc_Prop"
+  name: "head_0_pos+child_0_pos"
+  value: "Punc_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Verb_Punc"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
-  value: "Noun_Noun_ROOT_Prop"
-  weight: 3.0
+  name: "head_0_pos+child_0_pos"
+  value: "Adverb_Punc"
+  weight: 0
 }
 feature {
-  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
-  value: "Punc_Noun_ROOT_Prop"
+  name: "head_0_pos+child_0_pos"
+  value: "PCNom_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Noun_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "ROOT_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Verb_Noun"
+  weight: -0.111111111111
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Adverb_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "PCNom_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Noun_Noun"
+  weight: 0.111111111111
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Prop_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "ROOT_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Punc_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Verb_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "PCNom_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Noun_Verb"
+  weight: 0.333333333333
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Prop_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "ROOT_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Punc_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Adverb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Noun_PCNom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Prop_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "ROOT_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Punc_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Verb_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Noun_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Prop_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "ROOT_Adverb"
+  weight: 0
+}
+feature {
+  name: "child_0_pos"
+  value: "Prop"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos"
+  value: "Punc"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos"
+  value: "Noun"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos"
+  value: "Verb"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos"
+  value: "PCNom"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos"
+  value: "Adverb"
   weight: 0.0
 }
 feature {
   name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_END_POS_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Prop_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
   value: "Noun_Noun_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Prop_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_END_POS_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Punc_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_END_POS_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_END_POS_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Noun_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Noun_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_END_POS_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Verb_PCNom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Verb_PCNom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_END_POS_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_PCNom_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_END_POS_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Adverb_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Adverb_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_END_POS_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Verb_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Verb_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Punc_END_POS"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_0_lemma"
+  value: "."
+  weight: 0
+}
+feature {
+  name: "head_0_lemma"
+  value: "rahatla"
+  weight: 0.555555555556
+}
+feature {
+  name: "head_0_lemma"
+  value: "sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_lemma"
+  value: "için"
+  weight: 0
+}
+feature {
+  name: "head_0_lemma"
+  value: "et"
+  weight: 0
+}
+feature {
+  name: "head_0_lemma"
+  value: "teslim"
+  weight: 0.777777777778
+}
+feature {
+  name: "head_0_lemma"
+  value: "özgürlük"
+  weight: 0.0
+}
+feature {
+  name: "head_0_lemma"
+  value: ","
+  weight: 0
+}
+feature {
+  name: "head_0_lemma"
+  value: "ROOT"
+  weight: -0.777777777778
+}
+feature {
+  name: "head_0_lemma"
+  value: "Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "._."
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "rahatlamıştı_rahatla"
+  weight: 0.555555555556
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "sanki_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "için_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "ettiği_et"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "teslim_teslim"
+  weight: 0.777777777778
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "özgürlüğünü_özgürlük"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: ",_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "ROOT_ROOT"
+  weight: -0.777777777778
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "Kerem_Kerem"
+  weight: 0
+}
+feature {
+  name: "child_0_word+child_0_lemma"
+  value: "Kerem_Kerem"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_lemma"
+  value: ",_,"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_lemma"
+  value: "özgürlüğünü_özgürlük"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_lemma"
+  value: "teslim_teslim"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_lemma"
+  value: "ettiği_et"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_lemma"
+  value: "için_için"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_lemma"
+  value: "sanki_sanki"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_lemma"
+  value: "rahatlamıştı_rahatla"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_lemma"
+  value: "._."
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "Kerem"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: ","
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "özgürlük"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "teslim"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "et"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "için"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "sanki"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "rahatla"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "."
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos"
+  value: "Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos"
+  value: "Verb"
+  weight: 0.555555555556
+}
+feature {
+  name: "head_0_pos"
+  value: "Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos"
+  value: "PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos"
+  value: "Noun"
+  weight: 0.333333333333
+}
+feature {
+  name: "head_0_pos"
+  value: "ROOT"
+  weight: -0.777777777778
+}
+feature {
+  name: "head_0_pos"
+  value: "Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_Prop_Punc_Noun_Noun_Verb_PCNom_Adverb_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_Prop_Punc_Noun_Noun_Verb_PCNom_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Adverb_Prop_Punc_Noun_Noun_Verb_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "PCNom_Prop_Punc_Noun_Noun_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_Prop_Punc_Noun_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_Prop_Punc_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_Prop_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_None_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "ROOT_None_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_Punc_Noun_Noun_Verb_PCNom_Adverb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_Punc_Noun_Noun_Verb_PCNom_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Adverb_Punc_Noun_Noun_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "PCNom_Punc_Noun_Noun_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_Punc_Noun_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_Punc_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_None_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Prop_None_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "ROOT_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_Noun_Noun_Verb_PCNom_Adverb_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_Noun_Noun_Verb_PCNom_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Adverb_Noun_Noun_Verb_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "PCNom_Noun_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_None_Noun"
+  weight: 0.111111111111
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_None_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Prop_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "ROOT_Prop_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_Noun_Verb_PCNom_Adverb_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_Noun_Verb_PCNom_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Adverb_Noun_Verb_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "PCNom_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_None_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Prop_Punc_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "ROOT_Prop_Punc_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_Verb_PCNom_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_Verb_PCNom_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Adverb_Verb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "PCNom_None_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_None_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_Noun_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Prop_Punc_Noun_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "ROOT_Prop_Punc_Noun_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_PCNom_Adverb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_PCNom_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Adverb_None_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_None_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_Verb_PCNom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_Noun_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_Noun_Noun_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Prop_Punc_Noun_Noun_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "ROOT_Prop_Punc_Noun_Noun_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_Adverb_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_None_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "PCNom_None_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_Verb_PCNom_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_Noun_Verb_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_Noun_Noun_Verb_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Prop_Punc_Noun_Noun_Verb_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "ROOT_Prop_Punc_Noun_Noun_Verb_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_None_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Adverb_None_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "PCNom_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_PCNom_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_Verb_PCNom_Adverb_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_Noun_Verb_PCNom_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_Noun_Noun_Verb_PCNom_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Prop_Punc_Noun_Noun_Verb_PCNom_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "ROOT_Prop_Punc_Noun_Noun_Verb_PCNom_Adverb_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_None_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Adverb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "PCNom_Adverb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Verb_PCNom_Adverb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_Verb_PCNom_Adverb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Noun_Noun_Verb_PCNom_Adverb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Punc_Noun_Noun_Verb_PCNom_Adverb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "Prop_Punc_Noun_Noun_Verb_PCNom_Adverb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+between_0_pos+child_0_pos"
+  value: "ROOT_Prop_Punc_Noun_Noun_Verb_PCNom_Adverb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "._Punc_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "rahatlamıştı_Verb_Kerem_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "sanki_Adverb_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "için_PCNom_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ettiği_Verb_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "teslim_Noun_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "özgürlüğünü_Noun_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: ",_Punc_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_ROOT_Kerem_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "._Punc_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "rahatlamıştı_Verb_,_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "sanki_Adverb_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "için_PCNom_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ettiği_Verb_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "teslim_Noun_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "özgürlüğünü_Noun_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "Kerem_Prop_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_ROOT_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "._Punc_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "rahatlamıştı_Verb_özgürlüğünü_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "sanki_Adverb_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "için_PCNom_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ettiği_Verb_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "teslim_Noun_özgürlüğünü_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: ",_Punc_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "Kerem_Prop_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_ROOT_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "._Punc_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "rahatlamıştı_Verb_teslim_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "sanki_Adverb_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "için_PCNom_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ettiği_Verb_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "özgürlüğünü_Noun_teslim_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: ",_Punc_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "Kerem_Prop_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_ROOT_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "._Punc_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "rahatlamıştı_Verb_ettiği_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "sanki_Adverb_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "için_PCNom_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "teslim_Noun_ettiği_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "özgürlüğünü_Noun_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: ",_Punc_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "Kerem_Prop_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_ROOT_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "._Punc_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "rahatlamıştı_Verb_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "sanki_Adverb_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ettiği_Verb_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "teslim_Noun_için_PCNom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "özgürlüğünü_Noun_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: ",_Punc_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "Kerem_Prop_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_ROOT_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "._Punc_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "rahatlamıştı_Verb_sanki_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "için_PCNom_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ettiği_Verb_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "teslim_Noun_sanki_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "özgürlüğünü_Noun_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: ",_Punc_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "Kerem_Prop_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_ROOT_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "._Punc_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "sanki_Adverb_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "için_PCNom_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ettiği_Verb_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "teslim_Noun_rahatlamıştı_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "özgürlüğünü_Noun_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: ",_Punc_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "Kerem_Prop_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_ROOT_rahatlamıştı_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "rahatlamıştı_Verb_._Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "sanki_Adverb_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "için_PCNom_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ettiği_Verb_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "teslim_Noun_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "özgürlüğünü_Noun_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: ",_Punc_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "Kerem_Prop_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_ROOT_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Prop_Punc"
   weight: 0.0
 }
 feature {
   name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
-  value: "Punc_Noun_Prop_Punc"
-  weight: 4.0
+  value: "PCNom_Adverb_Prop_Punc"
+  weight: 0
 }
 feature {
-  name: "head_0_word+head_0_up_word"
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "START_POS_ROOT_Prop_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Punc_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "START_POS_ROOT_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "START_POS_ROOT_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Noun_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Noun_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "START_POS_ROOT_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Verb_PCNom"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Verb_PCNom"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "START_POS_ROOT_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_PCNom_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "START_POS_ROOT_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Adverb_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Adverb_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "START_POS_ROOT_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_Punc_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Verb_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "START_POS_ROOT_Verb_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Adverb_Verb_Punc_END_POS"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "PCNom_Adverb_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Verb_PCNom_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Verb_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Noun_Noun_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Punc_Noun_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "Prop_Punc_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "ROOT_Prop_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_0_pos+child_1_pos"
+  value: "START_POS_ROOT_Punc_END_POS"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_ROOT_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "START_POS_ROOT_ROOT_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_Prop_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "START_POS_ROOT_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_Punc_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_Punc_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "START_POS_ROOT_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "START_POS_ROOT_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_Noun_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_Noun_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "START_POS_ROOT_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_Verb_PCNom"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "START_POS_ROOT_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_PCNom_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_PCNom_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "START_POS_ROOT_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_Adverb_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "START_POS_ROOT_Adverb_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_Verb_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_-1_pos+head_0_pos+child_-1_pos+child_0_pos"
+  value: "START_POS_ROOT_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "rahatlamıştı_Verb"
+  weight: 0.555555555556
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "teslim_Noun"
+  weight: 0.777777777778
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "özgürlüğünü_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: ",_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "ROOT_ROOT"
+  weight: -0.777777777778
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "._Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "rahatlamıştı_Kerem"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "sanki_Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "için_Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ettiği_Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "teslim_Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "özgürlüğünü_Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: ",_Kerem"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ROOT_Kerem"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "._,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "rahatlamıştı_,"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "sanki_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "için_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ettiği_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "teslim_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "özgürlüğünü_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "Kerem_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ROOT_,"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "._özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "rahatlamıştı_özgürlüğünü"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "sanki_özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "için_özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ettiği_özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "teslim_özgürlüğünü"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: ",_özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "Kerem_özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ROOT_özgürlüğünü"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "._teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "rahatlamıştı_teslim"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "sanki_teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "için_teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ettiği_teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
   value: "özgürlüğünü_teslim"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos+head_0_up_pos"
-  value: "Noun_Noun"
+  name: "head_0_word+child_0_word"
+  value: ",_teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "Kerem_teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ROOT_teslim"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "._ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "rahatlamıştı_ettiği"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_down_word"
-  value: "özgürlüğünü_None"
+  name: "head_0_word+child_0_word"
+  value: "sanki_ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "için_ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "teslim_ettiği"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos+head_0_down_pos"
-  value: "Noun_None"
+  name: "head_0_word+child_0_word"
+  value: "özgürlüğünü_ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: ",_ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "Kerem_ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ROOT_ettiği"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "._için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "rahatlamıştı_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "sanki_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ettiği_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "teslim_için"
   weight: 0.0
 }
 feature {
-  name: "child_0_word+child_0_up_word"
+  name: "head_0_word+child_0_word"
+  value: "özgürlüğünü_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: ",_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "Kerem_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ROOT_için"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "._sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "rahatlamıştı_sanki"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "için_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ettiği_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "teslim_sanki"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "özgürlüğünü_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: ",_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "Kerem_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ROOT_sanki"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "._rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "sanki_rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "için_rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ettiği_rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "teslim_rahatlamıştı"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "özgürlüğünü_rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: ",_rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
   value: "Kerem_rahatlamıştı"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ROOT_rahatlamıştı"
   weight: 0.0
 }
 feature {
-  name: "child_0_pos+child_0_up_pos"
-  value: "Prop_Verb"
+  name: "head_0_word+child_0_word"
+  value: "rahatlamıştı_."
   weight: 0.0
 }
 feature {
-  name: "child_0_word+child_0_down_word"
-  value: "Kerem_None"
+  name: "head_0_word+child_0_word"
+  value: "sanki_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "için_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ettiği_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "teslim_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "özgürlüğünü_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: ",_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "Kerem_."
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ROOT_."
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_END_POS_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_ROOT_Prop"
   weight: 0.0
 }
 feature {
-  name: "child_0_pos+child_0_down_pos"
-  value: "Prop_None"
-  weight: 1.0
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_ROOT_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_ROOT_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_END_POS_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_Prop_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_END_POS_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_Punc_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Punc_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_END_POS_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Noun_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_END_POS_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_Noun_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Noun_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_END_POS_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Verb_PCNom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_END_POS_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_PCNom_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_PCNom_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_END_POS_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Adverb_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Adverb_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Punc_Verb_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Adverb_Verb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "PCNom_Adverb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_PCNom_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Noun_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Punc_Noun_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Prop_Punc_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Prop_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "._Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "rahatlamıştı_Kerem_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "sanki_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "için_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ettiği_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "teslim_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "özgürlüğünü_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: ",_Kerem_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ROOT_Kerem_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "._,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "rahatlamıştı_,_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "sanki_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "için_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ettiği_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "teslim_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "özgürlüğünü_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "Kerem_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ROOT_,_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "._özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "rahatlamıştı_özgürlüğünü_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "sanki_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "için_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ettiği_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "teslim_özgürlüğünü_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: ",_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "Kerem_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ROOT_özgürlüğünü_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "._teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "rahatlamıştı_teslim_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "sanki_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "için_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ettiği_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "özgürlüğünü_teslim_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: ",_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "Kerem_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ROOT_teslim_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "._ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "rahatlamıştı_ettiği_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "sanki_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "için_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "teslim_ettiği_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "özgürlüğünü_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: ",_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "Kerem_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ROOT_ettiği_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "._için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "rahatlamıştı_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "sanki_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ettiği_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "teslim_için_PCNom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "özgürlüğünü_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: ",_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "Kerem_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ROOT_için_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "._sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "rahatlamıştı_sanki_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "için_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ettiği_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "teslim_sanki_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "özgürlüğünü_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: ",_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "Kerem_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ROOT_sanki_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "._rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "sanki_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "için_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ettiği_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "teslim_rahatlamıştı_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "özgürlüğünü_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: ",_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "Kerem_rahatlamıştı_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ROOT_rahatlamıştı_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "rahatlamıştı_._Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "sanki_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "için_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ettiği_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "teslim_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "özgürlüğünü_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: ",_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "Kerem_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ROOT_._Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_morph_case"
+  value: "None"
+  weight: 0.555555555556
+}
+feature {
+  name: "head_0_morph_case"
+  value: "nom"
+  weight: 0.777777777778
+}
+feature {
+  name: "head_0_morph_case"
+  value: "acc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_morph_case"
+  value: "ROOT"
+  weight: -0.777777777778
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "._Punc_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "rahatlamıştı_Verb_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "sanki_Adverb_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "için_PCNom_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ettiği_Verb_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "teslim_Noun_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "özgürlüğünü_Noun_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: ",_Punc_Prop"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ROOT_ROOT_Prop"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "._Punc_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "rahatlamıştı_Verb_Punc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "sanki_Adverb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "için_PCNom_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ettiği_Verb_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "teslim_Noun_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "özgürlüğünü_Noun_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "Kerem_Prop_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ROOT_ROOT_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "._Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "rahatlamıştı_Verb_Noun"
+  weight: -0.111111111111
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "sanki_Adverb_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "için_PCNom_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ettiği_Verb_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "teslim_Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: ",_Punc_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "Kerem_Prop_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ROOT_ROOT_Noun"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "özgürlüğünü_Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "._Punc_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "rahatlamıştı_Verb_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "sanki_Adverb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "için_PCNom_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "teslim_Noun_Verb"
+  weight: 0.333333333333
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "özgürlüğünü_Noun_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: ",_Punc_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "Kerem_Prop_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ROOT_ROOT_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "._Punc_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "rahatlamıştı_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "sanki_Adverb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ettiği_Verb_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "teslim_Noun_PCNom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "özgürlüğünü_Noun_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: ",_Punc_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "Kerem_Prop_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ROOT_ROOT_PCNom"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "._Punc_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "rahatlamıştı_Verb_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "için_PCNom_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ettiği_Verb_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "teslim_Noun_Adverb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "özgürlüğünü_Noun_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: ",_Punc_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "Kerem_Prop_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ROOT_ROOT_Adverb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ettiği_Verb_Verb"
+  weight: 0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: ",_Punc_Punc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Punc_None_Prop_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_None_Prop_nom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Adverb_None_Prop_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "PCNom_None_Prop_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_nom_Prop_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_nom_Prop_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_acc_Prop_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "ROOT_ROOT_Prop_nom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Punc_None_Punc_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_None_Punc_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Adverb_None_Punc_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "PCNom_None_Punc_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_nom_Punc_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_nom_Punc_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_acc_Punc_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Prop_nom_Punc_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "ROOT_ROOT_Punc_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Punc_None_Noun_acc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_None_Noun_acc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Adverb_None_Noun_acc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "PCNom_None_Noun_acc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_nom_Noun_acc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_nom_Noun_acc"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Prop_nom_Noun_acc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "ROOT_ROOT_Noun_acc"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Punc_None_Noun_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_None_Noun_nom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Adverb_None_Noun_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "PCNom_None_Noun_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_nom_Noun_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_acc_Noun_nom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Prop_nom_Noun_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "ROOT_ROOT_Noun_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Punc_None_Verb_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_None_Verb_nom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Adverb_None_Verb_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "PCNom_None_Verb_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_nom_Verb_nom"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_acc_Verb_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Prop_nom_Verb_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "ROOT_ROOT_Verb_nom"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Punc_None_PCNom_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_None_PCNom_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Adverb_None_PCNom_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_nom_PCNom_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_nom_PCNom_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_acc_PCNom_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Prop_nom_PCNom_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "ROOT_ROOT_PCNom_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Punc_None_Adverb_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_None_Adverb_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "PCNom_None_Adverb_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_nom_Adverb_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_nom_Adverb_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_acc_Adverb_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Prop_nom_Adverb_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "ROOT_ROOT_Adverb_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Punc_None_Verb_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Adverb_None_Verb_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "PCNom_None_Verb_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_nom_Verb_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_nom_Verb_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_acc_Verb_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Prop_nom_Verb_None"
+  weight: 0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "ROOT_ROOT_Verb_None"
+  weight: 0.0
 }
