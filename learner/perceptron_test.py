@@ -41,14 +41,14 @@ class PerceptronTest(unittest.TestCase):
         pass
     '''
     #For now this will fail because we added dependency features but not updated this
-    #def test_MakeAllFeatures(self):
-    #    print("Running test_MakeAllFeatures..")
-    #    percept = perceptron.ArcPerceptron()
-    #    percept.MakeAllFeatures([self.en_test])
-    #    sorted_features = common.SortFeatures(percept._ConvertWeightsToProto())
-    #    expected_features = _read_features_test_data("john_saw_mary_features")
-    #    self.assertEqual(sorted_features, expected_features)
-    #    print("Passed!")
+    def test_MakeAllFeatures(self):
+        print("Running test_MakeAllFeatures..")
+        percept = perceptron.ArcPerceptron()
+        percept.MakeAllFeatures([self.en_test])
+        sorted_features = common.SortFeatures(percept._ConvertWeightsToProto())
+        expected_features = _read_features_test_data("john_saw_mary_features")
+        self.assertEqual(sorted_features, expected_features)
+        print("Passed!")
         
     def testScore(self):
         print("Running testScore..")

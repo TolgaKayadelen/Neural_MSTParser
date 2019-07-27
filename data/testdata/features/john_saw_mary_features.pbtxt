@@ -1,27 +1,17 @@
 # all features from sentence john saw mary (sorted)
 feature {
-  name: "child_0_pos+child_0_down_pos"
+  name: "head_0_pos+head_0_morph_case"
+  value: "ROOT_ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case"
+  value: "Verb_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case"
   value: "Noun_None"
-  weight: 0.0
-}
-feature {
-  name: "child_0_pos+child_0_down_pos"
-  value: "Verb_Noun"
-  weight: 0.0
-}
-feature {
-  name: "child_0_word+child_0_up_word"
-  value: "John_saw"
-  weight: 0.0
-}
-feature {
-  name: "child_0_word+child_0_up_word"
-  value: "saw_ROOT"
-  weight: 0.0
-}
-feature {
-  name: "child_0_word+child_0_up_word"
-  value: "Mary_saw"
   weight: 0.0
 }
 feature {
@@ -67,6 +57,16 @@ feature {
 feature {
   name: "head_0_word+head_0_pos+child_0_word"
   value: "saw_Verb_Mary"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos+child_0_morph_case"
+  value: "Noun_None"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos+child_0_morph_case"
+  value: "Verb_None"
   weight: 0.0
 }
 feature {
@@ -160,6 +160,11 @@ feature {
   weight: 0.0
 }
 feature {
+  name: "child_0_morph_case"
+  value: "None"
+  weight: 0.0
+}
+feature {
   name: "head_0_pos+child_0_pos"
   value: "ROOT_Noun"
   weight: 0.0
@@ -182,26 +187,6 @@ feature {
 feature {
   name: "head_0_pos+child_0_pos"
   value: "Noun_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+head_0_down_word"
-  value: "ROOT_saw"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+head_0_down_word"
-  value: "saw_Mary"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+head_0_down_word"
-  value: "Mary_None"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+head_0_down_word"
-  value: "John_None"
   weight: 0.0
 }
 feature {
@@ -260,38 +245,73 @@ feature {
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos"
+  name: "head_0_lemma"
+  value: "ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_lemma"
+  value: "see"
+  weight: 0.0
+}
+feature {
+  name: "head_0_lemma"
+  value: "Mary"
+  weight: 0.0
+}
+feature {
+  name: "head_0_lemma"
+  value: "John"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
   value: "ROOT_ROOT"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos"
-  value: "saw_Verb"
+  name: "head_0_word+head_0_lemma"
+  value: "saw_see"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos"
-  value: "Mary_Noun"
+  name: "head_0_word+head_0_lemma"
+  value: "Mary_Mary"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos"
-  value: "John_Noun"
+  name: "head_0_word+head_0_lemma"
+  value: "John_John"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos+head_0_up_pos"
-  value: "ROOT_START_POS"
+  name: "child_0_word+child_0_lemma"
+  value: "John_John"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos+head_0_up_pos"
-  value: "Verb_ROOT"
+  name: "child_0_word+child_0_lemma"
+  value: "saw_see"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos+head_0_up_pos"
-  value: "Noun_Verb"
+  name: "child_0_word+child_0_lemma"
+  value: "Mary_Mary"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "John"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "see"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "Mary"
   weight: 0.0
 }
 feature {
@@ -307,21 +327,6 @@ feature {
 feature {
   name: "head_0_pos"
   value: "Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+head_0_down_pos"
-  value: "ROOT_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+head_0_down_pos"
-  value: "Verb_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+head_0_down_pos"
-  value: "Noun_None"
   weight: 0.0
 }
 feature {
@@ -357,16 +362,6 @@ feature {
 feature {
   name: "head_0_pos+between_0_pos+child_0_pos"
   value: "Noun_Verb_Noun"
-  weight: 0.0
-}
-feature {
-  name: "child_0_pos+child_0_up_pos"
-  value: "Noun_Verb"
-  weight: 0.0
-}
-feature {
-  name: "child_0_pos+child_0_up_pos"
-  value: "Verb_ROOT"
   weight: 0.0
 }
 feature {
@@ -505,23 +500,23 @@ feature {
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_up_word"
-  value: "ROOT_START_TOK"
+  name: "head_0_word+head_0_pos"
+  value: "ROOT_ROOT"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_up_word"
-  value: "saw_ROOT"
+  name: "head_0_word+head_0_pos"
+  value: "saw_Verb"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_up_word"
-  value: "Mary_saw"
+  name: "head_0_word+head_0_pos"
+  value: "Mary_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_up_word"
-  value: "John_saw"
+  name: "head_0_word+head_0_pos"
+  value: "John_Noun"
   weight: 0.0
 }
 feature {
@@ -660,18 +655,13 @@ feature {
   weight: 0.0
 }
 feature {
-  name: "child_0_word+child_0_down_word"
-  value: "John_None"
+  name: "head_0_morph_case"
+  value: "ROOT"
   weight: 0.0
 }
 feature {
-  name: "child_0_word+child_0_down_word"
-  value: "saw_Mary"
-  weight: 0.0
-}
-feature {
-  name: "child_0_word+child_0_down_word"
-  value: "Mary_None"
+  name: "head_0_morph_case"
+  value: "None"
   weight: 0.0
 }
 feature {
@@ -707,5 +697,30 @@ feature {
 feature {
   name: "head_0_word+head_0_pos+child_0_pos"
   value: "John_Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "ROOT_ROOT_Noun_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_None_Noun_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_None_Noun_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "ROOT_ROOT_Verb_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_None_Verb_None"
   weight: 0.0
 }
