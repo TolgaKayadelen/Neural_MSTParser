@@ -123,10 +123,21 @@ class CommonTest(unittest.TestCase):
             index: 2
             """, sentence_pb2.Token())
         self.assertEqual(function_head, expected_head)
+        
+        # Test with an extendend sentence.
+        test_sentence_ext = _read_common_test_sentence("john_saw_mary_extended")
+        words = [u'ROOT', u'John', u'saw', u'Mary']
+        for i in range(4):
+            found = common.GetTokenByAddress(tokens, i)
+            self.assertEqual(found.word, words[i])
         print("Passed!")
         
     def test_DropDummyTokens(self):
         print("Running test DropDummyTokens..")
+        test_sentence = _read_common_test_sentence("john_saw_mary_extended")
+        function_sentence = common.DropDummyTokens(test_sentence)
+        expected_sentence = _read_common_test_sentence("john_saw_mary")
+        self.assertEqual(function_sentence, expected_sentence)
         print("Passed!")
 
         
