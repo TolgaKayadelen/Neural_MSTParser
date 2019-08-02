@@ -1,0 +1,304 @@
+text: "For those who follow social media transitions on Capitol Hill, this will be a little different."
+sent_id: "n01001013"
+length: 19
+token {
+  word: "ROOT"
+  category: "TOP"
+  pos: "TOP"
+  selected_head {
+    address: -1
+  }
+  index: 0
+}
+token {
+  word: "For"
+  lemma: "for"
+  category: "ADP"
+  pos: "IN"
+  selected_head {
+    address: 2
+    arc_score: 0.0
+  }
+  label: "case"
+  index: 1
+}
+token {
+  word: "those"
+  lemma: "those"
+  category: "PRON"
+  pos: "DT"
+  morphology {
+    name: "number"
+    value: "plur"
+  }
+  morphology {
+    name: "prontype"
+    value: "dem"
+  }
+  selected_head {
+    address: 17
+    arc_score: 0.0
+  }
+  label: "obl"
+  index: 2
+}
+token {
+  word: "who"
+  lemma: "who"
+  category: "PRON"
+  pos: "WP"
+  morphology {
+    name: "prontype"
+    value: "rel"
+  }
+  selected_head {
+    address: 4
+    arc_score: 0.0
+  }
+  label: "nsubj"
+  index: 3
+}
+token {
+  word: "follow"
+  lemma: "follow"
+  category: "VERB"
+  pos: "VBP"
+  morphology {
+    name: "mood"
+    value: "ind"
+  }
+  morphology {
+    name: "tense"
+    value: "pres"
+  }
+  morphology {
+    name: "verbform"
+    value: "fin"
+  }
+  selected_head {
+    address: 2
+    arc_score: 0.0
+  }
+  label: "acl:relcl"
+  index: 4
+}
+token {
+  word: "social"
+  lemma: "social"
+  category: "ADJ"
+  pos: "JJ"
+  morphology {
+    name: "degree"
+    value: "pos"
+  }
+  selected_head {
+    address: 6
+    arc_score: 0.0
+  }
+  label: "amod"
+  index: 5
+}
+token {
+  word: "media"
+  lemma: "media"
+  category: "NOUN"
+  pos: "NN"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 7
+    arc_score: 0.0
+  }
+  label: "compound"
+  index: 6
+}
+token {
+  word: "transitions"
+  lemma: "transition"
+  category: "NOUN"
+  pos: "NNS"
+  morphology {
+    name: "number"
+    value: "plur"
+  }
+  selected_head {
+    address: 4
+    arc_score: 0.0
+  }
+  label: "obj"
+  index: 7
+}
+token {
+  word: "on"
+  lemma: "on"
+  category: "ADP"
+  pos: "IN"
+  selected_head {
+    address: 10
+    arc_score: 0.0
+  }
+  label: "case"
+  index: 8
+}
+token {
+  word: "Capitol"
+  lemma: "capitol"
+  category: "PROPN"
+  pos: "NN"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 10
+    arc_score: 0.0
+  }
+  label: "compound"
+  index: 9
+}
+token {
+  word: "Hill"
+  lemma: "hill"
+  category: "PROPN"
+  pos: "NN"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 7
+    arc_score: 0.0
+  }
+  label: "nmod"
+  index: 10
+}
+token {
+  word: ","
+  lemma: ","
+  category: "PUNCT"
+  pos: ","
+  selected_head {
+    address: 17
+    arc_score: 0.0
+  }
+  label: "punct"
+  index: 11
+}
+token {
+  word: "this"
+  lemma: "this"
+  category: "PRON"
+  pos: "DT"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  morphology {
+    name: "prontype"
+    value: "dem"
+  }
+  selected_head {
+    address: 17
+    arc_score: 0.0
+  }
+  label: "nsubj"
+  index: 12
+}
+token {
+  word: "will"
+  lemma: "will"
+  category: "AUX"
+  pos: "MD"
+  morphology {
+    name: "verbform"
+    value: "fin"
+  }
+  selected_head {
+    address: 17
+    arc_score: 0.0
+  }
+  label: "aux"
+  index: 13
+}
+token {
+  word: "be"
+  lemma: "be"
+  category: "AUX"
+  pos: "VB"
+  morphology {
+    name: "verbform"
+    value: "inf"
+  }
+  selected_head {
+    address: 17
+    arc_score: 0.0
+  }
+  label: "cop"
+  index: 14
+}
+token {
+  word: "a"
+  lemma: "a"
+  category: "DET"
+  pos: "DT"
+  morphology {
+    name: "definite"
+    value: "ind"
+  }
+  morphology {
+    name: "prontype"
+    value: "art"
+  }
+  selected_head {
+    address: 16
+    arc_score: 0.0
+  }
+  label: "det"
+  index: 15
+}
+token {
+  word: "little"
+  lemma: "little"
+  category: "ADJ"
+  pos: "JJ"
+  morphology {
+    name: "degree"
+    value: "pos"
+  }
+  selected_head {
+    address: 17
+    arc_score: 0.0
+  }
+  label: "obl:npmod"
+  index: 16
+}
+token {
+  word: "different"
+  lemma: "different"
+  category: "ADJ"
+  pos: "JJ"
+  morphology {
+    name: "degree"
+    value: "pos"
+  }
+  selected_head {
+    address: 0
+    arc_score: 0.0
+  }
+  label: "root"
+  index: 17
+}
+token {
+  word: "."
+  lemma: "."
+  category: "PUNCT"
+  pos: "."
+  selected_head {
+    address: 17
+    arc_score: 0.0
+  }
+  label: "punct"
+  index: 18
+}

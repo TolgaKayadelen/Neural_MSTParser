@@ -1,0 +1,588 @@
+text: "“While much of the digital transition is unprecedented in the United States, the peaceful transition of power is not,” Obama special assistant Kori Schulman wrote in a blog post Monday."
+sent_id: "n01001011"
+length: 36
+token {
+  word: "ROOT"
+  category: "TOP"
+  pos: "TOP"
+  selected_head {
+    address: -1
+  }
+  index: 0
+}
+token {
+  word: "“"
+  lemma: "“"
+  category: "PUNCT"
+  pos: "``"
+  selected_head {
+    address: 20
+    arc_score: 0.0
+  }
+  label: "punct"
+  index: 1
+}
+token {
+  word: "While"
+  lemma: "while"
+  category: "SCONJ"
+  pos: "IN"
+  selected_head {
+    address: 9
+    arc_score: 0.0
+  }
+  label: "mark"
+  index: 2
+}
+token {
+  word: "much"
+  lemma: "much"
+  category: "ADJ"
+  pos: "JJ"
+  morphology {
+    name: "degree"
+    value: "pos"
+  }
+  selected_head {
+    address: 9
+    arc_score: 0.0
+  }
+  label: "nsubj"
+  index: 3
+}
+token {
+  word: "of"
+  lemma: "of"
+  category: "ADP"
+  pos: "IN"
+  selected_head {
+    address: 7
+    arc_score: 0.0
+  }
+  label: "case"
+  index: 4
+}
+token {
+  word: "the"
+  lemma: "the"
+  category: "DET"
+  pos: "DT"
+  morphology {
+    name: "definite"
+    value: "def"
+  }
+  morphology {
+    name: "prontype"
+    value: "art"
+  }
+  selected_head {
+    address: 7
+    arc_score: 0.0
+  }
+  label: "det"
+  index: 5
+}
+token {
+  word: "digital"
+  lemma: "digital"
+  category: "ADJ"
+  pos: "JJ"
+  morphology {
+    name: "degree"
+    value: "pos"
+  }
+  selected_head {
+    address: 7
+    arc_score: 0.0
+  }
+  label: "amod"
+  index: 6
+}
+token {
+  word: "transition"
+  lemma: "transition"
+  category: "NOUN"
+  pos: "NN"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 3
+    arc_score: 0.0
+  }
+  label: "nmod"
+  index: 7
+}
+token {
+  word: "is"
+  lemma: "be"
+  category: "AUX"
+  pos: "VBZ"
+  morphology {
+    name: "mood"
+    value: "ind"
+  }
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  morphology {
+    name: "person"
+    value: "3"
+  }
+  morphology {
+    name: "tense"
+    value: "pres"
+  }
+  morphology {
+    name: "verbform"
+    value: "fin"
+  }
+  selected_head {
+    address: 9
+    arc_score: 0.0
+  }
+  label: "cop"
+  index: 8
+}
+token {
+  word: "unprecedented"
+  lemma: "unprecedented"
+  category: "ADJ"
+  pos: "JJ"
+  morphology {
+    name: "degree"
+    value: "pos"
+  }
+  selected_head {
+    address: 20
+    arc_score: 0.0
+  }
+  label: "advcl"
+  index: 9
+}
+token {
+  word: "in"
+  lemma: "in"
+  category: "ADP"
+  pos: "IN"
+  selected_head {
+    address: 13
+    arc_score: 0.0
+  }
+  label: "case"
+  index: 10
+}
+token {
+  word: "the"
+  lemma: "the"
+  category: "DET"
+  pos: "DT"
+  morphology {
+    name: "definite"
+    value: "def"
+  }
+  morphology {
+    name: "prontype"
+    value: "art"
+  }
+  selected_head {
+    address: 13
+    arc_score: 0.0
+  }
+  label: "det"
+  index: 11
+}
+token {
+  word: "United"
+  lemma: "United"
+  category: "PROPN"
+  pos: "NNP"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 13
+    arc_score: 0.0
+  }
+  label: "compound"
+  index: 12
+}
+token {
+  word: "States"
+  lemma: "state"
+  category: "PROPN"
+  pos: "NNS"
+  morphology {
+    name: "number"
+    value: "plur"
+  }
+  selected_head {
+    address: 9
+    arc_score: 0.0
+  }
+  label: "obl"
+  index: 13
+}
+token {
+  word: ","
+  lemma: ","
+  category: "PUNCT"
+  pos: ","
+  selected_head {
+    address: 20
+    arc_score: 0.0
+  }
+  label: "punct"
+  index: 14
+}
+token {
+  word: "the"
+  lemma: "the"
+  category: "DET"
+  pos: "DT"
+  morphology {
+    name: "definite"
+    value: "def"
+  }
+  morphology {
+    name: "prontype"
+    value: "art"
+  }
+  selected_head {
+    address: 17
+    arc_score: 0.0
+  }
+  label: "det"
+  index: 15
+}
+token {
+  word: "peaceful"
+  lemma: "peaceful"
+  category: "ADJ"
+  pos: "JJ"
+  morphology {
+    name: "degree"
+    value: "pos"
+  }
+  selected_head {
+    address: 17
+    arc_score: 0.0
+  }
+  label: "amod"
+  index: 16
+}
+token {
+  word: "transition"
+  lemma: "transition"
+  category: "NOUN"
+  pos: "NN"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 20
+    arc_score: 0.0
+  }
+  label: "nsubj"
+  index: 17
+}
+token {
+  word: "of"
+  lemma: "of"
+  category: "ADP"
+  pos: "IN"
+  selected_head {
+    address: 19
+    arc_score: 0.0
+  }
+  label: "case"
+  index: 18
+}
+token {
+  word: "power"
+  lemma: "power"
+  category: "NOUN"
+  pos: "NN"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 17
+    arc_score: 0.0
+  }
+  label: "nmod"
+  index: 19
+}
+token {
+  word: "is"
+  lemma: "be"
+  category: "AUX"
+  pos: "VBZ"
+  morphology {
+    name: "mood"
+    value: "ind"
+  }
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  morphology {
+    name: "person"
+    value: "3"
+  }
+  morphology {
+    name: "tense"
+    value: "pres"
+  }
+  morphology {
+    name: "verbform"
+    value: "fin"
+  }
+  selected_head {
+    address: 0
+    arc_score: 0.0
+  }
+  label: "root"
+  index: 20
+}
+token {
+  word: "not"
+  lemma: "not"
+  category: "ADV"
+  pos: "RB"
+  morphology {
+    name: "polarity"
+    value: "neg"
+  }
+  selected_head {
+    address: 20
+    arc_score: 0.0
+  }
+  label: "advmod"
+  index: 21
+}
+token {
+  word: ","
+  lemma: ","
+  category: "PUNCT"
+  pos: ","
+  selected_head {
+    address: 20
+    arc_score: 0.0
+  }
+  label: "punct"
+  index: 22
+}
+token {
+  word: "”"
+  lemma: "”"
+  category: "PUNCT"
+  pos: "\'\'"
+  selected_head {
+    address: 20
+    arc_score: 0.0
+  }
+  label: "punct"
+  index: 23
+}
+token {
+  word: "Obama"
+  lemma: "Obama"
+  category: "PROPN"
+  pos: "NNP"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 26
+    arc_score: 0.0
+  }
+  label: "compound"
+  index: 24
+}
+token {
+  word: "special"
+  lemma: "special"
+  category: "ADJ"
+  pos: "JJ"
+  morphology {
+    name: "degree"
+    value: "pos"
+  }
+  selected_head {
+    address: 26
+    arc_score: 0.0
+  }
+  label: "amod"
+  index: 25
+}
+token {
+  word: "assistant"
+  lemma: "assistant"
+  category: "NOUN"
+  pos: "NN"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 29
+    arc_score: 0.0
+  }
+  label: "nsubj"
+  index: 26
+}
+token {
+  word: "Kori"
+  lemma: "Kori"
+  category: "PROPN"
+  pos: "NNP"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 26
+    arc_score: 0.0
+  }
+  label: "flat"
+  index: 27
+}
+token {
+  word: "Schulman"
+  lemma: "Schulman"
+  category: "PROPN"
+  pos: "NNP"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 26
+    arc_score: 0.0
+  }
+  label: "flat"
+  index: 28
+}
+token {
+  word: "wrote"
+  lemma: "write"
+  category: "VERB"
+  pos: "VBD"
+  morphology {
+    name: "mood"
+    value: "ind"
+  }
+  morphology {
+    name: "tense"
+    value: "past"
+  }
+  morphology {
+    name: "verbform"
+    value: "fin"
+  }
+  selected_head {
+    address: 20
+    arc_score: 0.0
+  }
+  label: "parataxis"
+  index: 29
+}
+token {
+  word: "in"
+  lemma: "in"
+  category: "ADP"
+  pos: "IN"
+  selected_head {
+    address: 33
+    arc_score: 0.0
+  }
+  label: "case"
+  index: 30
+}
+token {
+  word: "a"
+  lemma: "a"
+  category: "DET"
+  pos: "DT"
+  morphology {
+    name: "definite"
+    value: "ind"
+  }
+  morphology {
+    name: "prontype"
+    value: "art"
+  }
+  selected_head {
+    address: 33
+    arc_score: 0.0
+  }
+  label: "det"
+  index: 31
+}
+token {
+  word: "blog"
+  lemma: "blog"
+  category: "NOUN"
+  pos: "NN"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 33
+    arc_score: 0.0
+  }
+  label: "compound"
+  index: 32
+}
+token {
+  word: "post"
+  lemma: "post"
+  category: "NOUN"
+  pos: "NN"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 29
+    arc_score: 0.0
+  }
+  label: "obl"
+  index: 33
+}
+token {
+  word: "Monday"
+  lemma: "Monday"
+  category: "PROPN"
+  pos: "NNP"
+  morphology {
+    name: "number"
+    value: "sing"
+  }
+  selected_head {
+    address: 29
+    arc_score: 0.0
+  }
+  label: "nmod:tmod"
+  index: 34
+}
+token {
+  word: "."
+  lemma: "."
+  category: "PUNCT"
+  pos: "."
+  selected_head {
+    address: 20
+    arc_score: 0.0
+  }
+  label: "punct"
+  index: 35
+}

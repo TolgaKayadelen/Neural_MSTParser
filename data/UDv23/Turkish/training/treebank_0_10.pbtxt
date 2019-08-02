@@ -1,0 +1,2552 @@
+sentence {
+  text: "Ama annemin şartları vardı."
+  sent_id: "mst-0002"
+  length: 6
+  token {
+    word: "ROOT"
+    category: "TOP"
+    pos: "TOP"
+    selected_head {
+      address: -1
+    }
+    index: 0
+  }
+  token {
+    word: "Ama"
+    lemma: "ama"
+    category: "CCONJ"
+    pos: "Conj"
+    selected_head {
+      address: 0
+      arc_score: 0.0
+    }
+    label: "ROOT"
+    index: 1
+  }
+  token {
+    word: "annemin"
+    lemma: "anne"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "gen"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "1"
+    }
+    selected_head {
+      address: 3
+      arc_score: 0.0
+    }
+    label: "nmod:poss"
+    index: 2
+  }
+  token {
+    word: "şartları"
+    lemma: "şart"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "plur"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    selected_head {
+      address: 4
+      arc_score: 0.0
+    }
+    label: "nsubj"
+    index: 3
+  }
+  token {
+    word: "vardı"
+    lemma: "var"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "past"
+    }
+    selected_head {
+      address: 1
+      arc_score: 0.0
+    }
+    label: "conj"
+    index: 4
+  }
+  token {
+    word: "."
+    lemma: "."
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 4
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 5
+  }
+}
+sentence {
+  text: "İnşaatta çalışacak vasıfsız işçilerin alımında sözleşme gereği güzergah boyundaki köylerine öncelik verilecek."
+  sent_id: "mst-0007"
+  length: 15
+  token {
+    word: "ROOT"
+    category: "TOP"
+    pos: "TOP"
+    selected_head {
+      address: -1
+    }
+    index: 0
+  }
+  token {
+    word: "İnşaatta"
+    lemma: "inşaat"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "loc"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 2
+      arc_score: 0.0
+    }
+    label: "obl"
+    index: 1
+  }
+  token {
+    word: "çalışacak"
+    lemma: "çalış"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "fut"
+    }
+    morphology {
+      name: "verbform"
+      value: "part"
+    }
+    selected_head {
+      address: 4
+      arc_score: 0.0
+    }
+    label: "acl"
+    index: 2
+  }
+  token {
+    word: "vasıfsız"
+    lemma: "vasıfsız"
+    category: "ADJ"
+    pos: "Adj"
+    selected_head {
+      address: 4
+      arc_score: 0.0
+    }
+    label: "amod"
+    index: 3
+  }
+  token {
+    word: "işçilerin"
+    lemma: "işçi"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "gen"
+    }
+    morphology {
+      name: "number"
+      value: "plur"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 5
+      arc_score: 0.0
+    }
+    label: "nmod:poss"
+    index: 4
+  }
+  token {
+    word: "alımında"
+    lemma: "alım"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "loc"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    selected_head {
+      address: 12
+      arc_score: 0.0
+    }
+    label: "nmod"
+    index: 5
+  }
+  token {
+    word: "sözleşme"
+    lemma: "sözleşme"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 7
+      arc_score: 0.0
+    }
+    label: "nmod:poss"
+    index: 6
+  }
+  token {
+    word: "gereği"
+    lemma: "gerek"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    selected_head {
+      address: 12
+      arc_score: 0.0
+    }
+    label: "nmod"
+    index: 7
+  }
+  token {
+    word: "güzergah"
+    lemma: "güzergah"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 9
+      arc_score: 0.0
+    }
+    label: "nmod:poss"
+    index: 8
+  }
+  token {
+    word: "boyunda"
+    lemma: "boy"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "loc"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    selected_head {
+      address: 11
+      arc_score: 0.0
+    }
+    label: "nmod"
+    index: 9
+  }
+  token {
+    word: "ki"
+    lemma: "ki"
+    category: "ADP"
+    pos: "Rel"
+    selected_head {
+      address: 9
+      arc_score: 0.0
+    }
+    label: "case"
+    index: 10
+  }
+  token {
+    word: "köylerine"
+    lemma: "köy"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "dat"
+    }
+    morphology {
+      name: "number"
+      value: "plur"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "plur"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    selected_head {
+      address: 12
+      arc_score: 0.0
+    }
+    label: "nmod"
+    index: 11
+  }
+  token {
+    word: "öncelik"
+    lemma: "öncelik"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 0
+      arc_score: 0.0
+    }
+    label: "root"
+    index: 12
+  }
+  token {
+    word: "verilecek"
+    lemma: "ver"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "fut"
+    }
+    morphology {
+      name: "voice"
+      value: "pass"
+    }
+    selected_head {
+      address: 12
+      arc_score: 0.0
+    }
+    label: "compound"
+    index: 13
+  }
+  token {
+    word: "."
+    lemma: "."
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 12
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 14
+  }
+}
+sentence {
+  text: "Herkes istediği gibi sevişiyor, her şey serbest."
+  sent_id: "mst-0019"
+  length: 10
+  token {
+    word: "ROOT"
+    category: "TOP"
+    pos: "TOP"
+    selected_head {
+      address: -1
+    }
+    index: 0
+  }
+  token {
+    word: "Herkes"
+    lemma: "herkes"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 4
+      arc_score: 0.0
+    }
+    label: "nsubj"
+    index: 1
+  }
+  token {
+    word: "istediği"
+    lemma: "iste"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "past"
+    }
+    morphology {
+      name: "verbform"
+      value: "part"
+    }
+    selected_head {
+      address: 4
+      arc_score: 0.0
+    }
+    label: "advmod:emph"
+    index: 2
+  }
+  token {
+    word: "gibi"
+    lemma: "gibi"
+    category: "ADP"
+    pos: "PCNom"
+    selected_head {
+      address: 2
+      arc_score: 0.0
+    }
+    label: "case"
+    index: 3
+  }
+  token {
+    word: "sevişiyor"
+    lemma: "seviş"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "prog"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "polite"
+      value: "infm"
+    }
+    morphology {
+      name: "tense"
+      value: "pres"
+    }
+    selected_head {
+      address: 0
+      arc_score: 0.0
+    }
+    label: "root"
+    index: 4
+  }
+  token {
+    word: ","
+    lemma: ","
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 8
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 5
+  }
+  token {
+    word: "her"
+    lemma: "her"
+    category: "DET"
+    pos: "Det"
+    selected_head {
+      address: 8
+      arc_score: 0.0
+    }
+    label: "nsubj"
+    index: 6
+  }
+  token {
+    word: "şey"
+    lemma: "şey"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 6
+      arc_score: 0.0
+    }
+    label: "compound"
+    index: 7
+  }
+  token {
+    word: "serbest"
+    lemma: "serbest"
+    category: "ADJ"
+    pos: "Adj"
+    selected_head {
+      address: 4
+      arc_score: 0.0
+    }
+    label: "conj"
+    index: 8
+  }
+  token {
+    word: "."
+    lemma: "."
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 8
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 9
+  }
+}
+sentence {
+  text: "Oradaki tartışma hayli zengin."
+  sent_id: "mst-0024"
+  length: 7
+  token {
+    word: "ROOT"
+    category: "TOP"
+    pos: "TOP"
+    selected_head {
+      address: -1
+    }
+    index: 0
+  }
+  token {
+    word: "Orada"
+    lemma: "ora"
+    category: "PRON"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "loc"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 3
+      arc_score: 0.0
+    }
+    label: "obl"
+    index: 1
+  }
+  token {
+    word: "ki"
+    lemma: "ki"
+    category: "ADP"
+    pos: "Rel"
+    selected_head {
+      address: 1
+      arc_score: 0.0
+    }
+    label: "case"
+    index: 2
+  }
+  token {
+    word: "tartışma"
+    lemma: "tartış"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "pres"
+    }
+    morphology {
+      name: "verbform"
+      value: "vnoun"
+    }
+    selected_head {
+      address: 5
+      arc_score: 0.0
+    }
+    label: "nsubj"
+    index: 3
+  }
+  token {
+    word: "hayli"
+    lemma: "hayli"
+    category: "ADV"
+    pos: "Adverb"
+    selected_head {
+      address: 5
+      arc_score: 0.0
+    }
+    label: "advmod"
+    index: 4
+  }
+  token {
+    word: "zengin"
+    lemma: "zengin"
+    category: "ADJ"
+    pos: "Adj"
+    selected_head {
+      address: 0
+      arc_score: 0.0
+    }
+    label: "root"
+    index: 5
+  }
+  token {
+    word: "."
+    lemma: "."
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 5
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 6
+  }
+}
+sentence {
+  text: "Kerem, özgürlüğünü teslim ettiği için sanki rahatlamıştı."
+  sent_id: "mst-0030"
+  length: 10
+  token {
+    word: "ROOT"
+    category: "TOP"
+    pos: "TOP"
+    selected_head {
+      address: -1
+    }
+    index: 0
+  }
+  token {
+    word: "Kerem"
+    lemma: "Kerem"
+    category: "PROPN"
+    pos: "Prop"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 8
+      arc_score: 0.0
+    }
+    label: "nsubj"
+    index: 1
+  }
+  token {
+    word: ","
+    lemma: ","
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 8
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 2
+  }
+  token {
+    word: "özgürlüğünü"
+    lemma: "özgürlük"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "acc"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    selected_head {
+      address: 4
+      arc_score: 0.0
+    }
+    label: "obj"
+    index: 3
+  }
+  token {
+    word: "teslim"
+    lemma: "teslim"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 8
+      arc_score: 0.0
+    }
+    label: "obl"
+    index: 4
+  }
+  token {
+    word: "ettiği"
+    lemma: "et"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "past"
+    }
+    morphology {
+      name: "verbform"
+      value: "part"
+    }
+    selected_head {
+      address: 4
+      arc_score: 0.0
+    }
+    label: "compound:lvc"
+    index: 5
+  }
+  token {
+    word: "için"
+    lemma: "için"
+    category: "ADP"
+    pos: "PCNom"
+    selected_head {
+      address: 4
+      arc_score: 0.0
+    }
+    label: "case"
+    index: 6
+  }
+  token {
+    word: "sanki"
+    lemma: "sanki"
+    category: "ADV"
+    pos: "Adverb"
+    selected_head {
+      address: 8
+      arc_score: 0.0
+    }
+    label: "advmod"
+    index: 7
+  }
+  token {
+    word: "rahatlamıştı"
+    lemma: "rahatla"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "pqp"
+    }
+    selected_head {
+      address: 0
+      arc_score: 0.0
+    }
+    label: "root"
+    index: 8
+  }
+  token {
+    word: "."
+    lemma: "."
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 8
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 9
+  }
+}
+sentence {
+  text: "Değişiklikle, milletvekili seçilme yeterliliğini düzenleyen yetmişaltı. maddedeki, \" ideolojik ve anarşik eylemler \" ifadesi \" terör eylemleri \" diye değiştirildi, Erdoğan\'ın işlediği suç, seçilmesine engel olmaktan çıkarıldı."
+  sent_id: "mst-0035"
+  length: 34
+  token {
+    word: "ROOT"
+    category: "TOP"
+    pos: "TOP"
+    selected_head {
+      address: -1
+    }
+    index: 0
+  }
+  token {
+    word: "Değişiklikle"
+    lemma: "değişiklik"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "ins"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 23
+      arc_score: 0.0
+    }
+    label: "obl"
+    index: 1
+  }
+  token {
+    word: ","
+    lemma: ","
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 23
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 2
+  }
+  token {
+    word: "milletvekili"
+    lemma: "milletvekili"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 4
+      arc_score: 0.0
+    }
+    label: "compound"
+    index: 3
+  }
+  token {
+    word: "seçilme"
+    lemma: "seç"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "pres"
+    }
+    morphology {
+      name: "verbform"
+      value: "vnoun"
+    }
+    morphology {
+      name: "voice"
+      value: "pass"
+    }
+    selected_head {
+      address: 5
+      arc_score: 0.0
+    }
+    label: "nmod:poss"
+    index: 4
+  }
+  token {
+    word: "yeterliliğini"
+    lemma: "yeterlilik"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "acc"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    selected_head {
+      address: 6
+      arc_score: 0.0
+    }
+    label: "obj"
+    index: 5
+  }
+  token {
+    word: "düzenleyen"
+    lemma: "düzenle"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "pres"
+    }
+    morphology {
+      name: "verbform"
+      value: "part"
+    }
+    selected_head {
+      address: 8
+      arc_score: 0.0
+    }
+    label: "acl"
+    index: 6
+  }
+  token {
+    word: "yetmişaltı."
+    lemma: "yetmişaltı"
+    category: "NUM"
+    pos: "ANum"
+    morphology {
+      name: "numtype"
+      value: "ord"
+    }
+    selected_head {
+      address: 8
+      arc_score: 0.0
+    }
+    label: "amod"
+    index: 7
+  }
+  token {
+    word: "maddede"
+    lemma: "madde"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "loc"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 15
+      arc_score: 0.0
+    }
+    label: "nmod"
+    index: 8
+  }
+  token {
+    word: "ki"
+    lemma: "ki"
+    category: "ADP"
+    pos: "Rel"
+    selected_head {
+      address: 8
+      arc_score: 0.0
+    }
+    label: "case"
+    index: 9
+  }
+  token {
+    word: ","
+    lemma: ","
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 23
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 10
+  }
+  token {
+    word: "\""
+    lemma: "\""
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 15
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 11
+  }
+  token {
+    word: "ideolojik"
+    lemma: "ideolojik"
+    category: "ADJ"
+    pos: "Adj"
+    selected_head {
+      address: 15
+      arc_score: 0.0
+    }
+    label: "amod"
+    index: 12
+  }
+  token {
+    word: "ve"
+    lemma: "ve"
+    category: "CCONJ"
+    pos: "Conj"
+    selected_head {
+      address: 14
+      arc_score: 0.0
+    }
+    label: "cc"
+    index: 13
+  }
+  token {
+    word: "anarşik"
+    lemma: "anarşik"
+    category: "ADJ"
+    pos: "Adj"
+    selected_head {
+      address: 12
+      arc_score: 0.0
+    }
+    label: "conj"
+    index: 14
+  }
+  token {
+    word: "eylemler"
+    lemma: "eylem"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "plur"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 17
+      arc_score: 0.0
+    }
+    label: "nmod:poss"
+    index: 15
+  }
+  token {
+    word: "\""
+    lemma: "\""
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 15
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 16
+  }
+  token {
+    word: "ifadesi"
+    lemma: "ifade"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    selected_head {
+      address: 23
+      arc_score: 0.0
+    }
+    label: "obj"
+    index: 17
+  }
+  token {
+    word: "\""
+    lemma: "\""
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 19
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 18
+  }
+  token {
+    word: "terör"
+    lemma: "terör"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 23
+      arc_score: 0.0
+    }
+    label: "obl"
+    index: 19
+  }
+  token {
+    word: "eylemleri"
+    lemma: "eylem"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "plur"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    selected_head {
+      address: 19
+      arc_score: 0.0
+    }
+    label: "compound"
+    index: 20
+  }
+  token {
+    word: "\""
+    lemma: "\""
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 19
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 21
+  }
+  token {
+    word: "diye"
+    lemma: "diye"
+    category: "ADP"
+    pos: "PCNom"
+    selected_head {
+      address: 19
+      arc_score: 0.0
+    }
+    label: "case"
+    index: 22
+  }
+  token {
+    word: "değiştirildi"
+    lemma: "değiş"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "past"
+    }
+    morphology {
+      name: "voice"
+      value: "caupass"
+    }
+    selected_head {
+      address: 0
+      arc_score: 0.0
+    }
+    label: "root"
+    index: 23
+  }
+  token {
+    word: ","
+    lemma: ","
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 27
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 24
+  }
+  token {
+    word: "Erdoğan\'ın"
+    lemma: "Erdoğan"
+    category: "PROPN"
+    pos: "Prop"
+    morphology {
+      name: "case"
+      value: "gen"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 26
+      arc_score: 0.0
+    }
+    label: "nmod:poss"
+    index: 25
+  }
+  token {
+    word: "işlediği"
+    lemma: "işle"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "past"
+    }
+    morphology {
+      name: "verbform"
+      value: "part"
+    }
+    selected_head {
+      address: 27
+      arc_score: 0.0
+    }
+    label: "acl"
+    index: 26
+  }
+  token {
+    word: "suç"
+    lemma: "suç"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 23
+      arc_score: 0.0
+    }
+    label: "conj"
+    index: 27
+  }
+  token {
+    word: ","
+    lemma: ","
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 23
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 28
+  }
+  token {
+    word: "seçilmesine"
+    lemma: "seç"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "case"
+      value: "dat"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "pres"
+    }
+    morphology {
+      name: "verbform"
+      value: "vnoun"
+    }
+    morphology {
+      name: "voice"
+      value: "pass"
+    }
+    selected_head {
+      address: 30
+      arc_score: 0.0
+    }
+    label: "nmod"
+    index: 29
+  }
+  token {
+    word: "engel"
+    lemma: "engel"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 27
+      arc_score: 0.0
+    }
+    label: "nmod"
+    index: 30
+  }
+  token {
+    word: "olmaktan"
+    lemma: "ol"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "case"
+      value: "abl"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "pres"
+    }
+    morphology {
+      name: "verbform"
+      value: "vnoun"
+    }
+    selected_head {
+      address: 30
+      arc_score: 0.0
+    }
+    label: "compound:lvc"
+    index: 31
+  }
+  token {
+    word: "çıkarıldı"
+    lemma: "çıkar"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "past"
+    }
+    morphology {
+      name: "voice"
+      value: "pass"
+    }
+    selected_head {
+      address: 27
+      arc_score: 0.0
+    }
+    label: "compound"
+    index: 32
+  }
+  token {
+    word: "."
+    lemma: "."
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 27
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 33
+  }
+}
+sentence {
+  text: "Şimdi Allah\'a şükür her mevsim var."
+  sent_id: "mst-0054"
+  length: 8
+  token {
+    word: "ROOT"
+    category: "TOP"
+    pos: "TOP"
+    selected_head {
+      address: -1
+    }
+    index: 0
+  }
+  token {
+    word: "Şimdi"
+    lemma: "şimdi"
+    category: "ADV"
+    pos: "Adverb"
+    selected_head {
+      address: 6
+      arc_score: 0.0
+    }
+    label: "advmod"
+    index: 1
+  }
+  token {
+    word: "Allah\'a"
+    lemma: "Allah"
+    category: "PROPN"
+    pos: "Prop"
+    morphology {
+      name: "case"
+      value: "dat"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 6
+      arc_score: 0.0
+    }
+    label: "nmod"
+    index: 2
+  }
+  token {
+    word: "şükür"
+    lemma: "şükür"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 2
+      arc_score: 0.0
+    }
+    label: "compound"
+    index: 3
+  }
+  token {
+    word: "her"
+    lemma: "her"
+    category: "DET"
+    pos: "Det"
+    selected_head {
+      address: 5
+      arc_score: 0.0
+    }
+    label: "advmod:emph"
+    index: 4
+  }
+  token {
+    word: "mevsim"
+    lemma: "mevsim"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 6
+      arc_score: 0.0
+    }
+    label: "obj"
+    index: 5
+  }
+  token {
+    word: "var"
+    lemma: "var"
+    category: "ADJ"
+    pos: "Adj"
+    selected_head {
+      address: 0
+      arc_score: 0.0
+    }
+    label: "root"
+    index: 6
+  }
+  token {
+    word: "."
+    lemma: "."
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 6
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 7
+  }
+}
+sentence {
+  text: "Ne anlatacaktın."
+  sent_id: "mst-0056"
+  length: 4
+  token {
+    word: "ROOT"
+    category: "TOP"
+    pos: "TOP"
+    selected_head {
+      address: -1
+    }
+    index: 0
+  }
+  token {
+    word: "Ne"
+    lemma: "ne"
+    category: "PRON"
+    pos: "Ques"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 2
+      arc_score: 0.0
+    }
+    label: "obj"
+    index: 1
+  }
+  token {
+    word: "anlatacaktın"
+    lemma: "anlat"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "prosp"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "2"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "fut,past"
+    }
+    selected_head {
+      address: 0
+      arc_score: 0.0
+    }
+    label: "root"
+    index: 2
+  }
+  token {
+    word: "."
+    lemma: "."
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 2
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 3
+  }
+}
+sentence {
+  text: "Çocuklar görev gereği gösterilen sevgi ve ilgiyle, içten gelen sevgi ve ilgiyi ayırt edecek kadar duyarlıdır."
+  sent_id: "mst-0059"
+  length: 20
+  token {
+    word: "ROOT"
+    category: "TOP"
+    pos: "TOP"
+    selected_head {
+      address: -1
+    }
+    index: 0
+  }
+  token {
+    word: "Çocuklar"
+    lemma: "çocuk"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "plur"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 17
+      arc_score: 0.0
+    }
+    label: "nsubj"
+    index: 1
+  }
+  token {
+    word: "görev"
+    lemma: "görev"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 3
+      arc_score: 0.0
+    }
+    label: "nmod:poss"
+    index: 2
+  }
+  token {
+    word: "gereği"
+    lemma: "gerek"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "number[psor]"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "person[psor]"
+      value: "3"
+    }
+    selected_head {
+      address: 4
+      arc_score: 0.0
+    }
+    label: "obj"
+    index: 3
+  }
+  token {
+    word: "gösterilen"
+    lemma: "göster"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "pres"
+    }
+    morphology {
+      name: "verbform"
+      value: "part"
+    }
+    morphology {
+      name: "voice"
+      value: "pass"
+    }
+    selected_head {
+      address: 5
+      arc_score: 0.0
+    }
+    label: "acl"
+    index: 4
+  }
+  token {
+    word: "sevgi"
+    lemma: "sevgi"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 14
+      arc_score: 0.0
+    }
+    label: "obj"
+    index: 5
+  }
+  token {
+    word: "ve"
+    lemma: "ve"
+    category: "CCONJ"
+    pos: "Conj"
+    selected_head {
+      address: 7
+      arc_score: 0.0
+    }
+    label: "cc"
+    index: 6
+  }
+  token {
+    word: "ilgiyle"
+    lemma: "ilgi"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "ins"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 5
+      arc_score: 0.0
+    }
+    label: "conj"
+    index: 7
+  }
+  token {
+    word: ","
+    lemma: ","
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 11
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 8
+  }
+  token {
+    word: "içten"
+    lemma: "iç"
+    category: "ADJ"
+    pos: "NAdj"
+    morphology {
+      name: "case"
+      value: "abl"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 10
+      arc_score: 0.0
+    }
+    label: "amod"
+    index: 9
+  }
+  token {
+    word: "gelen"
+    lemma: "gel"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "pres"
+    }
+    morphology {
+      name: "verbform"
+      value: "part"
+    }
+    selected_head {
+      address: 11
+      arc_score: 0.0
+    }
+    label: "acl"
+    index: 10
+  }
+  token {
+    word: "sevgi"
+    lemma: "sevgi"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 5
+      arc_score: 0.0
+    }
+    label: "conj"
+    index: 11
+  }
+  token {
+    word: "ve"
+    lemma: "ve"
+    category: "CCONJ"
+    pos: "Conj"
+    selected_head {
+      address: 13
+      arc_score: 0.0
+    }
+    label: "cc"
+    index: 12
+  }
+  token {
+    word: "ilgiyi"
+    lemma: "ilgi"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "acc"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 5
+      arc_score: 0.0
+    }
+    label: "conj"
+    index: 13
+  }
+  token {
+    word: "ayırt"
+    lemma: "ayırt"
+    category: "NOUN"
+    pos: "Noun"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 17
+      arc_score: 0.0
+    }
+    label: "obl"
+    index: 14
+  }
+  token {
+    word: "edecek"
+    lemma: "et"
+    category: "VERB"
+    pos: "Verb"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "mood"
+      value: "ind"
+    }
+    morphology {
+      name: "polarity"
+      value: "pos"
+    }
+    morphology {
+      name: "tense"
+      value: "fut"
+    }
+    morphology {
+      name: "verbform"
+      value: "part"
+    }
+    selected_head {
+      address: 14
+      arc_score: 0.0
+    }
+    label: "compound:lvc"
+    index: 15
+  }
+  token {
+    word: "kadar"
+    lemma: "kadar"
+    category: "ADP"
+    pos: "PCDat"
+    selected_head {
+      address: 14
+      arc_score: 0.0
+    }
+    label: "case"
+    index: 16
+  }
+  token {
+    word: "duyarlı"
+    lemma: "duyarlı"
+    category: "ADJ"
+    pos: "NAdj"
+    morphology {
+      name: "case"
+      value: "nom"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    selected_head {
+      address: 0
+      arc_score: 0.0
+    }
+    label: "root"
+    index: 17
+  }
+  token {
+    word: "dır"
+    lemma: "i"
+    category: "AUX"
+    pos: "Zero"
+    morphology {
+      name: "aspect"
+      value: "perf"
+    }
+    morphology {
+      name: "mood"
+      value: "gen"
+    }
+    morphology {
+      name: "number"
+      value: "sing"
+    }
+    morphology {
+      name: "person"
+      value: "3"
+    }
+    morphology {
+      name: "tense"
+      value: "pres"
+    }
+    selected_head {
+      address: 17
+      arc_score: 0.0
+    }
+    label: "cop"
+    index: 18
+  }
+  token {
+    word: "."
+    lemma: "."
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 17
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 19
+  }
+}
+sentence {
+  text: "Aşırı, aşırı."
+  sent_id: "mst-0070"
+  length: 5
+  token {
+    word: "ROOT"
+    category: "TOP"
+    pos: "TOP"
+    selected_head {
+      address: -1
+    }
+    index: 0
+  }
+  token {
+    word: "Aşırı"
+    lemma: "aşırı"
+    category: "ADJ"
+    pos: "Adj"
+    selected_head {
+      address: 0
+      arc_score: 0.0
+    }
+    label: "root"
+    index: 1
+  }
+  token {
+    word: ","
+    lemma: ","
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 3
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 2
+  }
+  token {
+    word: "aşırı"
+    lemma: "aşırı"
+    category: "ADJ"
+    pos: "Adj"
+    selected_head {
+      address: 1
+      arc_score: 0.0
+    }
+    label: "conj"
+    index: 3
+  }
+  token {
+    word: "."
+    lemma: "."
+    category: "PUNCT"
+    pos: "Punc"
+    selected_head {
+      address: 3
+      arc_score: 0.0
+    }
+    label: "punct"
+    index: 4
+  }
+}
