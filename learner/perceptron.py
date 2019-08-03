@@ -102,7 +102,8 @@ class AveragedPerceptron(object):
         logging.info("Feature options of the loaded model: {}".format(feature_options))
         self.InitializeWeights(featureset, load=True)   
         
-    def SaveModel(self, name, train_data_path=None, test_data_path=None, nr_epochs=None, accuracy=None):
+    def SaveModel(self, name, train_data_path=None, test_data_path=None,
+    	 nr_epochs=None, accuracy=None):
         """Save model features and weights in json format.
         Args:
             name: string, the name of the model.
@@ -119,8 +120,10 @@ class AveragedPerceptron(object):
             "epochs_trained": nr_epochs,
             "accuracy": accuracy,
             "feature_options": self.feature_options,
-            "featureset": json_format.MessageToJson(self.featureset,
-                                                    including_default_value_fields=True)
+            "featureset": json_format.MessageToJson(
+            								self.featureset,
+            								including_default_value_fields=True
+            								)
         }
         output_file = os.path.join(_MODEL_DIR, "{}".format(name))
         with open(output_file, "w") as output:

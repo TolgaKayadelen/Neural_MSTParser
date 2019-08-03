@@ -120,7 +120,8 @@ class DependencyParser:
       #print(matrix)
       return matrix / np.sum(matrix, axis=1, keepdims=True)
     
-    def Save(self, path, train_data_path=None, test_data_path=None, nr_epochs=None, accuracy=None):
+    def Save(self, path, train_data_path=None, test_data_path=None,
+    	nr_epochs=None, accuracy=None):
         assert isinstance(train_data_path, str), "Invalid Data Path!"
         assert isinstance(test_data_path, str), "Invalid Data Path!"
         assert isinstance(nr_epochs, int), "Invalid number of epochs!"

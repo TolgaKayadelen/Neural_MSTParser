@@ -26,7 +26,8 @@ def parse(args):
     Args:
         args: the command line arguments.   
     Returns:
-        treebank: treebank_pb2.Treebank, a treebank of sentences parsed with the loaded model.
+        treebank: treebank_pb2.Treebank, a treebank of sentences parsed with the
+        loaded model.
     """
     languages = {"Turkish": 1, "English": 2}
     output_treebank = treebank_pb2.Treebank()
@@ -49,15 +50,16 @@ def parse(args):
     _TEST_DATA_DIR = os.path.join(_TREEBANK_DIR, args.language, "test")
     test_path = os.path.join(_TEST_DATA_DIR, "{}.pbtxt".format(args.test_data))
     test_treebank = reader.ReadTreebankTextProto(test_path)
-    logging.info("Total sentences in test data {}".format(len(test_treebank.sentence)))
     test_data = list(test_treebank.sentence)
-    print(text_format.MessageToString(test_data[0], as_utf8=True))
+    logging.info("Total sentences in test data {}".format(len(test_data)))
+    #print(text_format.MessageToString(test_data[0], as_utf8=True))
     
     # parse sentences with the loaded model.
     test_data = map(common.ConnectSentenceNodes, test_data)
     test_data = map(common.ExtendSentence, test_data)
     for sentence in test_data:
         parsed, predicted_heads = model.Parse(sentence)
+        # add the parsed sentence into the output treebank
         output_treebank.sentence.extend([parsed])
     print("----------")
     print("Treebank")
