@@ -120,10 +120,8 @@ class AveragedPerceptron(object):
             "epochs_trained": nr_epochs,
             "accuracy": accuracy,
             "feature_options": self.feature_options,
-            "featureset": json_format.MessageToJson(
-            								self.featureset,
-            								including_default_value_fields=True
-            								)
+            "featureset": json_format.MessageToJson(self.featureset,
+            	including_default_value_fields=True)
         }
         output_file = os.path.join(_MODEL_DIR, "{}".format(name))
         with open(output_file, "w") as output:
