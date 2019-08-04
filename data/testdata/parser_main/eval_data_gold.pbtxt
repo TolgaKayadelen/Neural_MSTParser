@@ -1,0 +1,93 @@
+sentence {
+	text:  "John saw a cat in the mat" 
+	length: 8
+	token {
+  	word: "ROOT"
+  	lemma: "ROOT"
+  	category: "TOP"
+  	pos: "TOP"
+  	selected_head {
+  		address: -1
+			arc_score: 0.0
+  	}
+  	index: 0
+	}
+	token {
+  	word: "John"
+  	lemma: "John"
+ 		category: "NOUN"
+  	pos: "Noun"
+  	index: 1
+  	selected_head {
+  		address: 2
+  		arc_score: 0.0
+  	}
+  	index: 1
+	}
+	token {
+  	word: "saw"
+  	lemma: "see"
+  	category: "VERB"
+  	pos: "Verb"
+  	selected_head {
+  		address: 0
+  		arc_score: 0.0
+  	}	
+  	index: 2
+	}
+	token {
+  	word: "a"
+  	lemma: "a"
+  	category: "DET"
+  	pos: "Det"
+  	selected_head {
+  		address: 4
+  		arc_score: 0.0
+  	}	
+  	index: 3
+	}
+	token {
+  	word: "cat"
+  	lemma: "cat"
+  	category: "NOUN"
+  	pos: "Det"
+  	selected_head {
+  		address: 2
+  		arc_score: 0.0
+  	}	
+  	index: 4
+	}
+	token {
+  	word: "in"
+  	lemma: "in"
+  	category: "ADP"
+  	pos: "Prep"
+  	selected_head {
+  		address: 2
+  		arc_score: 0.0
+  	}	
+  	index: 5
+	}
+	token {
+  	word: "the"
+  	lemma: "the"
+  	category: "DET"
+  	pos: "Det"
+  	selected_head {
+  		address: 7
+  		arc_score: 0.0
+  	}	
+  	index: 6
+	}
+	token {
+  	word: "mat"
+  	lemma: "mat"
+  	category: "NOUN"
+  	pos: "Noun"
+  	selected_head {
+  		address: 5
+  		arc_score: 0.0
+  	}	
+ 	 	index: 7
+	}
+}

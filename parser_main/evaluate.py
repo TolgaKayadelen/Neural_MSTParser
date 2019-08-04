@@ -21,6 +21,11 @@ import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
 def evaluate_parser(args):
+	"""Function to evaluate the dependency parser output on gold data.
+	Args:
+		command line arguments, values for requested metrics, gold data and 
+			test data path.
+	"""
 	#gold_data = args.gold_data
 	#test_data = args.test_data
 	eval_metrics = args.metrics
@@ -50,26 +55,31 @@ class Evaluator:
 		self.typed_las_f1 = {} 	
 	
 	def _UasTotal(self):
+		"Computes the total Unlabeled Attachement Score of the parser."
 		pass
 	
-	
 	def _LasTotal(self):
+		"Compuates the total Labeled Attachment Score of the parser."
 		pass
 	
 	def _TypedUas(self):
+		"Computes Unlabeled Attachment Score for all dependency types."
 		pass
 	
-	
 	def	_TypedLasPrec(self):
+		"Compuates Precision for all dependency types."
 		pass
 	
 	def _TypedLasRecall(self):
+		"Compuates Recall for all dependency types."
 		pass
 	
 	def _TypedLasF1(self):
+		"Computes F1 score for all dependency types."
 		pass
 	
 	def _EvaluateAll(self):
+		"Runs all the evaluation metrics."
 		self._UasTotal()
 		self._LasTotal()
 		self._TypedUas()

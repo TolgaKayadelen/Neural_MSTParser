@@ -44,7 +44,7 @@ if __name__ == "__main__":
     					help="dir to put the parsed output files.")
     
     # Evaluate args
-    parser.add_argument("--metrics", nargs='+',
+    parser.add_argument("--metrics", nargs='*',
     					default=["uas_total", "las_total"],
     					help="Space separated list of metrics to evaluate.",
     					choices=["uas_total", "las_total", "typed_uas",
