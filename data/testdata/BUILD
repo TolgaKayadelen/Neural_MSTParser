@@ -71,9 +71,9 @@ filegroup(
 	]),
 )
 
-
-
-
-
-
-
+filegroup(
+	name = "parser_main",
+	srcs = glob([
+		"parser_main/*.pbtxt",
+	]),
+)

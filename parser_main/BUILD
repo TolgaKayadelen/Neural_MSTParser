@@ -9,6 +9,7 @@ py_binary(
 		"//data/treebank:treebank_py_pb2",
 		"parse",
 		"train",
+		"evaluate",
 	],
 )
 
@@ -31,4 +32,16 @@ py_library(
 		"//data/treebank:treebank_py_pb2",
 	],
 
+)
+
+py_library(
+	name = "evaluate",
+	srcs = ["evaluate.py"],
+	deps = [
+		"//parser:dependency_parser_lib",
+		"//data/treebank:treebank_py_pb2",
+	],
+	data = [
+		"//data/testdata:parser_main",
+	],
 )
