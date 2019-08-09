@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import os
 import unittest
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
+from parser_main import evaluate
 from util import common
 
 from google.protobuf import text_format
@@ -28,7 +30,19 @@ def _read_parser_test_data(basename):
 class EvaluateTest(unittest.TestCase):
 	"""Tests for the Evaluator"""
 	
+	def test_UasTotal(self):
+		print("Running testUasTotal..")
+		gold_data = _read_parser_test_data("eval_data_gold")
+		test_data = _read_parser_test_data("eval_data_test")
+		evaluator = evaluate.Evaluator(gold_data, test_data)
+		uas_total = evaluator._UasTotal()
+		self.assertEqual(uas_total, 85.5)
+		#print(uas_total)
+		print("Passed!")
+	
 	def testEvaluate(self):
 		print("Running testEvaluate..")
 		print("Passed!")
-	
+
+if __name__ == "__main__":
+	unittest.main()

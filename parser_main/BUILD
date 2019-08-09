@@ -41,6 +41,15 @@ py_library(
 		"//parser:dependency_parser_lib",
 		"//data/treebank:treebank_py_pb2",
 	],
+)
+
+# Tests
+py_test(
+	name = "evaluate_test",
+	srcs = ["evaluate_test.py"],
+	deps = [
+		":evaluate",
+	],
 	data = [
 		"//data/testdata:parser_main",
 	],

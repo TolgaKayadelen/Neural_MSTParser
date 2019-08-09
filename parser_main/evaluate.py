@@ -45,8 +45,8 @@ class Evaluator:
 		"""
 		assert isinstance(gold, treebank_pb2.Treebank)
 		assert isinstance(test, treebank_pb2.Treebank)
-		self.gold = list(treebank_pb2.Sentence)
-		self.test = list(treebank_pb2.Sentence)
+		self.gold = list(gold.sentence)
+		self.test = list(test.sentence)
 		self.uas_total = 0.0
 		self.las_total = 0.0
 		self.typed_uas = {}
@@ -56,10 +56,23 @@ class Evaluator:
 	
 	def _UasTotal(self):
 		"Computes the total Unlabeled Attachement Score of the parser."
-		pass
+		uas = 0.0
+		for gold_sent, test_sent in zip(self.gold, self.test):
+			gold_heads = [token.selected_head.address for token in gold_sent.token[1:]]
+			pred_heads = [token.selected_head.address for token in test_sent.token[1:]]
+			assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
+			#for gold_head, predicted_head in zip(gold_heads, pred_heads):
+			#	print("gold: {}, predicted: {}, equal: {}".format(
+			#		gold_head, predicted_head, gold_head == predicted_head))
+			#print("---")
+			uas += 100 * sum(
+					gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
+		self.uas_total = uas / len(self.gold)
+		return self.uas_total
+			
 	
 	def _LasTotal(self):
-		"Compuates the total Labeled Attachment Score of the parser."
+		"Computes the total Labeled Attachment Score of the parser."
 		pass
 	
 	def _TypedUas(self):
@@ -67,11 +80,11 @@ class Evaluator:
 		pass
 	
 	def	_TypedLasPrec(self):
-		"Compuates Precision for all dependency types."
+		"Computes Precision for all dependency types."
 		pass
 	
 	def _TypedLasRecall(self):
-		"Compuates Recall for all dependency types."
+		"Computes Recall for all dependency types."
 		pass
 	
 	def _TypedLasF1(self):
