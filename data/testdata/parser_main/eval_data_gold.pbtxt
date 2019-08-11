@@ -1,5 +1,5 @@
 sentence {
-	text:  "John saw a cat in the mat" 
+	text:  "John saw a cat in the mat"
 	length: 8
 	token {
   	word: "ROOT"
@@ -33,7 +33,7 @@ sentence {
   		address: 0
   		arc_score: 0.0
   	}
-  	label: "root"	
+  	label: "root"
   	index: 2
 	}
 	token {
@@ -45,7 +45,7 @@ sentence {
   		address: 4
   		arc_score: 0.0
   	}
-  	label: "det"	
+  	label: "det"
   	index: 3
 	}
 	token {
@@ -98,7 +98,7 @@ sentence {
 	}
 }
 sentence {
-	text:  "Parsing is a bitch" 
+	text:  "Parsing is a bitch"
 	length: 8
 	token {
   	word: "ROOT"
@@ -160,6 +160,3 @@ sentence {
   	index: 4
 	}
 }
-
-
-
