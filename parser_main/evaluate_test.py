@@ -16,7 +16,6 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 _TESTDATA_DIR = "data/testdata"
 _PARSERMAIN_DIR = os.path.join(_TESTDATA_DIR, "parser_main")
 
-
 def _read_file(path):
     with open(path, "r") as f:
         read = f.read()
@@ -28,21 +27,26 @@ def _read_parser_test_data(basename):
 
 
 class EvaluateTest(unittest.TestCase):
-	"""Tests for the Evaluator"""
-	
-	def test_UasTotal(self):
-		print("Running testUasTotal..")
-		gold_data = _read_parser_test_data("eval_data_gold")
-		test_data = _read_parser_test_data("eval_data_test")
-		evaluator = evaluate.Evaluator(gold_data, test_data)
-		uas_total = evaluator._UasTotal()
-		self.assertEqual(uas_total, 85.5)
-		#print(uas_total)
-		print("Passed!")
-	
-	def testEvaluate(self):
-		print("Running testEvaluate..")
-		print("Passed!")
+    """Tests for the Evaluator"""
+    def test_UasTotal(self):
+        print("Running testUasTotal..")
+        gold_data = _read_parser_test_data("eval_data_gold")
+        test_data = _read_parser_test_data("eval_data_test")
+        evaluator = evaluate.Evaluator(gold_data, test_data)
+        uas_total = evaluator._UasTotal()
+        self.assertEqual(uas_total, 85.5)
+        #print("uas total {}".format(uas_total))
+        print("Passed!")
+
+    def test_LasTotal(self):
+        print("Running testLasTotal..")
+        gold_data = _read_parser_test_data("eval_data_gold")
+        test_data = _read_parser_test_data("eval_data_test")
+        evaluator = evaluate.Evaluator(gold_data, test_data)
+        las_total = evaluator._LasTotal()
+        self.assertEqual(las_total, 73.0)
+        #print("las total {}".format(las_total))
+        print("Passed!")
 
 if __name__ == "__main__":
 	unittest.main()

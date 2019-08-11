@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-"""Module to evaluate sentences parsed with the dependency parser. 
+"""Module to evaluate sentences parsed with the dependency parser.
 
-This module implements the following evaluation metrics: 
+This module implements the following evaluation metrics:
 
 UAS: Unlabeld attachment score.
 LAS: Labeled attachment score.
 
 We provide typed based precision, recall and F1 scores for LAS and type based
-accuracy for UAS. 
+accuracy for UAS.
 
 """
 from data.treebank import sentence_pb2
@@ -23,7 +23,7 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 def evaluate_parser(args):
 	"""Function to evaluate the dependency parser output on gold data.
 	Args:
-		command line arguments, values for requested metrics, gold data and 
+		command line arguments, values for requested metrics, gold data and
 			test data path.
 	"""
 	#gold_data = args.gold_data
@@ -37,10 +37,10 @@ class Evaluator:
 
 	def __init__(self, gold, test):
 		"""
-		Args: 
-			gold: treebank, the gold treebank. 
+		Args:
+			gold: treebank, the gold treebank.
 			test: treebank, the treebank annotated by the system.
-		
+
 		Initializes this evaluator with a gold and test treebank.
 		"""
 		assert isinstance(gold, treebank_pb2.Treebank)
@@ -52,8 +52,8 @@ class Evaluator:
 		self.typed_uas = {}
 		self.typed_las_prec = {}
 		self.typed_las_recall = {}
-		self.typed_las_f1 = {} 	
-	
+		self.typed_las_f1 = {}
+
 	def _UasTotal(self):
 		"Computes the total Unlabeled Attachement Score of the parser."
 		uas = 0.0
@@ -69,28 +69,41 @@ class Evaluator:
 					gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
 		self.uas_total = uas / len(self.gold)
 		return self.uas_total
-			
-	
+
+
 	def _LasTotal(self):
 		"Computes the total Labeled Attachment Score of the parser."
-		pass
-	
+		las = 0.0
+		for gold_sent, test_sent in zip(self.gold, self.test):
+			gold_heads = [(token.selected_head.address, token.label)
+			 for token in gold_sent.token[1:]]
+			pred_heads = [(token.selected_head.address, token.label)
+			 for token in test_sent.token[1:]]
+			assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
+			#for gold_head, predicted_head in zip(gold_heads, pred_heads):
+			#	print("gold: {}, predicted: {}, equal: {}".format(
+			#		gold_head, predicted_head, gold_head == predicted_head))
+			las += 100 * sum(
+				gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
+		self.las_total = las / len(self.gold)
+		return self.las_total
+
 	def _TypedUas(self):
 		"Computes Unlabeled Attachment Score for all dependency types."
 		pass
-	
+
 	def	_TypedLasPrec(self):
 		"Computes Precision for all dependency types."
 		pass
-	
+
 	def _TypedLasRecall(self):
 		"Computes Recall for all dependency types."
 		pass
-	
+
 	def _TypedLasF1(self):
 		"Computes F1 score for all dependency types."
 		pass
-	
+
 	def _EvaluateAll(self):
 		"Runs all the evaluation metrics."
 		self._UasTotal()
@@ -104,7 +117,7 @@ class Evaluator:
 		metrics = ["uas_total", "las_total", "typed_uas", "typed_las_prec",
 					"typed_las_recall", "typed_las_f1", "all"]
 		assert any(metric in args for metric in metrics), "No valid metric!"
-		
+
 		if "all" in args:
 			self._EvaluateAll()
 		else:
@@ -120,10 +133,3 @@ class Evaluator:
 				self._TypedLasRecall()
 			if "typed_las_f1" in args:
 				self._TypedLasF1()
-		
-	
-	
-		
-	
-
-

@@ -21,6 +21,7 @@ sentence {
   		address: 2
   		arc_score: 0.0
   	}
+  	label: "subj"
   	index: 1
 	}
 	token {
@@ -31,7 +32,8 @@ sentence {
   	selected_head {
   		address: 0
   		arc_score: 0.0
-  	}	
+  	}
+  	label: "root"	
   	index: 2
 	}
 	token {
@@ -42,7 +44,8 @@ sentence {
   	selected_head {
   		address: 4
   		arc_score: 0.0
-  	}	
+  	}
+  	label: "det"	
   	index: 3
 	}
 	token {
@@ -53,7 +56,8 @@ sentence {
   	selected_head {
   		address: 2
   		arc_score: 0.0
-  	}	
+  	}
+  	label: "dobj"
   	index: 4
 	}
 	token {
@@ -64,7 +68,8 @@ sentence {
   	selected_head {
   		address: 2
   		arc_score: 0.0
-  	}	
+  	}
+  	label: "prep"
   	index: 5
 	}
 	token {
@@ -75,7 +80,8 @@ sentence {
   	selected_head {
   		address: 7
   		arc_score: 0.0
-  	}	
+  	}
+  	label: "det"
   	index: 6
 	}
 	token {
@@ -86,7 +92,8 @@ sentence {
   	selected_head {
   		address: 5
   		arc_score: 0.0
-  	}	
+  	}
+  	label: "pobj"
  	 	index: 7
 	}
 }
@@ -113,6 +120,7 @@ sentence {
   		address: 2
   		arc_score: 0.0
   	}
+  	label: "subj"
   	index: 1
 	}
 	token {
@@ -123,7 +131,8 @@ sentence {
   	selected_head {
   		address: 0
   		arc_score: 0.0
-  	}	
+  	}
+  	label: "root"
   	index: 2
 	}
 	token {
@@ -134,7 +143,8 @@ sentence {
   	selected_head {
   		address: 4
   		arc_score: 0.0
-  	}	
+  	}
+  	label: "det"
   	index: 3
 	}
 	token {
@@ -145,7 +155,8 @@ sentence {
   	selected_head {
   		address: 2
   		arc_score: 0.0
-  	}	
+  	}
+  	label: "dobj"
   	index: 4
 	}
 }
