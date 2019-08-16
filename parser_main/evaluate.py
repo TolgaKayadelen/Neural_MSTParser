@@ -41,7 +41,7 @@ same_head = (lambda t1, t2:
 
 class Evaluator:
 
-	def __init__(self, gold, test):
+    def __init__(self, gold, test):
 		"""
 		Args:
 			gold: treebank, the gold treebank.
@@ -59,9 +59,11 @@ class Evaluator:
 		self.typed_uas = {}
 		self.typed_las_prec = {}
 		self.typed_las_recall = {}
-		self.typed_las_f1 = None
+        self.label_counts = {}
+        self.typed_las_f1 = None
+    
 
-	def _UasTotal(self):
+    def _UasTotal(self):
 		"Computes the total Unlabeled Attachement Score of the parser."
 		uas = 0.0
 		for gold_sent, test_sent in self.gold_and_test:
@@ -78,7 +80,7 @@ class Evaluator:
 					gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
 		self.uas_total = uas / len(self.gold)
 
-	def _LasTotal(self):
+    def _LasTotal(self):
 		"Computes the total Labeled Attachment Score of the parser."
 		las = 0.0
 		for gold_sent, test_sent in self.gold_and_test:
@@ -94,15 +96,36 @@ class Evaluator:
 				gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
 		self.las_total = las / len(self.gold)
 
-	def _TypedUas(self):
-		"Computes Unlabeled Attachment Score for all dependency types."
-		pass
+    def _TypedUas(self):
+		"""Computes Unlabeled Attachment Score for all dependency types."""
+        labels = list(set().union(*map(get_labels, self.test)))
+        assert labels, "Cannot compute typed Uas without labels!!"
+        for label in labels:
+            label_uas = 0.0
+            n = 0
+            for gold_sent, test_sent in self.gold_and_test:
+                for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
+                    # To compute unlabeled attachment score per label, we just look at gold tokens which
+                    # have label X, and we ignore whether the corresponding test token has the same 
+                    # label or not. We only check whether the corresponding test token has the same
+                    # head, even though it might have a different label.
+                    # TODO: check this with Ryan.
+                    if not gold_tok.label == label:
+                        continue
+                    n += 1
+                    if test_tok.selected_head.address == gold_tok.selected_head.address:
+                        label_uas += 1
+            self.typed_uas[label] = label_uas
+            self.label_count[label] = n
+        self.label_count
+        print(self.typed_aus)                    
 
-	def	_TypedLasPrec(self):
+    def	_TypedLasPrec(self):
 		"""Computes Precision for all dependency types.
 
 		For each relation X, precision computes the percentage of relations X
-		in the system that are correct (correct / system)
+		in the system that are correct (correct / system). That is, it is checking whether
+        the X's that are found in the system also exists in the gold.
 		"""
 		labels = list(set().union(*map(get_labels, self.test)))
 		for label in labels:
@@ -116,6 +139,7 @@ class Evaluator:
 				for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
 					if not test_tok.label == label:
 						continue
+                    # system has found this label.
 					system += 1
 					if gold_tok.label == label and same_head(gold_tok, test_tok):
 						correct += 1
@@ -129,8 +153,12 @@ class Evaluator:
 			self.typed_las_prec[label] = round((correct / system), 2)
 			#print("----------------------------------------------------------")
 
-	def _TypedLasRecall(self):
-		"Computes Recall for all dependency types."
+    def _TypedLasRecall(self):
+		"""Computes Recall for all dependency types.
+        
+        For each relation X, recall computes the percentage of relations that exists
+        in the gold which are recovered by the system (correct / gold). 
+        """
 		labels = list(set().union(*map(get_labels, self.gold)))
 		for label in labels:
 			#print("Computing recall for {}".format(label))
@@ -170,6 +198,19 @@ class Evaluator:
 									 self.typed_las_f1["precision"]).fillna(0).round(3)
 
 		print(self.typed_las_f1)
+    
+	def _GetLabelCounts(self):
+		labels = list(set().union(*map(get_labels, self.test)))
+       	assert labels, "Tokens don't have any labels!!"
+        for label in labels:
+            label_count = 0
+            for sent in self.gold:
+		for token in sent.token:
+                    if not token.label == label:
+                        continue
+                    label_count +=1
+            self.label_counts[label] = label_count
+        print(self.label_counts)
 
 	def _EvaluateAll(self):
 		"Runs all the evaluation metrics."

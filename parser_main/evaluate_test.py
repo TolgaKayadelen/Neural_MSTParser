@@ -29,32 +29,32 @@ def _read_parser_test_data(basename):
 
 class EvaluateTest(unittest.TestCase):
     """Tests for the Evaluator"""
+    
+    def setUp(self):
+        self.gold_data = _read_parser_test_data("eval_data_gold")
+        self.test_data = _read_parser_test_data("eval_data_test")
+        self.evaluator = evaluate.Evaluator(self.gold_data, self.test_data)
+    
+    def test_GetLabelCounts(self):
+        print("Running testGetLabelCounts..")
+        #self.evaluator._GetLabelCounts()
+        print("Passed!")
+        
     def test_UasTotal(self):
         print("Running testUasTotal..")
-        gold_data = _read_parser_test_data("eval_data_gold")
-        test_data = _read_parser_test_data("eval_data_test")
-        evaluator = evaluate.Evaluator(gold_data, test_data)
-        evaluator._UasTotal()
-        self.assertEqual(evaluator.uas_total, 85.5)
-        #print("uas total {}".format(uas_total))
+        self.evaluator._UasTotal()
+        self.assertEqual(self.evaluator.uas_total, 85.5)
         print("Passed!")
 
     def test_LasTotal(self):
         print("Running testLasTotal..")
-        gold_data = _read_parser_test_data("eval_data_gold")
-        test_data = _read_parser_test_data("eval_data_test")
-        evaluator = evaluate.Evaluator(gold_data, test_data)
-        evaluator._LasTotal()
-        self.assertEqual(evaluator.las_total, 73.0)
-        #print("las total {}".format(las_total))
+        self.evaluator._LasTotal()
+        self.assertEqual(self.evaluator.las_total, 73.0)
         print("Passed!")
 
     def test_TypedLasPrec(self):
         print("Running test_TypedLasPrec..")
-        gold_data = _read_parser_test_data("eval_data_gold")
-        test_data = _read_parser_test_data("eval_data_test")
-        evaluator = evaluate.Evaluator(gold_data, test_data)
-        evaluator._TypedLasPrec()
+        self.evaluator._TypedLasPrec()
         expected_result = {
             u'subj': 1.0,
             u'det': 1.0,
@@ -64,15 +64,12 @@ class EvaluateTest(unittest.TestCase):
             u'root': 1.0,
             u'prep': 0.0
         }
-        self.assertDictEqual(evaluator.typed_las_prec, expected_result)
+        self.assertDictEqual(self.evaluator.typed_las_prec, expected_result)
         print("Passed!")
 
     def test_TypedLasRecall(self):
         print("Running test_TypedLasRecall..")
-        gold_data = _read_parser_test_data("eval_data_gold")
-        test_data = _read_parser_test_data("eval_data_test")
-        evaluator = evaluate.Evaluator(gold_data, test_data)
-        evaluator._TypedLasRecall()
+        self.evaluator._TypedLasRecall()
         expected_result = {
             u'root': 1.0,
             u'det': 0.33,
@@ -81,17 +78,14 @@ class EvaluateTest(unittest.TestCase):
             u'subj': 1.0,
             u'prep': 0.0
         }
-        self.assertDictEqual(evaluator.typed_las_recall, expected_result)
+        self.assertDictEqual(self.evaluator.typed_las_recall, expected_result)
         print("Passed!")
 
     def test_TypedLasF1(self):
         print("Running test_TypedLasF1..")
-        gold_data = _read_parser_test_data("eval_data_gold")
-        test_data = _read_parser_test_data("eval_data_test")
-        evaluator = evaluate.Evaluator(gold_data, test_data)
-        evaluator._TypedLasRecall()
-        evaluator._TypedLasPrec()
-        evaluator._TypedLasF1()
+        self.evaluator._TypedLasRecall()
+        self.evaluator._TypedLasPrec()
+        self.evaluator._TypedLasF1()
         expected_prec = {
             u"det": 1.00,
             u"dobj":0.67,
@@ -121,7 +115,7 @@ class EvaluateTest(unittest.TestCase):
         }
         expected_result = pd.DataFrame([expected_prec, expected_recall, expected_f1],
             index=["precision", "recall", "f1"]).T
-        self.assertItemsEqual(expected_result, evaluator.typed_las_f1)
+        self.assertItemsEqual(expected_result, self.evaluator.typed_las_f1)
         print("Passed!")
 
 
