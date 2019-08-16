@@ -11,6 +11,7 @@ We provide typed based precision, recall and F1 scores for LAS and type based
 accuracy for UAS.
 
 """
+
 import pandas as pd
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
@@ -59,8 +60,23 @@ class Evaluator:
 		self.typed_uas = {}
 		self.typed_las_prec = {}
 		self.typed_las_recall = {}
-		self.label_counts = {}
+		self.label_counts = None
 		self.typed_las_f1 = None
+
+    def _GetLabelCounts(self):
+        labels = list(set().union(*map(get_labels, self.gold)))
+        assert labels, "Tokens don't have any labels!!!"
+        label_counts = {}
+        for label in labels:
+            label_count = 0
+            for sent in self.gold:
+                for token in sent.token:
+                    if not token.label == label:
+                        continue
+                    label_count += 1
+            label_counts[label] = label_count
+        self.label_counts = pd.Series(label_counts).rename("count", inplace=True)
+        #print(self.label_counts)
 
     def _UasTotal(self):
 		"Computes the total Unlabeled Attachement Score of the parser."
@@ -94,27 +110,23 @@ class Evaluator:
 		self.las_total = las / len(self.gold)
 
     def _TypedUas(self):
-		"""Computes Unlabeled Attachment Score for all dependency types."""
-		labels = list(set().union(*map(get_labels, self.test)))
-		assert labels, "Cannot compute typed Uas without labels!!"
-		for label in labels:
-			label_uas = 0.0
-          	n = 0
-          	for gold_sent, test_sent in self.gold_and_test:
-				for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
-                  # To compute unlabeled attachment score per label, we just look at gold tokens which
-                  # have label X, and we ignore whether the corresponding test token has the same
-                  # label or not. We only check whether the corresponding test token has the same
-                  # head, even though it might have a different label.
-					if not gold_tok.label == label:
-						continue
-					n += 1
-					if test_tok.selected_head.address == gold_tok.selected_head.address:
-						label_uas += 1
-          	self.typed_uas[label] = label_uas
-          	self.label_count[label] = n
-		print(self.label_count)
-		print(self.typed_aus)
+        """Computes Unlabeled Attachment Score for all dependency types."""
+        labels = list(set().union(*map(get_labels, self.test)))
+        assert labels, "Cannot compute typed Uas without labels!!"
+        for label in labels:
+            correct = 0.0
+            label_uas = 0.0
+            print("label is {}".format(label))
+            for gold_sent, test_sent in self.gold_and_test:
+                for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
+                    if not gold_tok.label == label:
+                        continue
+                    correct += 1.0
+                    if test_tok.selected_head.address == gold_tok.selected_head.address:
+						label_uas += 1.0
+            #(TODO): decide what's the denominator.
+            self.typed_uas[label] = correct / label_uas
+        print(self.typed_uas)
 
     def	_TypedLasPrec(self):
 		"""Computes Precision for all dependency types.
@@ -140,14 +152,14 @@ class Evaluator:
 					if gold_tok.label == label and same_head(gold_tok, test_tok):
 						correct += 1
 					 	match.append((sentence_idx, gold_tok.index, gold_tok.word))
-			logging.info("System has: {} \"{}\"".format(system, label))
-			logging.info("{} of the system token(s) were also \"{}\" in gold".format(correct, label))
-			logging.info("Precision of the model for label \"{}\" is {} / {} = {}".format(
-				label, correct, system, correct / system)
-			)
-			logging.info("matches are: {}".format(match))
+			#logging.info("System has: {} \"{}\"".format(system, label))
+			#logging.info("{} of the system token(s) were also \"{}\" in gold".format(correct, label))
+			#logging.info("Precision of the model for label \"{}\" is {} / {} = {}".format(
+			#	label, correct, system, correct / system)
+			#)
+			#logging.info("matches are: {}".format(match))
 			self.typed_las_prec[label] = round((correct / system), 2)
-			print("----------------------------------------------------------")
+			#print("----------------------------------------------------------")
 
     def _TypedLasRecall(self):
         """Computes Recall for all dependency types.
@@ -156,7 +168,6 @@ class Evaluator:
         in the gold which are recovered by the system (correct / gold).
         """
         labels = list(set().union(*map(get_labels, self.gold)))
-        #labels = list(set().union(*map(get_labels, self.gold)))
         for label in labels:
 			#print("Computing recall for {}".format(label))
             correct = 0.0
@@ -172,37 +183,33 @@ class Evaluator:
 					if test_tok.label == label and same_head(gold_tok, test_tok):
 						correct += 1
 						match.append((sentence_idx, test_tok.index, test_tok.word))
-            logging.info("Gold has: {} \"{}\"".format(gold, label))
-            logging.info("{} of the gold label(s) were recovered by system".format(correct))
-            logging.info("Recall  of the model for label \"{}\" is  {} / {} = {}".format(
-                label, correct, gold, correct / gold)
-            )
-            logging.info("matches are: {}".format(match))
+            #logging.info("Gold has: {} \"{}\"".format(gold, label))
+            #logging.info("{} of the gold label(s) were recovered by system".format(correct))
+            #logging.info("Recall  of the model for label \"{}\" is  {} / {} = {}".format(
+            #    label, correct, gold, correct / gold)
+            #)
+            #logging.info("matches are: {}".format(match))
             self.typed_las_recall[label] = round((correct / gold), 2)
-            print("----------------------------------------------------------")
-
-    def _GetLabelCounts(self):
-        assert labels, "Tokens don't have any labels!!!"
-        for label in labels:
-            label_count = 0
-            for sent in self.gold:
-                for token in sent.token:
-                    if not token.label == label:
-                        continue
-                    label_count += 1
-            self.label_counts[label] = label_count
-        print(self.label_counts)
+            #print("----------------------------------------------------------")
 
     def _TypedLasF1(self):
         """Computes F1 score for all dependency types"""
         f1 = lambda recall, precision: 2 * (recall * precision) / (recall + precision)
         assert self.typed_las_prec, "Cannot compute f1 without precision score!"
         assert self.typed_las_recall, "Cannote compute f1 without recall score!"
+        cols = ["count", "precision", "recall", "f1"]
+        if self.label_counts is None:
+            logging.info("Getting label counts..")
+            self._GetLabelCounts()
         self.typed_las_f1 = pd.DataFrame(
 			 [self.typed_las_prec, self.typed_las_recall],
 			 index=["precision", "recall"]).fillna(0).T
         self.typed_las_f1["f1"] = f1(self.typed_las_f1["recall"],
 									self.typed_las_f1["precision"]).fillna(0).round(3)
+        self.typed_las_f1["count"] = self.label_counts
+
+        self.typed_las_f1 = self.typed_las_f1[cols]
+        self.typed_las_f1.fillna(0, inplace=True)
         print(self.typed_las_f1)
 
 	def _EvaluateAll(self):

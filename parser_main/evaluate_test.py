@@ -29,17 +29,17 @@ def _read_parser_test_data(basename):
 
 class EvaluateTest(unittest.TestCase):
     """Tests for the Evaluator"""
-    
+
     def setUp(self):
         self.gold_data = _read_parser_test_data("eval_data_gold")
         self.test_data = _read_parser_test_data("eval_data_test")
         self.evaluator = evaluate.Evaluator(self.gold_data, self.test_data)
-    
+
     def test_GetLabelCounts(self):
         print("Running testGetLabelCounts..")
-        #self.evaluator._GetLabelCounts()
+        self.evaluator._GetLabelCounts()
         print("Passed!")
-        
+
     def test_UasTotal(self):
         print("Running testUasTotal..")
         self.evaluator._UasTotal()
@@ -51,6 +51,11 @@ class EvaluateTest(unittest.TestCase):
         self.evaluator._LasTotal()
         self.assertEqual(self.evaluator.las_total, 73.0)
         print("Passed!")
+
+    def test_TypedUas(self):
+        print("Running test_TypedUas..")
+        #self.evaluator._TypedUas()
+        print("Passed..")
 
     def test_TypedLasPrec(self):
         print("Running test_TypedLasPrec..")
@@ -86,6 +91,15 @@ class EvaluateTest(unittest.TestCase):
         self.evaluator._TypedLasRecall()
         self.evaluator._TypedLasPrec()
         self.evaluator._TypedLasF1()
+        expected_counts = {
+            u"det": 3.0,
+            u"dobj":2.0,
+            u"jj":0.0,
+            u"pobj":1.0,
+            u"prep":0.0,
+            u"root":2.0,
+            u"subj":2.0,
+        }
         expected_prec = {
             u"det": 1.00,
             u"dobj":0.67,
@@ -113,8 +127,8 @@ class EvaluateTest(unittest.TestCase):
             u"root":1.000,
             u"subj":1.000
         }
-        expected_result = pd.DataFrame([expected_prec, expected_recall, expected_f1],
-            index=["precision", "recall", "f1"]).T
+        expected_result = pd.DataFrame([expected_counts,expected_prec, expected_recall, expected_f1],
+            index=["count", "precision", "recall", "f1"]).T
         self.assertItemsEqual(expected_result, self.evaluator.typed_las_f1)
         print("Passed!")
 
