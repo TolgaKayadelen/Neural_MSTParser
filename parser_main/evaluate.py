@@ -26,7 +26,7 @@ def evaluate_parser(args):
 	"""Function to evaluate the dependency parser output on gold data.
 	Args:
 		command line arguments, values for requested metrics, gold data and
-			test data path.
+		test data path.
 	"""
 	#gold_data = args.gold_data
 	#test_data = args.test_data
@@ -43,25 +43,26 @@ same_head = (lambda t1, t2:
 class Evaluator:
 
     def __init__(self, gold, test):
-		"""
-		Args:
-			gold: treebank, the gold treebank.
-			test: treebank, the treebank annotated by the system.
+        """
+        Args:
+            gold: treebank, the gold treebank.
+            test: treebank, the treebank annotated by the system.
 
-		Initializes this evaluator with a gold and test treebank.
-		"""
-		assert isinstance(gold, treebank_pb2.Treebank)
-		assert isinstance(test, treebank_pb2.Treebank)
-		self.gold = list(gold.sentence)
-		self.test = list(test.sentence)
-		self.gold_and_test = zip(self.gold, self.test)
-		self.uas_total = 0.0
-		self.las_total = 0.0
-		self.typed_uas = {}
-		self.typed_las_prec = {}
-		self.typed_las_recall = {}
-		self.label_counts = None
-		self.typed_las_f1 = None
+            Initializes this evaluator with a gold and test treebank.
+        """
+        assert isinstance(gold, treebank_pb2.Treebank)
+        assert isinstance(test, treebank_pb2.Treebank)
+        self.gold = list(gold.sentence)
+        self.test = list(test.sentence)
+        self.gold_and_test = zip(self.gold, self.test)
+        self.uas_total = 0.0
+        self.las_total = 0.0
+        self.typed_las_prec = {}
+        self.typed_las_recall = {}
+        self.typed_uas = None # pd.Series
+        self.label_counts = None # pd.Series
+        self.typed_las_f1 = None # pd.DataFrame
+        self.evaluation_matrix = None # pd.DataFrame showing all the results
 
     def _GetLabelCounts(self):
         labels = list(set().union(*map(get_labels, self.gold)))
@@ -102,9 +103,6 @@ class Evaluator:
 			pred_heads = [(token.selected_head.address, token.label)
 				for token in test_sent.token[1:]]
 			assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
-			#for gold_head, predicted_head in zip(gold_heads, pred_heads):
-			# print("gold: {}, predicted: {}, equal: {}".format(
-			#		gold_head, predicted_head, gold_head == predicted_head))
 			las += 100 * sum(
 				gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
 		self.las_total = las / len(self.gold)
@@ -113,20 +111,26 @@ class Evaluator:
         """Computes Unlabeled Attachment Score for all dependency types."""
         labels = list(set().union(*map(get_labels, self.test)))
         assert labels, "Cannot compute typed Uas without labels!!"
+        typed_uas = {}
         for label in labels:
             correct = 0.0
             label_uas = 0.0
-            print("label is {}".format(label))
+            match = []
+            sentence_idx = 0
+            #print("label is {}".format(label))
             for gold_sent, test_sent in self.gold_and_test:
+                sentence_idx = 1
                 for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
                     if not gold_tok.label == label:
                         continue
                     correct += 1.0
                     if test_tok.selected_head.address == gold_tok.selected_head.address:
-						label_uas += 1.0
-            #(TODO): decide what's the denominator.
-            self.typed_uas[label] = correct / label_uas
-        print(self.typed_uas)
+                        label_uas += 1.0
+                        #match.append((sentence_idx, test_tok.index, test_tok.word))
+            #logging.info("matches are {}".format(match))
+            typed_uas[label] = label_uas / correct if correct else 0.0
+        self.typed_uas = pd.Series(typed_uas).rename("unlabeled_attachment", inplace=True).round(2)
+        #print(self.typed_uas)
 
     def	_TypedLasPrec(self):
 		"""Computes Precision for all dependency types.
@@ -197,47 +201,61 @@ class Evaluator:
         f1 = lambda recall, precision: 2 * (recall * precision) / (recall + precision)
         assert self.typed_las_prec, "Cannot compute f1 without precision score!"
         assert self.typed_las_recall, "Cannote compute f1 without recall score!"
-        cols = ["count", "precision", "recall", "f1"]
+        cols = ["count", "label_precision", "label_recall", "label_f1"]
         if self.label_counts is None:
             logging.info("Getting label counts..")
             self._GetLabelCounts()
         self.typed_las_f1 = pd.DataFrame(
 			 [self.typed_las_prec, self.typed_las_recall],
-			 index=["precision", "recall"]).fillna(0).T
-        self.typed_las_f1["f1"] = f1(self.typed_las_f1["recall"],
-									self.typed_las_f1["precision"]).fillna(0).round(3)
+			 index=["label_precision", "label_recall"]).fillna(0).T
+        self.typed_las_f1["label_f1"] = f1(self.typed_las_f1["label_recall"],
+                                           self.typed_las_f1["label_precision"]).fillna(0).round(3)
         self.typed_las_f1["count"] = self.label_counts
 
         self.typed_las_f1 = self.typed_las_f1[cols]
         self.typed_las_f1.fillna(0, inplace=True)
-        print(self.typed_las_f1)
+        #print(self.typed_las_f1)
 
-	def _EvaluateAll(self):
-		"Runs all the evaluation metrics."
-		self._UasTotal()
-		self._LasTotal()
-		self._TypedUas()
-		self._TypedLasPrec()
-		self._TypedLasRecall()
-		self._TypedLasF1()
+    def _EvaluateAll(self):
+        "Runs all the evaluation metrics."
+        self._GetLabelCounts()
+        self._UasTotal()
+        self._LasTotal()
+        self._TypedUas()
+        self._TypedLasPrec()
+        self._TypedLasRecall()
+        self._TypedLasF1()
+        self.evaluation_matrix = pd.DataFrame()
+        self.evaluation_matrix["count"] = self.typed_las_f1["count"]
+        self.evaluation_matrix["unlabeled_attachment"] = self.typed_uas
+        self.evaluation_matrix["label_prec"] = self.typed_las_f1["label_precision"]
+        self.evaluation_matrix["label_recall"] = self.typed_las_f1["label_recall"]
+        self.evaluation_matrix["label_f1"] = self.typed_las_f1["label_f1"]
 
-	def Evaluate(self, *args):
-		metrics = ["uas_total", "las_total", "typed_uas", "typed_las_prec",
-					"typed_las_recall", "typed_las_f1", "all"]
-		assert any(metric in args for metric in metrics), "No valid metric!"
-
-		if "all" in args:
-			self._EvaluateAll()
-		else:
-			if "uas_total" in args:
-				self._UasTotal()
-			if "las_total" in args:
-				self._LasTotal()
-			if "typed_uas" in args:
-				self._TypedUas()
-			if  "typed_las_prec" in args:
-				self._TypedLasPrec()
-			if	"typed_las_recall" in args:
-				self._TypedLasRecall()
-			if "typed_las_f1" in args:
-				self._TypedLasF1()
+    def Evaluate(self, *args):
+        metrics = ["uas_total", "las_total", "typed_uas", "typed_las_prec",
+				   "typed_las_recall", "typed_las_f1", "all"]
+        assert any(metric in args for metric in metrics), "No valid metric!"
+        if "all" in args:
+            self._EvaluateAll()
+            return self.uas_total, self.las_total, self.evaluation_matrix
+        else:
+            if "uas_total" in args:
+                self._UasTotal()
+                return self.uas_total
+            if "las_total" in args:
+                self._LasTotal()
+                return self.las_total
+            if "typed_uas" in args:
+                self._TypedUas()
+                return self.typed_uas
+            if  "typed_las_prec" in args:
+                self._TypedLasPrec()
+                return self.typed_las_prec
+            if	"typed_las_recall" in args:
+                self._TypedLasRecall()
+                return self.typed_las_recall
+            if "typed_las_f1" in args:
+                self._TypedLasF1()
+                # this returns precision and recall as well
+                return self.typed_las_f1

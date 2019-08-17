@@ -1,5 +1,5 @@
 sentence {
-	text:  "John saw a cat in the mat"
+	text:  "John saw the cat in the mat"
 	length: 8
 	token {
   	word: "ROOT"

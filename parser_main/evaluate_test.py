@@ -38,6 +38,16 @@ class EvaluateTest(unittest.TestCase):
     def test_GetLabelCounts(self):
         print("Running testGetLabelCounts..")
         self.evaluator._GetLabelCounts()
+        expected_counts = {
+            u"det": 3,
+            u"dobj":2,
+            u"pobj":1,
+            u"prep":1,
+            u"root":2,
+            u"subj":2
+        }
+        #print(self.evaluator.label_counts)
+        self.assertTrue(pd.Series(expected_counts).equals(self.evaluator.label_counts))
         print("Passed!")
 
     def test_UasTotal(self):
@@ -54,7 +64,17 @@ class EvaluateTest(unittest.TestCase):
 
     def test_TypedUas(self):
         print("Running test_TypedUas..")
-        #self.evaluator._TypedUas()
+        self.evaluator._TypedUas()
+        expected_result = {
+            u"det": 0.67,
+            u"dobj":1.00,
+            u"jj":0.00,
+            u"pobj":1.00,
+            u"prep":0.00,
+            u"root":1.00,
+            u"subj":1.00
+        }
+        self.assertTrue(pd.Series(expected_result).equals(self.evaluator.typed_uas))
         print("Passed..")
 
     def test_TypedLasPrec(self):
@@ -96,7 +116,7 @@ class EvaluateTest(unittest.TestCase):
             u"dobj":2.0,
             u"jj":0.0,
             u"pobj":1.0,
-            u"prep":0.0,
+            u"prep":1.0,
             u"root":2.0,
             u"subj":2.0,
         }
@@ -128,8 +148,30 @@ class EvaluateTest(unittest.TestCase):
             u"subj":1.000
         }
         expected_result = pd.DataFrame([expected_counts,expected_prec, expected_recall, expected_f1],
-            index=["count", "precision", "recall", "f1"]).T
-        self.assertItemsEqual(expected_result, self.evaluator.typed_las_f1)
+            index=["count", "label_precision", "label_recall", "label_f1"]).T
+        self.assertTrue(expected_result.equals(self.evaluator.typed_las_f1))
+        print("Passed!")
+
+    def testEvaluate(self):
+        print("Running testEvaluate..")
+        uas, las, eval_matrix = self.evaluator.Evaluate("all")
+        self.assertEqual(uas, 85.5)
+        self.assertEqual(las, 73.0)
+        cols = ["count", "unlabeled_attachment", "label_prec", "label_recall", "label_f1"]
+        index = ["det", "dobj", "jj", "pobj", "prep", "root", "subj"]
+        expected_matrix = pd.DataFrame(
+            columns=cols,
+            index=index,
+            data=[
+                [3.0, 0.67, 1.00, 0.33,0.496],
+                [2.0, 1.00, 0.67, 1.00, 0.802],
+                [0.0, 0.00, 0.00, 0.00, 0.000],
+                [1.0, 1.00, 1.00, 1.00, 1.000],
+                [1.0, 0.00, 0.00, 0.00, 0.000],
+                [2.0, 1.00, 1.00, 1.00, 1.000],
+                [2.0, 1.00, 1.00, 1.00, 1.000]
+            ])
+        self.assertTrue(expected_matrix.equals(self.evaluator.evaluation_matrix))
         print("Passed!")
 
 
