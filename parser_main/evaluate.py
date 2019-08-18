@@ -16,6 +16,7 @@ import pandas as pd
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
 from util import common
+from util import reader
 
 from google.protobuf import text_format
 
@@ -23,17 +24,19 @@ import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
 def evaluate_parser(args):
-	"""Function to evaluate the dependency parser output on gold data.
-	Args:
-		command line arguments, values for requested metrics, gold data and
-		test data path.
-	"""
-	#gold_data = args.gold_data
-	#test_data = args.test_data
-	eval_metrics = args.metrics
-	print("Requested eval metrics {}".format(eval_metrics))
-	#evaluator = Evaluator(gold_data, test_data)
-	#evaluator.Evaluate(eval_metrics)
+    """Function to evaluate the dependency parser output on gold data.
+    Args:
+    	command line arguments, values for requested metrics, gold data and
+    	test data path.
+    """
+    gold_data = reader.ReadTreebankTextProto(args.gold_data)
+    test_data = reader.ReadTreebankTextProto(args.test_data)
+    eval_metrics = args.metrics
+    logging.info("Requested eval metrics {}".format(eval_metrics))
+    evaluator = Evaluator(gold_data, test_data)
+    results = evaluator.Evaluate(eval_metrics)
+    for result in results:
+        print(result)
 
 get_labels = lambda sent: [token.label for token in sent.token[1:]]
 
@@ -199,6 +202,12 @@ class Evaluator:
     def _TypedLasF1(self):
         """Computes F1 score for all dependency types"""
         f1 = lambda recall, precision: 2 * (recall * precision) / (recall + precision)
+        if not self.typed_las_prec:
+            logging.info("Computing precision..")
+            self._TypedLasPrec()
+        if not self.typed_las_recall:
+            logging.info("Computing recall..")
+            self._TypedLasRecall()
         assert self.typed_las_prec, "Cannot compute f1 without precision score!"
         assert self.typed_las_recall, "Cannote compute f1 without recall score!"
         cols = ["count", "label_precision", "label_recall", "label_f1"]
@@ -233,29 +242,32 @@ class Evaluator:
         self.evaluation_matrix["label_f1"] = self.typed_las_f1["label_f1"]
 
     def Evaluate(self, *args):
+        requested_metrics = args[0]
         metrics = ["uas_total", "las_total", "typed_uas", "typed_las_prec",
 				   "typed_las_recall", "typed_las_f1", "all"]
-        assert any(metric in args for metric in metrics), "No valid metric!"
-        if "all" in args:
+        assert any(metric in requested_metrics for metric in metrics), "No valid metric!"
+        if "all" in requested_metrics:
             self._EvaluateAll()
-            return self.uas_total, self.las_total, self.evaluation_matrix
+            return ["uas_total: ", self.uas_total,
+                    "las_total: ", self.las_total,
+                    "eval_matrix: ", self.evaluation_matrix]
         else:
-            if "uas_total" in args:
+            if "uas_total" in requested_metrics:
                 self._UasTotal()
-                return self.uas_total
-            if "las_total" in args:
+                return ["uas_total: ", self.uas_total]
+            if "las_total" in requested_metrics:
                 self._LasTotal()
-                return self.las_total
-            if "typed_uas" in args:
+                return ["las_total: ", self.las_total]
+            if "typed_uas" in requested_metrics:
                 self._TypedUas()
-                return self.typed_uas
-            if  "typed_las_prec" in args:
+                return ["typed_uas: ", self.typed_uas]
+            if  "typed_las_prec" in requested_metrics:
                 self._TypedLasPrec()
-                return self.typed_las_prec
-            if	"typed_las_recall" in args:
+                return ["las_prec: ", self.typed_las_prec]
+            if	"typed_las_recall" in requested_metrics:
                 self._TypedLasRecall()
-                return self.typed_las_recall
-            if "typed_las_f1" in args:
+                return ["las_recall: ", self.typed_las_recall]
+            if "typed_las_f1" in requested_metrics:
                 self._TypedLasF1()
                 # this returns precision and recall as well
-                return self.typed_las_f1
+                return ["las_f1: ", self.typed_las_f1]
