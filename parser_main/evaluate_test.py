@@ -154,7 +154,10 @@ class EvaluateTest(unittest.TestCase):
 
     def testEvaluate(self):
         print("Running testEvaluate..")
-        uas, las, eval_matrix = self.evaluator.Evaluate("all")
+        results = self.evaluator.Evaluate("all")
+        uas = results[1]
+        las = results[3]
+        eval_matrix = results[5]
         self.assertEqual(uas, 85.5)
         self.assertEqual(las, 73.0)
         cols = ["count", "unlabeled_attachment", "label_prec", "label_recall", "label_f1"]
