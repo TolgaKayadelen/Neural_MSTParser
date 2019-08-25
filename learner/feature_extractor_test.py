@@ -12,14 +12,15 @@ from util import common
 
 class FeatureExtractorTest(unittest.TestCase):
     """Tests for feature extractor"""
-    
+
     def setUp(self):
         # Initialize a base document and a feature set for testing
-        self.test_sentence_tr = reader.ReadSentenceTextProto("./data/testdata/features/kerem.pbtxt")
+        self.test_treebank_tr = reader.ReadTreebankTextProto("./data/testdata/features/kerem.pbtxt")
+        self.test_sentence_tr = self.test_treebank_tr.sentence[0]
         self.test_sentence_en = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
         self.extractor = FeatureExtractor()
         self.maxDiff = None
-    
+
     def test_GetFeatures(self):
         print("Running test_GetFeatures..")
         head = self.test_sentence_tr.token[3]
@@ -57,12 +58,12 @@ class FeatureExtractorTest(unittest.TestCase):
             u'child_0_pos+child_0_morph_case': u'Prop_nom',
             u'child_0_morph_case': u'nom',
             u'head_0_morph_case': u'acc',
-            u'head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case': u'Noun_acc_Prop_nom'     
+            u'head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case': u'Noun_acc_Prop_nom'
         }
-        
+
         self.assertDictEqual(features_dict, expected_features)
         print("Passed!")
-    
+
     def test_GetFeaturesWithExtendedSentence(self):
         print("Running testGetFeaturesWithExtendedSentence..")
         head = self.test_sentence_en.token[2] # saw
@@ -97,12 +98,12 @@ class FeatureExtractorTest(unittest.TestCase):
             u'child_0_pos+child_0_morph_case': u'Noun_None',
             u'child_0_morph_case': u'None',
             u'head_0_morph_case': u'None',
-            u'head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case': u'Verb_None_Noun_None'      
+            u'head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case': u'Verb_None_Noun_None'
         }
-        
+
         self.assertDictEqual(features_dict, expected_features)
         print("Passed!")
-        
-    
+
+
 if __name__ == "__main__":
   unittest.main()
