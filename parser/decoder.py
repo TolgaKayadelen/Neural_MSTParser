@@ -17,7 +17,7 @@ class Decoder:
     def __init__(self, decoding="mst"):
         assert decoding in ("mst", "eisner")
         self.decoding = decoding
-        
+
     def __call__(self, sentence, scores):
         logging.info("Starting decoding the tree..")
         if self.decoding == "mst":
@@ -28,14 +28,16 @@ class Decoder:
             #print("scores at decode time: {}".format(scores))
             #raw_input("Press Yes to continue: ")
             decoder = mst_decoder(scores)
+            # (TODO): decoder should return both predicted_heads and arc scores.
             predicted_heads = decoder.Decode()
             predicted_heads[0] = -1
             #print("scores after decoding : {}".format(scores))
-            #raw_input("Press Yes to continue: ")
+            # (TODO): asser length scores same as length tokens.
             assert len(predicted_heads == len(sentence.token)), "Number of tokens and heads must match!"
             # zip the token and its predicted head for each token.
+            # TODO: zip also scores and sentence.token
             head_token = zip(predicted_heads, sentence.token)
-            
+
             for i, token in enumerate(sentence.token):
                 if token.word == "ROOT" or token.index == 0:
                     continue
@@ -43,9 +45,10 @@ class Decoder:
                 token.ClearField("candidate_head")
                 token.ClearField("selected_head")
                 # insert the selected head into the token.
+                # TODO: insert also the score to the token.
                 token.selected_head.address=head_token[i][0]
                 assert token.word == head_token[i][1].word, "Potential token mismatching!!"
-            
+
             #print(text_format.MessageToString(sentence, as_utf8=True))
             #heads = [token.selected_head.address for token in sentence.token]
             logging.info("DONE!")
@@ -53,4 +56,3 @@ class Decoder:
             return sentence, predicted_heads
         else:
             raise Exception("Only mst decoding is available at this moment!")
-        

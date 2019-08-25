@@ -4,6 +4,7 @@
 
 import numpy as np
 from collections import defaultdict
+from copy import deepcopy
 import networkx as nx
 
 import logging
@@ -19,10 +20,13 @@ class MST:
 
         Args:
             scores: np.array, scores[i][j] represents the weight from node j (dep)
-                to node i (head).
+            to node i (head).
 
         """
         self.length = scores.shape[0]
+        # eventually,initial_scores will be used to reconstruct final scores.
+        self.initial_scores = deepcopy(scores)
+        self.final_scores = []
         #self.scores = scores * (1 - np.eye(self.length))
         self.scores = scores
         #print("scores: {}".format(self.scores))
@@ -81,6 +85,9 @@ class MST:
         for dep, head in enumerate(self.heads[self.tokens]):
             vertices.add(dep+1)
             edges[head].add(dep+1)
+        #print("heads: {}".format(self.heads))
+        #print("tokens: {}".format(self.tokens))
+        #print("head for each token {}".format(self.heads[self.tokens]))
         #print("vertices: {}".format(vertices))
         #print("edges: {}".format(edges))
 
@@ -111,7 +118,12 @@ class MST:
             edges[new_head].add(changed_cycle)
             edges[old_head].remove(changed_cycle)
 
-        #logging.info("Final Heads! {}".format(self.heads))
+        logging.info("Final Heads! {}".format(self.heads))
+        #print("Finding head scores..")
+        #print("Initial Scores {}".format(self.initial_scores))
+        for i, head in enumerate(self.heads):
+            self.final_scores.append(self.initial_scores[i][head])
+        logging.info("Final scores {}".format(self.final_scores))
         return self.heads
 
 
@@ -165,12 +177,21 @@ class MST:
 
 
 if __name__ == "__main__":
-    #this matrix has multiple tokens pointing to the head
+    #this matrix has multiple tokens pointing to the root
     test_2 = np.array([
        [-1., 9., 10., 9.],
        [9., -1., 30., 11.],
        [10., 20., -1., 0.],
        [9., 3., 30., -1.]
        ])
+
+    #test_2 = np.array([
+    #    [ -1.,   0.,   0.,   0.,   0.],
+    #    [ 10.,  -1.,  30.,  10.,  15.],
+    #    [ 10.,  15.,  -1.,  20.,   5.],
+    #    [ 10.,  10.,  30.,  -1.,  20.],
+    #    [ 30.,  15.,  20.,  10.,  -1.]
+    #    ])
+
     decoder = MST(test_2)
     decoder.Decode()
