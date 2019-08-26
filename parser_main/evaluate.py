@@ -83,32 +83,32 @@ class Evaluator:
         #print(self.label_counts)
 
     def _UasTotal(self):
-		"Computes the total Unlabeled Attachement Score of the parser."
-		uas = 0.0
-		for gold_sent, test_sent in self.gold_and_test:
-			gold_heads = [token.selected_head.address for token in gold_sent.token[1:]]
-			pred_heads = [token.selected_head.address for token in test_sent.token[1:]]
-			assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
-			#for gold_head, predicted_head in zip(gold_heads, pred_heads):
-			#	print("gold: {}, predicted: {}, equal: {}".format(
-			#		gold_head, predicted_head, gold_head == predicted_head))
-			#print("---")
-			uas += 100 * sum(
-				gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
-		self.uas_total = uas / len(self.gold)
+        "Computes the total Unlabeled Attachement Score of the parser."
+        uas = 0.0
+        for gold_sent, test_sent in self.gold_and_test:
+            gold_heads = [token.selected_head.address for token in gold_sent.token[1:]]
+            pred_heads = [token.selected_head.address for token in test_sent.token[1:]]
+            assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
+            #for gold_head, predicted_head in zip(gold_heads, pred_heads):
+            #	print("gold: {}, predicted: {}, equal: {}".format(
+            #   gold_head, predicted_head, gold_head == predicted_head))
+            #print("---")
+            uas += 100 * sum(
+                gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
+        self.uas_total = uas / len(self.gold)
 
     def _LasTotal(self):
-		"Computes the total Labeled Attachment Score of the parser."
-		las = 0.0
-		for gold_sent, test_sent in self.gold_and_test:
-			gold_heads = [(token.selected_head.address, token.label)
-				for token in gold_sent.token[1:]]
-			pred_heads = [(token.selected_head.address, token.label)
-				for token in test_sent.token[1:]]
-			assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
-			las += 100 * sum(
-				gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
-		self.las_total = las / len(self.gold)
+        "Computes the total Labeled Attachment Score of the parser."
+        las = 0.0
+        for gold_sent, test_sent in self.gold_and_test:
+            gold_heads = [(token.selected_head.address, token.label)
+                for token in gold_sent.token[1:]]
+            pred_heads = [(token.selected_head.address, token.label)
+                for token in test_sent.token[1:]]
+            assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
+            las += 100 * sum(
+                gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
+        self.las_total = las / len(self.gold)
 
     def _TypedUas(self):
         """Computes Unlabeled Attachment Score for all dependency types."""
