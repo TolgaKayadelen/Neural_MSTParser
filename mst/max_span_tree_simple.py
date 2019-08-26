@@ -31,7 +31,7 @@ class MST:
         self.scores = scores
         #print("scores: {}".format(self.scores))
         self.heads = np.argmax(self.scores, axis=1)
-        self.heads[0] = 0 # root has no haed.
+        self.heads[0] = 0 # root has no head.
         #logging.info("Initial heads: {}".format(self.heads))
         self.tokens = np.arange(1, self.length)
         #print("tokens: {}".format(self.tokens))
@@ -124,7 +124,7 @@ class MST:
         for i, head in enumerate(self.heads):
             self.final_scores.append(self.initial_scores[i][head])
         logging.info("Final scores {}".format(self.final_scores))
-        return self.heads
+        return self.heads, self.final_scores
 
 
     def _GetCycle(self, vertices, edges):

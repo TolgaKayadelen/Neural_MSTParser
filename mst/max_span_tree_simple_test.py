@@ -108,7 +108,7 @@ class MaximumSpanningTreeTest(unittest.TestCase):
                 scores[token.index][ch.address] = ch.arc_score
     
         decoder = max_span_tree_simple.MST(scores)
-        heads = decoder.Decode()
+        heads, _ = decoder.Decode()
         self.assertListEqual(list(heads), [0,2,0,2])
         
         
@@ -123,7 +123,7 @@ class MaximumSpanningTreeTest(unittest.TestCase):
                 scores[token.index][ch.address] = ch.arc_score
     
         decoder = max_span_tree_simple.MST(scores)
-        heads = decoder.Decode()
+        heads, _ = decoder.Decode()
         self.assertEqual(list(heads), [0, 2, 0, 4, 2])
 
         
@@ -139,7 +139,7 @@ class MaximumSpanningTreeTest(unittest.TestCase):
                 scores[token.index][ch.address] = ch.arc_score
     
         decoder = max_span_tree_simple.MST(scores)
-        heads = decoder.Decode()
+        heads, _ = decoder.Decode()
         self.assertEqual(list(heads), [0,2,3,4,0])
 
         
@@ -185,7 +185,7 @@ class MaximumSpanningTreeTest(unittest.TestCase):
         scores = scores * (1 - np.eye(length))
         
         decoder = max_span_tree_simple.MST(scores.T)
-        heads = decoder.Decode()
+        heads, _ = decoder.Decode()
         self.assertEqual(list(heads), [0,0,5,7,3,3,7,1,3,6])
                     
   

@@ -72,5 +72,4 @@ def parse(args):
     write_proto_as_text(output_treebank, output_path)
     logging.info("{} sentences written to {}".format(len(output_treebank.sentence), output_path))
 
-
     return output_treebank
