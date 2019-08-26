@@ -136,47 +136,46 @@ class Evaluator:
         #print(self.typed_uas)
 
     def	_TypedLasPrec(self):
-		"""Computes Precision for all dependency types.
-
-		For each relation X, precision computes the percentage of relations X
-		in the system that are correct (correct / system). That is, it is checking whether
-      	the X's that are found in the system also exists in the gold.
-		"""
-		labels = list(set().union(*map(get_labels, self.test)))
-		for label in labels:
-			#print("Computing precision for {}".format(label))
-			correct = 0.0
-			system = 0.0
-			match = []
-			sentence_idx = 0
-			for gold_sent, test_sent in self.gold_and_test:
-				sentence_idx += 1
-				for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
-					if not test_tok.label == label:
-						continue
-            		# system has found this label.
-					system += 1
-					if gold_tok.label == label and same_head(gold_tok, test_tok):
-						correct += 1
-					 	match.append((sentence_idx, gold_tok.index, gold_tok.word))
-			#logging.info("System has: {} \"{}\"".format(system, label))
-			#logging.info("{} of the system token(s) were also \"{}\" in gold".format(correct, label))
-			#logging.info("Precision of the model for label \"{}\" is {} / {} = {}".format(
-			#	label, correct, system, correct / system)
-			#)
-			#logging.info("matches are: {}".format(match))
-			self.typed_las_prec[label] = round((correct / system), 2)
-			#print("----------------------------------------------------------")
+        """Computes Precision for all dependency types.
+        For each relation X, precision computes the percentage of relations X
+        in the system that are correct (correct / system). That is, it checks
+        whether the X's that are found in the system also exists in the gold.
+        """
+        labels = list(set().union(*map(get_labels, self.test)))
+        for label in labels:
+            #print("Computing precision for {}".format(label))
+            correct = 0.0
+            system = 0.0
+            match = []
+            sentence_idx = 0
+            for gold_sent, test_sent in self.gold_and_test:
+                sentence_idx += 1
+                for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
+                    if not test_tok.label == label:
+                        continue
+                    # system has found this label.
+                    system += 1
+                    if gold_tok.label == label and same_head(gold_tok, test_tok):
+                        correct += 1
+                        match.append((sentence_idx, gold_tok.index, gold_tok.word))
+            #logging.info("System has: {} \"{}\"".format(system, label))
+            #logging.info("{} of the system token(s) were also \"{}\" in gold".format(correct, label))
+            #logging.info("Precision of the model for label \"{}\" is {} / {} = {}".format(
+            #	label, correct, system, correct / system)
+            #)
+            #logging.info("matches are: {}".format(match))
+            self.typed_las_prec[label] = round((correct / system), 2)
+            #print("----------------------------------------------------------")
 
     def _TypedLasRecall(self):
         """Computes Recall for all dependency types.
 
-        For each relation X, recall computes the percentage of relations that exists
-        in the gold which are recovered by the system (correct / gold).
+        For each relation X, recall computes the percentage of relations that
+        exists in the gold which are recovered by the system (correct / gold).
         """
         labels = list(set().union(*map(get_labels, self.gold)))
         for label in labels:
-			#print("Computing recall for {}".format(label))
+            #print("Computing recall for {}".format(label))
             correct = 0.0
             gold = 0.0
             match = []
@@ -184,12 +183,12 @@ class Evaluator:
             for gold_sent, test_sent in self.gold_and_test:
                 sentence_idx += 1
                 for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
-					if not gold_tok.label == label:
-						continue
-					gold += 1
-					if test_tok.label == label and same_head(gold_tok, test_tok):
-						correct += 1
-						match.append((sentence_idx, test_tok.index, test_tok.word))
+                    if not gold_tok.label == label:
+                        continue
+                    gold += 1
+                    if test_tok.label == label and same_head(gold_tok, test_tok):
+                        correct += 1
+                        match.append((sentence_idx, test_tok.index, test_tok.word))
             #logging.info("Gold has: {} \"{}\"".format(gold, label))
             #logging.info("{} of the gold label(s) were recovered by system".format(correct))
             #logging.info("Recall  of the model for label \"{}\" is  {} / {} = {}".format(
