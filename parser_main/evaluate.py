@@ -68,6 +68,7 @@ class Evaluator:
         self.evaluation_matrix = None # pd.DataFrame showing all the results
 
     def _GetLabelCounts(self):
+        """Return number of occurences for each label in the data."""
         labels = list(set().union(*map(get_labels, self.gold)))
         assert labels, "Tokens don't have any labels!!!"
         label_counts = {}
