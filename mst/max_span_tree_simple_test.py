@@ -108,10 +108,10 @@ class MaximumSpanningTreeTest(unittest.TestCase):
                 scores[token.index][ch.address] = ch.arc_score
     
         decoder = max_span_tree_simple.MST(scores)
-        heads, _ = decoder.Decode()
+        heads, arc_scores = decoder.Decode()
         self.assertListEqual(list(heads), [0,2,0,2])
-        
-        
+        self.assertListEqual(list(arc_scores),  [-1.0, 30.0, 10.0, 30.0])
+              
         #print("------------------------------------------------")
         sentence_2 = _read_chuliuedmonds_test_sentence("cyclic_sentence_2")
         if not sentence_2.HasField("length"):
@@ -123,10 +123,9 @@ class MaximumSpanningTreeTest(unittest.TestCase):
                 scores[token.index][ch.address] = ch.arc_score
     
         decoder = max_span_tree_simple.MST(scores)
-        heads, _ = decoder.Decode()
+        heads, arc_scores = decoder.Decode()
         self.assertEqual(list(heads), [0, 2, 0, 4, 2])
-
-        
+        self.assertEqual(list(arc_scores), [-1.0, 30.0, 15.0, 30.0, 30.0])
         
         #print("------------------------------------------------")
         sentence_5 = _read_chuliuedmonds_test_sentence("cyclic_sentence_5")
@@ -139,10 +138,10 @@ class MaximumSpanningTreeTest(unittest.TestCase):
                 scores[token.index][ch.address] = ch.arc_score
     
         decoder = max_span_tree_simple.MST(scores)
-        heads, _ = decoder.Decode()
+        heads, arc_scores = decoder.Decode()
         self.assertEqual(list(heads), [0,2,3,4,0])
-
-        
+        self.assertEqual(list(arc_scores),  [-1.0, 30.0, 20.0, 20.0, 30.0])
+      
         #print("------------------------------------------------")
         #Test on a longer dummy sentence.
         w2i = defaultdict(lambda: len(w2i))

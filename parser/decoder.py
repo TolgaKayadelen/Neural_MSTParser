@@ -28,15 +28,12 @@ class Decoder:
             #print("scores at decode time: {}".format(scores))
             #raw_input("Press Yes to continue: ")
             decoder = mst_decoder(scores)
-            # (TODO): decoder should return both predicted_heads and arc scores.
             predicted_heads, head_scores = decoder.Decode()
             predicted_heads[0] = -1
             #print("scores after decoding : {}".format(scores))
-            # (TODO): asser length scores same as length tokens.
             assert len(predicted_heads) == len(sentence.token), "Number of tokens and heads must match!"
             assert len(head_scores) == len(sentence.token), "Number of tokens and scores must match!"
             # zip the token and its predicted head for each token.
-            # TODO: zip also scores and sentence.token
             head_token = zip(predicted_heads, sentence.token)
             score_token = zip(head_scores, sentence.token)
 
@@ -47,7 +44,6 @@ class Decoder:
                 token.ClearField("candidate_head")
                 token.ClearField("selected_head")
                 # insert the selected head into the token.
-                # TODO: insert also the score to the token.
                 token.selected_head.address=head_token[i][0]
                 assert token.word == head_token[i][1].word, "Potential token mismatching!!"
                 token.selected_head.arc_score = score_token[i][0]
