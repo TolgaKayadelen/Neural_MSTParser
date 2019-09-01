@@ -44,6 +44,8 @@ class Decoder:
                 token.ClearField("candidate_head")
                 token.ClearField("selected_head")
                 # insert the selected head into the token.
+                logging.info("Inserting the decoded arcs and scores to the sentence.")
+                #(TODO): we should also insert the sentence score.
                 token.selected_head.address=head_token[i][0]
                 assert token.word == head_token[i][1].word, "Potential token mismatching!!"
                 token.selected_head.arc_score = score_token[i][0]

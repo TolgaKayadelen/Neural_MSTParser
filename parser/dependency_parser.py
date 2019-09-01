@@ -58,7 +58,7 @@ class DependencyParser:
                 score = self.arc_perceptron.Score(features)
                 score_matrix[token.index][head.index] = score
         #probs = self._Softmax(score_matrix)
-        parsed, predicted_heads = self.decoder(sentence, score_matrix) 
+        parsed, predicted_heads = self.decoder(sentence, score_matrix)
         return parsed, predicted_heads
         
     def Train(self, niters, training_data, test_data=None, approx=10):
