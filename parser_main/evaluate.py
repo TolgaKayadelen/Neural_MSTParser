@@ -246,6 +246,7 @@ class Evaluator:
         metrics = ["uas_total", "las_total", "typed_uas", "typed_las_prec",
 				   "typed_las_recall", "typed_las_f1", "all"]
         assert any(metric in requested_metrics for metric in metrics), "No valid metric!"
+        results = []
         if "all" in requested_metrics:
             self._EvaluateAll()
             return ["uas_total: ", self.uas_total,
@@ -254,20 +255,27 @@ class Evaluator:
         else:
             if "uas_total" in requested_metrics:
                 self._UasTotal()
-                return ["uas_total: ", self.uas_total]
+                results.append("uas_total:" )
+                results.append(self.uas_total)
             if "las_total" in requested_metrics:
                 self._LasTotal()
-                return ["las_total: ", self.las_total]
+                results.append("las_total:" )
+                results.append(self.las_total)
             if "typed_uas" in requested_metrics:
                 self._TypedUas()
-                return ["typed_uas: ", self.typed_uas]
+                results.append("typed_uas:" )
+                results.append(self.typed_uas)
             if  "typed_las_prec" in requested_metrics:
                 self._TypedLasPrec()
-                return ["las_prec: ", self.typed_las_prec]
+                results.append("typed_las_prec:" )
+                results.append(self.typed_las_prec)
             if	"typed_las_recall" in requested_metrics:
                 self._TypedLasRecall()
-                return ["las_recall: ", self.typed_las_recall]
+                results.append("typed_las_recall:" )
+                results.append(self.typed_las_recall)
             if "typed_las_f1" in requested_metrics:
                 self._TypedLasF1()
                 # this returns precision and recall as well
-                return ["las_f1: ", self.typed_las_f1]
+                results.append("typed_las_f1:" )
+                results.append(self.typed_las_f1)
+            return results

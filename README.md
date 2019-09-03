@@ -52,7 +52,7 @@ and the gold set is the true annotations.
 bazel build //parser_main:main
 bazel-bin/parser_main/main \
 --mode=evaluate \
---gold_data=<path_to_gold_data>
---test_data=<path_to_test_data>
+--gold_data=<path_to_gold_data> \
+--test_data=<path_to_test_data> \
 --metrics <space_separated_list_of_eval_metrics>
 ```
