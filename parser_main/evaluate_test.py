@@ -105,6 +105,15 @@ class EvaluateTest(unittest.TestCase):
         }
         self.assertDictEqual(self.evaluator.typed_las_recall, expected_result)
         print("Passed!")
+    
+    def test_UasTotalLasTotal(self):
+      print("Running test_UasTotalLasTotal")
+      results = self.evaluator.Evaluate(["uas_total", "las_total"])
+      uas = results[1]
+      las = results[3]
+      self.assertEqual(uas, 85.5)
+      self.assertEqual(las, 73.0)
+      print("Passed!")
 
     def test_TypedLasF1(self):
         print("Running test_TypedLasF1..")
