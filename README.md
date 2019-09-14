@@ -13,11 +13,12 @@ bazel-bin/parser_main/main \
 --train_data=treebank_0_10 \
 --split=0.7 \
 --split=0.3 \
---epochs=3
+--epochs=3 \
+--model=<model_name_to_save>
 ```
 The above command trains a model using the *treebank_0_10* file under data/UDv23/Turkish directory for 3 epochs. The data is
 split into 70% training and 30% testing. The output is saved into a file named "model.json" under mode/pretrained directory.
-"model.json" is the default name for saving a file, you can specify a different name using the --model flag.
+"model.json" is the default name for saving a file, you can specify a different name using the --model flag. If the flag is not set, the model will be saved to model.json.
 
 
 - Train a new model and test on test data

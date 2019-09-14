@@ -27,11 +27,11 @@ def _read_connection_test_sentence(basename):
     return text_format.Parse(_read_file(path), sentence_pb2.Sentence())
 
 class CommonTest(unittest.TestCase):
-    
+
     def setUp(self):
         self._john_saw_mary = _read_common_test_sentence("john_saw_mary")
         self._kerem = _read_common_test_sentence("kerem")
-    
+
     def test_ExtendSentence(self):
         print("Running test_ExtendSentence")
         function_extended_sentence = common.ExtendSentence(self._john_saw_mary)
@@ -49,7 +49,7 @@ class CommonTest(unittest.TestCase):
         #print(rm_light_verb.word)
         self.assertTrue(rm_light_verb.word == u"için")
         print("Passed!")
-    
+
     def test_GetBetweenTokens(self):
         print("Running test_GetBetweenTokens")
         expected_tokens = [[u"John", u"saw"], [None], [None], [u"John",u"saw"]]
@@ -62,8 +62,8 @@ class CommonTest(unittest.TestCase):
             start += 1
             end -= 1
             self.assertTrue(expected_tokens[i] == list(token.word if token else None for token in between_tokens))
-    
-        # check the case where the sentence gets extended. 
+
+        # check the case where the sentence gets extended.
         head = self._john_saw_mary.token[0] # Root
         child = self._john_saw_mary.token[2] # saw
         expected_between_tokens = [u"John"]
@@ -71,7 +71,7 @@ class CommonTest(unittest.TestCase):
         between_tokens = common.GetBetweenTokens(self._john_saw_mary, head, child, dummy=1)
         self.assertEqual(expected_between_tokens, list(token.word for token in between_tokens))
         print("Passed!")
-    
+
     def test_GetValue(self):
         print("Running test_GetValue")
         tokens = self._john_saw_mary.token
@@ -82,7 +82,7 @@ class CommonTest(unittest.TestCase):
         self.assertEqual(expected_lemmas, function_lemmas)
         self.assertEqual(expected_categories, function_categories)
         print("Passed!")
-    
+
     def test_ConnectSentenceNodes(self):
         print("Running test_ConnectSentenceNodes")
         non_connected = _read_connection_test_sentence("non_connected_sentence")
@@ -91,7 +91,7 @@ class CommonTest(unittest.TestCase):
         #print(text_format.MessageToString(test_connected, as_utf8=True))
         self.assertEqual(connected, test_connected)
         print("Passed!")
-    
+
     def test_GetTokenByAddress(self):
         print("Running test GetTokenByAddress..")
         test_sentence = _read_common_test_sentence("john_saw_mary")
@@ -110,7 +110,7 @@ class CommonTest(unittest.TestCase):
             }
             candidate_head {
                 address: 1
-                arc_score: 5.0  
+                arc_score: 5.0
             }
             candidate_head {
                 address: 3
@@ -123,7 +123,7 @@ class CommonTest(unittest.TestCase):
             index: 2
             """, sentence_pb2.Token())
         self.assertEqual(function_head, expected_head)
-        
+
         # Test with an extendend sentence.
         test_sentence_ext = _read_common_test_sentence("john_saw_mary_extended")
         words = [u'ROOT', u'John', u'saw', u'Mary']
@@ -131,7 +131,7 @@ class CommonTest(unittest.TestCase):
             found = common.GetTokenByAddress(tokens, i)
             self.assertEqual(found.word, words[i])
         print("Passed!")
-        
+
     def test_DropDummyTokens(self):
         print("Running test DropDummyTokens..")
         test_sentence = _read_common_test_sentence("john_saw_mary_extended")
@@ -140,6 +140,15 @@ class CommonTest(unittest.TestCase):
         self.assertEqual(function_sentence, expected_sentence)
         print("Passed!")
 
-        
+    def testGetSentenceWeight(self):
+        print("Running testGetSentenceWeight..")
+        test1 = _read_common_test_sentence("john_saw_mary_extended")
+        self.assertEqual(common.GetSentenceWeight(test1), 70.0)
+        test2 = _read_common_test_sentence("john_saw_mary")
+        self.assertEqual(common.GetSentenceWeight(test2), 70.0)
+
+        print("Passed!")
+
+
 if __name__ == "__main__":
   unittest.main()

@@ -40,3 +40,11 @@ py_test(
 		":dependency_parser_lib",
 	],
 )
+
+py_test(
+  name = "decoder_test",
+  srcs = ["decoder_test.py"],
+  deps = [
+    ":decoder",
+  ],
+)
