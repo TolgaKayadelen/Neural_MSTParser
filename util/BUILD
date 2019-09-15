@@ -37,6 +37,13 @@ py_binary(
 	],
 )
 
+py_binary(
+  name = "get_model",
+  srcs = ["get_model.py"],
+  deps = [
+    "//util:common",
+  ],
+)
 
 #Test
 # Tests.

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 """Common utility functions."""
-#TODO: unit tests for all functions here.
-
 
 from copy import deepcopy
 from data.treebank import sentence_pb2
@@ -306,13 +304,11 @@ def SortFeatures(featureset):
     featureset.CopyFrom(sorted_featureset)
     return featureset
 
-
 # type: featureset proto util
 def TopFeatures(featureset, n):
     """Return the n features with the largest weight."""
     featureset = SortFeatures(featureset)
     return featureset.feature[:n]
-
 
 if __name__ == "__main__":
     sentence = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
