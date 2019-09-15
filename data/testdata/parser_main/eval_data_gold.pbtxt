@@ -52,7 +52,7 @@ sentence {
   	word: "cat"
   	lemma: "cat"
   	category: "NOUN"
-  	pos: "Det"
+  	pos: "Noun"
   	selected_head {
   		address: 2
   		arc_score: 0.0
@@ -150,8 +150,8 @@ sentence {
 	token {
   	word: "bitch"
   	lemma: "bitch"
-  	category: "ADJ"
-  	pos: "JJ"
+  	category: "NOUN"
+  	pos: "Noun"
   	selected_head {
   		address: 2
   		arc_score: 0.0

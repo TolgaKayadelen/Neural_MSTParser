@@ -105,7 +105,7 @@ class EvaluateTest(unittest.TestCase):
         }
         self.assertDictEqual(self.evaluator.typed_las_recall, expected_result)
         print("Passed!")
-    
+
     def test_UasTotalLasTotal(self):
       print("Running test_UasTotalLasTotal")
       results = self.evaluator.Evaluate(["uas_total", "las_total"])
@@ -159,6 +159,27 @@ class EvaluateTest(unittest.TestCase):
         expected_result = pd.DataFrame([expected_counts,expected_prec, expected_recall, expected_f1],
             index=["count", "label_precision", "label_recall", "label_f1"]).T
         self.assertTrue(expected_result.equals(self.evaluator.typed_las_f1))
+        print("Passed!")
+
+    def testCreateConfusionMatrix(self):
+        print("Running testCreateConfusionMatrix..")
+        self.evaluator.CreateConfusionMatrix()
+        index = ["det", "dobj", "pobj", "prep", "root", "subj", "All"]
+        cols = ["det", "dobj", "jj", "pobj", "prep", "root", "subj", "All"]
+        expected_matrix = pd.DataFrame(
+            columns = cols,
+            index = index,
+            data = [
+                [1,1,1,0,0,0,0,3], #det
+                [0,2,0,0,0,0,0,2], #dobj
+                [0,0,0,1,0,0,0,1], #pobj
+                [0,0,0,0,1,0,0,1], #Prep
+                [0,0,0,0,0,2,0,2], #root
+                [0,0,0,0,0,0,2,2], #root
+                [1,3,1,1,1,2,2,11] #all
+            ])
+        #print(expected_matrix)
+        self.assertTrue(expected_matrix.equals(self.evaluator.labels_conf_matrix))
         print("Passed!")
 
     def testEvaluate(self):

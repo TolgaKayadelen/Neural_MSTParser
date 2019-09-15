@@ -66,6 +66,7 @@ class Evaluator:
         self.label_counts = None # pd.Series
         self.typed_las_f1 = None # pd.DataFrame
         self.evaluation_matrix = None # pd.DataFrame showing all the results
+        self.labels_conf_matrix = None # pd.DataFrame, labels confusion matrix
 
     def _GetLabelCounts(self):
         """Return number of occurences for each label in the data."""
@@ -225,6 +226,22 @@ class Evaluator:
         self.typed_las_f1.fillna(0, inplace=True)
         #print(self.typed_las_f1)
 
+    def CreateConfusionMatrix(self):
+        """Creates a labels confusion matrix."""
+        def get_token_labels(sentence_list):
+            labels = []
+            for sent in sentence_list:
+                for token in sent.token[1:]:
+                    labels.append(token.label)
+            return labels
+        gold_labels = pd.Series(get_token_labels(self.gold), name="gold_labels")
+        #print(gold_labels)
+        test_labels = pd.Series(get_token_labels(self.test), name="test_labels")
+        #print(test_labels)
+        self.labels_conf_matrix = pd.crosstab(gold_labels, test_labels,
+            rownames=['Gold Labels'], colnames=['Test Labels'], margins=True)
+
+
     def _EvaluateAll(self):
         "Runs all the evaluation metrics."
         self._GetLabelCounts()
@@ -246,6 +263,7 @@ class Evaluator:
         metrics = ["uas_total", "las_total", "typed_uas", "typed_las_prec",
 				   "typed_las_recall", "typed_las_f1", "all"]
         assert any(metric in requested_metrics for metric in metrics), "No valid metric!"
+        self.CreateConfusionMatrix()
         results = []
         if "all" in requested_metrics:
             self._EvaluateAll()
