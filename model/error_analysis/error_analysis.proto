@@ -1,0 +1,114 @@
+// Protocol buffer specification for error analysis of a model.
+
+syntax = "proto2";
+
+package model.error_analysis;
+
+message Analysis {
+  optional Metadata metadata = 1;
+  optional ModelEval model_eval = 2;
+  optional UnlabeledAttachmentAnalysis = unlabeled_attachment = 3;
+  optional LabeledAttachmentAnalysis = labeled_attachment = 4;
+  repeated SentenceEval sentence_evals = 5;
+}
+message Metadata {
+  // the name of the model which we analyze.
+  optional string model_name = 1;
+  // the data with which the model was trained.
+  optional string trained_on = 2;
+  // the number of training epochs.
+  optional int epochs = 3;
+  // number of features in the model.
+  optional int feature_count = 4
+  // the data which we are evaluating the model with. This is the data in
+  // which the sentences are parsed with this model.
+  optional string eval_data = 5;
+  // the gold data which we are evaluating the model against. This is the data
+  // which has ground truth annotations.
+  optional string gold_data = 6;
+  // the language of the model.
+  optional Language language = 7;
+}
+
+message ModelEval {
+  // arc accuracy of the model
+  optional float arc_accuracy = 1;
+  // unlabeled attachment score with this model.
+  optional float uas_total = 2;
+  // labeled attachment score with this model.
+  optional float las_total = 3;
+  // typed unlabeled attachment score with this model.
+  optinal TypedUas typed_uas = 4;
+  // typed labeled attachment precision with this model.
+  optional TypedLasPrec typed_las_prec = 5;
+  // typed labeled attachment recall with this model.
+  optional TypedLasRecall typed_las_recall = 6;
+  // typed labeled attachment f1 with this model.
+  optional TypedLasF1 typed_las_f1 = 7;
+}
+
+message UnlabeledAttachmentAnalysis {
+  repeated PosTagAttachmentAnalysis analysis = 1;
+}
+
+message LabeledAttachmentAnalysis {
+  repeated PosTagLabelAnalysis analysis = 1;
+}
+
+message SentenceEval {
+  optional string sentence = 1;
+  optional float uas = 2;
+  optional float las = 3;
+}
+
+message PosTagAttachmentAnalysis {
+  optional Tag tag = 1;
+  float total = 2;
+  float times_head_correct = 3;
+  float times_head_wrong = 4;
+  float attachment_score = 5;
+  repeated AttachmentConfusion confusion = 6;
+}
+
+message AttachmentConfusion {
+  int count = 1;
+  optional Tag correct_head_pos = 1;
+  optional Tag predicted_head_pos = 2;
+  repeated Example examples = 4;
+}
+
+message TypedUas {
+  optional Label label = 1;
+  optional float uas = 2;
+}
+
+message TypedLasPrec {
+  optional Label label = 1;
+  optional float las_prec = 2;
+}
+
+message TypedLasRecall {
+  optional Label label = 1;
+  optional float las_recall = 2;
+}
+
+message TypedLasF1 {
+  optional Label label = 1;
+  optional int count = 2;
+  optional float prec = 3;
+  optiobal float recall = 4;
+  optional float f1  = 5;
+}
+
+// TODO: finish this.
+enum Tag {
+  UNKNOWN_TAG = 0;
+  NOUN = 1;
+  VERB = 2;
+}
+
+// TODO: finish this.
+enum Label {
+  UNKNOWN_LABEL = 0;
+  NSUBJ = 1;
+}
