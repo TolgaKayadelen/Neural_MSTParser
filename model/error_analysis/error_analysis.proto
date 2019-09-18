@@ -7,8 +7,8 @@ package model.error_analysis;
 message Analysis {
   optional Metadata metadata = 1;
   optional ModelEval model_eval = 2;
-  optional UnlabeledAttachmentAnalysis = unlabeled_attachment = 3;
-  optional LabeledAttachmentAnalysis = labeled_attachment = 4;
+  optional UnlabeledAttachmentAnalysis unlabeled_attachment = 3;
+  optional LabeledAttachmentAnalysis labeled_attachment = 4;
   repeated SentenceEval sentence_evals = 5;
 }
 message Metadata {
@@ -31,7 +31,7 @@ message Metadata {
 }
 
 message ModelEval {
-  // arc accuracy of the model
+  // arc accuracy of the model.
   optional float arc_accuracy = 1;
   // unlabeled attachment score with this model.
   optional float uas_total = 2;
@@ -55,12 +55,33 @@ message LabeledAttachmentAnalysis {
   repeated PosTagLabelAnalysis analysis = 1;
 }
 
+// Sentence based unlabeled attachment and labeled attachment scores.
 message SentenceEval {
   optional string sentence = 1;
   optional float uas = 2;
   optional float las = 3;
 }
 
+// The postag attachment analysis provides an evaluation of how accurately
+// we can predict the correct head for each of the part of speech categories
+// in the data, and with which part of speech do we mostly confuse the heads
+// with. This analysis will give us an overall picture of how hard the
+// attachment problem is for different part of speech categories.
+// Example:
+// Tag: NOUN     # doing unlabeled attachment analysis for the NOUN pos.
+// total: 5      # there are 5 instances of nouns in the data.
+// times_head_correct: 3 # in 3 instances I predicted the head correct for NOUNs
+// times_head_wrong: 2
+// attachment_score: 0.6 # i.e. 3/5
+// confusion {  # the confusion analysis.
+// count: 1 # this confusion type was observed once.
+// correct_head_pos: VERB # the correct head pos was verb.
+// predicted_head_pos: ROOT # but I predicted the head as ROOT.
+// Examples {
+//    Sentence: "the sentence where this confusion is observed."
+//    Indexes: [[1,2,3]]
+//  }
+// }
 message PosTagAttachmentAnalysis {
   optional Tag tag = 1;
   float total = 2;
@@ -100,15 +121,71 @@ message TypedLasF1 {
   optional float f1  = 5;
 }
 
-// TODO: finish this.
+// Fine Part of Speech Tags.
 enum Tag {
+// Next available id: 34
   UNKNOWN_TAG = 0;
-  NOUN = 1;
-  VERB = 2;
+  Anum = 1;
+  Abr = 2;
+  Adj = 3;
+  Adverb = 4;
+  Conj = 5;
+  Demons = 6;
+  Det = 7;
+  Dup = 8;
+  Interj = 9;
+  NAdj = 10;
+  NNum = 11;
+  Neg = 12;
+  Ness = 13;
+  Noun = 14;
+  PCAbl = 15;
+  PCAcc = 16;
+  PCDat = 17;
+  PCGen = 18;
+  PCIns = 19;
+  PCNom = 20;
+  Pers = 21;
+  PostP = 22;
+  Prop = 23;
+  Punc = 24;
+  Quant = 25;
+  Reflex = 26;
+  Rel = 27;
+  Since = 28;
+  Top = 29;
+  Verb = 30;
+  With = 31;
+  Without = 32;
+  Zero = 33;
 }
 
-// TODO: finish this.
+enum Category {
+  UNKNOWN_CATEGORY = 0;
+  ADP = 1; // adposition
+  ADV = 2; // adverb
+  AUX = 3;
+  CCONJ = 4;
+  DET = 5;
+  INTJ = 6;
+  NOUN = 7;
+  NUM = 8;
+  PRON = 9;
+  PROPN = 10;
+  PUNCT = 11;
+  TOP = 12;
+  VERB = 13;
+  X = 14;
+}
+
+// Dependency Labels.
 enum Label {
   UNKNOWN_LABEL = 0;
   NSUBJ = 1;
+}
+
+enum Language {
+	UNKNOWN_LANGUAGE = 0;
+	TURKISH = 1;
+	ENGLISH = 2;
 }
