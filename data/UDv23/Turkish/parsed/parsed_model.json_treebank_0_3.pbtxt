@@ -16,8 +16,8 @@ sentence {
     category: "CCONJ"
     pos: "Conj"
     selected_head {
-      address: 4
-      arc_score: 7.82568807339
+      address: 0
+      arc_score: 3.6843373494
     }
     label: "ROOT"
     index: 1
@@ -49,7 +49,7 @@ sentence {
     }
     selected_head {
       address: 3
-      arc_score: 15.5412844037
+      arc_score: 18.0409638554
     }
     label: "nmod:poss"
     index: 2
@@ -81,7 +81,7 @@ sentence {
     }
     selected_head {
       address: 4
-      arc_score: 21.370030581
+      arc_score: 24.1638554217
     }
     label: "nsubj"
     index: 3
@@ -116,8 +116,8 @@ sentence {
       value: "past"
     }
     selected_head {
-      address: 0
-      arc_score: 1.36697247706
+      address: 1
+      arc_score: 11.3614457831
     }
     label: "conj"
     index: 4
@@ -129,7 +129,7 @@ sentence {
     pos: "Punc"
     selected_head {
       address: 4
-      arc_score: 17.9174311927
+      arc_score: 16.8554216867
     }
     label: "punct"
     index: 5
@@ -165,7 +165,7 @@ sentence {
     }
     selected_head {
       address: 12
-      arc_score: 6.49847094801
+      arc_score: 7.5156626506
     }
     label: "obl"
     index: 1
@@ -196,8 +196,8 @@ sentence {
       value: "part"
     }
     selected_head {
-      address: 12
-      arc_score: 8.20489296636
+      address: 4
+      arc_score: 14.2096385542
     }
     label: "acl"
     index: 2
@@ -209,7 +209,7 @@ sentence {
     pos: "Adj"
     selected_head {
       address: 12
-      arc_score: 5.89296636086
+      arc_score: 8.37108433735
     }
     label: "amod"
     index: 3
@@ -232,8 +232,8 @@ sentence {
       value: "3"
     }
     selected_head {
-      address: 12
-      arc_score: 13.250764526
+      address: 5
+      arc_score: 17.3301204819
     }
     label: "nmod:poss"
     index: 4
@@ -265,7 +265,7 @@ sentence {
     }
     selected_head {
       address: 12
-      arc_score: 16.4648318043
+      arc_score: 18.9156626506
     }
     label: "nmod"
     index: 5
@@ -289,7 +289,7 @@ sentence {
     }
     selected_head {
       address: 12
-      arc_score: 12.0183486239
+      arc_score: 12.7614457831
     }
     label: "nmod:poss"
     index: 6
@@ -321,7 +321,7 @@ sentence {
     }
     selected_head {
       address: 12
-      arc_score: 15.2752293578
+      arc_score: 16.3373493976
     }
     label: "nmod"
     index: 7
@@ -344,8 +344,8 @@ sentence {
       value: "3"
     }
     selected_head {
-      address: 12
-      arc_score: 12.0183486239
+      address: 9
+      arc_score: 16.1204819277
     }
     label: "nmod:poss"
     index: 8
@@ -376,8 +376,8 @@ sentence {
       value: "3"
     }
     selected_head {
-      address: 12
-      arc_score: 8.28134556575
+      address: 11
+      arc_score: 6.78554216867
     }
     label: "nmod"
     index: 9
@@ -388,8 +388,8 @@ sentence {
     category: "ADP"
     pos: "Rel"
     selected_head {
-      address: 9
-      arc_score: 9.48929663609
+      address: 12
+      arc_score: 10.4987951807
     }
     label: "case"
     index: 10
@@ -421,7 +421,7 @@ sentence {
     }
     selected_head {
       address: 12
-      arc_score: 18.7951070336
+      arc_score: 22.3686746988
     }
     label: "nmod"
     index: 11
@@ -445,7 +445,7 @@ sentence {
     }
     selected_head {
       address: 0
-      arc_score: 2.47400611621
+      arc_score: 7.00481927711
     }
     label: "root"
     index: 12
@@ -485,7 +485,7 @@ sentence {
     }
     selected_head {
       address: 12
-      arc_score: 12.7859327217
+      arc_score: 16.5518072289
     }
     label: "compound"
     index: 13
@@ -497,7 +497,7 @@ sentence {
     pos: "Punc"
     selected_head {
       address: 12
-      arc_score: 7.26605504587
+      arc_score: 12.9180722892
     }
     label: "punct"
     index: 14
@@ -533,7 +533,7 @@ sentence {
     }
     selected_head {
       address: 5
-      arc_score: 2.89602446483
+      arc_score: 4.42891566265
     }
     label: "obl"
     index: 1
@@ -545,7 +545,7 @@ sentence {
     pos: "Rel"
     selected_head {
       address: 1
-      arc_score: 14.4189602446
+      arc_score: 10.2120481928
     }
     label: "case"
     index: 2
@@ -581,7 +581,7 @@ sentence {
     }
     selected_head {
       address: 5
-      arc_score: 12.4648318043
+      arc_score: 12.8289156627
     }
     label: "nsubj"
     index: 3
@@ -593,7 +593,7 @@ sentence {
     pos: "Adverb"
     selected_head {
       address: 5
-      arc_score: 8.00305810398
+      arc_score: 10.556626506
     }
     label: "advmod"
     index: 4
@@ -605,7 +605,7 @@ sentence {
     pos: "Adj"
     selected_head {
       address: 0
-      arc_score: 8.55963302752
+      arc_score: 7.07951807229
     }
     label: "root"
     index: 5
@@ -617,7 +617,7 @@ sentence {
     pos: "Punc"
     selected_head {
       address: 5
-      arc_score: 8.76452599388
+      arc_score: 8.11084337349
     }
     label: "punct"
     index: 6
@@ -653,7 +653,7 @@ sentence {
     }
     selected_head {
       address: 8
-      arc_score: 13.1926605505
+      arc_score: 17.6024096386
     }
     label: "nsubj"
     index: 1
@@ -665,7 +665,7 @@ sentence {
     pos: "Punc"
     selected_head {
       address: 8
-      arc_score: 9.10703363914
+      arc_score: 10.3807228916
     }
     label: "punct"
     index: 2
@@ -697,7 +697,7 @@ sentence {
     }
     selected_head {
       address: 4
-      arc_score: 14.3547400612
+      arc_score: 16.5445783133
     }
     label: "obj"
     index: 3
@@ -721,7 +721,7 @@ sentence {
     }
     selected_head {
       address: 8
-      arc_score: 6.5626911315
+      arc_score: 13.5180722892
     }
     label: "obl"
     index: 4
@@ -765,7 +765,7 @@ sentence {
     }
     selected_head {
       address: 4
-      arc_score: 7.46177370031
+      arc_score: 12.0168674699
     }
     label: "compound:lvc"
     index: 5
@@ -776,8 +776,8 @@ sentence {
     category: "ADP"
     pos: "PCNom"
     selected_head {
-      address: 8
-      arc_score: 3.81957186544
+      address: 4
+      arc_score: 10.7975903614
     }
     label: "case"
     index: 6
@@ -789,7 +789,7 @@ sentence {
     pos: "Adverb"
     selected_head {
       address: 8
-      arc_score: 12.0886850153
+      arc_score: 16.6891566265
     }
     label: "advmod"
     index: 7
@@ -825,7 +825,7 @@ sentence {
     }
     selected_head {
       address: 0
-      arc_score: 2.45565749235
+      arc_score: 5.77590361446
     }
     label: "root"
     index: 8
@@ -837,7 +837,7 @@ sentence {
     pos: "Punc"
     selected_head {
       address: 8
-      arc_score: 7.71865443425
+      arc_score: 14.5397590361
     }
     label: "punct"
     index: 9
