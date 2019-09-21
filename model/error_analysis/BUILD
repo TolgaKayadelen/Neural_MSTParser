@@ -6,6 +6,9 @@ load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
 py_proto_library(
 	name = "error_analysis_py_pb2",
 	srcs = ["error_analysis.proto"],
+  deps = [
+          "//model:tags_and_labels_enum_py_pb2",
+      ],
 	protoc = "@com_google_protobuf//:protoc",
 	default_runtime = "@com_google_protobuf//:protobuf_python",
 )

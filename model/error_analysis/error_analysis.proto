@@ -2,6 +2,8 @@
 
 syntax = "proto2";
 
+import "model/tags_and_labels_enum.proto";
+
 package model.error_analysis;
 
 message Analysis {
@@ -83,7 +85,7 @@ message SentenceEval {
 //  }
 // }
 message PosTagAttachmentAnalysis {
-  optional Tag tag = 1;
+  optional Tag.Value tag = 1;
   float total = 2;
   float times_head_correct = 3;
   float times_head_wrong = 4;
@@ -93,95 +95,32 @@ message PosTagAttachmentAnalysis {
 
 message AttachmentConfusion {
   int count = 1;
-  optional Tag correct_head_pos = 1;
-  optional Tag predicted_head_pos = 2;
+  optional Tag.Value correct_head_pos = 1;
+  optional Tag.Value predicted_head_pos = 2;
   repeated Example examples = 4;
 }
 
 message TypedUas {
-  optional Label label = 1;
+  optional Label.Value label = 1;
   optional float uas = 2;
 }
 
 message TypedLasPrec {
-  optional Label label = 1;
+  optional Label.Value label = 1;
   optional float las_prec = 2;
 }
 
 message TypedLasRecall {
-  optional Label label = 1;
+  optional Label.Value label = 1;
   optional float las_recall = 2;
 }
 
 message TypedLasF1 {
-  optional Label label = 1;
+  optional Label.Value label = 1;
   optional int count = 2;
   optional float prec = 3;
-  optiobal float recall = 4;
+  optional float recall = 4;
   optional float f1  = 5;
-}
-
-// Fine Part of Speech Tags.
-enum Tag {
-// Next available id: 34
-  UNKNOWN_TAG = 0;
-  Anum = 1;
-  Abr = 2;
-  Adj = 3;
-  Adverb = 4;
-  Conj = 5;
-  Demons = 6;
-  Det = 7;
-  Dup = 8;
-  Interj = 9;
-  NAdj = 10;
-  NNum = 11;
-  Neg = 12;
-  Ness = 13;
-  Noun = 14;
-  PCAbl = 15;
-  PCAcc = 16;
-  PCDat = 17;
-  PCGen = 18;
-  PCIns = 19;
-  PCNom = 20;
-  Pers = 21;
-  PostP = 22;
-  Prop = 23;
-  Punc = 24;
-  Quant = 25;
-  Reflex = 26;
-  Rel = 27;
-  Since = 28;
-  Top = 29;
-  Verb = 30;
-  With = 31;
-  Without = 32;
-  Zero = 33;
-}
-
-enum Category {
-  UNKNOWN_CATEGORY = 0;
-  ADP = 1; // adposition
-  ADV = 2; // adverb
-  AUX = 3;
-  CCONJ = 4;
-  DET = 5;
-  INTJ = 6;
-  NOUN = 7;
-  NUM = 8;
-  PRON = 9;
-  PROPN = 10;
-  PUNCT = 11;
-  TOP = 12;
-  VERB = 13;
-  X = 14;
-}
-
-// Dependency Labels.
-enum Label {
-  UNKNOWN_LABEL = 0;
-  NSUBJ = 1;
 }
 
 enum Language {
