@@ -11,10 +11,11 @@ We provide typed based precision, recall and F1 scores for LAS and type based
 accuracy for UAS.
 
 """
-
 import pandas as pd
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
+from model import evaluation_pb2
+from model import tags_and_labels_enum_pb2 as tle
 from util import common
 from util import reader
 
@@ -22,6 +23,13 @@ from google.protobuf import text_format
 
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
+
+
+label_to_enum = {}
+with open('./model/label_to_enum.tsv') as tsvfile:
+  for row in tsvfile:
+    label_to_enum[row.split()[0]] = int(row.split()[1])
+  
 
 def evaluate_parser(args):
     """Function to evaluate the dependency parser output on gold data.
@@ -67,6 +75,7 @@ class Evaluator:
         self.typed_las_f1 = None # pd.DataFrame
         self.evaluation_matrix = None # pd.DataFrame showing all the results
         self.labels_conf_matrix = None # pd.DataFrame, labels confusion matrix
+        self.evaluation = evaluation_pb2.Evaluation() # evaluation proto
 
     def _GetLabelCounts(self):
         """Return number of occurences for each label in the data."""
@@ -98,6 +107,8 @@ class Evaluator:
             uas += 100 * sum(
                 gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
         self.uas_total = uas / len(self.gold)
+        self.evaluation.uas_total = self.uas_total
+        
 
     def _LasTotal(self):
         "Computes the total Labeled Attachment Score of the parser."
@@ -111,6 +122,7 @@ class Evaluator:
             las += 100 * sum(
                 gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
         self.las_total = las / len(self.gold)
+        self.evaluation.las_total = self.las_total
 
     def _TypedUas(self):
         """Computes Unlabeled Attachment Score for all dependency types."""
@@ -134,7 +146,9 @@ class Evaluator:
                         #match.append((sentence_idx, test_tok.index, test_tok.word))
             #logging.info("matches are {}".format(match))
             typed_uas[label] = label_uas / correct if correct else 0.0
+            self.evaluation.typed_uas.uas.add(label=label_to_enum[label], score=round(typed_uas[label],2))
         self.typed_uas = pd.Series(typed_uas).rename("unlabeled_attachment", inplace=True).round(2)
+        #print(text_format.MessageToString(self.evaluation, as_utf8=True))
         #print(self.typed_uas)
 
     def	_TypedLasPrec(self):
@@ -167,7 +181,10 @@ class Evaluator:
             #)
             #logging.info("matches are: {}".format(match))
             self.typed_las_prec[label] = round((correct / system), 2)
+            self.evaluation.typed_las_prec.prec.add(label=label_to_enum[label], score=round(self.typed_las_prec[label],2))
             #print("----------------------------------------------------------")
+        #print(text_format.MessageToString(self.evaluation, as_utf8=True))
+        #print(self.typed_las_prec)
 
     def _TypedLasRecall(self):
         """Computes Recall for all dependency types.
@@ -240,6 +257,7 @@ class Evaluator:
         #print(test_labels)
         self.labels_conf_matrix = pd.crosstab(gold_labels, test_labels,
             rownames=['Gold Labels'], colnames=['Test Labels'], margins=True)
+        #print(self.labels_conf_matrix)
 
 
     def _EvaluateAll(self):

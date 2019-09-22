@@ -40,7 +40,7 @@ message ModelEval {
   // labeled attachment score with this model.
   optional float las_total = 3;
   // typed unlabeled attachment score with this model.
-  optinal TypedUas typed_uas = 4;
+  optional TypedUas typed_uas = 4;
   // typed labeled attachment precision with this model.
   optional TypedLasPrec typed_las_prec = 5;
   // typed labeled attachment recall with this model.

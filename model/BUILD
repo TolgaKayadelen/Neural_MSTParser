@@ -4,8 +4,18 @@ load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
 
 # Protos.
 py_proto_library(
+	name = "evaluation_py_pb2",
+	srcs = ["evaluation.proto"],
+  deps = [
+          "//model:tags_and_labels_enum_py_pb2",
+      ],
+	protoc = "@com_google_protobuf//:protoc",
+	default_runtime = "@com_google_protobuf//:protobuf_python",
+)
+
+py_proto_library(
 	name = "tags_and_labels_enum_py_pb2",
-	srcs = ["tag_and_labels_enum.proto"],
+	srcs = ["tags_and_labels_enum.proto"],
 	protoc = "@com_google_protobuf//:protoc",
 	default_runtime = "@com_google_protobuf//:protobuf_python",
 )

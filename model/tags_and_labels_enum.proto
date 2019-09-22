@@ -75,16 +75,16 @@ message Label {
     ACL = 1;              // adjective clause
     ADVCL = 2;            // adverbial clause
     ADVMOD = 3;           // adverbial modifier
-    ADVMOD:EMPH = 4;      // adverbial modifier ?? 
+    ADVMOD_EMPH = 4;      // adverbial modifier ?? 
     AMOD = 5;             // adjective modifier
     APPOS = 6;            // apposition
-    AUX:Q = 7;            // auxiliary
+    AUX_Q = 7;            // auxiliary
     CASE = 8;             // case
     CC = 9;               // coordinating conjunction
     CCOMP = 10;           // complementizer clause 
     COMPOUND = 11;        // compound
-    COMPOUND:LVC = 12;    // compound ?? 
-    COMPOUND:REDUP = 13;  // reduplicated compount??
+    COMPOUND_LVC = 12;    // compound ?? 
+    COMPOUND_REDUP = 13;  // reduplicated compount??
     CONJ = 14;            // conjunction
     COP = 15;             // copula
     CSUBJ = 16;           // clausal subject
@@ -95,14 +95,16 @@ message Label {
     FLAT = 21;            // ??
     MARK = 22;            // complementizer
     NMOD = 23;            // nominal modifier
-    NMOD:POSS = 24;       // nominal modifier: ??
+    NMOD_POSS = 24;       // nominal modifier: ??
     NSUBJ = 25;           // nominal subject
     NUMMOD = 26;          // numerical modification
     OBJ = 27;             // direct object
     OBL = 28;             // oblique object
     PARATAXIS = 29;       // parataxis
-    PUNCT = 30;           // punctuation
-    ROOT = 31;            // root
-    VOCATIVE = 32;        // vocative
+    POBJ = 30;            // object of prep, don't exist in Turkish dataset.
+    PREP = 31;            // PP modifier, don't exist in Turkish dataset.
+    PUNCT = 32;           // punctuation
+    ROOT = 33;            // root
+    VOCATIVE = 34;        // vocative
   }
 }

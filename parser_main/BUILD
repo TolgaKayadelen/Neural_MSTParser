@@ -40,6 +40,7 @@ py_library(
 	deps = [
 		"//parser:dependency_parser_lib",
 		"//data/treebank:treebank_py_pb2",
+    "//model:evaluation_py_pb2",
 	],
 )
 

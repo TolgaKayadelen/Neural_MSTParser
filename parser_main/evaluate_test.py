@@ -40,11 +40,11 @@ class EvaluateTest(unittest.TestCase):
         self.evaluator._GetLabelCounts()
         expected_counts = {
             u"det": 3,
-            u"dobj":2,
+            u"obj":2,
             u"pobj":1,
             u"prep":1,
             u"root":2,
-            u"subj":2
+            u"nsubj":2
         }
         #print(self.evaluator.label_counts)
         self.assertTrue(pd.Series(expected_counts).equals(self.evaluator.label_counts))
@@ -67,12 +67,12 @@ class EvaluateTest(unittest.TestCase):
         self.evaluator._TypedUas()
         expected_result = {
             u"det": 0.67,
-            u"dobj":1.00,
-            u"jj":0.00,
+            u"obj":1.00,
+            u"amod":0.00,
             u"pobj":1.00,
             u"prep":0.00,
             u"root":1.00,
-            u"subj":1.00
+            u"nsubj":1.00
         }
         self.assertTrue(pd.Series(expected_result).equals(self.evaluator.typed_uas))
         print("Passed..")
@@ -81,11 +81,11 @@ class EvaluateTest(unittest.TestCase):
         print("Running test_TypedLasPrec..")
         self.evaluator._TypedLasPrec()
         expected_result = {
-            u'subj': 1.0,
+            u'nsubj': 1.0,
             u'det': 1.0,
-            u'dobj': 0.67,
+            u'obj': 0.67,
             u'pobj': 1.0,
-            u'jj': 0.0,
+            u'amod': 0.0,
             u'root': 1.0,
             u'prep': 0.0
         }
@@ -98,9 +98,9 @@ class EvaluateTest(unittest.TestCase):
         expected_result = {
             u'root': 1.0,
             u'det': 0.33,
-            u'dobj': 1.0,
+            u'obj': 1.0,
             u'pobj': 1.0,
-            u'subj': 1.0,
+            u'nsubj': 1.0,
             u'prep': 0.0
         }
         self.assertDictEqual(self.evaluator.typed_las_recall, expected_result)
@@ -122,39 +122,39 @@ class EvaluateTest(unittest.TestCase):
         self.evaluator._TypedLasF1()
         expected_counts = {
             u"det": 3.0,
-            u"dobj":2.0,
-            u"jj":0.0,
+            u"obj":2.0,
+            u"amod":0.0,
             u"pobj":1.0,
             u"prep":1.0,
             u"root":2.0,
-            u"subj":2.0,
+            u"nsubj":2.0,
         }
         expected_prec = {
             u"det": 1.00,
-            u"dobj":0.67,
-            u"jj":0.00,
+            u"obj":0.67,
+            u"amod":0.00,
             u"pobj":1.00,
             u"prep":0.00,
             u"root":1.00,
-            u"subj":1.00,
+            u"nsubj":1.00,
         }
         expected_recall = {
             u'root': 1.0,
             u'det': 0.33,
-            u'dobj': 1.0,
+            u'obj': 1.0,
             u'pobj': 1.0,
-            u'subj': 1.0,
+            u'nsubj': 1.0,
             u'prep': 0.0,
-            u"jj": 0.00
+            u"amod": 0.00
         }
         expected_f1 = {
             u"det": 0.496,
-            u"dobj":0.802,
-            u"jj":0.000,
+            u"obj":0.802,
+            u"amod":0.000,
             u"pobj":1.000,
             u"prep":0.000,
             u"root":1.000,
-            u"subj":1.000
+            u"nsubj":1.000
         }
         expected_result = pd.DataFrame([expected_counts,expected_prec, expected_recall, expected_f1],
             index=["count", "label_precision", "label_recall", "label_f1"]).T
@@ -164,19 +164,19 @@ class EvaluateTest(unittest.TestCase):
     def testCreateConfusionMatrix(self):
         print("Running testCreateConfusionMatrix..")
         self.evaluator.CreateConfusionMatrix()
-        index = ["det", "dobj", "pobj", "prep", "root", "subj", "All"]
-        cols = ["det", "dobj", "jj", "pobj", "prep", "root", "subj", "All"]
+        index = ["det", "nsubj", "obj", "pobj", "prep", "root", "All"]
+        cols = ["amod", "det", "nsubj", "obj", "pobj", "prep", "root", "All"]
         expected_matrix = pd.DataFrame(
             columns = cols,
             index = index,
             data = [
-                [1,1,1,0,0,0,0,3], #det
-                [0,2,0,0,0,0,0,2], #dobj
-                [0,0,0,1,0,0,0,1], #pobj
-                [0,0,0,0,1,0,0,1], #Prep
-                [0,0,0,0,0,2,0,2], #root
+                [1,1,0,1,0,0,0,3], #det
+                [0,0,2,0,0,0,0,2], #nsubj
+                [0,0,0,2,0,0,0,2], #obj
+                [0,0,0,0,1,0,0,1], #pobj
+                [0,0,0,0,0,1,0,1], #prep
                 [0,0,0,0,0,0,2,2], #root
-                [1,3,1,1,1,2,2,11] #all
+                [1,1,2,3,1,1,2,11] #all
             ])
         #print(expected_matrix)
         self.assertTrue(expected_matrix.equals(self.evaluator.labels_conf_matrix))
@@ -191,18 +191,18 @@ class EvaluateTest(unittest.TestCase):
         self.assertEqual(uas, 85.5)
         self.assertEqual(las, 73.0)
         cols = ["count", "unlabeled_attachment", "label_prec", "label_recall", "label_f1"]
-        index = ["det", "dobj", "jj", "pobj", "prep", "root", "subj"]
+        index = ["amod", "det", "nsubj", "obj", "pobj", "prep", "root"]
         expected_matrix = pd.DataFrame(
             columns=cols,
             index=index,
             data=[
-                [3.0, 0.67, 1.00, 0.33,0.496],
-                [2.0, 1.00, 0.67, 1.00, 0.802],
-                [0.0, 0.00, 0.00, 0.00, 0.000],
-                [1.0, 1.00, 1.00, 1.00, 1.000],
-                [1.0, 0.00, 0.00, 0.00, 0.000],
-                [2.0, 1.00, 1.00, 1.00, 1.000],
-                [2.0, 1.00, 1.00, 1.00, 1.000]
+                [0.0, 0.00, 0.00, 0.00, 0.000], # amod
+                [3.0, 0.67, 1.00, 0.33,0.496],  # det 
+                [2.0, 1.00, 1.00, 1.00, 1.000], # nsubj
+                [2.0, 1.00, 0.67, 1.00, 0.802], # obj
+                [1.0, 1.00, 1.00, 1.00, 1.000], # pobj
+                [1.0, 0.00, 0.00, 0.00, 0.000], # prep
+                [2.0, 1.00, 1.00, 1.00, 1.000]  # root
             ])
         self.assertTrue(expected_matrix.equals(self.evaluator.evaluation_matrix))
         print("Passed!")

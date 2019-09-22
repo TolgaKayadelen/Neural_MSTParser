@@ -22,7 +22,7 @@ sentence {
   		arc_score: 0.0
   	}
   	index: 1
-  	label: "subj"
+  	label: "nsubj"
 	}
 	token {
   	word: "saw"
@@ -46,7 +46,7 @@ sentence {
   		arc_score: 0.0
   	}
   	index: 3
-  	label: "dobj"
+  	label: "obj"
 	}
 	token {
   	word: "cat"
@@ -57,7 +57,7 @@ sentence {
   		address: 2
   		arc_score: 0.0
   	}
-		label: "dobj"
+		label: "obj"
   	index: 4
 	}
 	token {
@@ -120,7 +120,7 @@ sentence {
   		address: 2
   		arc_score: 0.0
   	}
-		label: "subj"
+		label: "nsubj"
   	index: 1
 	}
 	token {
@@ -144,7 +144,7 @@ sentence {
   		address: 4
   		arc_score: 0.0
   	}
-		label: "jj"
+		label: "amod"
   	index: 3
 	}
 	token {
@@ -156,7 +156,7 @@ sentence {
   		address: 2
   		arc_score: 0.0
   	}
-		label: "dobj"
+		label: "obj"
   	index: 4
 	}
 }
