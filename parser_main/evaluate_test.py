@@ -5,6 +5,7 @@ import unittest
 import pandas as pd
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
+from model import evaluation_pb2
 from parser_main import evaluate
 from util import common
 
@@ -109,8 +110,8 @@ class EvaluateTest(unittest.TestCase):
     def test_UasTotalLasTotal(self):
       print("Running test_UasTotalLasTotal")
       results = self.evaluator.Evaluate(["uas_total", "las_total"])
-      uas = results[1]
-      las = results[3]
+      uas = results["uas_total"]
+      las = results["las_total"]
       self.assertEqual(uas, 85.5)
       self.assertEqual(las, 73.0)
       print("Passed!")
@@ -185,9 +186,9 @@ class EvaluateTest(unittest.TestCase):
     def testEvaluate(self):
         print("Running testEvaluate..")
         results = self.evaluator.Evaluate("all")
-        uas = results[1]
-        las = results[3]
-        eval_matrix = results[5]
+        uas = results["uas_total"]
+        las = results["las_total"]
+        eval_matrix = results["eval_matrix"]
         self.assertEqual(uas, 85.5)
         self.assertEqual(las, 73.0)
         cols = ["count", "unlabeled_attachment", "label_prec", "label_recall", "label_f1"]
@@ -206,6 +207,151 @@ class EvaluateTest(unittest.TestCase):
             ])
         self.assertTrue(expected_matrix.equals(self.evaluator.evaluation_matrix))
         print("Passed!")
+        
+        # test that the evaluation proto is correct
+        expected_proto = text_format.Parse("""
+        uas_total: 85.5
+        las_total: 73.0
+        typed_uas {
+          uas {
+            label: OBJ
+            score: 1.0
+          }
+          uas {
+            label: NSUBJ
+            score: 1.0
+          }
+          uas {
+            label: DET
+            score: 0.67
+          }
+          uas {
+            label: AMOD
+            score: 0.0
+          }
+          uas {
+            label: POBJ
+            score: 1.0
+          }
+          uas {
+            label: ROOT
+            score: 1.0
+          }
+          uas {
+            label: PREP
+            score: 0.0
+          }
+        }
+        typed_las_prec {
+          prec {
+            label: OBJ
+            score: 0.67
+          }
+          prec {
+            label: NSUBJ
+            score: 1.0
+          }
+          prec {
+            label: DET
+            score: 1.0
+          }
+          prec {
+            label: AMOD
+            score: 0.0
+          }
+          prec {
+            label: POBJ
+            score: 1.0
+          }
+          prec {
+            label: ROOT
+            score: 1.0
+          }
+          prec {
+            label: PREP
+            score: 0.0
+          }
+        }
+        typed_las_recall {
+          recall {
+            label: OBJ
+            score: 1.0
+          }
+          recall {
+            label: NSUBJ
+            score: 1.0
+          }
+          recall {
+            label: DET
+            score: 0.33
+          }
+          recall {
+            label: POBJ
+            score: 1.0
+          }
+          recall {
+            label: ROOT
+            score: 1.0
+          }
+          recall {
+            label: PREP
+            score: 0.0
+          }
+        }
+        typed_las_f1 {
+          f1 {
+            label: AMOD
+            count: 0
+            prec: 0.0
+            recall: 0.0
+            f1: 0.0
+          }
+          f1 {
+            label: DET
+            count: 3
+            prec: 1.0
+            recall: 0.33
+            f1: 0.33
+          }
+          f1 {
+            label: NSUBJ
+            count: 2
+            prec: 1.0
+            recall: 1.0
+            f1: 1.0
+          }
+          f1 {
+            label: OBJ
+            count: 2
+            prec: 0.67
+            recall: 1.0
+            f1: 1.0
+          }
+          f1 {
+            label: POBJ
+            count: 1
+            prec: 1.0
+            recall: 1.0
+            f1: 1.0
+          }
+          f1 {
+            label: PREP
+            count: 1
+            prec: 0.0
+            recall: 0.0
+            f1: 0.0
+          }
+          f1 {
+            label: ROOT
+            count: 2
+            prec: 1.0
+            recall: 1.0
+            f1: 1.0
+          }
+        }""", evaluation_pb2.Evaluation())
+        self.assertEqual(expected_proto, self.evaluator.evaluation)
+      
+      
 
 
 

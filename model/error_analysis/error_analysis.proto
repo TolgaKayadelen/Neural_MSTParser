@@ -3,10 +3,11 @@
 syntax = "proto2";
 
 import "model/tags_and_labels_enum.proto";
+import "model/evaluation.proto";
 
 package model.error_analysis;
 
-message Analysis {
+message ModelErrorAnalysis {
   optional Metadata metadata = 1;
   optional ModelEval model_eval = 2;
   optional UnlabeledAttachmentAnalysis unlabeled_attachment = 3;
@@ -22,31 +23,21 @@ message Metadata {
   optional int epochs = 3;
   // number of features in the model.
   optional int feature_count = 4
+  // arc accuracy of the model.
+  optional float arc_accuracy = 5;
   // the data which we are evaluating the model with. This is the data in
   // which the sentences are parsed with this model.
-  optional string eval_data = 5;
+  optional string eval_data = 6;
   // the gold data which we are evaluating the model against. This is the data
   // which has ground truth annotations.
-  optional string gold_data = 6;
+  optional string gold_data = 7;
   // the language of the model.
-  optional Language language = 7;
+  optional Language language = 8;
 }
 
 message ModelEval {
-  // arc accuracy of the model.
-  optional float arc_accuracy = 1;
-  // unlabeled attachment score with this model.
-  optional float uas_total = 2;
-  // labeled attachment score with this model.
-  optional float las_total = 3;
-  // typed unlabeled attachment score with this model.
-  optional TypedUas typed_uas = 4;
-  // typed labeled attachment precision with this model.
-  optional TypedLasPrec typed_las_prec = 5;
-  // typed labeled attachment recall with this model.
-  optional TypedLasRecall typed_las_recall = 6;
-  // typed labeled attachment f1 with this model.
-  optional TypedLasF1 typed_las_f1 = 7;
+	//evaluation_pb2.Evaluation()
+  optional Evaluation = 1;
 }
 
 message UnlabeledAttachmentAnalysis {
@@ -98,29 +89,6 @@ message AttachmentConfusion {
   optional Tag.Value correct_head_pos = 1;
   optional Tag.Value predicted_head_pos = 2;
   repeated Example examples = 4;
-}
-
-message TypedUas {
-  optional Label.Value label = 1;
-  optional float uas = 2;
-}
-
-message TypedLasPrec {
-  optional Label.Value label = 1;
-  optional float las_prec = 2;
-}
-
-message TypedLasRecall {
-  optional Label.Value label = 1;
-  optional float las_recall = 2;
-}
-
-message TypedLasF1 {
-  optional Label.Value label = 1;
-  optional int count = 2;
-  optional float prec = 3;
-  optional float recall = 4;
-  optional float f1  = 5;
 }
 
 enum Language {

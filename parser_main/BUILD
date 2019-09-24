@@ -42,6 +42,9 @@ py_library(
 		"//data/treebank:treebank_py_pb2",
     "//model:evaluation_py_pb2",
 	],
+	data = [
+		"//model:label_to_enum",
+	]
 )
 
 # Tests

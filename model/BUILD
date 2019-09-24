@@ -38,3 +38,9 @@ py_binary(
     "//util:reader",
   ],
 )
+
+# Data.
+filegroup(
+    name = "label_to_enum",
+    srcs = [":label_to_enum.tsv"],
+)

@@ -11,6 +11,7 @@ We provide typed based precision, recall and F1 scores for LAS and type based
 accuracy for UAS.
 
 """
+import os
 import pandas as pd
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
@@ -24,18 +25,22 @@ from google.protobuf import text_format
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
-
+_MODEL_DIR = "model"
 label_to_enum = {}
-with open('./model/label_to_enum.tsv') as tsvfile:
+
+with open(os.path.join(_MODEL_DIR, "label_to_enum.tsv")) as tsvfile:
   for row in tsvfile:
     label_to_enum[row.split()[0]] = int(row.split()[1])
   
 
-def evaluate_parser(args):
+def evaluate_parser(args, print_results=False):
     """Function to evaluate the dependency parser output on gold data.
     Args:
     	command line arguments, values for requested metrics, gold data and
     	test data path.
+    Returns:
+      eval_proto: evaluation_pb2.Evaluation, proto containing results for
+      requested metrics.
     """
     gold_data = reader.ReadTreebankTextProto(args.gold_data)
     test_data = reader.ReadTreebankTextProto(args.test_data)
@@ -43,8 +48,10 @@ def evaluate_parser(args):
     logging.info("Requested eval metrics {}".format(eval_metrics))
     evaluator = Evaluator(gold_data, test_data)
     results = evaluator.Evaluate(eval_metrics)
-    for result in results:
-        print(result)
+    if print_results:
+      for key in results:
+        print(results[key])
+    return results["eval_proto"]
 
 get_labels = lambda sent: [token.label for token in sent.token[1:]]
 
@@ -182,7 +189,6 @@ class Evaluator:
             #logging.info("matches are: {}".format(match))
             self.typed_las_prec[label] = round((correct / system), 2)
             self.evaluation.typed_las_prec.prec.add(label=label_to_enum[label], score=round(self.typed_las_prec[label],2))
-            #print("----------------------------------------------------------")
         #print(text_format.MessageToString(self.evaluation, as_utf8=True))
         #print(self.typed_las_prec)
 
@@ -215,7 +221,9 @@ class Evaluator:
             #)
             #logging.info("matches are: {}".format(match))
             self.typed_las_recall[label] = round((correct / gold), 2)
-            #print("----------------------------------------------------------")
+            self.evaluation.typed_las_recall.recall.add(
+              label=label_to_enum[label],
+              score=round(self.typed_las_recall[label], 2))
 
     def _TypedLasF1(self):
         """Computes F1 score for all dependency types"""
@@ -233,15 +241,24 @@ class Evaluator:
             logging.info("Getting label counts..")
             self._GetLabelCounts()
         self.typed_las_f1 = pd.DataFrame(
-			 [self.typed_las_prec, self.typed_las_recall],
-			 index=["label_precision", "label_recall"]).fillna(0).T
+			   [self.typed_las_prec, self.typed_las_recall],
+			   index=["label_precision", "label_recall"]).fillna(0).T
         self.typed_las_f1["label_f1"] = f1(self.typed_las_f1["label_recall"],
                                            self.typed_las_f1["label_precision"]).fillna(0).round(3)
         self.typed_las_f1["count"] = self.label_counts
 
         self.typed_las_f1 = self.typed_las_f1[cols]
         self.typed_las_f1.fillna(0, inplace=True)
+        
         #print(self.typed_las_f1)
+        
+        # loop the dataframe to add the fields into a proto
+        for _, row in self.typed_las_f1.reset_index().iterrows():
+          self.evaluation.typed_las_f1.f1.add(
+            label=label_to_enum[row["index"]], count=int(row["count"]), prec=row["label_precision"],
+            recall=row["label_recall"], f1=row["label_recall"]
+            )
+        #print(self.evaluation)
 
     def CreateConfusionMatrix(self):
         """Creates a labels confusion matrix."""
@@ -282,36 +299,34 @@ class Evaluator:
 				   "typed_las_recall", "typed_las_f1", "all"]
         assert any(metric in requested_metrics for metric in metrics), "No valid metric!"
         self.CreateConfusionMatrix()
-        results = []
+        results = {}
         if "all" in requested_metrics:
             self._EvaluateAll()
-            return ["uas_total: ", self.uas_total,
-                    "las_total: ", self.las_total,
-                    "eval_matrix: ", self.evaluation_matrix]
+            results["uas_total"] = self.uas_total
+            results["las_total"] = self.las_total
+            results["eval_matrix"] = self.evaluation_matrix
+            results["confusion_matrix"] = self.labels_conf_matrix
+            results["eval_proto"] = self.evaluation
+            return results
         else:
             if "uas_total" in requested_metrics:
                 self._UasTotal()
-                results.append("uas_total:" )
-                results.append(self.uas_total)
+                results["uas_total"] = self.uas_total
             if "las_total" in requested_metrics:
                 self._LasTotal()
-                results.append("las_total:" )
-                results.append(self.las_total)
+                results["las_total"] = self.las_total
             if "typed_uas" in requested_metrics:
                 self._TypedUas()
-                results.append("typed_uas:" )
-                results.append(self.typed_uas)
+                results["typed_uas"] = self.typed_uas
             if  "typed_las_prec" in requested_metrics:
                 self._TypedLasPrec()
-                results.append("typed_las_prec:" )
-                results.append(self.typed_las_prec)
+                results["typed_las_prec"] = self.typed_las_prec
             if	"typed_las_recall" in requested_metrics:
                 self._TypedLasRecall()
-                results.append("typed_las_recall:" )
-                results.append(self.typed_las_recall)
+                results["typed_las_recall"] = self.typed_las_recall
             if "typed_las_f1" in requested_metrics:
                 self._TypedLasF1()
                 # this returns precision and recall as well
-                results.append("typed_las_f1:" )
-                results.append(self.typed_las_f1)
+                results["typed_las_f1"] = self.typed_las_f1
+            results["eval_proto"] = self.evaluation
             return results
