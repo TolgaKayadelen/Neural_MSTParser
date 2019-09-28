@@ -37,7 +37,7 @@ message Metadata {
 
 message ModelEval {
 	//evaluation_pb2.Evaluation()
-  optional Evaluation = 1;
+  optional Evaluation evaluation = 1;
 }
 
 message UnlabeledAttachmentAnalysis {

@@ -48,6 +48,10 @@ def parse(args):
     raw_input("Press any key to continue: ")
 
     # read the sentences to parse into proto
+    # NOTE: it doesn't matter if the test data we read here already have
+    # selected head fields populated, because at the decoding stage the system
+    # already clears any existing selected head fields and re-populates them
+    # with the new selected heads computed by the parser.
     _TEST_DATA_DIR = os.path.join(_TREEBANK_DIR, args.language, "test")
     test_path = os.path.join(_TEST_DATA_DIR, "{}.pbtxt".format(args.test_data))
     test_treebank = reader.ReadTreebankTextProto(test_path)

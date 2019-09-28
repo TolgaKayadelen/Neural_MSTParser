@@ -31,6 +31,9 @@ py_binary(
 py_library(
 	name = "feature_extractor_lib",
 	srcs = ["feature_extractor.py"],
+  data = [
+    ":features",
+  ],
 	deps = [
 		"//data/treebank:sentence_py_pb2",
 		"//learner:featureset_py_pb2",
@@ -69,4 +72,12 @@ py_test(
 	deps = [
 		":perceptron_lib",
 	],
+)
+
+# Data.
+filegroup(
+    name = "features",
+    srcs = glob([
+        "features/*.txt",
+    ]),
 )

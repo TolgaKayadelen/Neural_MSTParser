@@ -29,13 +29,13 @@ def _read_perceptron_test_data(basename):
     path = os.path.join(_PERCEPTRON_DIR, "{}.pbtxt".format(basename))
     return text_format.Parse(_read_file(path), sentence_pb2.Sentence())
 
-class PerceptronTest(unittest.TestCase):
-    """Tests for perceptron."""
-    
+class ArcPerceptronTest(unittest.TestCase):
+    """Tests for arc perceptron."""
+
     def setUp(self):
         temp = _read_perceptron_test_data("john_saw_mary")
         self.en_test = common.ExtendSentence(temp)
-    
+
     '''
     def test_MakeFeaturesFromGold(self):
         pass
@@ -49,7 +49,7 @@ class PerceptronTest(unittest.TestCase):
         expected_features = _read_features_test_data("john_saw_mary_features")
         self.assertEqual(sorted_features, expected_features)
         print("Passed!")
-        
+
     def testScore(self):
         print("Running testScore..")
         percept = perceptron.ArcPerceptron()
@@ -59,7 +59,7 @@ class PerceptronTest(unittest.TestCase):
         percept.InitializeWeights(featureset, load=True)
         self.assertEqual(15, percept.Score(percept._ConvertWeightsToProto()))
         print("Passed!")
-      
+
     def test_PredictHead(self):
         print("Running test_PredictHead..")
         percept = perceptron.ArcPerceptron()
@@ -77,7 +77,7 @@ class PerceptronTest(unittest.TestCase):
         self.assertEqual(scores, [1743.0, 1773.0, None, 1778.0])
         self.assertEqual(prediction, 3)
         print("Passed!")
-    
+
     def testTrain(self):
         print("Running testTrain..")
         percept = perceptron.ArcPerceptron()
@@ -91,7 +91,7 @@ class PerceptronTest(unittest.TestCase):
                 #print(key, value, percept.weights[key][value])
                 init_w += 0.1
         #print(self.en_test)
-        extractor = feature_extractor.FeatureExtractor()
+        extractor = feature_extractor.FeatureExtractor("arcfeatures")
         #head = Root, child=saw
         f_root_saw = extractor.GetFeatures(self.en_test, self.en_test.token[1], self.en_test.token[3])
         weights_before_train["root_saw"] = common.GetFeatureWeights(percept.weights, f_root_saw)
@@ -108,7 +108,7 @@ class PerceptronTest(unittest.TestCase):
         self.assertListEqual(function_weights_after_train, expected_weights_after_train)
         self.assertEqual(nr_correct, 1)
         print("Passed!")
-    
+
     def testLearn(self):
         """Test that the perceptron actually learns."""
         print("Running testLearn..")
@@ -131,7 +131,7 @@ class PerceptronTest(unittest.TestCase):
         # we expect accuracy be 100 after the second iter.
         self.assertListEqual([i, accuracy], [1, 100])
         print("Passed!")
-            
+
     def test_TimeStampsAndAveraging(self):
         """Test to make sure that timestamp dictionary is populated properly"""
         print("Running test_TimeStampsAndAveraging..")
@@ -159,17 +159,17 @@ class PerceptronTest(unittest.TestCase):
                 feat_timestamp = iters
             if accuracy == 100:
                 break
-        
+
         self.assertEqual(44.0, round(percept._accumulator[feat_name][feat_value], 1))
         self.assertEqual(6, percept._timestamps[feat_name][feat_value])
-        
+
         # test averaging
         acc_weights_for_feat = defaultdict(OrderedDict)
         acc_weights_for_feat[feat_name][feat_value] = percept._accumulator[feat_name][feat_value]
         averaged = percept.AverageWeights(acc_weights_for_feat)
         self.assertEqual(7.3, round(averaged[feat_name][feat_value], 1))
         print("Passed!")
-    
+
     def testLoadModel(self):
         print("Running testLoadModel..")
         percept = perceptron.ArcPerceptron()
@@ -177,7 +177,7 @@ class PerceptronTest(unittest.TestCase):
         expected_featureset = _read_features_test_data("kerem_features")
         self.assertEqual(percept.feature_count, len(expected_featureset.feature))
         print("Passed!")
-        
-        
+
+
 if __name__ == "__main__":
   unittest.main()

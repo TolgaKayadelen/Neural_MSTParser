@@ -18,7 +18,7 @@ class FeatureExtractorTest(unittest.TestCase):
         self.test_treebank_tr = reader.ReadTreebankTextProto("./data/testdata/features/kerem.pbtxt")
         self.test_sentence_tr = self.test_treebank_tr.sentence[0]
         self.test_sentence_en = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
-        self.extractor = FeatureExtractor()
+        self.extractor = FeatureExtractor(featuretype="arcfeatures")
         self.maxDiff = None
 
     def test_GetFeatures(self):

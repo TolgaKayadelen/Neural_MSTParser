@@ -21,26 +21,26 @@ class DependencyParser:
         self.feature_opts = feature_opts
         self.arc_perceptron = ArcPerceptron(self.feature_opts)
         self.decoder = Decoder(decoding)
-        self.feature_extractor = FeatureExtractor()
+        self.feature_extractor = FeatureExtractor("arcfeatures")
         self.arc_accuracy = None
-    
+
     def MakeFeatures(self, training_data):
         """Makes all features from the training data.
-        
+
         Args:
             training_data: list, list of sentence_pb2.Sentence() objects.
         """
         self.arc_perceptron.MakeAllFeatures(training_data)
-    
+
     def Parse(self, sentence):
         """Parse a sentence.
-        
+
         Args:
             sentence: sentence_pb2.Sentence(), without head-dependent relations.
-        
+
         Returns:
             parsed: sentence_pb2.Sentence(), parsed sentence.
-            predicted_heads: list, list of predicted heads. 
+            predicted_heads: list, list of predicted heads.
         """
         assert sentence.token[0].index == -1 and sentence.token[-1].index == -2
         assert sentence.HasField("length"), "Sentence must have a length."
@@ -60,7 +60,7 @@ class DependencyParser:
         #probs = self._Softmax(score_matrix)
         parsed, predicted_heads = self.decoder(sentence, score_matrix)
         return parsed, predicted_heads
-        
+
     def Train(self, niters, training_data, test_data=None, approx=10):
         """Train the arc perceptron."""
         for i in range(niters):
@@ -82,22 +82,22 @@ class DependencyParser:
             #if train_acc == 100:
             #    break
             np.random.shuffle(training_data)
-    
+
     def _Evaluate(self, eval_data):
         """Evaluates the performance of arc perceptron on data.
-        
+
         Args:
             eval_data = list, list of sentence_pb2.Sentence() objects.
         Returns:
             accuracy of the perceptron on the dataset.
-        
+
         """
         acc = 0.0
         #print(len(eval_data))
         for sentence in eval_data:
             assert sentence.token[0].index == -1 and sentence.token[-1].index == -2
             assert sentence.HasField("length"), "Sentence must have a length!"
-            #common.PPrintTextProto(sentence) 
+            #common.PPrintTextProto(sentence)
             _, predicted_heads = self.Parse(sentence)
             # get the gold heads for tokens except for the dummy ones.
             gold_heads = [token.selected_head.address for token in sentence.token[1:-1]]
@@ -106,11 +106,11 @@ class DependencyParser:
                 gold heads don't match!!!"""
             acc += self._Accuracy(predicted_heads, gold_heads)
         return acc / len(eval_data)
-    
-    
+
+
     def _Accuracy(self, predicted, gold):
         return 100 * sum(ph == gh for ph, gh in zip(predicted, gold)) / len(predicted)
-        
+
 
     def _Softmax(self, matrix):
       """Numpy softmax function (normalizes rows)."""
@@ -119,7 +119,7 @@ class DependencyParser:
       matrix = np.exp(matrix)
       #print(matrix)
       return matrix / np.sum(matrix, axis=1, keepdims=True)
-    
+
     def Save(self, path, train_data_path=None, test_data_path=None,
     	nr_epochs=None, accuracy=None):
         assert isinstance(train_data_path, str), "Invalid Data Path!"
@@ -131,11 +131,11 @@ class DependencyParser:
             name=path, train_data_path=train_data_path, test_data_path=test_data_path,
             nr_epochs=nr_epochs, accuracy=self.arc_accuracy
         )
-    
+
     def Load(self, path):
         assert isinstance(path, str), "Invalid Path!"
         self.arc_perceptron.LoadModel(path)
-        
+
 
 
 def main():
