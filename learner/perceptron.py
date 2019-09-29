@@ -333,11 +333,13 @@ class LabelPerceptron(AveragedPerceptron):
         super(LabelPerceptron, self).__init__()
         self.feature_options = feature_options
         self.iters = 0
-        self._extractor = FeatureExtractor("labelfeatures")
         self.labels = common.GetLabels().keys()
         self.label_weights = {}
+        # private attributes
+        self._extractor = FeatureExtractor("labelfeatures")
         self._label_timestamps = {}
         self._label_accumulator = {}
+        self._label_count = len(self.labels)
 
     def _InitializeWeightsForEachClass(self):
         """Initializes separate weight vector for each class label.
@@ -346,6 +348,7 @@ class LabelPerceptron(AveragedPerceptron):
             featureset: featureset_pb2.FeatureSet(), set of features.
             load: boolean, if True, loads a featureset with pretrained weights.
         """
+        #TODO: ADD WEIGHT FOR BIAS
         for class_ in self.labels:
             self.label_weights[class_] = deepcopy(self.weights)
             self._label_timestamps[class_] = deepcopy(self._timestamps)
@@ -382,18 +385,18 @@ class LabelPerceptron(AveragedPerceptron):
         self._InitializeWeightsForEachClass()
 
 
-
-
-
-
-
-
 def main():
-    perceptron = LabelPerceptron()
-    #extractor = FeatureExtractor(filename="./learner/features.txt")
     test_sentence = reader.ReadSentenceTextProto("./data/testdata/perceptron/john_saw_mary.pbtxt")
-    perceptron.MakeAllFeatures([test_sentence])
-
+    arc_percp = ArcPerceptron()
+    arc_percp.MakeAllFeatures([common.ExtendSentence(test_sentence)])
+    for key, value in arc_percp.weights.items():
+        print(key, value)
+        print("----------------------------------")
+    label_percp = LabelPerceptron()
+    label_percp.MakeAllFeatures([test_sentence])
+    for key, value in label_percp.label_weights.items():
+        print(key, value)
+        print("----------------------------------")
 
 if __name__ == "__main__":
     main()
