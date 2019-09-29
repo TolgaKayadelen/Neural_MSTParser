@@ -278,7 +278,9 @@ class ArcPerceptron(AveragedPerceptron):
                 #if fname == 'head_0_pos' and fvalue == 'Verb':
                 #    print("weight after ", self.weights[fname][fvalue])
                 #    print("timestamp for feat {}".format(self._timestamps[fname][fvalue]))
-
+        # Since while predicting the head for each token for each sentence in
+        # training data we call the update weights method, each token is one
+        # iteration for the arc perceptron.
         self.iters += 1
         #print("-----")
         #print("iteration {}".format(self.iters))

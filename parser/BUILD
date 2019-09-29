@@ -9,6 +9,14 @@ py_binary(
 	],
 )
 
+py_binary(
+  name = "dependency_labeler",
+  srcs = ["dependency_labeler.py"],
+  deps = [
+    "dependency_parser_lib",
+  ],
+)
+
 #libraries
 py_library(
 	name = "decoder",

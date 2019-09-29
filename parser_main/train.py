@@ -25,7 +25,7 @@ _TREEBANK_DIR = "data/UDv23"
 
 def _get_data(args):
     """Function to retrieve training and dev data from args.
-    
+
     Args:
         args = command line arguments.
     Returns:
@@ -33,7 +33,7 @@ def _get_data(args):
         dev_data: list, sentence_pb2.Sentence objects.
     """
     logging.info("Loading dataset")
-    
+
     if not args.test_data:
         split = [float(args.split[0]), float(args.split[1])]
         assert split[0] + split[1] == 1, "Cannot split data!!"
@@ -57,15 +57,15 @@ def _get_data(args):
         test_treebank = reader.ReadTreebankTextProto(test_path)
         logging.info("Total sentences in test data {}".format(len(test_treebank.sentence)))
         test_data = list(test_treebank.sentence)
-        
+
     return training_data, test_data
 
 def _get_size(object):
     """Dump a pickle of object to accurately get the size of the model.
     Args:
-        object: the model. 
+        object: the model.
     Returns:
-        gigabytes: the size of the model. 
+        gigabytes: the size of the model.
     """
     tmp = tempfile.gettempdir()
     path = os.path.join(tmp, 'object.pkl')
@@ -80,11 +80,11 @@ def _get_size(object):
 
 def train(args):
     """Trains a dependency parser.
-    
+
     Args:
         args: the command line arguments.
-    
-    Saves a trained dependency parsing model. 
+
+    Saves a trained dependency parsing model.
     """
     tr,te = _get_data(args)
     training_data = map(common.ConnectSentenceNodes, tr)
@@ -97,9 +97,9 @@ def train(args):
     else:
         test_data=None
     del tr,te
-   
+
     #feature_opts = get_feature_opts(args.features)
-    
+
     # Make the model
     # TODO: add feature_opts to the model call.
     model = DependencyParser(decoding="mst")
@@ -112,31 +112,31 @@ def train(args):
     logging.info("Number of features: {}".format(model.arc_perceptron.feature_count))
     raw_input("Press any key to continue: ")
     #print("Memory used by model: {} GB.".format(_get_size(model)))
-    
-    
+
+
     # Train
     model.Train(args.epochs, training_data, test_data=test_data, approx=50)
-    
+
     # Evaluate
     print("\n*******----------------------*******")
     logging.info("Start Evaluation on Test Data..")
     logging.info("Weights not averaged..")
     if not test_data:
         test_data = training_data
-        
+
     test_acc_unavg = model._Evaluate(test_data)
     logging.info("Accuracy before averaging weights on test: {}".format(test_acc_unavg))
     raw_input("Press any key to continue: ")
-    
+
     # Average the weights and evaluate again
-    logging.info("Averaging perpceptron weights and evaluating on test..")
+    logging.info("Averaging perceptron weights and evaluating on test..")
     unaveraged_weights = deepcopy(model.arc_perceptron.weights)
     accumulated_weights = deepcopy(model.arc_perceptron._accumulator)
     averaged_weights = model.arc_perceptron.AverageWeights(accumulated_weights)
     iters = model.arc_perceptron.iters
-    
+
     # Sanity check to ensure averaging worked as intended.
-    common.ValidateAveragedWeights(unaveraged_weights, 
+    common.ValidateAveragedWeights(unaveraged_weights,
                                    model.arc_perceptron._accumulator,
                                    averaged_weights,
                                    iters)
@@ -146,14 +146,14 @@ def train(args):
     test_acc_avg = model._Evaluate(test_data)
     raw_input("Press any key to continue: ")
     logging.info("Accuracy after averaging weights on dev: {}".format(test_acc_avg))
-    
+
     #Save the model.
     logging.info("Saving model to {}".format(args.model))
     raw_input("Press any key to continue: ")
     test_data_path = args.test_data if args.test_data else args.train_data
     model.Save(
-        args.model, train_data_path=args.train_data, 
-        test_data_path=test_data_path, nr_epochs=args.epochs, 
+        args.model, train_data_path=args.train_data,
+        test_data_path=test_data_path, nr_epochs=args.epochs,
         accuracy=dict(
             test_unavg = round(test_acc_unavg, 2),
             test_avg = round(test_acc_avg, 2)
