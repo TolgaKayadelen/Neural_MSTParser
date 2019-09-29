@@ -2,6 +2,7 @@
 
 """Common utility functions."""
 
+import os
 from copy import deepcopy
 from data.treebank import sentence_pb2
 from learner import featureset_pb2
@@ -309,6 +310,15 @@ def TopFeatures(featureset, n):
     """Return the n features with the largest weight."""
     featureset = SortFeatures(featureset)
     return featureset.feature[:n]
+
+def GetLabels():
+    """Util function to read label_to_enum.tsv and return labels as a dict."""
+    _MODEL_DIR = "model"
+    label_to_enum = {}
+    with open(os.path.join(_MODEL_DIR, "label_to_enum.tsv")) as tsvfile:
+      for row in tsvfile:
+        label_to_enum[row.split()[0]] = int(row.split()[1])
+    return label_to_enum
 
 if __name__ == "__main__":
     sentence = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")

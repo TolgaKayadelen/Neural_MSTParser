@@ -11,7 +11,7 @@ We provide typed based precision, recall and F1 scores for LAS and type based
 accuracy for UAS.
 
 """
-import os
+
 import pandas as pd
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
@@ -25,13 +25,7 @@ from google.protobuf import text_format
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
-_MODEL_DIR = "model"
-label_to_enum = {}
-
-with open(os.path.join(_MODEL_DIR, "label_to_enum.tsv")) as tsvfile:
-  for row in tsvfile:
-    label_to_enum[row.split()[0]] = int(row.split()[1])
-  
+label_to_enum = common.GetLabels()
 
 def evaluate_parser(args, print_results=False):
     """Function to evaluate the dependency parser output on gold data.
@@ -115,7 +109,7 @@ class Evaluator:
                 gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
         self.uas_total = uas / len(self.gold)
         self.evaluation.uas_total = self.uas_total
-        
+
 
     def _LasTotal(self):
         "Computes the total Labeled Attachment Score of the parser."
@@ -249,9 +243,9 @@ class Evaluator:
 
         self.typed_las_f1 = self.typed_las_f1[cols]
         self.typed_las_f1.fillna(0, inplace=True)
-        
+
         #print(self.typed_las_f1)
-        
+
         # loop the dataframe to add the fields into a proto
         for _, row in self.typed_las_f1.reset_index().iterrows():
           self.evaluation.typed_las_f1.f1.add(
