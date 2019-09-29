@@ -30,8 +30,8 @@ py_binary(
 )
 
 py_binary(
-  name = "get_postags",
-  srcs = ["get_postags.py"],
+  name = "get_tags_and_labels",
+  srcs = ["get_tags_and_labels.py"],
   deps = [
     "//data/treebank:treebank_py_pb2",
     "//data/treebank:sentence_py_pb2",

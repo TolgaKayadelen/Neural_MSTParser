@@ -7,6 +7,7 @@ import argparse
 import numpy as np
 import os
 import pickle
+import random
 import json
 
 from collections import defaultdict
@@ -325,9 +326,70 @@ class ArcPerceptron(AveragedPerceptron):
         #common.PPrintWeights(self._timestamps)
         return correct, nr_child
 
+class LabelPerceptron(AveragedPerceptron):
+    """A perceptron for labeling dependency arcs."""
+
+    def __init__(self, feature_options={}):
+        super(LabelPerceptron, self).__init__()
+        self.feature_options = feature_options
+        self.iters = 0
+        self._extractor = FeatureExtractor("labelfeatures")
+        self.labels = common.GetLabels().keys()
+        self.label_weights = {}
+        self._label_timestamps = {}
+        self._label_accumulator = {}
+
+    def _InitializeWeightsForEachClass(self):
+        """Initializes separate weight vector for each class label.
+
+        Args:
+            featureset: featureset_pb2.FeatureSet(), set of features.
+            load: boolean, if True, loads a featureset with pretrained weights.
+        """
+        for class_ in self.labels:
+            self.label_weights[class_] = deepcopy(self.weights)
+            self._label_timestamps[class_] = deepcopy(self._timestamps)
+            self._label_accumulator[class_] = deepcopy(self._accumulator)
+
+        # Sanity check that the weight vectors are initialized properly for
+        # labels
+        random_class = random.choice(list(self.label_weights))
+        #print(random_class)
+        assert (self.feature_count == sum(
+            [len(self.label_weights[random_class][key]) for key in self.label_weights[random_class].keys()]
+                )
+            ), "Mismatch between global and class specific label counts"
+
+    def MakeAllFeatures(self, training_data):
+        """Make features from gold head-dependency dependency pairs.
+        Args:
+            training_data: list of sentence_pb2.Sentence() objects.
+        """
+        for sentence in training_data:
+            for token in sentence.token:
+                if not token.selected_head or token.selected_head.address == -1:
+                    continue
+                head = common.GetTokenByAddress(
+                    sentence.token, token.selected_head.address
+                )
+                #print("token {}".format(token))
+                self.InitializeWeights(self._extractor.GetFeatures(
+                    sentence,
+                    head=head,
+                    child=token
+                    )
+                )
+        self._InitializeWeightsForEachClass()
+
+
+
+
+
+
+
 
 def main():
-    perceptron = ArcPerceptron()
+    perceptron = LabelPerceptron()
     #extractor = FeatureExtractor(filename="./learner/features.txt")
     test_sentence = reader.ReadSentenceTextProto("./data/testdata/perceptron/john_saw_mary.pbtxt")
     perceptron.MakeAllFeatures([test_sentence])
