@@ -291,12 +291,12 @@ def GetFeatureWeights(weights, features):
     return [weights[f.name][f.value] for f in features.feature]
 
 # type: featureset proto util
-def SortFeatures(featureset):
+def SortFeatures(featureset, sort_key=lambda f: f.weight):
     #print("Sorting FeatureSet proto..")
     unsorted_list = []
     for feature in featureset.feature:
         unsorted_list.append(feature)
-    sorted_list = sorted(unsorted_list, key=lambda f: f.weight, reverse=True)
+    sorted_list = sorted(unsorted_list, key=sort_key, reverse=True)
     sorted_featureset = featureset_pb2.FeatureSet()
     for f in sorted_list:
         sorted_featureset.feature.add(name=f.name, value=f.value, weight=f.weight)
