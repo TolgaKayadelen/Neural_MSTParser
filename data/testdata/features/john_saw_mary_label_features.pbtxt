@@ -1,0 +1,121 @@
+# all features from sentence john saw mary for label perceptron (sorted)
+feature {
+  name: "child_0_lemma"
+  value: "John"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "see"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "Mary"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos"
+  value: "Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos"
+  value: "ROOT"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos"
+  value: "Noun"
+  weight: 0.0
+}
+feature {
+  name: "child_0_pos"
+  value: "Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_lemma"
+  value: "see"
+  weight: 0.0
+}
+feature {
+  name: "head_0_lemma"
+  value: "ROOT"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_pos"
+  value: "John_Noun"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_pos"
+  value: "saw_Verb"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_pos"
+  value: "Mary_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word"
+  value: "saw"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word"
+  value: "ROOT"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word"
+  value: "John"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word"
+  value: "saw"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word"
+  value: "Mary"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "saw_see"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "ROOT_ROOT"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_lemma"
+  value: "John_John"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_lemma"
+  value: "saw_see"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_lemma"
+  value: "Mary_Mary"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "saw_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "ROOT_ROOT"
+  weight: 0.0
+}

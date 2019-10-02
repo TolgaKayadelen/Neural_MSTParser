@@ -36,11 +36,6 @@ class ArcPerceptronTest(unittest.TestCase):
         temp = _read_perceptron_test_data("john_saw_mary")
         self.en_test = common.ExtendSentence(temp)
 
-    '''
-    def test_MakeFeaturesFromGold(self):
-        pass
-    '''
-    #For now this will fail because we added dependency features but not updated this
     def test_MakeAllFeatures(self):
         print("Running test_MakeAllFeatures..")
         percept = perceptron.ArcPerceptron()

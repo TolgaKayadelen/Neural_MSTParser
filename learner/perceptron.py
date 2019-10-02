@@ -348,11 +348,13 @@ class LabelPerceptron(AveragedPerceptron):
             featureset: featureset_pb2.FeatureSet(), set of features.
             load: boolean, if True, loads a featureset with pretrained weights.
         """
-        #TODO: ADD WEIGHT FOR BIAS
         for class_ in self.labels:
             self.label_weights[class_] = deepcopy(self.weights)
+            self.label_weights[class_]["bias"].update({"bias":0.0})
             self._label_timestamps[class_] = deepcopy(self._timestamps)
+            self._label_timestamps[class_]["bias"].update({"bias":0.0})
             self._label_accumulator[class_] = deepcopy(self._accumulator)
+            self._label_accumulator[class_]["bias"].update({"bias":0.0})
 
         # Sanity check that the weight vectors are initialized properly for
         # labels
@@ -360,7 +362,7 @@ class LabelPerceptron(AveragedPerceptron):
         #print(random_class)
         assert (self.feature_count == sum(
             [len(self.label_weights[random_class][key]) for key in self.label_weights[random_class].keys()]
-                )
+                )-1
             ), "Mismatch between global and class specific label counts"
 
     def MakeAllFeatures(self, training_data):
@@ -383,6 +385,44 @@ class LabelPerceptron(AveragedPerceptron):
                     )
                 )
         self._InitializeWeightsForEachClass()
+
+    def Score(self, class_, features):
+        """Score the feature vector for a class.
+        Args:
+            class_ = the class for which we are scoring the features.
+            features = featureset_pb2.FeatureSet()
+        """
+        score = 0.0
+        class_weights = self.label_weights[class_]
+        #score = class_weights["bias"]["bias"]
+        for feature in features.feature:
+            if feature.value not in class_weights[feature.name]:
+                continue
+            score += class_weights[feature.name][feature.value]
+        return score
+
+
+    def _ConvertWeightsToProto(self, class_):
+        """Convert the weights vector for a class to featureset proto.
+
+        Overwrites the method in parent class.
+        This method should be accessed either via SortFeatures() or
+        TopFeatures().
+        Args:
+            class_: the class whose features we are converting.
+        """
+        featureset = featureset_pb2.FeatureSet()
+        for name, v in self.label_weights[class_].iteritems():
+            for value, weight in v.iteritems():
+                feature = featureset.feature.add(
+                    name=name,
+                    value=value,
+                    weight=weight,
+                )
+        #print(text_format.MessageToString(featureset, as_utf8=True))
+        return featureset
+
+
 
 
 def main():

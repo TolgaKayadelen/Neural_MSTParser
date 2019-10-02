@@ -1,4 +1,4 @@
-# all features from sentence john saw mary (sorted)
+# all features from sentence john saw mary for arc perceptron (sorted)
 feature {
   name: "head_0_pos+head_0_morph_case"
   value: "ROOT_ROOT"

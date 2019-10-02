@@ -66,12 +66,20 @@ py_test(
 )
 
 py_test(
-	name = "perceptron_test",
+	name = "arc_perceptron_test",
 	size = "medium",
-	srcs = ["perceptron_test.py"],
+	srcs = ["arc_perceptron_test.py"],
 	deps = [
 		":perceptron_lib",
 	],
+)
+
+py_test(
+  name = "label_perceptron_test",
+  srcs = ["label_perceptron_test.py"],
+  deps = [
+    ":perceptron_lib",
+  ],
 )
 
 # Data.
