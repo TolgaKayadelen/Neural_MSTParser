@@ -392,14 +392,39 @@ class LabelPerceptron(AveragedPerceptron):
             class_ = the class for which we are scoring the features.
             features = featureset_pb2.FeatureSet()
         """
-        score = 0.0
         class_weights = self.label_weights[class_]
-        #score = class_weights["bias"]["bias"]
+        # add the bias first.
+        score = class_weights["bias"]["bias"]
+        # add the other features.
         for feature in features.feature:
             if feature.value not in class_weights[feature.name]:
                 continue
             score += class_weights[feature.name][feature.value]
         return score
+
+    def PredictLabel(self, sentence, token):
+        """Predict the best dependency label for a token.
+        Args:
+            token: sentence_pb2.Token()
+        Returns:
+            label: the label which has the highest score
+        """
+        best_score = -100000
+        head = common.GetTokenByAddress(sentence.token, token.selected_head.address)
+        #print("token is {}".format(token))
+        #print("head is {}".format(head))
+        features = self._extractor.GetFeatures(sentence, head, token)
+        for class_ in self.labels:
+            #print("scoring class: {}".format(class_))
+            class_score = self.Score(class_, features)
+            #print("class score: {}".format(class_score))
+            #print("---")
+            if class_score > best_score:
+                best_score = class_score
+                label = class_
+        #print("best label: {}, best score: {}".format(label, best_score))
+        return label, best_score
+
 
 
     def _ConvertWeightsToProto(self, class_):

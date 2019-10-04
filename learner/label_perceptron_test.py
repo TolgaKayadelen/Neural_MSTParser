@@ -65,13 +65,21 @@ class LabelPerceptronTest(unittest.TestCase):
         percept = perceptron.LabelPerceptron()
         percept.MakeAllFeatures([self.en_test])
         class_ = "cc"
-        percept.label_weights[class_]["bias"]["bias"] = 2
         percept.label_weights[class_]["head_0_word"]["ROOT"] = 5
+        percept.label_weights[class_]["child_0_word"]["saw"] = 2
         features = percept._ConvertWeightsToProto(class_)
         self.assertEqual(7.0, percept.Score(class_, features))
 
         class_ = "nsubj"
+        token = self.en_test.token[1] # john
+        features = percept._extractor.GetFeatures(
+            self.en_test,
+            child=token,
+            head=common.GetTokenByAddress(
+                self.en_test.token,
+                token.selected_head.address))
         num_features = len(features.feature)
+        #print(features)
         weight = 1
         for key in percept.label_weights[class_].keys():
             for value in percept.label_weights[class_][key].keys():
@@ -79,13 +87,42 @@ class LabelPerceptronTest(unittest.TestCase):
                 #print(key, value, percept.weights[key][value])
                 weight += 1
         score = percept.Score(class_, features)
-        # the gaussian formula for summing consecutive numbers
-        gauss = num_features * (num_features + 1) / 2
-        self.assertEqual(score, gauss)
+
+        expected = 0.0
+        # add the bias first.
+        expected += percept.label_weights[class_]["bias"]["bias"]
+        # add the other feature weights
+        for feature in features.feature:
+            expected += percept.label_weights[class_][feature.name][feature.value]
+        self.assertEqual(score, expected)
 
         # make sure that the class whose features we didn't touch is still 0.
         self.assertEqual(0.0, percept.Score("parataxis", features))
         print("Passed!")
+
+    def testPredictLabel(self):
+        print("Running testPredictLabel..")
+        percept = perceptron.LabelPerceptron()
+        percept.MakeAllFeatures([self.en_test])
+        class_ = "cc"
+        percept.label_weights[class_]["bias"]["bias"] = 2
+        token = self.en_test.token[1]
+        label, score = percept.PredictLabel(self.en_test, token)
+        self.assertEqual((label, score), ("cc", 2.0))
+        print("Passed!!")
+
+    def testUpdateWeights(self):
+        print("Running testUpdateWeights")
+        print("Passed!!")
+
+    def testTrain(self):
+        print("Running testTrain")
+        print("Passed!!")
+
+    def testTimeStampsAndAveraging(self):
+        print("Running testTimeStampsAndAveraging..")
+        print("Passed!!")
+
 
 
 if __name__ == "__main__":

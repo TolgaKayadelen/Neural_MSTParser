@@ -4,7 +4,6 @@
 
 from google.protobuf import text_format
 from mst.max_span_tree_simple import MST as mst_decoder
-from sys import maxint
 from util import common
 import numpy as np
 
