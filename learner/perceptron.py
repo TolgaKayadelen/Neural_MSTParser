@@ -241,8 +241,10 @@ class ArcPerceptron(AveragedPerceptron):
     def UpdateWeights(self, prediction_features, true_features, c=None):
         """Update the feature weights based on prediction.
 
-        If the active features give you the correct prediction, increase
-        self.weights[feature.name][feature.value] by 1, else decrease them by 1.
+        If the active features don't give you the correct prediction, increase
+        self.weights[feature.name][feature.value] by 1 for the correct features
+        and decrease self.weights[feature.name][feature.value] by 1 for the incorrect
+        features. 
 
         Args:
             true_features = featureset_pb2.FeatureSet()
@@ -426,18 +428,76 @@ class LabelPerceptron(AveragedPerceptron):
         return label, best_score
 
 
+    def UpdateWeights(self, prediction, truth, features):
+        """Update the feature weights based on prediction.
+      
+        If the active features don't give you the correct label, increase those
+        features in self.label_weights[correct_label] by 1, and penalize the ones
+        in self.label_weights[wrong_label] by -1.
+        
+        While doing weight update, you first increment iter, then increment accumulator,
+        then increment the weight for the feature.
+      
+        Args:
+          prediction: the predicted dependency label for the token.
+          truth: the correct dependency label for the token.
+          features: feature_set.pb2.FeatureSet(), the set of features to update.
+        """
+        def upt_features(class_, w, features):
+          for f in features.feature:
+            if f.name not in self.weights and f.name != "bias":
+                logging.info("fname {}, not in weights, passing".format(f.name))
+            else:
+                nr_iters_at_weight = self.iters - self._label_timestamps[class_][f.name][f.value]
+                self._label_accumulator[class_][f.name][f.value] += nr_iters_at_weight * self.label_weights[class_][f.name][f.value]
+                self.label_weights[class_][f.name][f.value] += w
+                self._label_timestamps[class_][f.name][f.value] = self.iters
+        upt_features(truth, 1.0, features)
+        upt_features(prediction, -1.0, features)
+        
+    
+    def UpdateAccumulator(self):
+        """Update the accumulator for each weight in each class after each iteration.
+        
+        This function is for test purposes only and makes sure that the accumulator update
+        from within the update weights function works as expected. This is a more expensive
+        version of the accumulator update in UpdateWeights and should not be used other
+        than for testing. 
+      
+        If you want to use this method, you should remove the label_accumulator update from
+        the above function.
+        """
+        for class_ in self.labels:
+            for key in self._label_accumulator[class_].keys():
+                for value in self._label_accumulator[class_][key].keys():
+                    self._label_accumulator[class_][key][value] += self.label_weights[class_][key][value]
+    
+    def IncrementIters(self):
+        """Increments the number of iterations by 1.
+      
+        During training we call the IncrementIters method for each token in
+        each sentence, therefore each token is one iteration for the Label
+        Perceptron.
+        """
+        self.iters += 1
 
-    def _ConvertWeightsToProto(self, class_):
-        """Convert the weights vector for a class to featureset proto.
+    def _ConvertWeightsToProto(self, class_, type_="weights"):
+        """Convert a weights vector for a class to featureset proto.
 
         Overwrites the method in parent class.
-        This method should be accessed either via SortFeatures() or
-        TopFeatures().
         Args:
             class_: the class whose features we are converting.
+            type_: label_weights, label_accumulator, or label_timestamps
         """
+        assert type_ in ["weights", "accumulator", "timestamps"], "Invalid argument!!"
+        if type_ == "weights":
+            weights = self.label_weights
+        elif type_ == "accumulator":
+            weights = self._label_accumulator
+        else:
+            weights = self._label_timestamps
         featureset = featureset_pb2.FeatureSet()
-        for name, v in self.label_weights[class_].iteritems():
+        for name, v in weights[class_].iteritems():
             for value, weight in v.iteritems():
                 feature = featureset.feature.add(
                     name=name,

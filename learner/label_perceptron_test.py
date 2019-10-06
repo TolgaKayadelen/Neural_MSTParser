@@ -113,6 +113,39 @@ class LabelPerceptronTest(unittest.TestCase):
 
     def testUpdateWeights(self):
         print("Running testUpdateWeights")
+        percept = perceptron.LabelPerceptron()
+        percept.MakeAllFeatures([self.en_test])
+        predicted = "cc"
+        truth = "parataxis"
+        token = self.en_test.token[1]
+        head = common.GetTokenByAddress(self.en_test.token, token.selected_head.address)
+        features = percept._extractor.GetFeatures(self.en_test, head=head, child=token)
+        # make sure to add the bias to the features as well. 
+        features.feature.add(name="bias", value="bias")   
+        #print(features)        
+        for i in range(5):
+            percept.IncrementIters()
+            #print("iteration {}".format(percept.iters))
+            #percept.UpdateAccumulator()
+            percept.UpdateWeights(predicted, truth, features)        
+        # Uncomment if needed.
+        #prediction_class_features = percept._ConvertWeightsToProto(predicted)
+        #prediction_class_accumulator = percept._ConvertWeightsToProto(predicted, "accumulator")
+        #prediction_class_tmstamp = percept._ConvertWeightsToProto(predicted, "timestamps")
+        
+        # check true class weights
+        self.assertEqual(percept.label_weights[truth]["bias"]["bias"], 5.0)
+        self.assertEqual(percept.label_weights[truth]["head_0_pos"]["Verb"], 5.0)
+        self.assertEqual(percept._label_timestamps[truth]["head_0_pos"]["Verb"], 5)
+        self.assertEqual(percept._label_accumulator[truth]["head_0_pos"]["Verb"], 10.0)
+        self.assertEqual(percept.label_weights[truth]["child_0_word"]["Mary"], 0.0)
+        
+        # check predicted class weights
+        self.assertEqual(percept.label_weights[predicted]["bias"]["bias"], -5.0)
+        self.assertEqual(percept.label_weights[predicted]["head_0_pos"]["Verb"], -5.0)
+        self.assertEqual(percept._label_timestamps[predicted]["head_0_pos"]["Verb"], 5)
+        self.assertEqual(percept._label_accumulator[predicted]["head_0_pos"]["Verb"], -10.0)
+        self.assertEqual(percept.label_weights[predicted]["child_0_word"]["Mary"], 0.0)
         print("Passed!!")
 
     def testTrain(self):
