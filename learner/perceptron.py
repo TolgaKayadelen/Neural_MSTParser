@@ -445,13 +445,13 @@ class LabelPerceptron(AveragedPerceptron):
         """
         def upt_features(class_, w, features):
           for f in features.feature:
-            if f.name not in self.weights and f.name != "bias":
-                logging.info("fname {}, not in weights, passing".format(f.name))
-            else:
-                nr_iters_at_weight = self.iters - self._label_timestamps[class_][f.name][f.value]
-                self._label_accumulator[class_][f.name][f.value] += nr_iters_at_weight * self.label_weights[class_][f.name][f.value]
-                self.label_weights[class_][f.name][f.value] += w
-                self._label_timestamps[class_][f.name][f.value] = self.iters
+              if f.name not in self.weights and f.name != "bias":
+                  logging.info("fname {}, not in weights, passing".format(f.name))
+              else:
+                  nr_iters_at_weight = self.iters - self._label_timestamps[class_][f.name][f.value]
+                  self._label_accumulator[class_][f.name][f.value] += nr_iters_at_weight * self.label_weights[class_][f.name][f.value]
+                  self.label_weights[class_][f.name][f.value] += w
+                  self._label_timestamps[class_][f.name][f.value] = self.iters
         upt_features(truth, 1.0, features)
         upt_features(prediction, -1.0, features)
         
