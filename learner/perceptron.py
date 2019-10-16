@@ -410,6 +410,8 @@ class LabelPerceptron(AveragedPerceptron):
             token: sentence_pb2.Token()
         Returns:
             label: the label which has the highest score
+            features: featureset_pb2.Featureset(), features used in scoring and prediction.
+            best_score: the score for the winning class.
         """
         best_score = -100000
         head = common.GetTokenByAddress(sentence.token, token.selected_head.address)
@@ -425,7 +427,7 @@ class LabelPerceptron(AveragedPerceptron):
                 best_score = class_score
                 label = class_
         #print("best label: {}, best score: {}".format(label, best_score))
-        return label, best_score
+        return label, features, best_score
 
 
     def UpdateWeights(self, prediction, truth, features):
@@ -481,6 +483,27 @@ class LabelPerceptron(AveragedPerceptron):
         """
         self.iters += 1
 
+    
+    def Train(self, training_data):
+        """Trains label perceptron for one epoch.
+        Args: 
+          training_data: list, list of sentence_pb2.Sentence.
+        """
+        correct = 0
+        for sentence in training_data:
+            for token in sentence.token:
+              if token.word == "ROOT":
+                continue
+              self.IncrementIters()
+              prediction, features, _ = self.PredictLabel(sentence, token)
+              # Make sure to add the bias to the features as well. 
+              features.feature.add(name="bias", value="bias")
+              correct += prediction == token.label
+              if prediction != token.label:
+                print("prediction is {}, true label is {}".format(prediction, token.label))
+                self.UpdateWeights(prediction=prediction, truth=token.label, features=features)
+        print("total correct labels: {}".format(correct))
+              
     def _ConvertWeightsToProto(self, class_, type_="weights"):
         """Convert a weights vector for a class to featureset proto.
 
@@ -505,7 +528,10 @@ class LabelPerceptron(AveragedPerceptron):
                     weight=weight,
                 )
         #print(text_format.MessageToString(featureset, as_utf8=True))
-        return featureset
+        return featureset          
+          
+          
+      
 
 
 

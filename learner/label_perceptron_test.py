@@ -107,7 +107,7 @@ class LabelPerceptronTest(unittest.TestCase):
         class_ = "cc"
         percept.label_weights[class_]["bias"]["bias"] = 2
         token = self.en_test.token[1]
-        label, score = percept.PredictLabel(self.en_test, token)
+        label, _ , score = percept.PredictLabel(self.en_test, token)
         self.assertEqual((label, score), ("cc", 2.0))
         print("Passed!!")
 
