@@ -150,6 +150,28 @@ class LabelPerceptronTest(unittest.TestCase):
 
     def testTrain(self):
         print("Running testTrain")
+        percept = perceptron.LabelPerceptron()
+        percept.MakeAllFeatures([self.en_test])
+        #common.PPrintWeights(percept.label_weights["cc"])
+        
+        # add the labels to the sentence.
+        correct = 0
+        tokens = self.en_test.token
+        labels = ["nsubj", "root", "obj"]
+        for i, token in enumerate(tokens[1:]):
+          token.label = labels[i]
+        for i in range(3):
+          correct = percept.Train([self.en_test])
+        tracked_feat = percept.label_weights["nsubj"]
+        tracked_feat_tmstamp = percept._label_timestamps["nsubj"]
+        self.assertEqual(correct, 3) # all labels are correctly predicted.
+        self.assertEqual(percept.iters, 9)
+        self.assertEqual(tracked_feat["child_0_lemma"]["John"], 2.0)
+        self.assertEqual(tracked_feat["head_0_lemma"]["ROOT"], -1)
+        self.assertEqual(tracked_feat["bias"]["bias"], 0.0)
+        self.assertEqual(tracked_feat_tmstamp["child_0_lemma"]["John"], 4)
+        self.assertEqual(tracked_feat_tmstamp["head_0_lemma"]["ROOT"], 2)
+        self.assertEqual(tracked_feat_tmstamp["bias"]["bias"], 4)
         print("Passed!!")
 
     def testTimeStampsAndAveraging(self):

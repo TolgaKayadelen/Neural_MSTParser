@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 
-"""Simply script to get all coarse and fine part of speech tags in the data."""
+"""Simply script to get all coarse and fine part of speech tags in the data.
+
+Pass the data to read from the --data argument. The data can be a protobuf or
+pbtxt.
+
+"""
 
 import argparse
 import os

@@ -450,11 +450,17 @@ class LabelPerceptron(AveragedPerceptron):
               if f.name not in self.weights and f.name != "bias":
                   logging.info("fname {}, not in weights, passing".format(f.name))
               else:
+                  #print("feature is \n{}".format(f))
                   nr_iters_at_weight = self.iters - self._label_timestamps[class_][f.name][f.value]
                   self._label_accumulator[class_][f.name][f.value] += nr_iters_at_weight * self.label_weights[class_][f.name][f.value]
+                  temp = self.label_weights[class_][f.name][f.value]
+                  #print("feature updated from {} -> {}".format(temp, temp+w))
+                  #print("-----")
                   self.label_weights[class_][f.name][f.value] += w
                   self._label_timestamps[class_][f.name][f.value] = self.iters
+        #print("Incrementing features for {} by +1".format(truth))
         upt_features(truth, 1.0, features)
+        #print("Decrementing features for {} by -1".format(prediction))
         upt_features(prediction, -1.0, features)
         
     
@@ -488,21 +494,24 @@ class LabelPerceptron(AveragedPerceptron):
         """Trains label perceptron for one epoch.
         Args: 
           training_data: list, list of sentence_pb2.Sentence.
+        Returns: 
+          correct: the number of correct labels in the training data.
         """
         correct = 0
         for sentence in training_data:
-            for token in sentence.token:
-              if token.word == "ROOT":
-                continue
-              self.IncrementIters()
-              prediction, features, _ = self.PredictLabel(sentence, token)
-              # Make sure to add the bias to the features as well. 
-              features.feature.add(name="bias", value="bias")
-              correct += prediction == token.label
-              if prediction != token.label:
-                print("prediction is {}, true label is {}".format(prediction, token.label))
-                self.UpdateWeights(prediction=prediction, truth=token.label, features=features)
-        print("total correct labels: {}".format(correct))
+          for token in sentence.token:
+            if token.word == "ROOT":
+              continue
+            self.IncrementIters()
+            prediction, features, _ = self.PredictLabel(sentence, token)
+            # Make sure to add the bias to the features as well. 
+            features.feature.add(name="bias", value="bias")
+            correct += prediction == token.label
+            if prediction != token.label:
+              #print("prediction is {}, true label is {}".format(prediction, token.label))
+              self.UpdateWeights(prediction=prediction, truth=token.label, features=features)
+        #print("total correct labels: {}".format(correct))
+        return correct
               
     def _ConvertWeightsToProto(self, class_, type_="weights"):
         """Convert a weights vector for a class to featureset proto.
@@ -529,11 +538,6 @@ class LabelPerceptron(AveragedPerceptron):
                 )
         #print(text_format.MessageToString(featureset, as_utf8=True))
         return featureset          
-          
-          
-      
-
-
 
 
 def main():
