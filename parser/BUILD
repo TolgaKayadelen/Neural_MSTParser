@@ -50,6 +50,15 @@ py_test(
 )
 
 py_test(
+  name = "dependency_labeler_test",
+  srcs = ["dependency_labeler_test.py"],
+  deps = [
+    "dependency_parser_lib",
+    "dependency_labeler",
+  ],
+)
+
+py_test(
   name = "decoder_test",
   srcs = ["decoder_test.py"],
   deps = [

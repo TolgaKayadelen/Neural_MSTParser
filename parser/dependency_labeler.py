@@ -2,6 +2,7 @@
 
 """Dependency Labeler."""
 
+import numpy as np
 from learner.perceptron import LabelPerceptron
 from data.treebank import sentence_pb2
 from google.protobuf import text_format
@@ -21,6 +22,7 @@ class DependencyLabeler:
     def __init__(self, feature_opts={}):
         self.feature_opts = feature_opts
         self.feature_extractor = FeatureExtractor("labelfeatures")
+        self.label_perceptron = LabelPerceptron(self.feature_opts)
         self.label_accuracy = None
 
     def MakeFeatures(self, training_data):
@@ -38,26 +40,29 @@ class DependencyLabeler:
         Args:
             sentence: sentence_pb2.Sentence(), without dependency labels.
         Returns:
-            sentence: sentence_pb2.Sentence(), with dependency labels.
+            labeled: sentence_pb2.Sentence(), with dependency labels.
+            predicted_labels = list, list of predicted labels.
         """
         assert sentence.HasField("length"), "Sentence must have length!!"
+        predicted_labels = []
         for token in sentence.token:
-            head = common.GetTokenByAddress(sentence.token, token.selected_head.address)
-            features = self.feature_extractor.GetFeatures(
-                sentence=sentence,
-                head=head,
-                child=token
-            )
-            token.label = self.label_perceptron._PredictLabel(token, features)
-        return sentence
+            print("token is {}".format(token.word))
+            print("selected head {}".format(token.selected_head.address))
+            if token.selected_head.address == -1 or token.word == "ROOT":
+              predicted_labels.append(u"")
+              continue
+            # (TODO): we need to write another function to insert the labels.
+            label, _, _ = self.label_perceptron.PredictLabel(sentence, token)
+            predicted_labels.append(label)
+        return predicted_labels
 
-    def Train(self, training_data, test_data=None, approx=10):
+    def Train(self, niters, training_data, test_data=None, approx=10):
         """Train the label perceptron."""
         for i in range(niters):
             print("\n**************-------------------*************")
             logging.info("Starting LP Training Epoch {}".format(i+1))
             #Train label perceptron for one epoch.
-            self.label_perceptron.Train(training_data)
+            correct = self.label_perceptron.Train(training_data)
             #Evaluate the label perceptron
             train_acc = self._Evaluate(training_data)
             logging.info("LP train acc after iter {}: {}".format(i+1, train_acc))
@@ -86,17 +91,15 @@ class DependencyLabeler:
             gold_labels = [token.label for token in sentence.token]
             assert sentence.HasField("length"), "Sentence must have a length!"
             #common.PPrintTextProto(sentence)
-            # clear the label field
-            for token in sentence.token:
-                token.ClearField("label")
             # label the sentence with the model
-            labeled = self.Label(sentence)
-            predicted_labels = [token.label for token in sentence.token]
+            predicted_labels = self.Label(sentence)
+            #predicted_labels = [token.label for token in sentence.token]
             logging.info("predicted {}, gold {}".format(predicted_labels, gold_labels))
             assert len(predicted_labels) == len(gold_labels), """Number of
                 predicted and gold labels don't match!!!"""
             acc += self._Accuracy(predicted_labels, gold_labels)
-        return acc / len(eval_data)
+        self.label_accuracy = acc / len(eval_data)
+        return self.label_accuracy
 
     def _Accuracy(self, prediction, gold):
         return 100 * sum(pl == gl for pl, gl in zip(prediction, gold)) / len(prediction)
