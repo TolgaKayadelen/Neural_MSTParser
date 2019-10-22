@@ -35,7 +35,7 @@ class DependencyLabeler:
         """
         self.label_perceptron.MakeAllFeatures(training_data)
 
-    def Label(self, sentence):
+    def PredictLabels(self, sentence):
         """Label the dependency arcs in a sentence.
         Args:
             sentence: sentence_pb2.Sentence(), without dependency labels.
@@ -46,16 +46,31 @@ class DependencyLabeler:
         assert sentence.HasField("length"), "Sentence must have length!!"
         predicted_labels = []
         for token in sentence.token:
-            print("token is {}".format(token.word))
-            print("selected head {}".format(token.selected_head.address))
+            #print("token is {}".format(token.word))
+            #print("selected head {}".format(token.selected_head.address))
             if token.selected_head.address == -1 or token.word == "ROOT":
               predicted_labels.append(u"")
               continue
-            # (TODO): we need to write another function to insert the labels.
             label, _, _ = self.label_perceptron.PredictLabel(sentence, token)
             predicted_labels.append(label)
         return predicted_labels
-
+    
+    def InsertLabels(self, sentence, labels):
+      """Insert the predicted labels into the sentence.
+      Args:
+        sentence: sentence_pb2.Sentence().
+        labels: list, list of labels predicted by the system.
+      Returns:
+        sentence: the sentence where the labels are inserted. 
+      """
+      assert len(sentence.token) == len(labels), "Mismatch between the number of tokens and labels!"
+      for i, token in enumerate(sentence.token):
+        token.ClearField("label")
+        if token.selected_head.address == -1 or token.word == "ROOT":
+          continue
+        token.label = labels[i]
+      return sentence
+      
     def Train(self, niters, training_data, test_data=None, approx=10):
         """Train the label perceptron."""
         for i in range(niters):
@@ -92,7 +107,7 @@ class DependencyLabeler:
             assert sentence.HasField("length"), "Sentence must have a length!"
             #common.PPrintTextProto(sentence)
             # label the sentence with the model
-            predicted_labels = self.Label(sentence)
+            predicted_labels = self.PredictLabels(sentence)
             #predicted_labels = [token.label for token in sentence.token]
             logging.info("predicted {}, gold {}".format(predicted_labels, gold_labels))
             assert len(predicted_labels) == len(gold_labels), """Number of
