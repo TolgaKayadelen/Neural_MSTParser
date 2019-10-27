@@ -20,7 +20,7 @@ sentence {
       address: 0
       arc_score: 0.0
     }
-    label: "ROOT"
+    label: "root"
     index: 1
   }
   token {

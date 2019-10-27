@@ -199,7 +199,8 @@ class ArcPerceptron(AveragedPerceptron):
                 continue
             #print("feature is {} {}".format(feature.name, feature.value))
             score += self.weights[feature.name][feature.value]
-            #print("weights for the features {}".format(self.weights[feature.name][feature.value]))
+            #print("weights for the features")    
+            #print("{}".format(self.weights[feature.name][feature.value]))
         return score
 
 
@@ -260,7 +261,8 @@ class ArcPerceptron(AveragedPerceptron):
                 pass
             else:
                 #print("updating the feature {}: {}".format(fname, fvalue))
-                #print("which has the weight of {}".format(self.weights[feature.name][feature.value]))
+                #print("which has the weight of")
+                #print("{}".format(self.weights[feature.name][feature.value]))
                 #if fname == 'head_0_pos' and fvalue == 'Verb':
                 #    print("weight before ", self.weights[fname][fvalue])
 

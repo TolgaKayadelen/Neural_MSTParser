@@ -2,7 +2,7 @@
 
 import unittest
 import os
-
+import numpy as np
 from parser import dependency_labeler as deplabel
 from google.protobuf import text_format
 from data.treebank import sentence_pb2
@@ -46,17 +46,32 @@ class DependencyLabelerTest(unittest.TestCase):
     labeler = deplabel.DependencyLabeler()
     labeler.MakeFeatures([self.en_train])
     labeler.Train(3, [self.en_train])
-    self.assertEqual(labeler.label_accuracy, 100.0)
+    self.assertEqual(labeler.label_accuracy_train, 100.0)
     print("Passed!")
 
   def testTrainTreebank(self):
     print("Running testTrain on a treebank..")
     labeler = deplabel.DependencyLabeler()
-    treebank = reader.ReadTreebankTextProto("data/UDv23/English/training/treebank_0_10.pbtxt")
-    training_data = treebank.sentence
+    treebank = reader.ReadTreebankTextProto("data/UDv23/Turkish/training/treebank_0_10.pbtxt")
+    training_data = list(treebank.sentence)
     labeler.MakeFeatures(training_data)
-    #(TODO): proceed from here. 
+    labeler.Train(5, training_data)
+    self.assertEqual(labeler.label_accuracy_train, 100.0)
+    print("Passed!")
+  
+  def testTrainAndEvaluateWithTestData(self):
+    print("Running test Train and Evaluate on different sets of data..")
+    labeler = deplabel.DependencyLabeler()
+    train_treebank = reader.ReadTreebankTextProto("data/UDv23/Turkish/training/treebank_train_0_50.pbtxt")
+    training_data = list(train_treebank.sentence)
+    test_treebank = reader.ReadTreebankTextProto("data/UDv23/Turkish/training/treebank_0_10.pbtxt")
+    test_data = list(test_treebank.sentence)
+    labeler.MakeFeatures(training_data)
+    #print(labeler.label_perceptron.labels) 
     print("Total Number of Features {}".format(labeler.label_perceptron.feature_count))
+    labeler.Train(5, training_data, test_data=test_data)
+    self.assertTrue(labeler.label_accuracy_test > 65.0)
+    print("Passed!")
   
   def testPredictLabels(self):
     print("Running testPredictLabels..")

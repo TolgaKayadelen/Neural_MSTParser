@@ -23,7 +23,8 @@ class DependencyLabeler:
         self.feature_opts = feature_opts
         self.feature_extractor = FeatureExtractor("labelfeatures")
         self.label_perceptron = LabelPerceptron(self.feature_opts)
-        self.label_accuracy = None
+        self.label_accuracy_train = None
+        self.label_accuracy_test = None
 
     def MakeFeatures(self, training_data):
         """Makes features from the training data.
@@ -81,40 +82,49 @@ class DependencyLabeler:
             #Evaluate the label perceptron
             train_acc = self._Evaluate(training_data)
             logging.info("LP train acc after iter {}: {}".format(i+1, train_acc))
-            raw_input("Press a key to continue: ")
+            #raw_input("Press a key to continue: ")
             if test_data:
-                logging.info("Evaluating LP on test data..")
-                test_acc = self._Evaluate(test_data)
+                test_acc = self._Evaluate(test_data, eval_type="test")
                 # Comment out if you're not interested in seeing test acc after
                 # each epoch.
                 logging.info("LP Test acc after iter {}: {}".format(i+1, test_acc))
-                raw_input("Press a key to continue: ")
+                #raw_input("Press a key to continue: ")
             #if train_acc == 100:
             #    break
             np.random.shuffle(training_data)
 
-    def _Evaluate(self, eval_data):
+    def _Evaluate(self, eval_data, eval_type="train"):
         """Evaluates the performance of label perceptron on data.
         Args:
             eval_data = list, list of sentence_pb2.Sentence() objects.
         Returns:
             accuracy of the label perceptron on the dataset.
         """
+        assert eval_type in ["train", "test"], "Invalid eval type!!"
+        if eval_type == "train":
+          logging.info("Evaluating on training data")
+        else:
+          logging.info("Evaluating on test data")
         acc = 0.0
         #print(len(eval_data))
         for sentence in eval_data:
+            #print(sentence.text)
             gold_labels = [token.label for token in sentence.token]
             assert sentence.HasField("length"), "Sentence must have a length!"
             #common.PPrintTextProto(sentence)
             # label the sentence with the model
             predicted_labels = self.PredictLabels(sentence)
             #predicted_labels = [token.label for token in sentence.token]
-            logging.info("predicted {}, gold {}".format(predicted_labels, gold_labels))
+            #logging.info("predicted {}, gold {}".format(predicted_labels, gold_labels))
             assert len(predicted_labels) == len(gold_labels), """Number of
                 predicted and gold labels don't match!!!"""
             acc += self._Accuracy(predicted_labels, gold_labels)
-        self.label_accuracy = acc / len(eval_data)
-        return self.label_accuracy
+        if eval_type == "train":
+          self.label_accuracy_train = acc / len(eval_data)
+          return self.label_accuracy_train
+        else:
+          self.label_accuracy_test = acc / len(eval_data)
+          return self.label_accuracy_test
 
     def _Accuracy(self, prediction, gold):
         return 100 * sum(pl == gl for pl, gl in zip(prediction, gold)) / len(prediction)
