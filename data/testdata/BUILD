@@ -72,6 +72,13 @@ filegroup(
 )
 
 filegroup(
+  name = "labeler",
+  srcs = glob([
+    "labeler/*.pbtxt",
+  ]),
+)
+
+filegroup(
 	name = "parser_main",
 	srcs = glob([
 		"parser_main/*.pbtxt",

@@ -11,30 +11,25 @@ from util import reader
 
 
 _TESTDATA_DIR = "data/testdata"
-_PARSER_DIR = os.path.join(_TESTDATA_DIR, "parser")
-# (TODO): remove this later.
-_PERCEPTRON_DIR = os.path.join(_TESTDATA_DIR, "perceptron")
-
+_LABELER_DIR = os.path.join(_TESTDATA_DIR, "labeler")
 
 def _read_file(path):
     with open(path, "r") as f:
         read = f.read()
     return read
 
-def _read_parser_test_data(basename):
-    path = os.path.join(_PARSER_DIR, "{}.pbtxt".format(basename))
-    return text_format.Parse(_read_file(path), sentence_pb2.Sentence())
-
-#(TODO): maybe remove this later.  
-def _read_perceptron_test_data(basename):
-    path = os.path.join(_PERCEPTRON_DIR, "{}.pbtxt".format(basename))
-    return text_format.Parse(_read_file(path), sentence_pb2.Sentence())
+def _read_labeler_test_data(basename, type_="sentence"):
+    path = os.path.join(_LABELER_DIR, "{}.pbtxt".format(basename))
+    if type_ == "sentence":
+      return text_format.Parse(_read_file(path), sentence_pb2.Sentence())
+    else:
+      return reader.ReadTreebankTextProto(path)
 
 class DependencyLabelerTest(unittest.TestCase):
   """Test for the dependency labeler module."""
   
   def setUp(self):
-    self.en_train = _read_perceptron_test_data("john_saw_mary")
+    self.en_train = _read_labeler_test_data("john_saw_mary")
     self.en_train.length = len(self.en_train.token)
     tokens = self.en_train.token
     labels = ["nsubj", "root", "obj"]
@@ -52,19 +47,19 @@ class DependencyLabelerTest(unittest.TestCase):
   def testTrainTreebank(self):
     print("Running testTrain on a treebank..")
     labeler = deplabel.DependencyLabeler()
-    treebank = reader.ReadTreebankTextProto("data/UDv23/Turkish/training/treebank_0_10.pbtxt")
+    treebank = _read_labeler_test_data("treebank_0_10", type_="treebank")
     training_data = list(treebank.sentence)
     labeler.MakeFeatures(training_data)
     labeler.Train(5, training_data)
-    self.assertEqual(labeler.label_accuracy_train, 100.0)
+    self.assertTrue(labeler.label_accuracy_train > 95.0)
     print("Passed!")
   
   def testTrainAndEvaluateWithTestData(self):
     print("Running test Train and Evaluate on different sets of data..")
     labeler = deplabel.DependencyLabeler()
-    train_treebank = reader.ReadTreebankTextProto("data/UDv23/Turkish/training/treebank_train_0_50.pbtxt")
+    train_treebank = _read_labeler_test_data("treebank_0_50", type_="treebank")
     training_data = list(train_treebank.sentence)
-    test_treebank = reader.ReadTreebankTextProto("data/UDv23/Turkish/training/treebank_0_10.pbtxt")
+    test_treebank = _read_labeler_test_data("treebank_0_10", type_="treebank")
     test_data = list(test_treebank.sentence)
     labeler.MakeFeatures(training_data)
     #print(labeler.label_perceptron.labels) 
@@ -96,7 +91,6 @@ class DependencyLabelerTest(unittest.TestCase):
     self.assertEqual(labels, [token.label for token in labeled.token])
     print("Passed!")
     
-
 
 if __name__ == "__main__":
   unittest.main()

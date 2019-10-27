@@ -56,6 +56,9 @@ py_test(
     "dependency_parser_lib",
     "dependency_labeler",
   ],
+  data = [
+    "//data/testdata:labeler",
+  ],
 )
 
 py_test(
