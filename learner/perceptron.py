@@ -454,12 +454,25 @@ class LabelPerceptron(AveragedPerceptron):
               else:
                   #print("feature is \n{}".format(f))
                   nr_iters_at_weight = self.iters - self._label_timestamps[class_][f.name][f.value]
+                  
+                  # uncomment if you want to see testing logs
+                  #if class_ == "nsubj" and f.name == 'head_0_word+head_0_pos' and f.value == 'ROOT_ROOT':
+                  #    print("nr_iters_here {}".format(nr_iters_at_weight))
+                  #    print("weights at these iters {}".format(self.label_weights[class_][f.name][f.value]))
+                  #    print("accumulated so far {}".format(self._label_accumulator[class_][f.name][f.value]))
+
                   self._label_accumulator[class_][f.name][f.value] += nr_iters_at_weight * self.label_weights[class_][f.name][f.value]
+                  #if class_ == "nsubj" and f.name == 'head_0_word+head_0_pos' and f.value == 'ROOT_ROOT':
+                  #    print("new accum for weight {}".format(self._label_accumulator[class_][f.name][f.value]))
+
                   temp = self.label_weights[class_][f.name][f.value]
-                  #print("feature updated from {} -> {}".format(temp, temp+w))
-                  #print("-----")
+                  #if class_ == "nsubj" and f.name == 'head_0_word+head_0_pos' and f.value == 'ROOT_ROOT':
+                  #  print("feature updated from {} -> {}".format(temp, temp+w))
+                  #  print("-----")
+  
                   self.label_weights[class_][f.name][f.value] += w
                   self._label_timestamps[class_][f.name][f.value] = self.iters
+                  
         #print("Incrementing features for {} by +1".format(truth))
         upt_features(truth, 1.0, features)
         #print("Decrementing features for {} by -1".format(prediction))
@@ -514,7 +527,13 @@ class LabelPerceptron(AveragedPerceptron):
               self.UpdateWeights(prediction=prediction, truth=token.label, features=features)
         #print("total correct labels: {}".format(correct))
         return correct
-              
+    
+    def AverageClassWeights(self):
+        print(self.labels)
+        class_weights = self.label_weights["cc"]
+        averaged = self.AverageWeights(class_weights)
+        print(averaged)
+  
     def _ConvertWeightsToProto(self, class_, type_="weights"):
         """Convert a weights vector for a class to featureset proto.
 

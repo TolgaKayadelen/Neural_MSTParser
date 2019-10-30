@@ -176,6 +176,42 @@ class LabelPerceptronTest(unittest.TestCase):
 
     def testTimeStampsAndAveraging(self):
         print("Running testTimeStampsAndAveraging..")
+        
+        # initialize some weights
+        percept = perceptron.LabelPerceptron()
+        percept.MakeAllFeatures([self.en_test])
+        class_ = "nsubj"
+        feat_name = "head_0_word+head_0_pos"
+        feat_value = "ROOT_ROOT"
+        feat_timestamp = 0
+        tokens = self.en_test.token
+        labels = ["nsubj", "root", "obj"]
+        for i, token in enumerate(tokens[1:]):
+          token.label = labels[i]
+        
+        init_w = 0.1
+        for key in percept.label_weights[class_].keys():
+          for value in percept.label_weights[class_][key].keys():
+            percept.label_weights[class_][key][value] += init_w
+            init_w += 0.1
+        
+        # set up a feature for tracking when it is changed.
+       
+        for i in range(3):
+          #print("accumulator at {}".format(i))
+          #print(percept._label_accumulator[class_][feat_name][feat_value])
+          #print("----")
+          feat_init_weight = percept.label_weights[class_][feat_name][feat_value]
+          cr = percept.Train([self.en_test])
+          if percept.label_weights[class_][feat_name][feat_value] != feat_init_weight:
+            print("Weight changed from {} -> {} at iter {}".format(
+              feat_init_weight, percept.label_weights[class_][feat_name][feat_value], percept.iters
+            ))
+            feat_timestamp = percept.iters
+            #print(feat_timestamp)
+        #print(percept.iters)
+        #print(percept.label_weights[class_][feat_name][feat_value])
+        print(percept._label_accumulator[class_][feat_name][feat_value])
         print("Passed!!")
 
 
