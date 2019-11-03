@@ -2,6 +2,7 @@
 
 import unittest
 import os
+import random
 
 from collections import defaultdict
 from collections import OrderedDict
@@ -34,9 +35,12 @@ class LabelPerceptronTest(unittest.TestCase):
 
     def setUp(self):
         self.en_test = _read_perceptron_test_data("john_saw_mary")
+        tokens = self.en_test.token
+        labels = ["nsubj", "root", "obj"]
+        for i, token in enumerate(tokens[1:]):
+          token.label = labels[i]
 
     def test_MakeAllFeatures(self):
-        import random
         print("Running test_MakeAllFeatures..")
         percept = perceptron.LabelPerceptron()
         percept.MakeAllFeatures([self.en_test])
@@ -153,13 +157,7 @@ class LabelPerceptronTest(unittest.TestCase):
         percept = perceptron.LabelPerceptron()
         percept.MakeAllFeatures([self.en_test])
         #common.PPrintWeights(percept.label_weights["cc"])
-        
-        # add the labels to the sentence.
         correct = 0
-        tokens = self.en_test.token
-        labels = ["nsubj", "root", "obj"]
-        for i, token in enumerate(tokens[1:]):
-          token.label = labels[i]
         for i in range(3):
           correct = percept.Train([self.en_test])
         tracked_feat = percept.label_weights["nsubj"]
@@ -174,46 +172,55 @@ class LabelPerceptronTest(unittest.TestCase):
         self.assertEqual(tracked_feat_tmstamp["bias"]["bias"], 4)
         print("Passed!!")
 
-    def testTimeStampsAndAveraging(self):
-        print("Running testTimeStampsAndAveraging..")
-        
-        # initialize some weights
+    def testFinalizeAccumulator(self):
+        print("Running testFinalizeAccumulator..")
         percept = perceptron.LabelPerceptron()
         percept.MakeAllFeatures([self.en_test])
-        class_ = "nsubj"
-        feat_name = "head_0_word+head_0_pos"
-        feat_value = "ROOT_ROOT"
-        feat_timestamp = 0
-        tokens = self.en_test.token
-        labels = ["nsubj", "root", "obj"]
-        for i, token in enumerate(tokens[1:]):
-          token.label = labels[i]
         
-        init_w = 0.1
-        for key in percept.label_weights[class_].keys():
-          for value in percept.label_weights[class_][key].keys():
-            percept.label_weights[class_][key][value] += init_w
-            init_w += 0.1
-        common.PPrintWeights(percept.label_weights[class_])
-        initial_weight = percept.label_weights[class_][feat_name][feat_value]
-        print("the initial weight for the feature is: {}".format(initial_weight))
         # set up a feature for tracking when it is changed.
+        # Use the commented values if you want to track a predetermined feature.
+        #r_class = "nsubj"
+        #r_feat_name = "head_0_word+head_0_pos"
+        #r_feat_val = "ROOT_ROOT"
+        r_class = random.choice(list(percept.label_weights))
+        print("random class {}".format(r_class))
+        r_feat_name = random.choice(list(percept.label_weights[r_class].keys()))
+        print("random_feat {}".format(r_feat_name))
+        r_feat_val = random.choice(list(percept.label_weights[r_class][r_feat_name].keys()))
+        print("random feat val {}".format(r_feat_val))
+
+        # initialize some weights
+        init_w = 0.1
+        for key in percept.label_weights[r_class].keys():
+          for value in percept.label_weights[r_class][key].keys():
+            percept.label_weights[r_class][key][value] += init_w
+            init_w += 0.1
+        initial_weight = percept.label_weights[r_class][r_feat_name][r_feat_val]
+        print("the initial weight for the feature is: {}".format(initial_weight))
+        
+        # simulate training
         for i in range(3):
-          #print("accumulator at {}".format(i))
-          #print(percept._label_accumulator[class_][feat_name][feat_value])
-          #print("----")
-          feat_init_weight = percept.label_weights[class_][feat_name][feat_value]
+          feat_init_weight = percept.label_weights[r_class][r_feat_name][r_feat_val]
           cr = percept.Train([self.en_test])
-          if percept.label_weights[class_][feat_name][feat_value] != feat_init_weight:
+          if percept.label_weights[r_class][r_feat_name][r_feat_val] != feat_init_weight:
             print("Weight changed from {} -> {} at iter {}".format(
-              feat_init_weight, percept.label_weights[class_][feat_name][feat_value], percept.iters
+              feat_init_weight, percept.label_weights[r_class][r_feat_name][r_feat_val], percept.iters
             ))
-            feat_timestamp = percept.iters
-            #print(feat_timestamp)
+            print("accumulator so far {}".format(percept._label_accumulator[r_class][r_feat_name][r_feat_val]))
         print("total iters: {}".format(percept.iters))
-        print("latest weight: {}".format(percept.label_weights[class_][feat_name][feat_value]))
-        # here you need a final update to the label accumulator.
-        percept.FinalizeAccumulator() 
+        print("latest weight: {}".format(percept.label_weights[r_class][r_feat_name][r_feat_val]))
+        print("latest updated acc {}".format(percept._label_accumulator[r_class][r_feat_name][r_feat_val]))
+        
+        # do a final update to the label accumulator.
+        end_timestamp = percept._label_timestamps[r_class][r_feat_name][r_feat_val]
+        end_weight = percept.label_weights[r_class][r_feat_name][r_feat_val]
+        end_acc = percept._label_accumulator[r_class][r_feat_name][r_feat_val]
+        final_acc = (percept.iters - end_timestamp) * end_weight + end_acc
+        print("final acc {}".format(final_acc)) 
+        percept.FinalizeAccumulator()
+        # use the below to track a feature.
+        #percept.FinalizeAccumulatorForSingle(r_class, r_feat_name, r_feat_val)
+        self.assertEqual(final_acc, percept._label_accumulator[r_class][r_feat_name][r_feat_val])
         print("Passed!!")
 
 

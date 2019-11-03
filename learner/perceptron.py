@@ -522,17 +522,35 @@ class LabelPerceptron(AveragedPerceptron):
         print(averaged)
     
     def FinalizeAccumulator(self):
-      """Finalizes the accumulator values for all features at the end of training."""
+      """Finalizes the accumulator values for all features at the end of training.
+      
+      The client module that controls the training should call this function after 
+      training is over. 
+      """
+      for class_ in self.labels:
+        for key in self._label_accumulator[class_].keys():
+          for value in self._label_accumulator[class_][key].keys():
+            nr_iters_at_weight = self.iters - self._label_timestamps[class_][key][value]
+            self._label_accumulator[class_][key][value] += (
+              nr_iters_at_weight * self.label_weights[class_][key][value])
+              
+    # TODO: remove this later.
+    def FinalizeAccumulatorForSingle(self, class_name, feat_name, feat_value):
+      """Finalizes the accumulator values for all features at the end of training.
+      
+      The client module that controls the training should call this function after 
+      training is over. 
+      """
       
       # NOTE: uncomment the comments if you want to track a feature.
       for class_ in self.labels:
-        if not class_ == "nsubj":
+        if not class_ == class_name:
           continue
         for key in self._label_accumulator[class_].keys():
-          if not key == "head_0_word+head_0_pos":
+          if not key == feat_name:
             continue
           for value in self._label_accumulator[class_][key].keys():
-            if not value == "ROOT_ROOT":
+            if not value == feat_value:
               continue
             accumulator_before = self._label_accumulator[class_][key][value]
             print("accumulator before final update {}".format(accumulator_before))
