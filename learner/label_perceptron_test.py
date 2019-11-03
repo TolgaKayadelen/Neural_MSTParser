@@ -194,9 +194,10 @@ class LabelPerceptronTest(unittest.TestCase):
           for value in percept.label_weights[class_][key].keys():
             percept.label_weights[class_][key][value] += init_w
             init_w += 0.1
-        
+        common.PPrintWeights(percept.label_weights[class_])
+        initial_weight = percept.label_weights[class_][feat_name][feat_value]
+        print("the initial weight for the feature is: {}".format(initial_weight))
         # set up a feature for tracking when it is changed.
-       
         for i in range(3):
           #print("accumulator at {}".format(i))
           #print(percept._label_accumulator[class_][feat_name][feat_value])
@@ -209,9 +210,10 @@ class LabelPerceptronTest(unittest.TestCase):
             ))
             feat_timestamp = percept.iters
             #print(feat_timestamp)
-        #print(percept.iters)
-        #print(percept.label_weights[class_][feat_name][feat_value])
-        print(percept._label_accumulator[class_][feat_name][feat_value])
+        print("total iters: {}".format(percept.iters))
+        print("latest weight: {}".format(percept.label_weights[class_][feat_name][feat_value]))
+        # here you need a final update to the label accumulator.
+        percept.FinalizeAccumulator() 
         print("Passed!!")
 
 

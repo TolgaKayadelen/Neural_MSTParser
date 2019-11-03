@@ -56,7 +56,12 @@ class AveragedPerceptron(object):
 
 
     def AverageWeights(self, weights):
-        """Average the weights over all iterations."""
+        """Average the weights over all iterations.
+      Args: 
+        weights: defaultdict(dict), the accumulated weights for the features.
+      Returns:
+        weights: defaultdict(dict), the averaged weights.
+      """
         assert self.iters > 0, "Cannot average weights"
         for name, value in weights.items():
             if isinstance(value, dict):
@@ -477,24 +482,7 @@ class LabelPerceptron(AveragedPerceptron):
         upt_features(truth, 1.0, features)
         #print("Decrementing features for {} by -1".format(prediction))
         upt_features(prediction, -1.0, features)
-        
-    
-    def UpdateAccumulator(self):
-        """Update the accumulator for each weight in each class after each iteration.
-        
-        This function is for test purposes only and makes sure that the accumulator update
-        from within the update weights function works as expected. This is a more expensive
-        version of the accumulator update in UpdateWeights and should not be used other
-        than for testing. 
-      
-        If you want to use this method, you should remove the label_accumulator update from
-        the above function.
-        """
-        for class_ in self.labels:
-            for key in self._label_accumulator[class_].keys():
-                for value in self._label_accumulator[class_][key].keys():
-                    self._label_accumulator[class_][key][value] += self.label_weights[class_][key][value]
-    
+
     def IncrementIters(self):
         """Increments the number of iterations by 1.
       
@@ -504,7 +492,6 @@ class LabelPerceptron(AveragedPerceptron):
         """
         self.iters += 1
 
-    
     def Train(self, training_data):
         """Trains label perceptron for one epoch.
         Args: 
@@ -533,6 +520,31 @@ class LabelPerceptron(AveragedPerceptron):
         class_weights = self.label_weights["cc"]
         averaged = self.AverageWeights(class_weights)
         print(averaged)
+    
+    def FinalizeAccumulator(self):
+      """Finalizes the accumulator values for all features at the end of training."""
+      
+      # NOTE: uncomment the comments if you want to track a feature.
+      for class_ in self.labels:
+        if not class_ == "nsubj":
+          continue
+        for key in self._label_accumulator[class_].keys():
+          if not key == "head_0_word+head_0_pos":
+            continue
+          for value in self._label_accumulator[class_][key].keys():
+            if not value == "ROOT_ROOT":
+              continue
+            accumulator_before = self._label_accumulator[class_][key][value]
+            print("accumulator before final update {}".format(accumulator_before))
+            nr_iters_at_weight = self.iters - self._label_timestamps[class_][key][value]
+            print("nr iters at this weight: {}".format(nr_iters_at_weight))
+            print("weight is {}".format(self.label_weights[class_][key][value]))
+            self._label_accumulator[class_][key][value] += nr_iters_at_weight * self.label_weights[class_][key][value]
+            print("accumulator after final update: {}".format(self._label_accumulator[class_][key][value]))
+            print("which is {} * {} + {}".format(nr_iters_at_weight, self.label_weights[class_][key][value],
+            accumulator_before))
+            print("the averaged weight would be {}".format(
+              self._label_accumulator[class_][key][value] / self.iters))
   
     def _ConvertWeightsToProto(self, class_, type_="weights"):
         """Convert a weights vector for a class to featureset proto.
