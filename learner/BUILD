@@ -87,14 +87,6 @@ py_test(
   name = "label_perceptron_test",
   srcs = ["label_perceptron_test.py"],
   deps = [
-    ":perceptron_lib",
-  ],
-)
-
-py_test(
-  name = "label_perceptron_test2",
-  srcs = ["label_perceptron_test2.py"],
-  deps = [
     ":label_perceptron",
     ":perceptron_lib",
   ],
