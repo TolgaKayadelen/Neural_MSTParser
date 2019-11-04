@@ -3,7 +3,7 @@
 """Dependency Labeler."""
 
 import numpy as np
-from learner.perceptron import LabelPerceptron
+from learner.label_perceptron import LabelPerceptron
 from data.treebank import sentence_pb2
 from google.protobuf import text_format
 from learner import featureset_pb2

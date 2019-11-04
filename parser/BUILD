@@ -13,7 +13,7 @@ py_binary(
   name = "dependency_labeler",
   srcs = ["dependency_labeler.py"],
   deps = [
-    "dependency_parser_lib",
+    "//learner:label_perceptron",
   ],
 )
 
