@@ -207,10 +207,18 @@ class LabelPerceptron(AveragedPerceptron):
         return correct
     
     def AverageClassWeights(self):
-        print(self.labels)
-        class_weights = self.label_weights["cc"]
-        averaged = self.AverageWeights(class_weights)
-        print(averaged)
+        for class_ in self.labels:
+          for key in self.label_weights[class_].keys():
+            for value in self.label_weights[class_][key].keys():
+              if class_ == "nsubj" and key == "head_0_pos" and value == "Verb":
+                print("weight before {}".format(self.label_weights[class_][key][value]))
+              self.label_weights[class_][key][value] = self._label_accumulator[class_][key][value] / self.iters
+              if class_ == "nsubj" and key == "head_0_pos" and value == "Verb":
+                print("accumulated weight {}".format(self._label_accumulator[class_][key][value]))
+                print("total iters = {}".format(self.iters))
+                print("weight after = {}".format(self.label_weights[class_][key][value]))
+                raw_input("Press a key to coninue..")
+          
     
     def FinalizeAccumulator(self):
       """Finalizes the accumulator values for all features at the end of training.
@@ -224,6 +232,10 @@ class LabelPerceptron(AveragedPerceptron):
             nr_iters_at_weight = self.iters - self._label_timestamps[class_][key][value]
             self._label_accumulator[class_][key][value] += (
               nr_iters_at_weight * self.label_weights[class_][key][value])
+            # update the timestamps to show that the latest update to the 
+            # accumulator has been done.
+            # TODO: consider if this is optional or not.
+            self._label_timestamps[class_][key][value] = self.iters
               
     # TODO: remove this later.
     def FinalizeAccumulatorForSingle(self, class_name, feat_name, feat_value):

@@ -222,6 +222,34 @@ class LabelPerceptronTest(unittest.TestCase):
         #percept.FinalizeAccumulatorForSingle(r_class, r_feat_name, r_feat_val)
         self.assertEqual(final_acc, percept._label_accumulator[r_class][r_feat_name][r_feat_val])
         print("Passed!!")
+      
+
+    def testAverageClassWeights(self):
+      percept = label_perceptron.LabelPerceptron()
+      percept.MakeAllFeatures([self.en_test])
+      init_w = 0.1
+      for class_ in percept.labels:
+        for key in percept.label_weights[class_].keys():
+          for value in percept.label_weights[class_][key].keys():
+            percept.label_weights[class_][key][value] += init_w
+            init_w += 0.1
+      
+      # simulate training
+      for i in range(3):
+        cr = percept.Train([self.en_test])
+      percept.FinalizeAccumulator()
+      percept.AverageClassWeights()
+      
+      for class_ in percept.labels:
+        for key in percept.label_weights[class_].keys():
+          for value in percept.label_weights[class_][key].keys():
+            self.assertEqual(
+              percept.label_weights[class_][key][value],
+              percept._label_accumulator[class_][key][value] / percept.iters)
+          
+      
+      
+    
 
 if __name__ == "__main__":
   unittest.main()
