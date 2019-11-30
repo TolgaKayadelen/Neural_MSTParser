@@ -125,17 +125,10 @@ class LabelPerceptronTest(unittest.TestCase):
         head = common.GetTokenByAddress(self.en_test.token, token.selected_head.address)
         features = percept._extractor.GetFeatures(self.en_test, head=head, child=token)
         # make sure to add the bias to the features as well. 
-        features.feature.add(name="bias", value="bias")   
-        #print(features)        
+        features.feature.add(name="bias", value="bias")       
         for i in range(5):
             percept.IncrementIters()
-            #print("iteration {}".format(percept.iters))
-            #percept.UpdateAccumulator()
             percept.UpdateWeights(predicted, truth, features)        
-        # Uncomment if needed.
-        #prediction_class_features = percept._ConvertWeightsToProto(predicted)
-        #prediction_class_accumulator = percept._ConvertWeightsToProto(predicted, "accumulator")
-        #prediction_class_tmstamp = percept._ConvertWeightsToProto(predicted, "timestamps")
         
         # check true class weights
         self.assertEqual(percept.label_weights[truth]["bias"]["bias"], 5.0)
@@ -176,12 +169,6 @@ class LabelPerceptronTest(unittest.TestCase):
         print("Running testFinalizeAccumulator..")
         percept = label_perceptron.LabelPerceptron()
         percept.MakeAllFeatures([self.en_test])
-        
-        # set up a feature for tracking when it is changed.
-        # Use the commented values if you want to track a predetermined feature.
-        #r_class = "nsubj"
-        #r_feat_name = "head_0_word+head_0_pos"
-        #r_feat_val = "ROOT_ROOT"
         r_class = random.choice(list(percept.label_weights))
         print("random class {}".format(r_class))
         r_feat_name = random.choice(list(percept.label_weights[r_class].keys()))
@@ -208,8 +195,10 @@ class LabelPerceptronTest(unittest.TestCase):
             ))
             print("accumulator so far {}".format(percept._label_accumulator[r_class][r_feat_name][r_feat_val]))
         print("total iters: {}".format(percept.iters))
-        print("latest weight: {}".format(percept.label_weights[r_class][r_feat_name][r_feat_val]))
-        print("latest updated acc {}".format(percept._label_accumulator[r_class][r_feat_name][r_feat_val]))
+        print("latest weight: {}".format(
+          percept.label_weights[r_class][r_feat_name][r_feat_val]))
+        print("latest updated acc {}".format(
+          percept._label_accumulator[r_class][r_feat_name][r_feat_val]))
         
         # do a final update to the label accumulator.
         end_timestamp = percept._label_timestamps[r_class][r_feat_name][r_feat_val]
@@ -218,13 +207,12 @@ class LabelPerceptronTest(unittest.TestCase):
         final_acc = (percept.iters - end_timestamp) * end_weight + end_acc
         print("final acc {}".format(final_acc)) 
         percept.FinalizeAccumulator()
-        # use the below to track a feature.
-        #percept.FinalizeAccumulatorForSingle(r_class, r_feat_name, r_feat_val)
         self.assertEqual(final_acc, percept._label_accumulator[r_class][r_feat_name][r_feat_val])
         print("Passed!!")
       
 
     def testAverageClassWeights(self):
+      print("Running testAverageClassWeights..")
       percept = label_perceptron.LabelPerceptron()
       percept.MakeAllFeatures([self.en_test])
       init_w = 0.1
@@ -246,6 +234,7 @@ class LabelPerceptronTest(unittest.TestCase):
             self.assertEqual(
               percept.label_weights[class_][key][value],
               percept._label_accumulator[class_][key][value] / percept.iters)
+      print("Passed!!")
           
       
       

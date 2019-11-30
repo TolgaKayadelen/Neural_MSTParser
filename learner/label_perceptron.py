@@ -55,8 +55,7 @@ class LabelPerceptron(AveragedPerceptron):
             self._label_accumulator[class_] = deepcopy(self._accumulator)
             self._label_accumulator[class_]["bias"].update({"bias":0.0})
 
-        # Sanity check that the weight vectors are initialized properly for
-        # labels
+        # Sanity check that weight vectors are initialized properly for labels.
         random_class = random.choice(list(self.label_weights))
         #print(random_class)
         assert (self.feature_count == sum(
@@ -76,7 +75,6 @@ class LabelPerceptron(AveragedPerceptron):
                 head = common.GetTokenByAddress(
                     sentence.token, token.selected_head.address
                 )
-                #print("token {}".format(token))
                 self.InitializeWeights(self._extractor.GetFeatures(
                     sentence,
                     head=head,
@@ -92,9 +90,9 @@ class LabelPerceptron(AveragedPerceptron):
             features = featureset_pb2.FeatureSet()
         """
         class_weights = self.label_weights[class_]
-        # add the bias first.
+        # add the bias weight first.
         score = class_weights["bias"]["bias"]
-        # add the other features.
+        # add other feature weights.
         for feature in features.feature:
             if feature.value not in class_weights[feature.name]:
                 continue
@@ -106,24 +104,18 @@ class LabelPerceptron(AveragedPerceptron):
         Args:
             token: sentence_pb2.Token()
         Returns:
-            label: the label which has the highest score
+            label: the label which has the highest score.
             features: featureset_pb2.Featureset(), features used in scoring and prediction.
             best_score: the score for the winning class.
         """
         best_score = -100000
         head = common.GetTokenByAddress(sentence.token, token.selected_head.address)
-        #print("token is {}".format(token))
-        #print("head is {}".format(head))
         features = self._extractor.GetFeatures(sentence, head, token)
         for class_ in self.labels:
-            #print("scoring class: {}".format(class_))
             class_score = self.Score(class_, features)
-            #print("class score: {}".format(class_score))
-            #print("---")
             if class_score > best_score:
                 best_score = class_score
                 label = class_
-        #print("best label: {}, best score: {}".format(label, best_score))
         return label, features, best_score
 
 
@@ -132,11 +124,9 @@ class LabelPerceptron(AveragedPerceptron):
       
         If the active features don't give you the correct label, increase those
         features in self.label_weights[correct_label] by 1, and penalize the ones
-        in self.label_weights[wrong_label] by -1.
-        
-        While doing weight update, you first increment iter, then increment accumulator,
-        then increment the weight for the feature.
-      
+        in self.label_weights[wrong_label] by -1. While doing weight update, you
+        first increment iter, than increment accumulator, then increment the weight
+        for the feature.
         Args:
           prediction: the predicted dependency label for the token.
           truth: the correct dependency label for the token.
@@ -168,16 +158,14 @@ class LabelPerceptron(AveragedPerceptron):
   
               self.label_weights[class_][f.name][f.value] += w
               self._label_timestamps[class_][f.name][f.value] = self.iters
-                  
-        #print("Incrementing features for {} by +1".format(truth))
+
         upt_features(truth, 1.0, features)
-        #print("Decrementing features for {} by -1".format(prediction))
         upt_features(prediction, -1.0, features)
 
     def IncrementIters(self):
         """Increments the number of iterations by 1.
       
-        During training we call the IncrementIters method for each token in
+        During training we call the IncrementIters() method for each token in
         each sentence, therefore each token is one iteration for the Label
         Perceptron.
         """
@@ -186,14 +174,14 @@ class LabelPerceptron(AveragedPerceptron):
     def Train(self, training_data):
         """Trains label perceptron for one epoch.
         Args: 
-          training_data: list, list of sentence_pb2.Sentence.
+          training_data: list of sentence_pb2.Sentence.
         Returns: 
           correct: the number of correct labels in the training data.
         """
         correct = 0
         for sentence in training_data:
           for token in sentence.token:
-            if token.word == "ROOT":
+            if token.word == "ROOT" or token.selected_head.address == -1:
               continue
             self.IncrementIters()
             prediction, features, _ = self.PredictLabel(sentence, token)
@@ -203,21 +191,20 @@ class LabelPerceptron(AveragedPerceptron):
             if prediction != token.label:
               #print("prediction is {}, true label is {}".format(prediction, token.label))
               self.UpdateWeights(prediction=prediction, truth=token.label, features=features)
-        #print("total correct labels: {}".format(correct))
         return correct
     
     def AverageClassWeights(self):
         for class_ in self.labels:
           for key in self.label_weights[class_].keys():
             for value in self.label_weights[class_][key].keys():
-              if class_ == "nsubj" and key == "head_0_pos" and value == "Verb":
-                print("weight before {}".format(self.label_weights[class_][key][value]))
+              # if class_ == "nsubj" and key == "head_0_pos" and value == "Verb":
+              #  print("weight before {}".format(self.label_weights[class_][key][value]))
               self.label_weights[class_][key][value] = self._label_accumulator[class_][key][value] / self.iters
-              if class_ == "nsubj" and key == "head_0_pos" and value == "Verb":
-                print("accumulated weight {}".format(self._label_accumulator[class_][key][value]))
-                print("total iters = {}".format(self.iters))
-                print("weight after = {}".format(self.label_weights[class_][key][value]))
-                raw_input("Press a key to coninue..")
+              # if class_ == "nsubj" and key == "head_0_pos" and value == "Verb":
+              #  print("accumulated weight {}".format(self._label_accumulator[class_][key][value]))
+              #  print("total iters = {}".format(self.iters))
+              #  print("weight after = {}".format(self.label_weights[class_][key][value]))
+              #  raw_input("Press a key to coninue..")
           
     
     def FinalizeAccumulator(self):
@@ -236,36 +223,6 @@ class LabelPerceptron(AveragedPerceptron):
             # accumulator has been done.
             # TODO: consider if this is optional or not.
             self._label_timestamps[class_][key][value] = self.iters
-              
-    # TODO: remove this later.
-    def FinalizeAccumulatorForSingle(self, class_name, feat_name, feat_value):
-      """Finalizes the accumulator values for all features at the end of training.
-      
-      The client module that controls the training should call this function after 
-      training is over. 
-      """
-      
-      # NOTE: uncomment the comments if you want to track a feature.
-      for class_ in self.labels:
-        if not class_ == class_name:
-          continue
-        for key in self._label_accumulator[class_].keys():
-          if not key == feat_name:
-            continue
-          for value in self._label_accumulator[class_][key].keys():
-            if not value == feat_value:
-              continue
-            accumulator_before = self._label_accumulator[class_][key][value]
-            print("accumulator before final update {}".format(accumulator_before))
-            nr_iters_at_weight = self.iters - self._label_timestamps[class_][key][value]
-            print("nr iters at this weight: {}".format(nr_iters_at_weight))
-            print("weight is {}".format(self.label_weights[class_][key][value]))
-            self._label_accumulator[class_][key][value] += nr_iters_at_weight * self.label_weights[class_][key][value]
-            print("accumulator after final update: {}".format(self._label_accumulator[class_][key][value]))
-            print("which is {} * {} + {}".format(nr_iters_at_weight, self.label_weights[class_][key][value],
-            accumulator_before))
-            print("the averaged weight would be {}".format(
-              self._label_accumulator[class_][key][value] / self.iters))
   
     def _ConvertWeightsToProto(self, class_, type_="weights"):
         """Convert a weights vector for a class to featureset proto.
