@@ -80,11 +80,11 @@ class DependencyLabeler:
             #Train label perceptron for one epoch.
             correct = self.label_perceptron.Train(training_data)
             #Evaluate the label perceptron
-            train_acc = self._Evaluate(training_data)
+            train_acc = self.Evaluate(training_data)
             logging.info("LP train acc after iter {}: {}".format(i+1, train_acc))
             #raw_input("Press a key to continue: ")
             if test_data:
-                test_acc = self._Evaluate(test_data, eval_type="test")
+                test_acc = self.Evaluate(test_data, eval_type="test")
                 # Comment out if you're not interested in seeing test acc after
                 # each epoch.
                 logging.info("LP Test acc after iter {}: {}".format(i+1, test_acc))
@@ -93,10 +93,11 @@ class DependencyLabeler:
             #    break
             np.random.shuffle(training_data)
 
-    def _Evaluate(self, eval_data, eval_type="train"):
+    def Evaluate(self, eval_data, eval_type="train"):
         """Evaluates the performance of label perceptron on data.
         Args:
             eval_data = list, list of sentence_pb2.Sentence() objects.
+            eval_type = whether we evaluate on training or test data.
         Returns:
             accuracy of the label perceptron on the dataset.
         """

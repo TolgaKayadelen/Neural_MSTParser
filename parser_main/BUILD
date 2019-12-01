@@ -29,6 +29,7 @@ py_library(
 	srcs = ["train.py"],
 	deps = [
 		"//parser:dependency_parser_lib",
+    "//parser:dependency_labeler",
 		"//data/treebank:treebank_py_pb2",
 	],
 

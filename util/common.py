@@ -256,8 +256,8 @@ def CompareWeights(weights1, weights2):
     print(zip(list(weights1_.feature), list(weights2_.feature)))
 
 # type: weights util
-def ValidateAveragedWeights(unaveraged, accumulated, averaged, iters):
-    """Checks that averaging is valid and correct."""
+def ValidateAveragingArcPer(unaveraged, accumulated, averaged, iters):
+    """Checks that averaging is valid and correct for the arc perceptron."""
     for name in unaveraged.keys():
         for value in unaveraged[name].keys():
             assert averaged[name][value] == accumulated[name][value] / iters
@@ -277,6 +277,14 @@ def ValidateAveragedWeights(unaveraged, accumulated, averaged, iters):
                                                     accumulated_weights_for_feat,
                                                     iters))
     '''
+
+def ValidateAveragingLabelPer(unaveraged, accumulated, averaged, iters):
+  """Checks that averaging is valid and correct for the label perceptron."""
+  for class_ in unaveraged.keys():
+    for feat_name in unaveraged[class_].keys():
+      for feat_val in unaveraged[class_][feat_name].keys():
+        assert(averaged[class_][feat_name][feat_val] == 
+          accumulated[class_][feat_name][feat_val] / iters)
 
 # type: featureset proto util
 def GetFeatureWeights(weights, features):

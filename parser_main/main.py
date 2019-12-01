@@ -4,7 +4,7 @@
 
 import argparse
 from parser_main.parse import parse
-from parser_main.train import train
+from parser_main.train import train_parser, train_labeler
 from parser_main.evaluate import evaluate_parser
 
 
@@ -12,6 +12,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", choices=["train", "evaluate", "plot", "parse"], 
                         help="Choose action for the parser.")
+    parser.add_argument("--parser", type=bool, help="Whether to train a dependency parser.")
+    parser.add_argument("--labeler", type=bool, help="Whether to train a dependency labeler.")
     
     # Data args.
     parser.add_argument("--language", type=str, choices=["English", "Turkish"],
@@ -53,10 +55,15 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    if args.mode == "train":
-        train(args)
+    if args.mode == "train" and args.parser and not args.labeler:
+      train_parser(args)
+    elif args.mode == "train" and args.labeler and not args.parser:
+      train_labeler(args)
+    elif args.mode == "train" and args.parser and args.labeler:
+      train_parser(args)
+      train_labeler(args)
     elif args.mode == "parse":
-        parse(args)
+      parse(args)
     elif args.mode == "evaluate":
-    	evaluate_parser(args)
+      evaluate_parser(args)
     

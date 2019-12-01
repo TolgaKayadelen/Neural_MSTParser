@@ -1,16 +1,18 @@
 
 # -*- coding: utf-8 -*-
 
-"""Module to train sentences with dependency parser."""
+"""Module to train a dependency parser."""
 
 import argparse
 import os
 import pickle
+import random
 import tempfile
 from copy import deepcopy
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
 from parser.dependency_parser import DependencyParser
+from parser.dependency_labeler import DependencyLabeler
 from parser_main.parse import parse
 from util import common
 from util import reader
@@ -78,7 +80,54 @@ def _get_size(object):
     gigabytes = bytes / 1e9
     return gigabytes
 
-def train(args):
+
+def train_labeler(args):
+  """Trains a dependency labeler.
+  Args: 
+    args: the command line arguments. 
+  """
+  training_data, test_data = _get_data(args)
+  logging.info("Training data size {}".format(len(training_data)))
+  if len(test_data) > 0:
+    logging.info("Test data size {}".format(len(test_data)))
+  labeler = DependencyLabeler()
+  labeler.MakeFeatures(training_data)
+  logging.info("Number of features for dependency labeler {}".format(
+    labeler.label_perceptron.feature_count
+  ))
+  
+  # Train
+  labeler.Train(args.epochs, training_data, test_data)
+  
+  # Evaluate
+  print("\n*******----------------------*******")
+  logging.info("Start Evaluation on Eval Data")
+  logging.info("Weights not averaged")
+  if not test_data:
+    test_data = training_data
+    eval_type = "train"
+  else:
+    eval_type = "test"
+  test_acc_unavg = labeler.Evaluate(test_data, eval_type=eval_type)
+  logging.info("Accuracy before averaging weights on eval: {}".format(test_acc_unavg))
+  
+  # Average the weights and evaluate again.
+  logging.info("Averaging label perceptron weights and evaluating on eval data..")
+  unaveraged_weights = deepcopy(labeler.label_perceptron.label_weights)
+  labeler.label_perceptron.FinalizeAccumulator()
+  labeler.label_perceptron.AverageClassWeights()
+  
+  common.ValidateAveragingLabelPer(
+    unaveraged_weights,
+    labeler.label_perceptron._label_accumulator,
+    labeler.label_perceptron.label_weights,
+    labeler.label_perceptron.iters
+  )
+  
+  test_acc_avg = labeler.Evaluate(test_data, eval_type=eval_type)
+  logging.info("Accuracy after averaging weights on eval {}".format(test_acc_avg))
+
+def train_parser(args):
     """Trains a dependency parser.
 
     Args:
@@ -102,56 +151,59 @@ def train(args):
 
     # Make the model
     # TODO: add feature_opts to the model call.
-    model = DependencyParser(decoding="mst")
+    parser = DependencyParser(decoding="mst")
     if args.load:
         logging.info("Loading model from {}".format(args.model))
-        model.Load(args.model)
+        parser.Load(args.model)
     else:
         logging.info("Creating featureset..")
-        model.MakeFeatures(training_data)
-    logging.info("Number of features: {}".format(model.arc_perceptron.feature_count))
+        parser.MakeFeatures(training_data)
+    logging.info("Number of features for parser: {}".format(
+      parser.arc_perceptron.feature_count))
     raw_input("Press any key to continue: ")
     #print("Memory used by model: {} GB.".format(_get_size(model)))
 
 
     # Train
-    model.Train(args.epochs, training_data, test_data=test_data, approx=50)
+    parser.Train(args.epochs, training_data, test_data=test_data, approx=50)
 
     # Evaluate
     print("\n*******----------------------*******")
-    logging.info("Start Evaluation on Test Data..")
+    logging.info("Start Evaluation on Eval Data..")
     logging.info("Weights not averaged..")
     if not test_data:
         test_data = training_data
 
-    test_acc_unavg = model._Evaluate(test_data)
-    logging.info("Accuracy before averaging weights on test: {}".format(test_acc_unavg))
+    test_acc_unavg = parser._Evaluate(test_data)
+    logging.info("Accuracy before averaging weights on eval: {}".format(test_acc_unavg))
     raw_input("Press any key to continue: ")
 
     # Average the weights and evaluate again
-    logging.info("Averaging perceptron weights and evaluating on test..")
-    unaveraged_weights = deepcopy(model.arc_perceptron.weights)
-    accumulated_weights = deepcopy(model.arc_perceptron._accumulator)
-    averaged_weights = model.arc_perceptron.AverageWeights(accumulated_weights)
-    iters = model.arc_perceptron.iters
+    logging.info("Averaging arc perceptron weights and evaluating on eval..")
+    unaveraged_weights = deepcopy(parser.arc_perceptron.weights)
+    accumulated_weights = deepcopy(parser.arc_perceptron._accumulator)
+    averaged_weights = parser.arc_perceptron.AverageWeights(accumulated_weights)
+    iters = parser.arc_perceptron.iters
 
     # Sanity check to ensure averaging worked as intended.
-    common.ValidateAveragedWeights(unaveraged_weights,
-                                   model.arc_perceptron._accumulator,
-                                   averaged_weights,
-                                   iters)
-    model.arc_perceptron.weights = deepcopy(averaged_weights)
+    common.ValidateAveragingArcPer(
+      unaveraged_weights,
+      parser.arc_perceptron._accumulator,
+      averaged_weights,
+      iters
+    )
+    parser.arc_perceptron.weights = deepcopy(averaged_weights)
     logging.info("Evaluating after Averaged Weights..")
     #TODO: make model._Evaluate public.
-    test_acc_avg = model._Evaluate(test_data)
+    test_acc_avg = parser._Evaluate(test_data)
     raw_input("Press any key to continue: ")
-    logging.info("Accuracy after averaging weights on dev: {}".format(test_acc_avg))
+    logging.info("Accuracy after averaging weights on eval: {}".format(test_acc_avg))
 
-    #Save the model.
+    # Save the model.
     logging.info("Saving model to {}".format(args.model))
     raw_input("Press any key to continue: ")
     test_data_path = args.test_data if args.test_data else args.train_data
-    model.Save(
+    parser.Save(
         args.model, train_data_path=args.train_data,
         test_data_path=test_data_path, nr_epochs=args.epochs,
         accuracy=dict(

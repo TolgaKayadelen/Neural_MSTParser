@@ -2,7 +2,7 @@
 
 __Usage Notes__
 
-- Training a new model and test on trianing data
+- Training a new model and test on training data
   - Train the model and test on a subportion of the training data. Use --split flag to determine which subpart of the training
   data will be used for testing.
 ```

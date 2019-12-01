@@ -181,7 +181,7 @@ class LabelPerceptron(AveragedPerceptron):
         correct = 0
         for sentence in training_data:
           for token in sentence.token:
-            if token.word == "ROOT" or token.selected_head.address == -1:
+            if token.word.lower() == "root" or token.selected_head.address == -1 or token.index == 0:
               continue
             self.IncrementIters()
             prediction, features, _ = self.PredictLabel(sentence, token)
