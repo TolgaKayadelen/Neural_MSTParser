@@ -33,6 +33,7 @@ py_library(
 	srcs = ["feature_extractor.py"],
   data = [
     ":features",
+    "//data/testdata:test_features",
   ],
 	deps = [
 		"//data/treebank:sentence_py_pb2",

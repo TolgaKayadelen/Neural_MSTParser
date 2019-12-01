@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Feature Extractor for the Neural MST Dependency Parser.
-
-Takes two tokens in a sentence and extracts features for them.
+"""Feature Extractor for the Dependency Parser and Dependency Labeler.
 
 Feature representation is inspired from:
 McDonald, R., Crammer, K., Pereira, F. (2006). Online Large-Margin Training of Dependency Parsers.
@@ -20,26 +18,38 @@ from util import common
 from data.treebank import sentence_pb2
 from learner import featureset_pb2
 
+import logging
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
+
 FEATURE_DIR = "learner/features"
+TEST_FEATURE_DIR = "data/testdata/features/test_features"
 
 class FeatureExtractor:
 
-    def __init__(self, featuretype, postag_window=5, log_distance=1.5):
+    def __init__(self, featuretype, postag_window=5, log_distance=1.5, test=False):
         """Initialize this feature extractor with a featureset file.
 
         Args:
-            postag_window = include a feature for each word pair that contains this many POS tags.
-            log_distance = if not None, "bin" the distance between mod and head, otherwise use
-                 linear distance.
+          postag_window = include a feature for each word pair that contains this many POS tags.
+          log_distance = if not None, "bin" the distance between mod and head, otherwise use
+            linear distance.
+          test: If True, it means the extractor is initialized for test purposes only, and reads
+            data from the TEST_FEATURE_DIR.
 
         """
         assert featuretype in ["arcfeatures", "labelfeatures"], "Invalid feature type!!"
-        #TODO: create a data dependency for it to be available in unit tests.
-        if featuretype == "arcfeatures":
-            self._feature_file = os.path.join(FEATURE_DIR, "arcfeatures.txt")
-            #self._feature_file = "./learner/arcfeatures.txt"
+        if featuretype == "arcfeatures" and not test:
+          self._feature_file = os.path.join(FEATURE_DIR, "arcfeatures.txt")
+          logging.info("read features from {}".format(FEATURE_DIR))
+        elif featuretype == "labelfeatures" and not test:
+          self._feature_file = os.path.join(FEATURE_DIR, "labelfeatures.txt")
+          logging.info("read features from {}".format(FEATURE_DIR))
+        elif featuretype == "arcfeatures" and test:
+          self._feature_file = os.path.join(TEST_FEATURE_DIR, "arcfeatures.txt")
+          logging.info("read features from {}".format(TEST_FEATURE_DIR))
         else:
-            self._feature_file = os.path.join(FEATURE_DIR, "labelfeatures.txt")
+          self._feature_file = os.path.join(TEST_FEATURE_DIR, "labelfeatures.txt")
+          logging.info("read features from {}".format(TEST_FEATURE_DIR))
         self._postag_window = postag_window
         self._log_distance = log_distance
 
@@ -99,7 +109,6 @@ class FeatureExtractor:
         Returns:
             value: string, the value for the requested feature.
         """
-        #TODO: ensure this method works correctly when more than one token btw head and child.
         feature = [f for f in feature if f != "+"]
         #print("feature is: {}".format(feature))
         value = []

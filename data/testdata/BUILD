@@ -58,6 +58,13 @@ filegroup(
 )
 
 filegroup(
+  name = "test_features",
+  srcs = glob([
+    "features/test_features/*.txt",
+  ]),
+)
+
+filegroup(
 	name = "perceptron",
 	srcs = glob([
 		"perceptron/*.pbtxt",

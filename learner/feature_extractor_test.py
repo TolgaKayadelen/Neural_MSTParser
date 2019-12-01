@@ -10,7 +10,7 @@ from learner.feature_extractor import FeatureExtractor
 from util import reader
 from util import common
 
-class FeatureExtractorTest(unittest.TestCase):
+class ArcFeatureExtractorTest(unittest.TestCase):
     """Tests for feature extractor"""
 
     def setUp(self):
@@ -18,11 +18,11 @@ class FeatureExtractorTest(unittest.TestCase):
         self.test_treebank_tr = reader.ReadTreebankTextProto("./data/testdata/features/kerem.pbtxt")
         self.test_sentence_tr = self.test_treebank_tr.sentence[0]
         self.test_sentence_en = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
-        self.extractor = FeatureExtractor(featuretype="arcfeatures")
+        self.extractor = FeatureExtractor(featuretype="arcfeatures", test=True)
         self.maxDiff = None
 
-    def test_GetFeatures(self):
-        print("Running test_GetFeatures..")
+    def test_GetArcFeatures(self):
+        print("Running test_GetArcFeatures..")
         head = self.test_sentence_tr.token[3]
         child = self.test_sentence_tr.token[1]
         # Initialize the extractor with a feature file
@@ -64,8 +64,8 @@ class FeatureExtractorTest(unittest.TestCase):
         self.assertDictEqual(features_dict, expected_features)
         print("Passed!")
 
-    def test_GetFeaturesWithExtendedSentence(self):
-        print("Running testGetFeaturesWithExtendedSentence..")
+    def test_GetArcFeaturesWithExtendedSentence(self):
+        print("Running testArcGetFeaturesWithExtendedSentence..")
         head = self.test_sentence_en.token[2] # saw
         child = self.test_sentence_en.token[1] # john
         sentence = common.ExtendSentence(self.test_sentence_en)
@@ -103,6 +103,45 @@ class FeatureExtractorTest(unittest.TestCase):
 
         self.assertDictEqual(features_dict, expected_features)
         print("Passed!")
+
+
+class LabelFeatureExtractorTest(unittest.TestCase):
+    """Tests for feature extractor"""
+
+    def setUp(self):
+        # Initialize a base document and a feature set for testing
+        self.test_treebank_tr = reader.ReadTreebankTextProto("./data/testdata/features/kerem.pbtxt")
+        self.test_sentence_tr = self.test_treebank_tr.sentence[0]
+        self.test_sentence_en = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
+        self.extractor = FeatureExtractor(featuretype="labelfeatures", test=True)
+        self.maxDiff = None
+
+    def test_GetLabelFeatures(self):
+        print("Running test_GetLabelFeatures..")
+        head = self.test_sentence_tr.token[3]
+        child = self.test_sentence_tr.token[1]
+        # Initialize the extractor with a feature file
+        function_features = self.extractor.GetFeatures(self.test_sentence_tr, head, child)
+        #print(text_format.MessageToString(function_features, as_utf8=True))
+        features_dict = dict((feature.name, feature.value) for feature in function_features.feature)
+        expected_features = {
+          u"child_0_lemma": u"Kerem",
+          u"head_0_pos": u"Noun",
+          u"child_0_pos": u"Prop",
+          u"head_0_lemma": u"özgürlük",
+          u"child_0_word+child_0_pos": u"Kerem_Prop",
+          u"head_0_word": u"özgürlüğünü",
+          u"child_0_word": u"Kerem",
+          u"head_0_word+head_0_lemma": u"özgürlüğünü_özgürlük",
+          u"child_0_word+child_0_lemma": u"Kerem_Kerem",
+          u"head_0_word+head_0_pos": u"özgürlüğünü_Noun",
+        }
+        self.assertDictEqual(features_dict, expected_features)
+        print("Passed!")
+        
+        #for k, v in features_dict.items():
+        #  print "u"+'"'+k+'"'+":", "u"+'"'+v.encode("utf-8")+'"'+"," 
+
 
 
 if __name__ == "__main__":
