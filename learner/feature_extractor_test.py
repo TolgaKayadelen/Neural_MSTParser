@@ -125,16 +125,32 @@ class LabelFeatureExtractorTest(unittest.TestCase):
         #print(text_format.MessageToString(function_features, as_utf8=True))
         features_dict = dict((feature.name, feature.value) for feature in function_features.feature)
         expected_features = {
-          u"child_0_lemma": u"Kerem",
-          u"head_0_pos": u"Noun",
-          u"child_0_pos": u"Prop",
-          u"head_0_lemma": u"özgürlük",
+          u"head_0_morph_number": u"sing",
+          u"head_0_pos+head_0_morph_case": u"Noun_acc",
+          u"child_0_pos+child_0_morph_case": u"Prop_nom",
           u"child_0_word+child_0_pos": u"Kerem_Prop",
           u"head_0_word": u"özgürlüğünü",
           u"child_0_word": u"Kerem",
+          u"child_0_morph_number": u"sing",
+          u"head_0_morph_number[psor]": u"sing",
+          u"child_0_morph_case": u"nom",
+          u"child_0_morph_number[psor]": u"None",
+          u"child_0_pos": u"Prop",
+          u"head_0_lemma": u"özgürlük",
+          u"head_0_verbform": u"None",
+          u"head_0_morph_person": u"3",
           u"head_0_word+head_0_lemma": u"özgürlüğünü_özgürlük",
           u"child_0_word+child_0_lemma": u"Kerem_Kerem",
+          u"child_0_morph_person": u"3",
+          u"child_0_lemma": u"Kerem",
+          u"head_0_pos": u"Noun",
+          u"child_0_voice": u"None",
+          u"child_0_verbform": u"None",
           u"head_0_word+head_0_pos": u"özgürlüğünü_Noun",
+          u"head_0_morph_person[psor]": u"3",
+          u"head_0_morph_case": u"acc",
+          u"head_0_voice": u"None",
+          
         }
         self.assertDictEqual(features_dict, expected_features)
         print("Passed!")

@@ -182,7 +182,7 @@ def GetValue(token, feat):
 
     Returns: the desired value for a feature of the token
     """
-    morph_features = ["case", "number", "number[psor]"]
+    morph_features = ["case", "number", "number[psor]", "person", "person[psor]", "voice", "verbform"]
     morph_value = "None"
     if token == None:
         return "None"

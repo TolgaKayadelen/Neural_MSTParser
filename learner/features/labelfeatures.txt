@@ -9,3 +9,23 @@ head_0_word+head_0_lemma
 head_0_lemma
 child_0_word+child_0_lemma
 child_0_lemma
+
+
+# Morphological Features
+head_0_morph_case
+child_0_morph_case
+head_0_pos+head_0_morph_case
+child_0_pos+child_0_morph_case
+head_0_morph_number
+child_0_morph_number
+head_0_morph_number[psor]
+child_0_morph_number[psor]
+head_0_morph_person
+child_0_morph_person
+head_0_morph_person[psor]
+child_0_morph_number[psor]
+head_0_verbform
+head_0_voice
+child_0_verbform
+child_0_voice
+
