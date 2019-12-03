@@ -73,14 +73,22 @@ class CommonTest(unittest.TestCase):
         print("Passed!")
 
     def test_GetValue(self):
+        from itertools import repeat
         print("Running test_GetValue")
-        tokens = self._john_saw_mary.token
-        expected_categories = ["ROOT", "Noun", "Verb", "Noun"]
-        expected_lemmas = ["ROOT", u"John", u"see", u"Mary"]
-        function_categories = [common.GetValue(token, "pos") for token in tokens]
-        function_lemmas = [common.GetValue(token, "lemma") for token in tokens]
-        self.assertEqual(expected_lemmas, function_lemmas)
-        self.assertEqual(expected_categories, function_categories)
+        tr_token_1 = self._kerem.token[1]
+        expected_cat = "PROPN"
+        expected_pos = "Prop"
+        expected_lemma = "Kerem"
+        expected_morph = ["nom", "sing", "3"]
+        function_cat = common.GetValue(tr_token_1, "category")
+        function_pos = common.GetValue(tr_token_1, "pos")
+        function_lemma = common.GetValue(tr_token_1, "lemma")
+        function_morph = list(map(
+          common.GetValue, [tr_token_1] * 3, ["case", "number", "person"]))
+        self.assertEqual(expected_cat, function_cat)
+        self.assertEqual(expected_pos, function_pos)
+        self.assertEqual(expected_lemma, function_lemma)
+        self.assertEqual(expected_morph, function_morph)
         print("Passed!")
 
     def test_ConnectSentenceNodes(self):

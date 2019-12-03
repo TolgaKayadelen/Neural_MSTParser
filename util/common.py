@@ -191,6 +191,8 @@ def GetValue(token, feat):
     else:
         if feat == "word":
             return token.word.encode("utf-8")
+        if feat == "category":
+            return token.category.encode("utf-8")
         if feat == "pos":
             return token.pos.encode("utf-8")
         if feat == "lemma":
