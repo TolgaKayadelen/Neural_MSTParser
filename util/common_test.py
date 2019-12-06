@@ -73,7 +73,6 @@ class CommonTest(unittest.TestCase):
         print("Passed!")
 
     def test_GetValue(self):
-        from itertools import repeat
         print("Running test_GetValue")
         tr_token_1 = self._kerem.token[1]
         expected_cat = "PROPN"
@@ -89,6 +88,11 @@ class CommonTest(unittest.TestCase):
         self.assertEqual(expected_pos, function_pos)
         self.assertEqual(expected_lemma, function_lemma)
         self.assertEqual(expected_morph, function_morph)
+        
+        tr_token_2 = self._kerem.token[5]
+        expected_verb_form = "part"
+        func_verb_form = common.GetValue(tr_token_2, "verbform")
+        self.assertEqual(expected_verb_form, func_verb_form)
         print("Passed!")
 
     def test_ConnectSentenceNodes(self):
