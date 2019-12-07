@@ -40,16 +40,16 @@ class FeatureExtractor:
         assert featuretype in ["arcfeatures", "labelfeatures"], "Invalid feature type!!"
         if featuretype == "arcfeatures" and not test:
           self._feature_file = os.path.join(FEATURE_DIR, "arcfeatures.txt")
-          logging.info("read features from {}".format(FEATURE_DIR))
+          logging.info("read arc features from {}".format(FEATURE_DIR))
         elif featuretype == "labelfeatures" and not test:
           self._feature_file = os.path.join(FEATURE_DIR, "labelfeatures.txt")
-          logging.info("read features from {}".format(FEATURE_DIR))
+          logging.info("read label features from {}".format(FEATURE_DIR))
         elif featuretype == "arcfeatures" and test:
           self._feature_file = os.path.join(TEST_FEATURE_DIR, "arcfeatures.txt")
-          logging.info("read features from {}".format(TEST_FEATURE_DIR))
+          logging.info("read arc features from {}".format(TEST_FEATURE_DIR))
         else:
           self._feature_file = os.path.join(TEST_FEATURE_DIR, "labelfeatures.txt")
-          logging.info("read features from {}".format(TEST_FEATURE_DIR))
+          logging.info("read label features from {}".format(TEST_FEATURE_DIR))
         self._postag_window = postag_window
         self._log_distance = log_distance
 

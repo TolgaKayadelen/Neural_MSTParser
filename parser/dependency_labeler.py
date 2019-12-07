@@ -7,7 +7,6 @@ from learner.label_perceptron import LabelPerceptron
 from data.treebank import sentence_pb2
 from google.protobuf import text_format
 from learner import featureset_pb2
-from learner.feature_extractor import FeatureExtractor
 from util import common
 from util import reader
 from util import writer
@@ -21,7 +20,6 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 class DependencyLabeler:
     def __init__(self, feature_opts={}):
         self.feature_opts = feature_opts
-        self.feature_extractor = FeatureExtractor("labelfeatures")
         self.label_perceptron = LabelPerceptron(self.feature_opts)
         self.label_accuracy_train = None
         self.label_accuracy_test = None
