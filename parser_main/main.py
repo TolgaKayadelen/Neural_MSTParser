@@ -44,6 +44,8 @@ if __name__ == "__main__":
                         help="Number of epochs to train on.")
     parser.add_argument("--out", type=str,
     					help="dir to put the parsed output files.")
+    parser.add_argument("--learning_rate", type=float, default=1.0,
+                        help="The learning rate for the parser/labeler training.")
     
     # Evaluate args
     parser.add_argument("--metrics", nargs='*',

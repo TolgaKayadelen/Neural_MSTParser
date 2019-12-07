@@ -60,6 +60,9 @@ bazel-bin/parser_main/main \
 
 - Train a labeler and test on test data
 You can only train a dependency labeler, or train dependency labeler and dependency parser at the same time.
+
+Note that --learning_rate parameter will only have any meaning for the dependency labeler, not the parser.
+The learning rate defaults to 1.0 if not set.
 ```
 bazel build //parser_main:main
 bazel-bin/parser_main/main \
@@ -68,7 +71,8 @@ bazel-bin/parser_main/main \
 --language=Turkish \
 --train_data=treebank_0_10 \
 --test_data=treebank_0_3 \
---epochs=3
+--epochs=3 \
+--learning_rate = 0.5
 ```
 
 ```

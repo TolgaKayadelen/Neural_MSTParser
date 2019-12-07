@@ -97,7 +97,8 @@ def train_labeler(args):
   ))
   
   # Train
-  labeler.Train(args.epochs, training_data, test_data)
+  logging.info("learning_rate is {}".format(args.learning_rate))
+  labeler.Train(args.epochs, training_data, test_data, args.learning_rate)
   
   # Evaluate
   print("\n*******----------------------*******")

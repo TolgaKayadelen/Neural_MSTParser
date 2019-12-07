@@ -72,13 +72,19 @@ class DependencyLabeler:
         token.label = labels[i]
       return sentence
       
-    def Train(self, niters, training_data, test_data=None, approx=10):
-        """Train the label perceptron."""
+    def Train(self, niters, training_data, test_data=None, learning_rate=1.0):
+        """Train the label perceptron.
+        Args:
+          niters: number of iterations for training.
+          training_data: list of sentence_pb2.Sentence objects.
+          test_data = list of sentence_pb2.Sentence objects or None.
+          learning_rate = the learning rate for the perceptron.
+        """
         for i in range(niters):
             print("\n**************-------------------*************")
             logging.info("Starting LP Training Epoch {}".format(i+1))
             #Train label perceptron for one epoch.
-            correct = self.label_perceptron.Train(training_data)
+            correct = self.label_perceptron.Train(training_data, learning_rate)
             #Evaluate the label perceptron
             train_acc = self.Evaluate(training_data)
             logging.info("LP train acc after iter {}: {}".format(i+1, train_acc))

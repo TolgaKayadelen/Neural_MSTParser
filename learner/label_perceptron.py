@@ -119,7 +119,7 @@ class LabelPerceptron(AveragedPerceptron):
         return label, features, best_score
 
 
-    def UpdateWeights(self, prediction, truth, features):
+    def UpdateWeights(self, prediction, truth, features, l_rate=1.0):
         """Update the feature weights based on prediction.
       
         If the active features don't give you the correct label, increase those
@@ -131,6 +131,7 @@ class LabelPerceptron(AveragedPerceptron):
           prediction: the predicted dependency label for the token.
           truth: the correct dependency label for the token.
           features: feature_set.pb2.FeatureSet(), the set of features to update.
+          l_rate: float, the learning rate with which to update the features.
         """
         def upt_features(class_, w, features):
           for f in features.feature:
@@ -159,8 +160,8 @@ class LabelPerceptron(AveragedPerceptron):
               self.label_weights[class_][f.name][f.value] += w
               self._label_timestamps[class_][f.name][f.value] = self.iters
 
-        upt_features(truth, 1.0, features)
-        upt_features(prediction, -1.0, features)
+        upt_features(truth, l_rate, features)
+        upt_features(prediction, -l_rate, features)
 
     def IncrementIters(self):
         """Increments the number of iterations by 1.
@@ -171,7 +172,7 @@ class LabelPerceptron(AveragedPerceptron):
         """
         self.iters += 1
 
-    def Train(self, training_data):
+    def Train(self, training_data, learning_rate=1.0):
         """Trains label perceptron for one epoch.
         Args: 
           training_data: list of sentence_pb2.Sentence.
@@ -190,7 +191,9 @@ class LabelPerceptron(AveragedPerceptron):
             correct += prediction == token.label
             if prediction != token.label:
               #print("prediction is {}, true label is {}".format(prediction, token.label))
-              self.UpdateWeights(prediction=prediction, truth=token.label, features=features)
+              self.UpdateWeights(
+                prediction=prediction, truth=token.label,
+                features=features, l_rate = learning_rate)
         return correct
     
     def AverageClassWeights(self):
