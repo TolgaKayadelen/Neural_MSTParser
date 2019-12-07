@@ -50,7 +50,8 @@ def write_model_output(model_dict, parser=False, labeler=False):
   
   Args:
     model_output_dict: a dict containing data about model training and eval.
-    fieldnames: list, the fieldnames for the dictwriter.
+    parser: Whether to write output for the dependency parser.
+    labeler: Whether to write output for the dependency labeler.
   """
   MODEL_EXP_DIR = "model/experiments"
   assert labeler or parser, "Either labeler or parser should be set to True!!"
