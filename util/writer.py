@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import csv
+from datetime import datetime
 import os
 from google.protobuf import text_format
 
@@ -43,3 +45,37 @@ def write_proto_as_proto(message, path):
     """
     write_file(message.SerializeToString(), path)
     
+def write_model_output(model_dict, parser=False, labeler=False):
+  """Writes the model output to a tsv file.
+  
+  Args:
+    model_output_dict: a dict containing data about model training and eval.
+    fieldnames: list, the fieldnames for the dictwriter.
+  """
+  MODEL_EXP_DIR = "model/experiments"
+  assert labeler or parser, "Either labeler or parser should be set to True!!"
+  if labeler:
+    f_ = "labeler_exp.tsv"
+  else:
+    f_ = "parser_exp.tsv"
+  file_ = os.path.join(MODEL_EXP_DIR, f_)
+  file_exists = os.path.isfile(file_)
+  with open(os.path.join(file_), "a") as tsvfile:
+    fieldnames = ["time", "train_data", "train_data_size", "test_data", "test_data_size",
+    "train_acc", "test_acc_unavg", "test_acc_avg", "epochs", "learning_rate"]
+    writer = csv.DictWriter(tsvfile, fieldnames=fieldnames, delimiter="\t")
+    if not file_exists:
+      writer.writeheader()
+    writer.writerow({
+      "time": datetime.now().strftime("%D, %H:%M:%S"),
+      "train_data": model_dict["train_data"],
+      "train_data_size": model_dict["train_data_size"],
+      "test_data": model_dict["test_data"],
+      "test_data_size": model_dict["test_data_size"],
+      "train_acc": model_dict["train_acc"],
+      "test_acc_unavg": model_dict["test_acc_unavg"],
+      "test_acc_avg": model_dict["test_acc_avg"],
+      "epochs": model_dict["epochs"],
+      "learning_rate": model_dict["learning_rate"]}
+      )
+      

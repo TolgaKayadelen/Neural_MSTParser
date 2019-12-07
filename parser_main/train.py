@@ -16,6 +16,7 @@ from parser.dependency_labeler import DependencyLabeler
 from parser_main.parse import parse
 from util import common
 from util import reader
+from util import writer
 
 from google.protobuf import text_format
 
@@ -127,6 +128,19 @@ def train_labeler(args):
   
   test_acc_avg = labeler.Evaluate(test_data, eval_type=eval_type)
   logging.info("Accuracy after averaging weights on eval {}".format(test_acc_avg))
+  
+  model_output = {
+    "train_data": args.train_data,
+    "train_data_size": len(training_data),
+    "test_data": args.test_data if args.test_data else "split_%10",
+    "test_data_size": len(test_data),
+    "train_acc": None, # TODO: find a way to log this.
+    "test_acc_unavg": test_acc_unavg,
+    "test_acc_avg": test_acc_avg,
+    "epochs": args.epochs,
+    "learning_rate": args.learning_rate
+  }
+  writer.write_model_output(model_output, labeler=True)
 
 def train_parser(args):
     """Trains a dependency parser.
