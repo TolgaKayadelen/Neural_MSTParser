@@ -5,6 +5,11 @@ head_0_pos
 child_0_word+child_0_pos
 child_0_word
 child_0_pos
+head_0_category+head_0_pos
+head_0_category
+child_0_category+child_0_pos
+child_0_category
+head_0_category+child_0_category
 head_0_word+head_0_lemma
 head_0_lemma
 child_0_word+child_0_lemma
@@ -28,4 +33,3 @@ head_0_verbform
 head_0_voice
 child_0_verbform
 child_0_voice
-

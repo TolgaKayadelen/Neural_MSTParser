@@ -12,3 +12,11 @@ time	train_data	train_data_size	test_data	test_data_size	train_acc	test_acc_unav
 12/07/19, 19:49:51	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_dev_fixed	413		82.88861985472155	86.65375302663438	10	0.1
 12/07/19, 20:20:16	treebank_0_10	10	treebank_0_3	4		79.25	87.75	1	0.1
 12/07/19, 22:01:50	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_dev_fixed	413		84.46731234866829	86.6682808716707	20	0.1
+12/08/19, 00:14:02	treebank_train_0_500	450	split_%10	50		83.46	85.28	10	1.0
+12/08/19, 00:21:44	treebank_train_500_1000	450	split_%10	50		79.7	82.86	10	1.0
+12/08/19, 00:23:24	treebank_train_1000_1500	450	split_%10	50		86.9	88.72	10	1.0
+12/08/19, 00:25:11	treebank_train_1500_2000	450	split_%10	50		80.2	81.44	10	1.0
+12/08/19, 00:26:12	treebank_train_2000_2500	450	split_%10	50		81.92	84.66	10	1.0
+12/08/19, 01:07:41	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_dev_fixed	413		83.57869249394673	87.05326876513317	10	0.1
+12/08/19, 01:11:33	treebank_tr_imst_ud_train	4194	split_%10	466		84.00214592274678	86.13090128755364	10	0.1
+12/08/19, 01:41:57	treebank_tr_imst_ud_train	4194	split_%10	466		83.60085836909872	85.96137339055794	20	0.1
