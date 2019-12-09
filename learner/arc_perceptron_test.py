@@ -38,7 +38,7 @@ class ArcPerceptronTest(unittest.TestCase):
 
     def test_MakeAllFeatures(self):
         print("Running test_MakeAllFeatures..")
-        percept = perceptron.ArcPerceptron()
+        percept = perceptron.ArcPerceptron(feature_file="arcfeatures_base")
         percept.MakeAllFeatures([self.en_test])
         sorted_features = common.SortFeatures(percept._ConvertWeightsToProto())
         expected_features = _read_features_test_data("john_saw_mary_features")
@@ -47,7 +47,7 @@ class ArcPerceptronTest(unittest.TestCase):
 
     def testScore(self):
         print("Running testScore..")
-        percept = perceptron.ArcPerceptron()
+        percept = perceptron.ArcPerceptron(feature_file="arcfeatures_base")
         path = os.path.join("data/testdata/features", "kerem_ozgurlugunu_score_test.pbtxt")
         with open(path, "r") as f:
             featureset = text_format.Parse(f.read(), featureset_pb2.FeatureSet())
@@ -57,7 +57,7 @@ class ArcPerceptronTest(unittest.TestCase):
 
     def test_PredictHead(self):
         print("Running test_PredictHead..")
-        percept = perceptron.ArcPerceptron()
+        percept = perceptron.ArcPerceptron(feature_file="arcfeatures_base")
         percept.MakeAllFeatures([self.en_test])
         init_w = 1
         for key in percept.weights.keys():
@@ -75,7 +75,7 @@ class ArcPerceptronTest(unittest.TestCase):
 
     def testTrain(self):
         print("Running testTrain..")
-        percept = perceptron.ArcPerceptron()
+        percept = perceptron.ArcPerceptron(feature_file="arcfeatures_base")
         weights_before_train = {}
         weights_after_train = {}
         percept.MakeAllFeatures([self.en_test])
@@ -86,7 +86,7 @@ class ArcPerceptronTest(unittest.TestCase):
                 #print(key, value, percept.weights[key][value])
                 init_w += 0.1
         #print(self.en_test)
-        extractor = feature_extractor.FeatureExtractor("arcfeatures")
+        extractor = feature_extractor.FeatureExtractor(featuretype="arcfeatures", feature_file="arcfeatures_base")
         #head = Root, child=saw
         f_root_saw = extractor.GetFeatures(self.en_test, self.en_test.token[1], self.en_test.token[3])
         weights_before_train["root_saw"] = common.GetFeatureWeights(percept.weights, f_root_saw)
@@ -107,7 +107,7 @@ class ArcPerceptronTest(unittest.TestCase):
     def testLearn(self):
         """Test that the perceptron actually learns."""
         print("Running testLearn..")
-        percept = perceptron.ArcPerceptron()
+        percept = perceptron.ArcPerceptron(feature_file="arcfeatures_base")
         weights_before_train = {}
         weights_after_train = {}
         percept.MakeAllFeatures([self.en_test])
@@ -130,7 +130,7 @@ class ArcPerceptronTest(unittest.TestCase):
     def test_TimeStampsAndAveraging(self):
         """Test to make sure that timestamp dictionary is populated properly"""
         print("Running test_TimeStampsAndAveraging..")
-        percept = perceptron.ArcPerceptron()
+        percept = perceptron.ArcPerceptron(feature_file="arcfeatures_base")
         percept.MakeAllFeatures([self.en_test])
         init_w = 0.1
         for key in percept.weights.keys():
@@ -167,7 +167,7 @@ class ArcPerceptronTest(unittest.TestCase):
 
     def testLoadModel(self):
         print("Running testLoadModel..")
-        percept = perceptron.ArcPerceptron()
+        percept = perceptron.ArcPerceptron(feature_file="arcfeatures_base")
         percept.LoadModel("test_model")
         expected_featureset = _read_features_test_data("kerem_features")
         self.assertEqual(percept.feature_count, len(expected_featureset.feature))

@@ -1,4 +1,4 @@
-time	train_data	train_data_size	test_data	test_data_size	train_acc	test_acc_unavg	test_acc_avg	epochs	learning_rate
+time	train_data	train_data_size	test_data	test_data_size	train_acc	test_acc_unavg	test_acc_avg	epochs	learning_rate 
 12/07/19, 02:00:59	treebank_train_0_500	450	split_%10	50		80.5	83.66	10	1.0
 12/07/19, 02:02:48	treebank_train_500_1000	450	split_%10	50		81.34	82.94	10	1.0
 12/07/19, 02:04:07	treebank_train_1000_1500	450	split_%10	50		87.3	89.14	10	1.0
@@ -20,3 +20,9 @@ time	train_data	train_data_size	test_data	test_data_size	train_acc	test_acc_unav
 12/08/19, 01:07:41	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_dev_fixed	413		83.57869249394673	87.05326876513317	10	0.1
 12/08/19, 01:11:33	treebank_tr_imst_ud_train	4194	split_%10	466		84.00214592274678	86.13090128755364	10	0.1
 12/08/19, 01:41:57	treebank_tr_imst_ud_train	4194	split_%10	466		83.60085836909872	85.96137339055794	20	0.1
+12/08/19, 18:28:19	treebank_train_0_500	450	split_%10	50		81.86	84.5	10	1.0	labelfeatures_base
+12/08/19, 20:40:27	treebank_train_0_500	450	split_%10	50		82.02	87.52	10	1.0	labelfeatures_exp	20464
+12/08/19, 20:52:12	treebank_train_500_1000	450	split_%10	50		85.46	85.9	10	1.0	labelfeatures_exp	21864
+12/08/19, 21:03:39	treebank_train_1000_1500	450	split_%10	50		90.36	91.84	10	1.0	labelfeatures_exp	22055
+12/08/19, 21:15:01	treebank_train_1500_2000	450	split_%10	50		83.12	85.8	10	1.0	labelfeatures_exp	20581
+12/08/19, 21:27:19	treebank_train_2000_2500	450	split_%10	50		85.74	86.94	10	1.0	labelfeatures_exp	22243

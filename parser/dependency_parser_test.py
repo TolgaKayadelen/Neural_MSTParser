@@ -31,7 +31,7 @@ class DependencyParserTest(unittest.TestCase):
         
         self.en_train = _read_parser_test_data("john_saw_mary_train")
         self.en_eval = _read_parser_test_data("john_saw_mary_eval")
-        self.en_parser = depparse.DependencyParser()
+        self.en_parser = depparse.DependencyParser(feature_file="arcfeatures_base")
         # NOTE: connecting sentence nodes is something we need to make features.
         self.en_training_data = map(common.ConnectSentenceNodes, [self.en_train])
         self.en_training_data = map(common.ExtendSentence, self.en_training_data)
@@ -42,7 +42,7 @@ class DependencyParserTest(unittest.TestCase):
         #Train a Turkish parser with a Turkish sentence.
         self.tr_train = _read_parser_test_data("kerem_train")
         self.tr_eval = _read_parser_test_data("kerem_eval")
-        self.tr_parser = depparse.DependencyParser()
+        self.tr_parser = depparse.DependencyParser(feature_file="arcfeatures_base")
         self.tr_training_data = map(common.ConnectSentenceNodes, [self.tr_train])
         self.tr_training_data = map(common.ExtendSentence, self.tr_training_data)
         self.tr_parser.MakeFeatures(self.tr_training_data)

@@ -35,9 +35,13 @@ if __name__ == "__main__":
     parser.add_argument("--load", type=bool,
                         help="Load pretrained model, speficy which w/ --model.",
                         default=False)
-    parser.add_argument('--features', nargs='+', default=[],
-                        help='Space separated list of additional features',
-                        choices=['dist', 'surround', 'between'])
+    parser.add_argument('--labelfeatures', type=str,
+                        help="name of the file that contain the label features to train with.",
+                        default="labelfeatures_base")
+    parser.add_argument("--arcfeatures", type=str,
+                        help="name of the file that contain the arc features to train with,",
+                        default="arcfeatures_base")
+            
     
     # Training args
     parser.add_argument("--epochs", type=int, default=10,

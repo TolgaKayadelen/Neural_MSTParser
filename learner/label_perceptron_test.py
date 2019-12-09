@@ -42,7 +42,7 @@ class LabelPerceptronTest(unittest.TestCase):
 
     def test_MakeAllFeatures(self):
         print("Running test_MakeAllFeatures..")
-        percept = label_perceptron.LabelPerceptron()
+        percept = label_perceptron.LabelPerceptron(feature_file="labelfeatures_base")
         percept.MakeAllFeatures([self.en_test])
         random_class = random.choice(list(percept.label_weights))
         sorted_features = common.SortFeatures(percept._ConvertWeightsToProto(
@@ -66,7 +66,7 @@ class LabelPerceptronTest(unittest.TestCase):
 
     def testScore(self):
         print("Running testScore..")
-        percept = label_perceptron.LabelPerceptron()
+        percept = label_perceptron.LabelPerceptron(feature_file="labelfeatures_base")
         percept.MakeAllFeatures([self.en_test])
         class_ = "cc"
         percept.label_weights[class_]["head_0_word"]["ROOT"] = 5
@@ -106,7 +106,7 @@ class LabelPerceptronTest(unittest.TestCase):
 
     def testPredictLabel(self):
         print("Running testPredictLabel..")
-        percept = label_perceptron.LabelPerceptron()
+        percept = label_perceptron.LabelPerceptron(feature_file="labelfeatures_base")
         percept.MakeAllFeatures([self.en_test])
         class_ = "cc"
         percept.label_weights[class_]["bias"]["bias"] = 2
@@ -117,7 +117,7 @@ class LabelPerceptronTest(unittest.TestCase):
 
     def testUpdateWeights(self):
         print("Running testUpdateWeights")
-        percept = label_perceptron.LabelPerceptron()
+        percept = label_perceptron.LabelPerceptron(feature_file="labelfeatures_base")
         percept.MakeAllFeatures([self.en_test])
         predicted = "cc"
         truth = "parataxis"
@@ -147,27 +147,27 @@ class LabelPerceptronTest(unittest.TestCase):
 
     def testTrain(self):
         print("Running testTrain")
-        percept = label_perceptron.LabelPerceptron()
+        percept = label_perceptron.LabelPerceptron(feature_file="labelfeatures_base")
         percept.MakeAllFeatures([self.en_test])
         #common.PPrintWeights(percept.label_weights["cc"])
         correct = 0
-        for i in range(3):
+        for i in range(5):
           correct = percept.Train([self.en_test])
         tracked_feat = percept.label_weights["nsubj"]
         tracked_feat_tmstamp = percept._label_timestamps["nsubj"]
         self.assertEqual(correct, 3) # all labels are correctly predicted.
-        self.assertEqual(percept.iters, 9)
-        self.assertEqual(tracked_feat["child_0_lemma"]["John"], 2.0)
+        self.assertEqual(percept.iters, 15)
+        self.assertEqual(tracked_feat["child_0_lemma"]["John"], 4.0)
         self.assertEqual(tracked_feat["head_0_lemma"]["ROOT"], -1)
         self.assertEqual(tracked_feat["bias"]["bias"], 0.0)
-        self.assertEqual(tracked_feat_tmstamp["child_0_lemma"]["John"], 4)
+        self.assertEqual(tracked_feat_tmstamp["child_0_lemma"]["John"], 10)
         self.assertEqual(tracked_feat_tmstamp["head_0_lemma"]["ROOT"], 2)
-        self.assertEqual(tracked_feat_tmstamp["bias"]["bias"], 4)
+        self.assertEqual(tracked_feat_tmstamp["bias"]["bias"], 10)
         print("Passed!!")
 
     def testFinalizeAccumulator(self):
         print("Running testFinalizeAccumulator..")
-        percept = label_perceptron.LabelPerceptron()
+        percept = label_perceptron.LabelPerceptron(feature_file="labelfeatures_base")
         percept.MakeAllFeatures([self.en_test])
         r_class = random.choice(list(percept.label_weights))
         print("random class {}".format(r_class))
@@ -213,7 +213,7 @@ class LabelPerceptronTest(unittest.TestCase):
 
     def testAverageClassWeights(self):
       print("Running testAverageClassWeights..")
-      percept = label_perceptron.LabelPerceptron()
+      percept = label_perceptron.LabelPerceptron(feature_file="labelfeatures_base")
       percept.MakeAllFeatures([self.en_test])
       init_w = 0.1
       for class_ in percept.labels:

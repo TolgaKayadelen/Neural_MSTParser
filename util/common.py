@@ -55,7 +55,7 @@ def GetRightMostChild(sentence, token):
         if child.selected_head.address == token.index:
             if child.index > max_:
                 rightmost = child
-            max_ = child.index
+                max_ = child.index
     #return max(children, key=lambda x:x.index)
     return rightmost
 

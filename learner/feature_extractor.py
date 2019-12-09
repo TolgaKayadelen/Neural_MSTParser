@@ -26,12 +26,14 @@ TEST_FEATURE_DIR = "data/testdata/features/test_features"
 
 class FeatureExtractor:
 
-    def __init__(self, featuretype, postag_window=5, log_distance=1.5, test=False):
+    def __init__(self, featuretype, feature_file, postag_window=5, log_distance=1.5, test=False):
         """Initialize this feature extractor with a featureset file.
 
         Args:
-          postag_window = include a feature for each word pair that contains this many POS tags.
-          log_distance = if not None, "bin" the distance between mod and head, otherwise use
+          featuretype: either labelfeatures or arcfeatures.
+          feature_file: the file from which to read the features.
+          postag_window: include a feature for each word pair that contains this many POS tags.
+          log_distance: if not None, "bin" the distance between mod and head, otherwise use
             linear distance.
           test: If True, it means the extractor is initialized for test purposes only, and reads
             data from the TEST_FEATURE_DIR.
@@ -39,17 +41,17 @@ class FeatureExtractor:
         """
         assert featuretype in ["arcfeatures", "labelfeatures"], "Invalid feature type!!"
         if featuretype == "arcfeatures" and not test:
-          self._feature_file = os.path.join(FEATURE_DIR, "arcfeatures.txt")
-          logging.info("read arc features from {}".format(FEATURE_DIR))
+          self._feature_file = os.path.join(FEATURE_DIR, "{}.txt".format(feature_file))
+          logging.info("reading arc features from {}".format(self._feature_file))
         elif featuretype == "labelfeatures" and not test:
-          self._feature_file = os.path.join(FEATURE_DIR, "labelfeatures.txt")
-          logging.info("read label features from {}".format(FEATURE_DIR))
+          self._feature_file = os.path.join(FEATURE_DIR, "{}.txt".format(feature_file))
+          logging.info("reading label features from {}".format(self._feature_file))
         elif featuretype == "arcfeatures" and test:
           self._feature_file = os.path.join(TEST_FEATURE_DIR, "arcfeatures.txt")
-          logging.info("read arc features from {}".format(TEST_FEATURE_DIR))
+          logging.info("reading arc features from {}".format(self._feature_file))
         else:
           self._feature_file = os.path.join(TEST_FEATURE_DIR, "labelfeatures.txt")
-          logging.info("read label features from {}".format(TEST_FEATURE_DIR))
+          logging.info("reading label features from {}".format(self._feature_file))
         self._postag_window = postag_window
         self._log_distance = log_distance
 
@@ -85,7 +87,7 @@ class FeatureExtractor:
             featureset: featureset_pb2.FeatureSet(), a proto of feature names and values.
             Note that this doesn't return any weight for the features.
         """
-        #print("head is: {}', child is: {}'".format(head.word.encode("utf-8"), child.word.encode("utf-8")))
+        #print("head is: {}, child is: {}".format(head.word.encode("utf-8"), child.word.encode("utf-8")))
         featureset = self.InitializeFeatureNames()
         for feature in featureset.feature:
             #feature = [t.strip() for t in re.split(r'[\.\s\[\]\(\)]+', key.strip()) if t.strip()]
@@ -114,15 +116,31 @@ class FeatureExtractor:
         value = []
         for subfeat in feature:
             subfeat = subfeat.split("_")
+            #print(subfeat)
             offset = int(subfeat[1])
             is_between_feature = subfeat[0] == "between"
+            is_tree_feature = subfeat[2] in ["up", "down"]
             t = [child, head][subfeat[0] == "head"] # t = token.
             dummy_start_token = 1 if sentence.token[0].word == "START_TOK" else 0
-            if is_between_feature:
+            #print(sentence.token[t.index+offset+dummy_start_token])
+            if is_tree_feature and not t.index == 0:
+              if subfeat[2] == "up":
+                head_of_t = common.GetTokenByAddress(
+                  sentence.token,
+                  sentence.token[t.index+offset+dummy_start_token].selected_head.address
+                )
+                value.append(common.GetValue(head_of_t, subfeat[-1]))
+              elif subfeat[2] == "down":
+                child_of_t = common.GetRightMostChild(sentence, t)
+                value.append(common.GetValue(child_of_t, subfeat[-1]))
+            elif is_between_feature:
                 for btw_token in common.GetBetweenTokens(sentence, head, child, dummy_start_token):
                     value.append(common.GetValue(btw_token, subfeat[-1]))
             else:
-                value.append(common.GetValue(sentence.token[t.index+offset+dummy_start_token], subfeat[-1]))
+                if not t.index+offset+dummy_start_token >= len(sentence.token):
+                  value.append(common.GetValue(sentence.token[t.index+offset+dummy_start_token], subfeat[-1]))
+                else:
+                  value.append("None")
         #print("value {}".format(value))
         return "_".join(value)
 

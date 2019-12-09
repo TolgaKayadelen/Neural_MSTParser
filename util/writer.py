@@ -63,7 +63,7 @@ def write_model_output(model_dict, parser=False, labeler=False):
   file_exists = os.path.isfile(file_)
   with open(os.path.join(file_), "a") as tsvfile:
     fieldnames = ["time", "train_data", "train_data_size", "test_data", "test_data_size",
-    "train_acc", "test_acc_unavg", "test_acc_avg", "epochs", "learning_rate"]
+    "train_acc", "test_acc_unavg", "test_acc_avg", "epochs", "learning_rate", "features", "feature_count"]
     writer = csv.DictWriter(tsvfile, fieldnames=fieldnames, delimiter="\t")
     if not file_exists:
       writer.writeheader()
@@ -77,6 +77,8 @@ def write_model_output(model_dict, parser=False, labeler=False):
       "test_acc_unavg": model_dict["test_acc_unavg"],
       "test_acc_avg": model_dict["test_acc_avg"],
       "epochs": model_dict["epochs"],
-      "learning_rate": model_dict["learning_rate"]}
+      "learning_rate": model_dict["learning_rate"],
+      "features": model_dict["features"],
+      "feature_count": model_dict["feature_count"]}
       )
       

@@ -18,7 +18,7 @@ class ArcFeatureExtractorTest(unittest.TestCase):
         self.test_treebank_tr = reader.ReadTreebankTextProto("./data/testdata/features/kerem.pbtxt")
         self.test_sentence_tr = self.test_treebank_tr.sentence[0]
         self.test_sentence_en = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
-        self.extractor = FeatureExtractor(featuretype="arcfeatures", test=True)
+        self.extractor = FeatureExtractor(featuretype="arcfeatures", feature_file=None, test=True)
         self.maxDiff = None
 
     def test_GetArcFeatures(self):
@@ -113,7 +113,7 @@ class LabelFeatureExtractorTest(unittest.TestCase):
         self.test_treebank_tr = reader.ReadTreebankTextProto("./data/testdata/features/kerem.pbtxt")
         self.test_sentence_tr = self.test_treebank_tr.sentence[0]
         self.test_sentence_en = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
-        self.extractor = FeatureExtractor(featuretype="labelfeatures", test=True)
+        self.extractor = FeatureExtractor(featuretype="labelfeatures", feature_file=None, test=True)
         self.maxDiff = None
 
     def test_GetLabelFeatures(self):
@@ -125,7 +125,9 @@ class LabelFeatureExtractorTest(unittest.TestCase):
         #print(text_format.MessageToString(function_features, as_utf8=True))
         features_dict = dict((feature.name, feature.value) for feature in function_features.feature)
         expected_features = {
+          u"child_0_pos+child_0_down_pos": u"Prop_None",
           u"head_0_morph_number": u"sing",
+          u"child_0_lemma+head_0_lemma": u"Kerem_özgürlük",
           u"head_0_pos+head_0_morph_case": u"Noun_acc",
           u"child_0_pos+child_0_morph_case": u"Prop_nom",
           u"child_0_word+child_0_pos": u"Kerem_Prop",
@@ -133,29 +135,80 @@ class LabelFeatureExtractorTest(unittest.TestCase):
           u"child_0_word": u"Kerem",
           u"child_0_morph_number": u"sing",
           u"head_0_morph_number[psor]": u"sing",
+          u"head_0_category+child_0_category": u"NOUN_PROPN",
           u"child_0_morph_case": u"nom",
+          u"child_0_category+child_0_pos": u"PROPN_Prop",
           u"child_0_morph_number[psor]": u"None",
           u"child_0_pos": u"Prop",
           u"head_0_lemma": u"özgürlük",
           u"head_0_verbform": u"None",
+          u"head_0_category+head_0_up_category": u"NOUN_NOUN",
           u"head_0_morph_person": u"3",
-          u"head_0_word+head_0_lemma": u"özgürlüğünü_özgürlük",
-          u"child_0_word+child_0_lemma": u"Kerem_Kerem",
+          u"head_0_category+head_0_pos": u"NOUN_Noun",
+          u"head_0_pos+head_0_up_pos": u"Noun_Noun",
           u"child_0_morph_person": u"3",
           u"child_0_lemma": u"Kerem",
           u"head_0_pos": u"Noun",
+          u"child_0_pos+head_0_pos+head_1_pos": u"Prop_Noun_Noun",
           u"child_0_voice": u"None",
           u"child_0_verbform": u"None",
+          u"child_0_lemma+head_0_lemma+head_1_lemma": u"Kerem_özgürlük_teslim",
           u"head_0_word+head_0_pos": u"özgürlüğünü_Noun",
           u"head_0_morph_person[psor]": u"3",
           u"head_0_morph_case": u"acc",
           u"head_0_voice": u"None",
+          u"head_0_category": u"NOUN",
+          u"child_0_category": u"PROPN",
+          u"child_0_category+child_0_down_category": u"PROPN_None",
           
         }
         self.assertDictEqual(features_dict, expected_features)
+        
+        head_1 = self.test_sentence_tr.token[9] # .
+        child_1 = self.test_sentence_tr.token[8] # rahatlamisti
+        function_features_1 = self.extractor.GetFeatures(self.test_sentence_tr, head_1, child_1)
+        features_dict_1 = dict((feature.name, feature.value) for feature in function_features_1.feature)
+        expected_features_1 = {
+          u"child_0_pos+child_0_down_pos": u"Verb_Punc",
+          u"head_0_morph_number": u"None",
+          u"child_0_lemma+head_0_lemma": u"rahatla_.",
+          u"head_0_pos+head_0_morph_case": u"Punc_None",
+          u"child_0_pos+child_0_morph_case": u"Verb_None",
+          u"child_0_word+child_0_pos": u"rahatlamıştı_Verb",
+          u"head_0_word": u".",
+          u"child_0_word": u"rahatlamıştı",
+          u"child_0_morph_number": u"sing",
+          u"head_0_morph_number[psor]": u"None",
+          u"head_0_category+child_0_category": u"PUNCT_VERB",
+          u"child_0_morph_case": u"None",
+          u"child_0_category+child_0_pos": u"VERB_Verb",
+          u"child_0_morph_number[psor]": u"None",
+          u"child_0_pos": u"Verb",
+          u"head_0_lemma": u".",
+          u"head_0_verbform": u"None",
+          u"head_0_category+head_0_up_category": u"PUNCT_VERB",
+          u"head_0_morph_person": u"None",
+          u"head_0_category+head_0_pos": u"PUNCT_Punc",
+          u"head_0_pos+head_0_up_pos": u"Punc_Verb",
+          u"child_0_morph_person": u"3",
+          u"child_0_lemma": u"rahatla",
+          u"head_0_pos": u"Punc",
+          u"child_0_pos+head_0_pos+head_1_pos": u"Verb_Punc_None",
+          u"child_0_voice": u"None",
+          u"child_0_verbform": u"None",
+          u"child_0_lemma+head_0_lemma+head_1_lemma": u"rahatla_._None",
+          u"head_0_word+head_0_pos": u"._Punc",
+          u"head_0_morph_person[psor]": u"None",
+          u"head_0_morph_case": u"None",
+          u"head_0_voice": u"None",
+          u"head_0_category": u"PUNCT",
+          u"child_0_category": u"VERB",
+          u"child_0_category+child_0_down_category": u"VERB_PUNCT",
+        }
+        self.assertDictEqual(features_dict_1, expected_features_1)
         print("Passed!")
         
-        #for k, v in features_dict.items():
+        #for k, v in features_dict_1.items():
         #  print "u"+'"'+k+'"'+":", "u"+'"'+v.encode("utf-8")+'"'+"," 
 
 

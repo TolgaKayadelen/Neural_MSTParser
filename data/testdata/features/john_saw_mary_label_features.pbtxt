@@ -1,17 +1,62 @@
 # all features from sentence john saw mary for label perceptron (sorted)
 feature {
-  name: "child_0_lemma"
-  value: "John"
+  name: "head_0_word+head_0_pos"
+  value: "saw_Verb"
   weight: 0.0
 }
 feature {
-  name: "child_0_lemma"
-  value: "see"
+  name: "head_0_word+head_0_pos"
+  value: "ROOT_ROOT"
   weight: 0.0
 }
 feature {
-  name: "child_0_lemma"
-  value: "Mary"
+  name: "head_0_word+head_0_lemma"
+  value: "saw_see"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "ROOT_ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word"
+  value: "saw"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word"
+  value: "ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_voice"
+  value: "None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_voice"
+  value: "ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_verbform"
+  value: "None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_verbform"
+  value: "ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case"
+  value: "Verb_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case"
+  value: "ROOT_ROOT"
   weight: 0.0
 }
 feature {
@@ -25,13 +70,53 @@ feature {
   weight: 0.0
 }
 feature {
-  name: "child_0_pos"
-  value: "Noun"
+  name: "head_0_morph_person[psor]"
+  value: "None"
   weight: 0.0
 }
 feature {
-  name: "child_0_pos"
-  value: "Verb"
+  name: "head_0_morph_person[psor]"
+  value: "ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_morph_person"
+  value: "None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_morph_person"
+  value: "ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_morph_number[psor]"
+  value: "None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_morph_number[psor]"
+  value: "ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_morph_number"
+  value: "None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_morph_number"
+  value: "ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_morph_case"
+  value: "None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_morph_case"
+  value: "ROOT"
   weight: 0.0
 }
 feature {
@@ -41,6 +126,36 @@ feature {
 }
 feature {
   name: "head_0_lemma"
+  value: "ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_category+head_0_pos"
+  value: "VERB_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_category+head_0_pos"
+  value: "ROOT_ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_category+child_0_category"
+  value: "VERB_NOUN"
+  weight: 0.0
+}
+feature {
+  name: "head_0_category+child_0_category"
+  value: "ROOT_VERB"
+  weight: 0.0
+}
+feature {
+  name: "head_0_category"
+  value: "VERB"
+  weight: 0.0
+}
+feature {
+  name: "head_0_category"
   value: "ROOT"
   weight: 0.0
 }
@@ -60,13 +175,18 @@ feature {
   weight: 0.0
 }
 feature {
-  name: "head_0_word"
-  value: "saw"
+  name: "child_0_word+child_0_lemma"
+  value: "John_John"
   weight: 0.0
 }
 feature {
-  name: "head_0_word"
-  value: "ROOT"
+  name: "child_0_word+child_0_lemma"
+  value: "saw_see"
+  weight: 0.0
+}
+feature {
+  name: "child_0_word+child_0_lemma"
+  value: "Mary_Mary"
   weight: 0.0
 }
 feature {
@@ -85,37 +205,87 @@ feature {
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_lemma"
-  value: "saw_see"
+  name: "child_0_voice"
+  value: "None"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_lemma"
-  value: "ROOT_ROOT"
+  name: "child_0_verbform"
+  value: "None"
   weight: 0.0
 }
 feature {
-  name: "child_0_word+child_0_lemma"
-  value: "John_John"
+  name: "child_0_pos+child_0_morph_case"
+  value: "Noun_None"
   weight: 0.0
 }
 feature {
-  name: "child_0_word+child_0_lemma"
-  value: "saw_see"
+  name: "child_0_pos+child_0_morph_case"
+  value: "Verb_None"
   weight: 0.0
 }
 feature {
-  name: "child_0_word+child_0_lemma"
-  value: "Mary_Mary"
+  name: "child_0_pos"
+  value: "Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos"
-  value: "saw_Verb"
+  name: "child_0_pos"
+  value: "Verb"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos"
-  value: "ROOT_ROOT"
+  name: "child_0_morph_person"
+  value: "None"
+  weight: 0.0
+}
+feature {
+  name: "child_0_morph_number[psor]"
+  value: "None"
+  weight: 0.0
+}
+feature {
+  name: "child_0_morph_number"
+  value: "None"
+  weight: 0.0
+}
+feature {
+  name: "child_0_morph_case"
+  value: "None"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "John"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "see"
+  weight: 0.0
+}
+feature {
+  name: "child_0_lemma"
+  value: "Mary"
+  weight: 0.0
+}
+feature {
+  name: "child_0_category+child_0_pos"
+  value: "NOUN_Noun"
+  weight: 0.0
+}
+feature {
+  name: "child_0_category+child_0_pos"
+  value: "VERB_Verb"
+  weight: 0.0
+}
+feature {
+  name: "child_0_category"
+  value: "NOUN"
+  weight: 0.0
+}
+feature {
+  name: "child_0_category"
+  value: "VERB"
   weight: 0.0
 }

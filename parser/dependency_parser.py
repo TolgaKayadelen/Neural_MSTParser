@@ -17,11 +17,10 @@ import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
 class DependencyParser:
-    def __init__(self, feature_opts={}, decoding="mst"):
-        self.feature_opts = feature_opts
-        self.arc_perceptron = ArcPerceptron(self.feature_opts)
+    def __init__(self, feature_file=None, decoding="mst"):
+        self.arc_perceptron = ArcPerceptron(feature_file)
         self.decoder = Decoder(decoding)
-        self.feature_extractor = FeatureExtractor("arcfeatures")
+        self.feature_extractor = FeatureExtractor("arcfeatures", feature_file)
         self.arc_accuracy = None
 
     def MakeFeatures(self, training_data):

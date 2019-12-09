@@ -28,14 +28,13 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 class LabelPerceptron(AveragedPerceptron):
     """A perceptron for labeling dependency arcs."""
 
-    def __init__(self, feature_options={}):
+    def __init__(self, feature_file):
         super(LabelPerceptron, self).__init__()
-        self.feature_options = feature_options
         self.iters = 0
         self.labels = common.GetLabels().keys()
         self.label_weights = {}
         # private attributes
-        self._extractor = FeatureExtractor("labelfeatures")
+        self._extractor = FeatureExtractor("labelfeatures", feature_file)
         self._label_timestamps = {}
         self._label_accumulator = {}
         self._label_count = len(self.labels)

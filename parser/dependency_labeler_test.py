@@ -38,15 +38,15 @@ class DependencyLabelerTest(unittest.TestCase):
   
   def testTrainSingleSentence(self):
     print("Running testTrain on a Single Sentence..")
-    labeler = deplabel.DependencyLabeler()
+    labeler = deplabel.DependencyLabeler(feature_file="labelfeatures_base")
     labeler.MakeFeatures([self.en_train])
-    labeler.Train(3, [self.en_train])
+    labeler.Train(4, [self.en_train])
     self.assertEqual(labeler.label_accuracy_train, 100.0)
     print("Passed!")
 
   def testTrainTreebank(self):
     print("Running testTrain on a treebank..")
-    labeler = deplabel.DependencyLabeler()
+    labeler = deplabel.DependencyLabeler(feature_file="labelfeatures_base")
     treebank = _read_labeler_test_data("treebank_0_10", type_="treebank")
     training_data = list(treebank.sentence)
     labeler.MakeFeatures(training_data)
@@ -56,7 +56,7 @@ class DependencyLabelerTest(unittest.TestCase):
   
   def testTrainAndEvaluateWithTestData(self):
     print("Running test Train and Evaluate on different sets of data..")
-    labeler = deplabel.DependencyLabeler()
+    labeler = deplabel.DependencyLabeler(feature_file="labelfeatures_base")
     train_treebank = _read_labeler_test_data("treebank_0_50", type_="treebank")
     training_data = list(train_treebank.sentence)
     test_treebank = _read_labeler_test_data("treebank_0_10", type_="treebank")
@@ -70,9 +70,9 @@ class DependencyLabelerTest(unittest.TestCase):
   
   def testPredictLabels(self):
     print("Running testPredictLabels..")
-    labeler = deplabel.DependencyLabeler()
+    labeler = deplabel.DependencyLabeler(feature_file="labelfeatures_base")
     labeler.MakeFeatures([self.en_train])
-    for i in range(3):
+    for i in range(5):
       _ = labeler.label_perceptron.Train([self.en_train])
     predicted_labels = labeler.PredictLabels(self.en_train)
     self.assertEqual(predicted_labels, [token.label for token in self.en_train.token])
@@ -86,7 +86,7 @@ class DependencyLabelerTest(unittest.TestCase):
   def testInsertLabels(self):
     print("Running testInsertLabels..")
     labels = [u"", u"cc", u"root", u"cc"]
-    labeler = deplabel.DependencyLabeler()
+    labeler = deplabel.DependencyLabeler(feature_file="labelfeatures_base")
     labeled = labeler.InsertLabels(self.en_train, labels)
     self.assertEqual(labels, [token.label for token in labeled.token])
     print("Passed!")

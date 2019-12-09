@@ -91,7 +91,7 @@ def train_labeler(args):
   logging.info("Training data size {}".format(len(training_data)))
   if len(test_data) > 0:
     logging.info("Test data size {}".format(len(test_data)))
-  labeler = DependencyLabeler()
+  labeler = DependencyLabeler(args.labelfeatures)
   labeler.MakeFeatures(training_data)
   logging.info("Number of features for dependency labeler {}".format(
     labeler.label_perceptron.feature_count
@@ -138,7 +138,9 @@ def train_labeler(args):
     "test_acc_unavg": test_acc_unavg,
     "test_acc_avg": test_acc_avg,
     "epochs": args.epochs,
-    "learning_rate": args.learning_rate
+    "learning_rate": args.learning_rate,
+    "features": args.labelfeatures,
+    "feature_count": labeler.label_perceptron.feature_count
   }
   writer.write_model_output(model_output, labeler=True)
 
@@ -166,7 +168,7 @@ def train_parser(args):
 
     # Make the model
     # TODO: add feature_opts to the model call.
-    parser = DependencyParser(decoding="mst")
+    parser = DependencyParser(feature_file=args.arcfeatures, decoding="mst")
     if args.load:
         logging.info("Loading model from {}".format(args.model))
         parser.Load(args.model)

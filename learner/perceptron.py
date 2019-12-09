@@ -102,10 +102,8 @@ class AveragedPerceptron(object):
         with open(input_file, "r") as inp:
             model = json.load(inp)
         featureset = json_format.Parse(model["featureset"], featureset_pb2.FeatureSet())
-        feature_options = model["feature_options"]
         accuracy = model["accuracy"]
         logging.info("Arc accuracy of the loaded model: {}".format(accuracy))
-        logging.info("Feature options of the loaded model: {}".format(feature_options))
         self.InitializeWeights(featureset, load=True)
 
     def SaveModel(self, name, train_data_path=None, test_data_path=None,
@@ -125,7 +123,6 @@ class AveragedPerceptron(object):
             "test_data_path": test_data_path,
             "epochs_trained": nr_epochs,
             "accuracy": accuracy,
-            "feature_options": self.feature_options,
             "featureset": json_format.MessageToJson(self.featureset,
             	including_default_value_fields=True)
         }
@@ -137,9 +134,8 @@ class AveragedPerceptron(object):
             test_data: {},
             epochs: {},
             accuracy: {},
-            feature_options: {},
-            feature_count: {}""".format(train_data_path, test_data_path, nr_epochs, accuracy,
-                        self.feature_options, self.feature_count))
+            feature_count: {}""".format(train_data_path, test_data_path, nr_epochs,
+                                        accuracy, self.feature_count))
 
     def Sort(self):
         """Sort features by weight."""
@@ -160,11 +156,10 @@ class AveragedPerceptron(object):
 class ArcPerceptron(AveragedPerceptron):
     """A perceptron for scoring dependency arcs."""
 
-    def __init__(self, feature_options={}):
+    def __init__(self, feature_file):
         super(ArcPerceptron, self).__init__()
-        self.feature_options = feature_options
         self.iters = 0
-        self._extractor = FeatureExtractor("arcfeatures")
+        self._extractor = FeatureExtractor("arcfeatures", feature_file)
 
     def MakeAllFeatures(self, training_data):
         """Create a features set from --all-- head-dependent pairs in the data.

@@ -18,9 +18,8 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 # A dependency labeler works on the output of the dependency parser to label
 # the dependency arcs assingned by the parser to the heads and dependents.
 class DependencyLabeler:
-    def __init__(self, feature_opts={}):
-        self.feature_opts = feature_opts
-        self.label_perceptron = LabelPerceptron(self.feature_opts)
+    def __init__(self, feature_file):
+        self.label_perceptron = LabelPerceptron(feature_file)
         self.label_accuracy_train = None
         self.label_accuracy_test = None
 
