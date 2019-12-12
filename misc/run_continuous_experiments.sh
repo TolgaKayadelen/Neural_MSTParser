@@ -1,7 +1,7 @@
 #!/bin/sh
 
-test_data=(treebank_0_10 treebank_0_10)
-epochs=(1 2)
+test_data=(treebank_train_0_500 treebank_train_500_1000 treebank_train_1000_1500 treebank_train_1500_2000 treebank_train_2000_2500)
+epochs=(10 20 30)
 for i in "${test_data[@]}"
 do
   for j in "${epochs[@]}"

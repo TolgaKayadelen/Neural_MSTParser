@@ -1,0 +1,1 @@
+time	train_data	train_data_size	test_data	test_data_size	train_acc	test_acc_unavg	test_acc_avg	epochs	learning_rate	features	feature_count12/12/19, 01:55:04	treebank_0_10	7	split_%10	3	74.14285714285714	65.0	61.666666666666664	1	1.0	arcfeatures_exp2	13360
