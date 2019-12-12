@@ -10,8 +10,6 @@ import networkx as nx
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
-
-
 class MST:
     """Chu-Liu-Edmonds decoder for finding the maximum spanning tree."""
 
@@ -47,7 +45,7 @@ class MST:
         # point to the root, recalculate the score matrix to have exactly
         # one token pointing to the root.
         if len(self.roots) < 1:
-            logging.info("No token is pointing to the root, choosing one")
+            # logging.info("No token is pointing to the root, choosing one")
             # the score for each token selecting the root as head.
             root_scores = self.scores[self.tokens, 0]
             #print("root_scores: {}".format(root_scores))
@@ -56,13 +54,13 @@ class MST:
             #print("head_scores: {}".format(head_scores))
             # find the most likely token that can be pointing to the root.
             new_root = self.tokens[np.argmax(root_scores / head_scores)]
-            logging.info("New root is {}".format(new_root))
+            #logging.info("New root is {}".format(new_root))
             # change the head of the new root token to be 0.
             self.heads[new_root] = 0
             #print("new_heads: {}".format(self.heads))
 
         elif len(self.roots) > 1:
-            logging.info("Multiple tokens are pointing to root, choosing one")
+            # logging.info("Multiple tokens are pointing to root, choosing one")
             # get the score for each token pointing to the head
             root_scores = self.scores[self.roots, 0]
             #print("root_scores: {}".format(root_scores))
@@ -70,10 +68,9 @@ class MST:
             self.scores[self.roots, 0] = 0
             # pick new heads for these tokens.
             new_heads = np.argmax(self.scores[self.roots][:, self.tokens], axis=1) + 1
-            #print("New candidate heads for the roots: {}".format(new_heads))
             # find the new root.
             new_root = self.roots[np.argmin(self.scores[self.roots, new_heads] / root_scores)]
-            logging.info("New root is {}".format(new_root))
+            # logging.info("New root is {}".format(new_root))
             # assign the new heads back into the matrix.
             self.heads[self.roots] = new_heads
             # change the head of the new root token to be 0.
@@ -93,12 +90,12 @@ class MST:
 
         # Identify cycles and contract.
         for cycle in self._GetCycle(vertices, edges):
-            logging.info("Found cycle! - {}".format(cycle))
+            #logging.info("Found cycle! - {}".format(cycle))
             dependents = set()
             to_visit = set(cycle)
             while len(to_visit) > 0:
                 node = to_visit.pop()
-                logging.info("Contraction, visiting node: {}".format(node))
+                # logging.info("Contraction, visiting node: {}".format(node))
                 if node not in dependents:
                     dependents.add(node)
                     to_visit.update(edges[node])
@@ -118,12 +115,10 @@ class MST:
             edges[new_head].add(changed_cycle)
             edges[old_head].remove(changed_cycle)
 
-        logging.info("Final Heads! {}".format(self.heads))
-        #print("Finding head scores..")
-        #print("Initial Scores {}".format(self.initial_scores))
+        # logging.info("Final Heads! {}".format(self.heads))
         for i, head in enumerate(self.heads):
             self.final_scores.append(self.initial_scores[i][head])
-        logging.info("Final scores {}".format(self.final_scores))
+        # logging.info("Final scores {}".format(self.final_scores))
         return self.heads, self.final_scores
 
 

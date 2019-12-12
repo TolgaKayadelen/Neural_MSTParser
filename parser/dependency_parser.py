@@ -60,7 +60,7 @@ class DependencyParser:
         parsed, predicted_heads = self.decoder(sentence, score_matrix)
         return parsed, predicted_heads
 
-    def Train(self, niters, training_data, test_data=None, approx=10):
+    def Train(self, niters, training_data, test_data=None):
         """Train the arc perceptron."""
         for i in range(niters):
             print("\n**************-------------------*************")
@@ -70,14 +70,12 @@ class DependencyParser:
             #Evaluate the arc perceptron
             train_acc = self._Evaluate(training_data)
             logging.info("Train acc after iter {}: {}".format(i+1, train_acc))
-            raw_input("Press a key to continue: ")
             if test_data:
                 logging.info("Evaluating on test data..")
                 test_acc = self._Evaluate(test_data)
                 # Comment out if you're not interested in seeing test acc after
                 # each epoch.
                 logging.info("Test acc after iter {}: {}".format(i+1, test_acc))
-                raw_input("Press a key to continue: ")
             #if train_acc == 100:
             #    break
             np.random.shuffle(training_data)
@@ -100,7 +98,7 @@ class DependencyParser:
             _, predicted_heads = self.Parse(sentence)
             # get the gold heads for tokens except for the dummy ones.
             gold_heads = [token.selected_head.address for token in sentence.token[1:-1]]
-            logging.info("predicted {}, gold {}".format(predicted_heads, gold_heads))
+            #logging.info("predicted {}, gold {}".format(predicted_heads, gold_heads))
             assert len(predicted_heads) == len(gold_heads), """Number of predicted and
                 gold heads don't match!!!"""
             acc += self._Accuracy(predicted_heads, gold_heads)

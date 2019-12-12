@@ -16,7 +16,7 @@ class Decoder:
         self.decoding = decoding
 
     def __call__(self, sentence, scores):
-        logging.info("Starting decoding the tree..")
+        #logging.info("Starting decoding the tree..")
         #logging.info("scores are: {}".format(scores))
         if self.decoding == "mst":
             sentence = common.DropDummyTokens(sentence)
@@ -53,7 +53,7 @@ class Decoder:
             sentence.score = common.GetSentenceWeight(sentence)
             #print(text_format.MessageToString(sentence, as_utf8=True))
             #heads = [token.selected_head.address for token in sentence.token]
-            logging.info("DONE!")
+            #logging.info("DONE!")
             #print("predicted heads {}".format(predicted_heads))
             return sentence, predicted_heads
         else:
