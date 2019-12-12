@@ -169,8 +169,7 @@ class ArcPerceptronTest(unittest.TestCase):
         print("Running testLoadModel..")
         percept = perceptron.ArcPerceptron(feature_file="arcfeatures_base")
         percept.LoadModel("test_model")
-        expected_featureset = _read_features_test_data("kerem_features")
-        self.assertEqual(percept.feature_count, len(expected_featureset.feature))
+        self.assertEqual(percept.feature_count, 13360)
         print("Passed!")
 
 

@@ -102,18 +102,18 @@ class AveragedPerceptron(object):
         with open(input_file, "r") as inp:
             model = json.load(inp)
         featureset = json_format.Parse(model["featureset"], featureset_pb2.FeatureSet())
-        accuracy = model["accuracy"]
+        accuracy = model["test_accuracy"]
         logging.info("Arc accuracy of the loaded model: {}".format(accuracy))
         self.InitializeWeights(featureset, load=True)
 
     def SaveModel(self, name, train_data_path=None, test_data_path=None,
-    	 nr_epochs=None, accuracy=None):
+    	 nr_epochs=None, test_accuracy=None):
         """Save model features and weights in json format.
         Args:
             name: string, the name of the model.
             data_path: string, the data path with which the model was trained.
             epocsh: the training epochs.
-            accuracy: the arc accuracy.
+            test_accuracy: the arc accuracy on test data.
         """
         if not hasattr(self, "featureset"):
             self.featureset = self._ConvertWeightsToProto()
@@ -122,7 +122,7 @@ class AveragedPerceptron(object):
             "train_data_path": train_data_path,
             "test_data_path": test_data_path,
             "epochs_trained": nr_epochs,
-            "accuracy": accuracy,
+            "test_accuracy": test_accuracy,
             "featureset": json_format.MessageToJson(self.featureset,
             	including_default_value_fields=True)
         }
@@ -133,9 +133,9 @@ class AveragedPerceptron(object):
             train_data: {},
             test_data: {},
             epochs: {},
-            accuracy: {},
+            test_accuracy: {},
             feature_count: {}""".format(train_data_path, test_data_path, nr_epochs,
-                                        accuracy, self.feature_count))
+                                        test_accuracy, self.feature_count))
 
     def Sort(self):
         """Sort features by weight."""

@@ -21,7 +21,8 @@ class DependencyParser:
         self.arc_perceptron = ArcPerceptron(feature_file)
         self.decoder = Decoder(decoding)
         self.feature_extractor = FeatureExtractor("arcfeatures", feature_file)
-        self.arc_accuracy = None
+        self.train_accuracy = None
+        self.test_accuracy= None
 
     def MakeFeatures(self, training_data):
         """Makes all features from the training data.
@@ -79,6 +80,7 @@ class DependencyParser:
             #if train_acc == 100:
             #    break
             np.random.shuffle(training_data)
+        self.train_acc = train_acc
 
     def _Evaluate(self, eval_data):
         """Evaluates the performance of arc perceptron on data.
@@ -118,15 +120,15 @@ class DependencyParser:
       return matrix / np.sum(matrix, axis=1, keepdims=True)
 
     def Save(self, path, train_data_path=None, test_data_path=None,
-    	nr_epochs=None, accuracy=None):
+    	nr_epochs=None, test_accuracy=None):
         assert isinstance(train_data_path, str), "Invalid Data Path!"
         assert isinstance(test_data_path, str), "Invalid Data Path!"
         assert isinstance(nr_epochs, int), "Invalid number of epochs!"
-        assert isinstance(accuracy, dict), "Invalid data type for accuracy!"
-        self.arc_accuracy = accuracy
+        assert isinstance(test_accuracy, dict), "Invalid data type for test accuracy!"
+        self.test_accuracy = test_accuracy
         self.arc_perceptron.SaveModel(
             name=path, train_data_path=train_data_path, test_data_path=test_data_path,
-            nr_epochs=nr_epochs, accuracy=self.arc_accuracy
+            nr_epochs=nr_epochs, test_accuracy=self.test_accuracy
         )
 
     def Load(self, path):

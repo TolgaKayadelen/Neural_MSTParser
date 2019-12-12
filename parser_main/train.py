@@ -218,7 +218,7 @@ def train_parser(args):
       "train_data_size": len(training_data),
       "test_data": args.test_data if args.test_data else "split_%10",
       "test_data_size": len(test_data),
-      "train_acc": None, # TODO: find a way to log this.
+      "train_acc": parser.train_acc,
       "test_acc_unavg": test_acc_unavg,
       "test_acc_avg": test_acc_avg,
       "epochs": args.epochs,
@@ -234,7 +234,7 @@ def train_parser(args):
     parser.Save(
         args.model, train_data_path=args.train_data,
         test_data_path=test_data_path, nr_epochs=args.epochs,
-        accuracy=dict(
+        test_accuracy=dict(
             test_unavg = round(test_acc_unavg, 2),
             test_avg = round(test_acc_avg, 2)
             )
