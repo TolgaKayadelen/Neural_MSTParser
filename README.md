@@ -86,3 +86,21 @@ bazel-bin/parser_main/main \
 --test_data=treebank_0_3 \
 --epochs=3
 ```
+
+- Train with different feature specs and learning rates
+```
+bazel-bin/parser_main/main \
+--mode=train \
+--labeler=True \ # or parser=True or set both to True as separate flags.
+--language=Turkish \
+--train_data=treebank_tr_imst_ud_train \
+--test_data=treebank_tr_imst_ud_test_fixed	\
+--epochs=10 \
+--learning_rate=1.0 \
+--labelfeatures=labelfeatures_exp # and/or arcfeatures=feature_file
+```
+
+
+
+
+```

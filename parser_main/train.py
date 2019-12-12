@@ -91,7 +91,7 @@ def train_labeler(args):
   logging.info("Training data size {}".format(len(training_data)))
   if len(test_data) > 0:
     logging.info("Test data size {}".format(len(test_data)))
-  labeler = DependencyLabeler(args.labelfeatures)
+  labeler = DependencyLabeler(feature_file=args.labelfeatures)
   labeler.MakeFeatures(training_data)
   logging.info("Number of features for dependency labeler {}".format(
     labeler.label_perceptron.feature_count
@@ -129,7 +129,7 @@ def train_labeler(args):
   test_acc_avg = labeler.Evaluate(test_data, eval_type=eval_type)
   logging.info("Accuracy after averaging weights on eval {}".format(test_acc_avg))
   
-  model_output = {
+  model_dict = {
     "train_data": args.train_data,
     "train_data_size": len(training_data),
     "test_data": args.test_data if args.test_data else "split_%10",
@@ -142,7 +142,7 @@ def train_labeler(args):
     "features": args.labelfeatures,
     "feature_count": labeler.label_perceptron.feature_count
   }
-  writer.write_model_output(model_output, labeler=True)
+  writer.write_model_dict(model_output, labeler=True)
 
 def train_parser(args):
     """Trains a dependency parser.
@@ -177,12 +177,11 @@ def train_parser(args):
         parser.MakeFeatures(training_data)
     logging.info("Number of features for parser: {}".format(
       parser.arc_perceptron.feature_count))
-    raw_input("Press any key to continue: ")
     #print("Memory used by model: {} GB.".format(_get_size(model)))
 
 
     # Train
-    parser.Train(args.epochs, training_data, test_data=test_data, approx=50)
+    parser.Train(args.epochs, training_data, test_data=test_data)
 
     # Evaluate
     print("\n*******----------------------*******")
@@ -193,7 +192,6 @@ def train_parser(args):
 
     test_acc_unavg = parser._Evaluate(test_data)
     logging.info("Accuracy before averaging weights on eval: {}".format(test_acc_unavg))
-    raw_input("Press any key to continue: ")
 
     # Average the weights and evaluate again
     logging.info("Averaging arc perceptron weights and evaluating on eval..")
@@ -213,12 +211,25 @@ def train_parser(args):
     logging.info("Evaluating after Averaged Weights..")
     #TODO: make model._Evaluate public.
     test_acc_avg = parser._Evaluate(test_data)
-    raw_input("Press any key to continue: ")
     logging.info("Accuracy after averaging weights on eval: {}".format(test_acc_avg))
+    
+    model_dict = {
+      "train_data": args.train_data,
+      "train_data_size": len(training_data),
+      "test_data": args.test_data if args.test_data else "split_%10",
+      "test_data_size": len(test_data),
+      "train_acc": None, # TODO: find a way to log this.
+      "test_acc_unavg": test_acc_unavg,
+      "test_acc_avg": test_acc_avg,
+      "epochs": args.epochs,
+      "learning_rate": args.learning_rate,
+      "features": args.arcfeatures,
+      "feature_count": parser.arc_perceptron.feature_count
+    }
+    writer.write_model_output(model_dict, parser=True)
 
     # Save the model.
     logging.info("Saving model to {}".format(args.model))
-    raw_input("Press any key to continue: ")
     test_data_path = args.test_data if args.test_data else args.train_data
     parser.Save(
         args.model, train_data_path=args.train_data,
