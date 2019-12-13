@@ -69,8 +69,9 @@ class DependencyParser:
             #Train arc perceptron for one epoch.
             nr_correct_heads, nr_childs = self.arc_perceptron.Train(training_data)
             #Evaluate the arc perceptron
-            train_acc = self._Evaluate(training_data)
-            logging.info("Train acc after iter {}: {}".format(i+1, train_acc))
+            if (i+1) % 5 == 0 or i+1 == niters:
+                train_acc = self._Evaluate(training_data)
+                logging.info("Train acc after iter {}: {}".format(i+1, train_acc))
             if test_data:
                 logging.info("Evaluating on test data..")
                 test_acc = self._Evaluate(test_data)
