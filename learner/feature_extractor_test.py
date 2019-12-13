@@ -23,83 +23,139 @@ class ArcFeatureExtractorTest(unittest.TestCase):
 
     def test_GetArcFeatures(self):
         print("Running test_GetArcFeatures..")
-        head = self.test_sentence_tr.token[3]
-        child = self.test_sentence_tr.token[1]
+        head = self.test_sentence_tr.token[4]  # teslim
+        child = self.test_sentence_tr.token[1] # kerem
         # Initialize the extractor with a feature file
         function_features = self.extractor.GetFeatures(self.test_sentence_tr, head, child)
         #print(text_format.MessageToString(function_features, as_utf8=True))
         features_dict = dict((feature.name, feature.value) for feature in function_features.feature)
-        #for k, v in features_dict.items():
-        #    print(k.encode("utf-8"), v.encode("utf-8"))
         expected_features = {
-            u'head_0_word+head_0_pos': u'özgürlüğünü_Noun',
-            u'head_0_word': u'özgürlüğünü',
-            u'head_0_pos': u'Noun',
-            u'child_0_word+child_0_pos': u'Kerem_Prop',
-            u'child_0_word': u'Kerem',
-            u'child_0_pos': u'Prop',
-            u'head_0_word+head_0_pos+child_0_word+child_0_pos': u'özgürlüğünü_Noun_Kerem_Prop',
-            u'head_0_pos+child_0_word+child_0_pos': u'Noun_Kerem_Prop',
-            u'head_0_word+child_0_word+child_0_pos': u'özgürlüğünü_Kerem_Prop',
-            u'head_0_word+head_0_pos+child_0_pos': u'özgürlüğünü_Noun_Prop',
-            u'head_0_word+head_0_pos+child_0_word': u'özgürlüğünü_Noun_Kerem',
-            u'head_0_word+child_0_word': u'özgürlüğünü_Kerem',
-            u'head_0_pos+child_0_pos': u'Noun_Prop',
-            u'head_0_pos+between_0_pos+child_0_pos': u'Noun_Punc_Prop',
-            u'head_0_pos+head_1_pos+child_-1_pos+child_0_pos': u'Noun_Noun_ROOT_Prop',
-            u'head_-1_pos+head_0_pos+child_-1_pos+child_0_pos': u'Punc_Noun_ROOT_Prop',
-            u'head_0_pos+head_1_pos+child_0_pos+child_1_pos': u'Noun_Noun_Prop_Punc',
-            u'head_-1_pos+head_0_pos+child_0_pos+child_1_pos': u'Punc_Noun_Prop_Punc',
-            u'child_0_lemma': u'Kerem',
-            u'head_0_lemma': u'özgürlük',
-            u'head_0_word+head_0_lemma': u'özgürlüğünü_özgürlük',
-            u'child_0_word+child_0_lemma': u'Kerem_Kerem',
-            u'head_0_pos+head_0_morph_case': u'Noun_acc',
-            u'child_0_pos+child_0_morph_case': u'Prop_nom',
-            u'child_0_morph_case': u'nom',
-            u'head_0_morph_case': u'acc',
-            u'head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case': u'Noun_acc_Prop_nom'
+            u"head_0_morph_number": u"sing",
+            u"head_0_pos+head_0_morph_case": u"Noun_nom",
+            u"head_0_word+head_0_pos+child_0_word": u"teslim_Noun_Kerem",
+            u"head_0_morph_number+child_0_morph_number": u"sing_sing",
+            u"child_0_pos+child_0_morph_case": u"Prop_nom",
+            u"child_0_word+child_0_pos": u"Kerem_Prop",
+            u"head_-1_morph_case+head_0_morph_case+child_0_morph_case+child_1_morph_case": u"acc_nom_nom_None",
+            u"head_0_word": u"teslim",
+            u"child_0_word": u"Kerem",
+            u"head_0_morph_person+child_0_morph_person": u"3_3",
+            u"child_0_morph_number": u"sing",
+            u"head_0_morph_number[psor]": u"None",
+            u"head_0_pos+child_0_word+child_0_pos": u"Noun_Kerem_Prop",
+            u"child_0_morph_case": u"nom",
+            u"head_0_morph_person[psor]+child_0_morph_person[psor]": u"None_None",
+            u"child_0_category+child_0_pos": u"PROPN_Prop",
+            u"child_0_morph_number[psor]": u"None",
+            u"head_-1_morph_case+head_0_morph_case+child_-1_morph_case+child_0_morph_case": u"acc_nom_ROOT_nom",
+            u"child_0_pos": u"Prop",
+            u"head_0_pos+head_1_pos+child_0_pos+child_1_pos": u"Noun_Verb_Prop_Punc",
+            u"head_0_lemma": u"teslim",
+            u"head_0_verbform": u"None",
+            u"head_0_morph_number[psor]+child_0_morph_number[psor]": u"None_None",
+            u"head_0_morph_person": u"3",
+            u"head_0_category+head_0_pos": u"NOUN_Noun",
+            u"head_0_category+child_0_category": u"NOUN_PROPN",
+            u"head_0_category+between_0_category+child_0_category": u"NOUN_PUNCT_NOUN_PROPN",
+            u"child_0_morph_person": u"3",
+            u"child_0_lemma": u"Kerem",
+            u"head_0_pos": u"Noun",
+            u"head_0_pos+between_0_pos+child_0_pos": u"Noun_Punc_Noun_Prop",
+            u"head_0_lemma+child_0_lemma": u"teslim_Kerem",
+            u"head_0_word+head_0_pos+child_0_word+child_0_pos": u"teslim_Noun_Kerem_Prop",
+            u"child_0_pos+head_0_pos+head_1_pos": u"Prop_Noun_Verb",
+            u"head_0_morph_case+head_1_morph_case+child_-1_morph_case+child_0_morph_case": u"nom_nom_ROOT_nom",
+            u"head_-1_pos+head_0_pos+child_0_pos+child_1_pos": u"Noun_Noun_Prop_Punc",
+            u"child_0_voice": u"None",
+            u"child_0_verbform": u"None",
+            u"head_-1_pos+head_0_pos+child_-1_pos+child_0_pos": u"Noun_Noun_ROOT_Prop",
+            u"child_0_lemma+head_0_lemma+head_1_lemma": u"Kerem_teslim_et",
+            u"head_0_word+head_0_pos": u"teslim_Noun",
+            u"head_0_word+child_0_word": u"teslim_Kerem",
+            u"head_0_pos+head_1_pos+child_-1_pos+child_0_pos": u"Noun_Verb_ROOT_Prop",
+            u"head_0_word+child_0_word+child_0_pos": u"teslim_Kerem_Prop",
+            u"head_0_morph_person[psor]": u"None",
+            u"head_0_morph_case": u"nom",
+            u"head_0_voice": u"None",
+            u"head_0_category": u"NOUN",
+            u"head_0_pos+child_0_pos": u"Noun_Prop",
+            u"head_0_word+head_0_pos+child_0_pos": u"teslim_Noun_Prop",
+            u"child_0_morph_person[psor]": u"None",
+            u"child_0_category": u"PROPN",
+            u"head_0_morph_case+head_1_morph_case+child_0_morph_case+child_1_morph_case": u"nom_nom_nom_None",
+            u"head_0_morph_case+child_0_morph_case": u"nom_nom",
         }
 
         self.assertDictEqual(features_dict, expected_features)
+        #for k, v in features_dict.items():
+        #  print "u"+'"'+k+'"'+":", "u"+'"'+v.encode("utf-8")+'"'+","
         print("Passed!")
 
     def test_GetArcFeaturesWithExtendedSentence(self):
         print("Running testArcGetFeaturesWithExtendedSentence..")
-        head = self.test_sentence_en.token[2] # saw
-        child = self.test_sentence_en.token[1] # john
-        sentence = common.ExtendSentence(self.test_sentence_en)
+        head = self.test_sentence_tr.token[8] # rahatlamisti
+        child = self.test_sentence_tr.token[1] # john
+        sentence = common.ExtendSentence(self.test_sentence_tr)
         function_features = self.extractor.GetFeatures(sentence, head=head, child=child)
         features_dict = dict((feature.name, feature.value) for feature in function_features.feature)
         expected_features = {
-            u'head_0_word+head_0_pos+child_0_word': u'saw_Verb_John',
-            u'child_0_word+child_0_pos': u'John_Noun',
-            u'head_0_word': u'saw',
-            u'child_0_word': u'John',
-            u'head_0_pos+child_0_word+child_0_pos': u'Verb_John_Noun',
-            u'head_0_pos+child_0_pos': u'Verb_Noun',
-            u'child_0_pos': u'Noun',
-            u'head_0_pos+head_1_pos+child_0_pos+child_1_pos': u'Verb_Noun_Noun_Verb',
-            u'head_0_word+head_0_pos': u'saw_Verb',
-            u'head_0_pos': u'Verb',
-            u'head_0_pos+between_0_pos+child_0_pos': u'Verb_None_Noun',
-            u'head_0_word+head_0_pos+child_0_word+child_0_pos': u'saw_Verb_John_Noun',
-            u'head_-1_pos+head_0_pos+child_0_pos+child_1_pos': u'Noun_Verb_Noun_Verb',
-            u'head_-1_pos+head_0_pos+child_-1_pos+child_0_pos': u'Noun_Verb_ROOT_Noun',
-            u'head_0_word+child_0_word': u'saw_John',
-            u'head_0_pos+head_1_pos+child_-1_pos+child_0_pos': u'Verb_Noun_ROOT_Noun',
-            u'head_0_word+child_0_word+child_0_pos': u'saw_John_Noun',
-            u'head_0_word+head_0_pos+child_0_pos': u'saw_Verb_Noun',
-            u'child_0_lemma': u'John',
-            u'head_0_lemma': u'see',
-            u'head_0_word+head_0_lemma': u'saw_see',
-            u'child_0_word+child_0_lemma': u'John_John',
-            u'head_0_pos+head_0_morph_case': u'Verb_None',
-            u'child_0_pos+child_0_morph_case': u'Noun_None',
-            u'child_0_morph_case': u'None',
-            u'head_0_morph_case': u'None',
-            u'head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case': u'Verb_None_Noun_None'
+           u"head_0_morph_number": u"sing",
+           u"head_0_pos+head_0_morph_case": u"Verb_None",
+           u"head_0_word+head_0_pos+child_0_word": u"rahatlamıştı_Verb_Kerem",
+           u"head_0_morph_number+child_0_morph_number": u"sing_sing",
+           u"child_0_pos+child_0_morph_case": u"Prop_nom",
+           u"child_0_word+child_0_pos": u"Kerem_Prop",
+           u"head_-1_morph_case+head_0_morph_case+child_0_morph_case+child_1_morph_case": u"None_None_nom_None",
+           u"head_0_word": u"rahatlamıştı",
+           u"child_0_word": u"Kerem",
+           u"head_0_morph_person+child_0_morph_person": u"3_3",
+           u"child_0_morph_number": u"sing",
+           u"head_0_morph_number[psor]": u"None",
+           u"head_0_pos+child_0_word+child_0_pos": u"Verb_Kerem_Prop",
+           u"child_0_morph_case": u"nom",
+           u"head_0_morph_person[psor]+child_0_morph_person[psor]": u"None_None",
+           u"child_0_category+child_0_pos": u"PROPN_Prop",
+           u"child_0_morph_number[psor]": u"None",
+           u"head_-1_morph_case+head_0_morph_case+child_-1_morph_case+child_0_morph_case": u"None_None_ROOT_nom",
+           u"child_0_pos": u"Prop",
+           u"head_0_pos+head_1_pos+child_0_pos+child_1_pos": u"Verb_Punc_Prop_Punc",
+           u"head_0_lemma": u"rahatla",
+           u"head_0_verbform": u"None",
+           u"head_0_morph_number[psor]+child_0_morph_number[psor]": u"None_None",
+           u"head_0_morph_person": u"3",
+           u"head_0_category+head_0_pos": u"VERB_Verb",
+           u"head_0_category+child_0_category": u"VERB_PROPN",
+           u"head_0_category+between_0_category+child_0_category": u"VERB_PROPN_PUNCT_NOUN_NOUN_VERB_ADP_PROPN",
+           u"child_0_morph_person": u"3",
+           u"child_0_lemma": u"Kerem",
+           u"head_0_pos": u"Verb",
+           u"head_0_pos+between_0_pos+child_0_pos": u"Verb_Prop_Punc_Noun_Noun_Verb_PCNom_Prop",
+           u"head_0_lemma+child_0_lemma": u"rahatla_Kerem",
+           u"head_0_word+head_0_pos+child_0_word+child_0_pos": u"rahatlamıştı_Verb_Kerem_Prop",
+           u"child_0_pos+head_0_pos+head_1_pos": u"Prop_Verb_Punc",
+           u"head_0_morph_case+head_1_morph_case+child_-1_morph_case+child_0_morph_case": u"None_None_ROOT_nom",
+           u"head_-1_pos+head_0_pos+child_0_pos+child_1_pos": u"Adverb_Verb_Prop_Punc",
+           u"child_0_voice": u"None",
+           u"child_0_verbform": u"None",
+           u"head_-1_pos+head_0_pos+child_-1_pos+child_0_pos": u"Adverb_Verb_ROOT_Prop",
+           u"child_0_lemma+head_0_lemma+head_1_lemma": u"Kerem_rahatla_.",
+           u"head_0_word+head_0_pos": u"rahatlamıştı_Verb",
+           u"head_0_word+child_0_word": u"rahatlamıştı_Kerem",
+           u"head_0_pos+head_1_pos+child_-1_pos+child_0_pos": u"Verb_Punc_ROOT_Prop",
+           u"head_0_word+child_0_word+child_0_pos": u"rahatlamıştı_Kerem_Prop",
+           u"head_0_morph_person[psor]": u"None",
+           u"head_0_morph_case": u"None",
+           u"head_0_voice": u"None",
+           u"head_0_category": u"VERB",
+           u"head_0_pos+child_0_pos": u"Verb_Prop",
+           u"head_0_word+head_0_pos+child_0_pos": u"rahatlamıştı_Verb_Prop",
+           u"child_0_morph_person[psor]": u"None",
+           u"child_0_category": u"PROPN",
+           u"head_0_morph_case+head_1_morph_case+child_0_morph_case+child_1_morph_case": u"None_None_nom_None",
+           u"head_0_morph_case+child_0_morph_case": u"None_nom",
         }
+        #for k, v in features_dict.items():
+        #  print "u"+'"'+k+'"'+":", "u"+'"'+v.encode("utf-8")+'"'+","
 
         self.assertDictEqual(features_dict, expected_features)
         print("Passed!")
