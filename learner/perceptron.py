@@ -195,7 +195,7 @@ class ArcPerceptron(AveragedPerceptron):
         for feature in features.feature:
             #if feature.name not in self.weights:
             if feature.value not in self.weights[feature.name]:
-                #print("not in weights {}, {}".format(feature.name, feature.value))
+                logging.info("not in weights {}, {}, passing..".format(feature.name, feature.value))
                 continue
             #print("feature is {} {}".format(feature.name, feature.value))
             score += self.weights[feature.name][feature.value]
@@ -257,7 +257,7 @@ class ArcPerceptron(AveragedPerceptron):
         """
         def upd_feat(fname, fvalue, w):
             if fname not in self.weights:
-                logging.info("fname {}, passing this feature".format(fname))
+                logging.info("fname {}, passing this feature".format(fname.encode("utf-8")))
                 pass
             else:
                 #print("updating the feature {}: {}".format(fname, fvalue))

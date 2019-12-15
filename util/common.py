@@ -318,8 +318,15 @@ def SortFeatures(featureset, sort_key=lambda f: f.weight):
 # type: featureset proto util
 def TopFeatures(featureset, n):
     """Return the n features with the largest weight."""
+    # sort the features
+    logging.info("Sorting features..")
     featureset = SortFeatures(featureset)
-    return featureset.feature[:n]
+    if n < 0:
+      # get tail features.
+      return featureset.feature[n:]
+    else:
+      # get head features.
+      return featureset.feature[:n]
 
 def GetLabels():
     """Util function to read label_to_enum.tsv and return labels as a dict."""

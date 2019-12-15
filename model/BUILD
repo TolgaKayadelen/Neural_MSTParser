@@ -30,6 +30,15 @@ py_binary(
 )
 
 py_binary(
+  name = "inspect_model",
+  srcs = ["inspect_model.py"],
+  deps = [
+  "//util:common",
+  "//learner:featureset_py_pb2",
+  ],
+)
+
+py_binary(
   name = "get_tags_and_labels",
   srcs = ["get_tags_and_labels.py"],
   deps = [

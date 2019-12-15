@@ -167,7 +167,6 @@ def train_parser(args):
     #feature_opts = get_feature_opts(args.features)
 
     # Make the model
-    # TODO: add feature_opts to the model call.
     parser = DependencyParser(feature_file=args.arcfeatures, decoding="mst")
     if args.load:
         logging.info("Loading model from {}".format(args.model))
@@ -208,6 +207,7 @@ def train_parser(args):
       iters
     )
     parser.arc_perceptron.weights = deepcopy(averaged_weights)
+    # TODO: add pruning here.
     logging.info("Evaluating after Averaged Weights..")
     #TODO: make model._Evaluate public.
     test_acc_avg = parser._Evaluate(test_data)
