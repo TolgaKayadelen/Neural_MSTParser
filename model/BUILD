@@ -30,8 +30,8 @@ py_binary(
 )
 
 py_binary(
-  name = "inspect_model",
-  srcs = ["inspect_model.py"],
+  name = "model",
+  srcs = ["model.py"],
   deps = [
   "//util:common",
   "//learner:featureset_py_pb2",
