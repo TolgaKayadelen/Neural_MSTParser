@@ -54,7 +54,6 @@ class AveragedPerceptron(object):
         totals = [len(self.weights[key]) for key in self.weights.keys()]
         self.feature_count = sum(totals)
 
-
     def AverageWeights(self, weights):
         """Average the weights over all iterations.
       Args: 
@@ -71,7 +70,6 @@ class AveragedPerceptron(object):
         #del self._accumulator
         #del self._timestamps
         return weights
-
 
     def _ConvertWeightsToProto(self):
         """Convert the weights dictionary to featureset proto.
@@ -92,51 +90,6 @@ class AveragedPerceptron(object):
         assert len(self.featureset.feature) == self.feature_count, error
         return self.featureset
 
-    def LoadModel(self, name):
-        """Load model features and weights from a json file.
-        Args:
-            name = the name of the model to load.
-        """
-        name = name + ".json" if not name.endswith(".json") else name
-        input_file = os.path.join(_MODEL_DIR, "{}".format(name))
-        with open(input_file, "r") as inp:
-            model = json.load(inp)
-        featureset = json_format.Parse(model["featureset"], featureset_pb2.FeatureSet())
-        accuracy = model["test_accuracy"]
-        logging.info("Arc accuracy of the loaded model: {}".format(accuracy))
-        self.InitializeWeights(featureset, load=True)
-
-    def SaveModel(self, name, train_data_path=None, test_data_path=None,
-    	 nr_epochs=None, test_accuracy=None):
-        """Save model features and weights in json format.
-        Args:
-            name: string, the name of the model.
-            data_path: string, the data path with which the model was trained.
-            epocsh: the training epochs.
-            test_accuracy: the arc accuracy on test data.
-        """
-        if not hasattr(self, "featureset"):
-            self.featureset = self._ConvertWeightsToProto()
-        name = name + ".json" if not name.endswith(".json") else name
-        model = {
-            "train_data_path": train_data_path,
-            "test_data_path": test_data_path,
-            "epochs_trained": nr_epochs,
-            "test_accuracy": test_accuracy,
-            "featureset": json_format.MessageToJson(self.featureset,
-            	including_default_value_fields=True)
-        }
-        output_file = os.path.join(_MODEL_DIR, "{}".format(name))
-        with open(output_file, "w") as output:
-            json.dump(model, output, indent=4)
-        logging.info("""Saved model with the following specs:
-            train_data: {},
-            test_data: {},
-            epochs: {},
-            test_accuracy: {},
-            feature_count: {}""".format(train_data_path, test_data_path, nr_epochs,
-                                        test_accuracy, self.feature_count))
-
     def Sort(self):
         """Sort features by weight."""
         #TODO: write a test
@@ -144,7 +97,6 @@ class AveragedPerceptron(object):
         assert hasattr(self, "featureset"), error
         self.featureset = common.SortFeatures(self.featureset)
         return self.featureset
-
 
     def TopN(self, n):
         """Return the n features with the largest weight."""
@@ -195,7 +147,7 @@ class ArcPerceptron(AveragedPerceptron):
         for feature in features.feature:
             #if feature.name not in self.weights:
             if feature.value not in self.weights[feature.name]:
-                logging.info("not in weights {}, {}, passing..".format(feature.name, feature.value))
+                # logging.info("not in weights {}, {}, passing..".format(feature.name, feature.value))
                 continue
             #print("feature is {} {}".format(feature.name, feature.value))
             score += self.weights[feature.name][feature.value]
@@ -329,6 +281,52 @@ class ArcPerceptron(AveragedPerceptron):
                 nr_child += 1
         #common.PPrintWeights(self._timestamps)
         return correct, nr_child
+    
+    def LoadModel(self, name):
+        """Load model features and weights from a json file.
+        Args:
+            name = the name of the model to load.
+        """
+        name = name + ".json" if not name.endswith(".json") else name
+        input_file = os.path.join(_MODEL_DIR, "{}".format(name))
+        with open(input_file, "r") as inp:
+            model = json.load(inp)
+        featureset = json_format.Parse(model["featureset"], featureset_pb2.FeatureSet())
+        accuracy = model["test_accuracy"]
+        logging.info("Arc accuracy of the loaded model: {}".format(accuracy))
+        self.InitializeWeights(featureset, load=True)
+
+    def SaveModel(self, name, train_data_path=None, test_data_path=None,
+    	 nr_epochs=None, test_accuracy=None):
+        """Save model features and weights in json format.
+        Args:
+            name: string, the name of the model.
+            data_path: string, the data path with which the model was trained.
+            epocsh: the training epochs.
+            test_accuracy: the arc accuracy on test data.
+        """
+        if not hasattr(self, "featureset"):
+            self.featureset = self._ConvertWeightsToProto()
+        name = name + ".json" if not name.endswith(".json") else name
+        model = {
+            "train_data_path": train_data_path,
+            "test_data_path": test_data_path,
+            "epochs_trained": nr_epochs,
+            "test_accuracy": test_accuracy,
+            "featureset": json_format.MessageToJson(self.featureset,
+            	including_default_value_fields=True)
+        }
+        output_file = os.path.join(_MODEL_DIR, "{}".format(name))
+        with open(output_file, "w") as output:
+            json.dump(model, output, indent=4)
+        logging.info("""Saved model with the following specs:
+            train_data: {},
+            test_data: {},
+            epochs: {},
+            test_accuracy: {},
+            feature_count: {}""".format(train_data_path, test_data_path, nr_epochs,
+                                        test_accuracy, self.feature_count))
+    
 
 
 def main():
