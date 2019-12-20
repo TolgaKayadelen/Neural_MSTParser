@@ -26,15 +26,12 @@ TEST_FEATURE_DIR = "data/testdata/features/test_features"
 
 class FeatureExtractor:
 
-    def __init__(self, featuretype, feature_file, postag_window=5, log_distance=1.5, test=False):
+    def __init__(self, featuretype, feature_file, test=False):
         """Initialize this feature extractor with a featureset file.
 
         Args:
           featuretype: either labelfeatures or arcfeatures.
           feature_file: the file from which to read the features.
-          postag_window: include a feature for each word pair that contains this many POS tags.
-          log_distance: if not None, "bin" the distance between mod and head, otherwise use
-            linear distance.
           test: If True, it means the extractor is initialized for test purposes only, and reads
             data from the TEST_FEATURE_DIR.
 
@@ -52,8 +49,6 @@ class FeatureExtractor:
         else:
           self._feature_file = os.path.join(TEST_FEATURE_DIR, "labelfeatures.txt")
           logging.info("reading label features from {}".format(self._feature_file))
-        self._postag_window = postag_window
-        self._log_distance = log_distance
 
     def InitializeFeatureNames(self):
         """Initialize a featureset proto with the feature names read from featureset file.

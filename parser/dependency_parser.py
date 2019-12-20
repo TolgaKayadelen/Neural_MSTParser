@@ -20,7 +20,6 @@ class DependencyParser:
     def __init__(self, feature_file=None, decoding="mst"):
         self.arc_perceptron = ArcPerceptron(feature_file)
         self.decoder = Decoder(decoding)
-        self.feature_extractor = FeatureExtractor("arcfeatures", feature_file)
         self.train_accuracy = None
         self.test_accuracy= None
 
@@ -50,7 +49,7 @@ class DependencyParser:
             for ch in token.candidate_head:
                 head = common.GetTokenByAddress(sentence.token, ch.address)
                 #print("candidate head is {}".format(head.word.encode("utf-8")))
-                features = self.feature_extractor.GetFeatures(
+                features = self.arc_perceptron.feature_extractor.GetFeatures(
                     sentence = sentence,
                     head = head,
                     child = token

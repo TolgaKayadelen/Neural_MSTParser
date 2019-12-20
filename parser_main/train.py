@@ -164,8 +164,6 @@ def train_parser(args):
         test_data=None
     del tr,te
 
-    #feature_opts = get_feature_opts(args.features)
-
     # Make the model
     parser = DependencyParser(feature_file=args.arcfeatures, decoding="mst")
     if args.load:

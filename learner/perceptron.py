@@ -111,7 +111,7 @@ class ArcPerceptron(AveragedPerceptron):
     def __init__(self, feature_file):
         super(ArcPerceptron, self).__init__()
         self.iters = 0
-        self._extractor = FeatureExtractor("arcfeatures", feature_file)
+        self.feature_extractor = FeatureExtractor("arcfeatures", feature_file)
 
     def MakeAllFeatures(self, training_data):
         """Create a features set from --all-- head-dependent pairs in the data.
@@ -132,7 +132,7 @@ class ArcPerceptron(AveragedPerceptron):
                 for ch in token.candidate_head:
                     head = common.GetTokenByAddress(sentence.token, ch.address)
                     #print("head {}, child {}".format(head.word, token.word))
-                    self.InitializeWeights(self._extractor.GetFeatures(
+                    self.InitializeWeights(self.feature_extractor.GetFeatures(
                         sentence,
                         head=head,
                         child=token)
@@ -181,7 +181,7 @@ class ArcPerceptron(AveragedPerceptron):
                 features.append(None)
                 continue
             #print("head: {}, child: {}".format(head.word, token.word))
-            featureset = self._extractor.GetFeatures(sentence, head, token)
+            featureset = self.feature_extractor.GetFeatures(sentence, head, token)
             score = self.Score(featureset)
             #print("score for this head-child {}".format(score))
             features.append(featureset)
