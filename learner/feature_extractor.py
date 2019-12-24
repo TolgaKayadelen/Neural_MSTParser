@@ -112,7 +112,11 @@ class FeatureExtractor:
         for subfeat in feature:
             subfeat = subfeat.split("_")
             #print(subfeat)
-            offset = int(subfeat[1])
+            if subfeat[0] == "distance":
+              is_distance_feature = True
+            else:
+              is_distance_feature = False
+              offset = int(subfeat[1])
             is_between_feature = subfeat[0] == "between"
             is_tree_feature = subfeat[2] in ["up", "down"]
             t = [child, head][subfeat[0] == "head"] # t = token.
@@ -131,6 +135,8 @@ class FeatureExtractor:
             elif is_between_feature:
                 for btw_token in common.GetBetweenTokens(sentence, head, child, dummy_start_token):
                     value.append(common.GetValue(btw_token, subfeat[-1]))
+            elif is_distance_feature:
+              value.append(common.GetDistanceValue(head.index, child.index))
             else:
                 if not t.index+offset+dummy_start_token >= len(sentence.token):
                   value.append(common.GetValue(sentence.token[t.index+offset+dummy_start_token], subfeat[-1]))

@@ -172,6 +172,26 @@ def GetSentenceWeight(sentence):
         sentence_weight += token.selected_head.arc_score
     return sentence_weight
 
+# type: feature util
+def GetDistanceValue(head_index, child_index):
+  """Returns the distance between head and the child tokens in the sentence.
+  
+  Args:
+    head_index: index of the head token.
+    child_index: index of the child token.
+  """
+  dist = head_index - child_index
+  if abs(dist) <= 2:
+    return "<=2"
+  elif abs(dist) <= 4:
+    return "<=4"
+  elif abs(dist) <= 6:
+    return "<=6"
+  elif abs(dist) <= 8:
+    return "<=8"
+  else:
+    return "9+"
+
 # type: token util
 def GetValue(token, feat):
     """Returns the desired value for a feature of a token.
