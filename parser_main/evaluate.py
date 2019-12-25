@@ -10,6 +10,14 @@ LAS: Labeled attachment score.
 We provide typed based precision, recall and F1 scores for LAS and type based
 accuracy for UAS.
 
+Usage:
+bazel build parser_main:evaluate && 
+bazel-bin/parser_main/evaluate \
+--gold_data=./data/testdata/parser_main/eval_data_gold \
+--test_data= ./data_testdata/parser_main/eval_data_test \
+--metrics all \
+--print_results=True
+
 """
 
 import pandas as pd
@@ -56,11 +64,10 @@ class Evaluator:
 
     def __init__(self, gold, test):
         """
+        Initializes this evaluator with a gold and test treebank.
         Args:
             gold: treebank, the gold treebank.
             test: treebank, the treebank annotated by the system.
-
-            Initializes this evaluator with a gold and test treebank.
         """
         assert isinstance(gold, treebank_pb2.Treebank)
         assert isinstance(test, treebank_pb2.Treebank)
@@ -137,7 +144,7 @@ class Evaluator:
             sentence_idx = 0
             #print("label is {}".format(label))
             for gold_sent, test_sent in self.gold_and_test:
-                sentence_idx = 1
+                sentence_idx += 1
                 for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
                     if not gold_tok.label == label:
                         continue
@@ -154,6 +161,7 @@ class Evaluator:
 
     def	_TypedLasPrec(self):
         """Computes Precision for all dependency types.
+        
         For each relation X, precision computes the percentage of relations X
         in the system that are correct (correct / system). That is, it checks
         whether the X's that are found in the system also exists in the gold.
@@ -250,7 +258,7 @@ class Evaluator:
         for _, row in self.typed_las_f1.reset_index().iterrows():
           self.evaluation.typed_las_f1.f1.add(
             label=label_to_enum[row["index"]], count=int(row["count"]), prec=row["label_precision"],
-            recall=row["label_recall"], f1=row["label_recall"]
+            recall=row["label_recall"], f1=row["label_f1"]
             )
         #print(self.evaluation)
 

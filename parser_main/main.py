@@ -11,7 +11,7 @@ from parser_main.evaluate import evaluate_parser
 def validate_args(args):
   if not args.mode:
     sys.exit("Need to define a mode!!")
-  if not args.language:
+  if args.mode == "train" and not args.language:
     sys.exit("Need to specify a language!!")
   if args.mode == "train" and not args.train_data:
     sys.exit("Need to speficy training data!!")
@@ -77,6 +77,8 @@ if __name__ == "__main__":
     					choices=["uas_total", "las_total", "typed_uas",
     					"typed_las_prec", "typed_las_recall", "typed_las_f1",
     					"all"])
+    parser.add_argument("--print_eval_results", type=bool, default=False,
+                        help="whether to print eval results on screen.")
     
     args = parser.parse_args()
     
@@ -92,5 +94,5 @@ if __name__ == "__main__":
     elif args.mode == "parse":
       parse(args)
     elif args.mode == "evaluate":
-      evaluate_parser(args)
+      evaluate_parser(args, print_results=args.print_eval_results)
     
