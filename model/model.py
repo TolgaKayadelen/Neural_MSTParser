@@ -158,6 +158,8 @@ def main(args):
   #print(model)
   if args.print_feature_impact:
     model.feature_impact()
+  if args.info:
+    print(model)
   if args.write_feature_tsv:
     model.write_features_as_tsv()
   if args.prune:
@@ -174,5 +176,6 @@ if __name__ == "__main__":
   parser.add_argument("--prune", type=bool, help="whether to prune the model")
   parser.add_argument("--write_feature_tsv", type=bool, help="whether to write the features as tsv file")
   parser.add_argument("--print_feature_impact", type=bool, help="whether to print the feature impacts")
+  parser.add_argument("--info", type=bool, help="whether to print model info.")
   args = parser.parse_args()
   main(args)

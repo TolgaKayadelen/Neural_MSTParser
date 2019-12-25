@@ -45,7 +45,7 @@ bazel-bin/parser_main/main \
 --load=model.json \
 --test_data=treebank_0_3
 ```
-- Evaluate parser on a set of data.
+- Evaluate parser/labeler on a set of data.
 Use the --evaluate mode to evaluate the parser performance on some parsed data.
 You need to have a gold set and a test set, where test set is the parser output
 and the gold set is the true annotations.

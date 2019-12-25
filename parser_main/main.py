@@ -3,9 +3,28 @@
 """Main module to train and parse sentences with dependency parser."""
 
 import argparse
+import sys
 from parser_main.parse import parse
 from parser_main.train import train_parser, train_labeler
 from parser_main.evaluate import evaluate_parser
+
+def validate_args(args):
+  if not args.mode:
+    sys.exit("Need to define a mode!!")
+  if not args.language:
+    sys.exit("Need to specify a language!!")
+  if args.mode == "train" and not args.train_data:
+    sys.exit("Need to speficy training data!!")
+  if args.mode == "train" and not (args.parser or args.labeler):
+    sys.exit("Need to train either a parser or a labeler!!")
+  if args.mode == "train" and args.parser and not args.arcfeatures.startswith("arcfeatures"):
+    sys.exit("Need to train a parser with arc features!!")
+  if args.mode == "train" and args.labeler and not args.labelfeatures.startswith("labelfeatures"):
+    sys.exit("Need to train a labeler with label features!!")
+  if args.mode == "evaluate" and not args.gold_data:
+    sys.exit("Need to specify gold data to evaluate a model!!")
+  if args.mode == "evaluate" and not args.test_data:
+    sys.exit("Need to specify test data to evaluate a model!!")
 
 
 if __name__ == "__main__":
@@ -60,6 +79,8 @@ if __name__ == "__main__":
     					"all"])
     
     args = parser.parse_args()
+    
+    validate_args(args)
     
     if args.mode == "train" and args.parser and not args.labeler:
       train_parser(args)
