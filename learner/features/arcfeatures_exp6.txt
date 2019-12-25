@@ -1,41 +1,27 @@
-# Same as exp3
+# Here we combine direction and distance features with context features.
+#
 # Basic Unigram Features
 head_0_category
 head_0_word
 head_0_pos
 head_0_lemma
-child_0_category
-child_0_word
-child_0_pos
-child_0_lemma
 head_0_category+head_0_pos
 head_0_word+head_0_pos
-child_0_word+child_0_pos
-child_0_category+child_0_pos
 
 # Morphological Features
 head_0_morph_case
-child_0_morph_case
 head_0_morph_number
-child_0_morph_number
 head_0_morph_person
-child_0_morph_person
-head_0_morph_verbform
-head_0_morph_voice
-child_0_morph_verbform
-child_0_morph_voice
+head_0_verbform
+head_0_voice
 head_0_morph_number[psor]
-child_0_morph_number[psor]
 head_0_morph_person[psor]
-child_0_morph_person[psor]
 head_0_pos+head_0_morph_case
-child_0_pos+child_0_morph_case
 head_0_morph_case+child_0_morph_case
 head_0_morph_number+child_0_morph_number
 head_0_morph_person+child_0_morph_person
 head_0_morph_number[psor]+child_0_morph_number[psor]
 head_0_morph_person[psor]+child_0_morph_person[psor]
-
 
 # Basic Bigram Features
 head_0_word+head_0_pos+child_0_word+child_0_pos
@@ -52,34 +38,26 @@ head_0_pos+child_0_pos
 head_0_pos+between_0_pos+child_0_pos
 head_0_category+between_0_category+child_0_category
 
-# Context Features
-child_0_lemma+head_0_lemma+head_1_lemma
-child_0_pos+head_0_pos+head_1_pos
-head_0_pos+head_1_pos+child_-1_pos+child_0_pos
-head_-1_pos+head_0_pos+child_-1_pos+child_0_pos
-head_0_pos+head_1_pos+child_0_pos+child_1_pos
-head_-1_pos+head_0_pos+child_0_pos+child_1_pos
-head_0_morph_case+head_1_morph_case+child_-1_morph_case+child_0_morph_case
-head_-1_morph_case+head_0_morph_case+child_-1_morph_case+child_0_morph_case
-head_0_morph_case+head_1_morph_case+child_0_morph_case+child_1_morph_case
-head_-1_morph_case+head_0_morph_case+child_0_morph_case+child_1_morph_case
-
-# Distance Feature
-distance_child_head
-
-# Directionality Feature
-direction_child_head
-
 # Distance Based Context Features
 distance_child_head+child_0_lemma+head_0_lemma+head_1_lemma
 distance_child_head+child_0_pos+head_0_pos+head_1_pos
 distance_child_head+head_0_pos+head_1_pos+child_-1_pos+child_0_pos
+distance_child_head+head_-1_pos+head_0_pos+child_-1_pos+child_0_pos
+distance_child_head+head_0_pos+head_1_pos+child_0_pos+child_1_pos
+distance_child_head+head_-1_pos+head_0_pos+child_0_pos+child_1_pos
+distance_child_head+head_0_morph_case+head_1_morph_case+child_-1_morph_case+child_0_morph_case
+distance_child_head+head_-1_morph_case+head_0_morph_case+child_-1_morph_case+child_0_morph_case
+distance_child_head+head_0_morph_case+head_1_morph_case+child_0_morph_case+child_1_morph_case
+distance_child_head+head_-1_morph_case+head_0_morph_case+child_0_morph_case+child_1_morph_case
 
 # Directionality Based Context Features
+direction_child_head+child_0_lemma+head_0_lemma+head_1_lemma
+direction_child_head+child_0_pos+head_0_pos+head_1_pos
+direction_child_head+head_0_pos+head_1_pos+child_-1_pos+child_0_pos
+direction_child_head+head_-1_pos+head_0_pos+child_-1_pos+child_0_pos
+direction_child_head+head_0_pos+head_1_pos+child_0_pos+child_1_pos
 direction_child_head+head_-1_pos+head_0_pos+child_0_pos+child_1_pos
 direction_child_head+head_0_morph_case+head_1_morph_case+child_-1_morph_case+child_0_morph_case
 direction_child_head+head_-1_morph_case+head_0_morph_case+child_-1_morph_case+child_0_morph_case
-
-
-
-
+direction_child_head+head_0_morph_case+head_1_morph_case+child_0_morph_case+child_1_morph_case
+direction_child_head+head_-1_morph_case+head_0_morph_case+child_0_morph_case+child_1_morph_case

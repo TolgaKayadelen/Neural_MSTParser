@@ -114,7 +114,12 @@ class FeatureExtractor:
             #print(subfeat)
             if subfeat[0] == "distance":
               is_distance_feature = True
+              is_direction_feature = False
+            elif subfeat[0] == "direction":
+              is_direction_feature = True
+              is_distance_feature = False
             else:
+              is_direction_feature = False
               is_distance_feature = False
               offset = int(subfeat[1])
             is_between_feature = subfeat[0] == "between"
@@ -137,6 +142,8 @@ class FeatureExtractor:
                     value.append(common.GetValue(btw_token, subfeat[-1]))
             elif is_distance_feature:
               value.append(common.GetDistanceValue(head.index, child.index))
+            elif is_direction_feature:
+              value.append(["right", "left"][child.index > head.index])
             else:
                 if not t.index+offset+dummy_start_token >= len(sentence.token):
                   value.append(common.GetValue(sentence.token[t.index+offset+dummy_start_token], subfeat[-1]))
