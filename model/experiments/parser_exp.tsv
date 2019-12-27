@@ -50,13 +50,6 @@ time  train_data train_data_size test_data test_data_size train_acc test_acc_una
 12/26/19, 23:15:22	treebank_train_0_50	45	split_%10	5	91.62222222222222	66.2	64.8	2	1.0	arcfeatures_exp7	53356
 12/26/19, 23:18:39	treebank_train_0_50	45	split_%10	5	94.11111111111111	63.8	66.2	2	1.0	arcfeatures_exp7	53356
 12/27/19, 00:55:18	treebank_train_0_500	450	split_%10	50	99.38888888888889	67.36	69.76	10	1.0	arcfeatures_exp7	534483
-
-12/27/19, 04:37:42	treebank_0_10	7	split_%10	3	100.0	68.33333333333333	78.33333333333333	10	1.0	arcfeatures_exp7	15971
-12/27/19, 04:40:14	treebank_0_10	9	split_%10	1	100.0	80.0	100.0	10	1.0	arcfeatures_exp7	19487
-12/27/19, 04:41:42	treebank_0_10	8	split_%10	2	100.0	67.5	65.0	10	1.0	arcfeatures_exp7	16102
-12/27/19, 04:48:09	treebank_0_10	8	split_%10	2	100.0	60.0	60.0	10	1.0	arcfeatures_exp8	15830
-12/27/19, 04:49:02	treebank_0_10	8	split_%10	2	100.0	60.0	57.5	10	1.0	arcfeatures_exp8	15695
-12/27/19, 11:38:45	treebank_0_10	8	split_%10	2	100.0	55.0	65.0	10	1.0	arcfeatures_exp8	17375
 12/27/19, 11:42:55	treebank_train_0_50	45	split_%10	5	100.0	70.6	66.6	10	1.0	arcfeatures_exp8	57875
 12/27/19, 11:46:23	treebank_train_0_50	45	split_%10	5	100.0	56.6	58.0	10	1.0	arcfeatures_exp8	57875
 12/27/19, 11:52:28	treebank_train_0_50	45	split_%10	5	99.11111111111111	58.8	67.2	10	1.0	arcfeatures_exp8	39626
@@ -68,6 +61,14 @@ time  train_data train_data_size test_data test_data_size train_acc test_acc_una
 12/27/19, 12:20:26	treebank_train_0_50	45	split_%10	5	93.24444444444444	60.2	63.8	10	1.0	arcfeatures_exp8	22005
 12/27/19, 12:29:50	treebank_train_0_50	45	split_%10	5	99.44444444444444	56.6	63.8	15	1.0	arcfeatures_exp8	22256
 12/27/19, 12:36:04	treebank_train_0_50	45	split_%10	5	99.11111111111111	68.8	57.0	20	1.0	arcfeatures_exp8	22005
-12/27/19, 13:44:00	treebank_train_0_10	9	split_%10	1	56.333333333333336	80.0	100.0	1	1.0	arcfeatures_exp8	9479
-12/27/19, 13:55:48	treebank_train_0_10	9	split_%10	1	56.333333333333336	80.0	100.0	1	1.0	arcfeatures_exp8	9479
 12/27/19, 14:00:48	treebank_train_0_500	450	split_%10	50	93.64222222222222	61.56	66.0	20	1.0	arcfeatures_exp8	168831
+12/27/19, 14:20:29	treebank_train_0_50	45	split_%10	5	97.73333333333333	59.4	58.0	10	1.0	arcfeatures_exp8	22073
+12/27/19, 14:24:37	treebank_train_0_50	45	split_%10	5	96.6	64.2	65.0	10	1.0	arcfeatures_exp8	22511
+12/27/19, 14:29:02	treebank_train_0_50	45	split_%10	5	96.55555555555556	60.6	60.8	10	1.0	arcfeatures_exp8	23409
+12/27/19, 14:33:25	treebank_train_0_50	45	split_%10	5	98.22222222222223	61.6	60.8	10	1.0	arcfeatures_exp8	23551
+12/27/19, 14:37:05	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	98.22550758919772	68.81138790035587	73.04270462633453	20	1.0	arcfeatures_exp7	4796477
+12/27/19, 14:39:44	treebank_train_0_50	45	split_%10	5	98.28888888888889	60.8	65.0	10	1.0	arcfeatures_exp8	31639
+12/27/19, 14:43:46	treebank_train_0_50	45	split_%10	5	98.8	61.6	64.2	10	1.0	arcfeatures_exp8	31639
+12/27/19, 15:23:32	treebank_train_0_50	45	split_%10	5	100.0	64.4	62.0	10	1.0	arcfeatures_exp9	31890
+12/27/19, 15:41:27	treebank_train_0_50	45	split_%10	5	95.08888888888889	54.2	62.0	10	1.0	arcfeatures_exp8	31639
+12/27/19, 16:08:03	treebank_train_0_500	450	split_%10	50	92.01555555555555	61.66	67.24	10	1.0	arcfeatures_exp8	261461

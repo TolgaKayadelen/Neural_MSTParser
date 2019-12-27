@@ -42,7 +42,8 @@ bazel build //parser_main:main
 bazel-bin/parser_main/main \
 --mode=parse \
 --language=Turkish \
---load=model.json \
+--load=True \
+--model=model.json \
 --test_data=treebank_0_3
 ```
 - Evaluate parser/labeler on a set of data.
@@ -55,7 +56,8 @@ bazel-bin/parser_main/main \
 --mode=evaluate \
 --gold_data=<path_to_gold_data> \
 --test_data=<path_to_test_data> \
---metrics <space_separated_list_of_eval_metrics>
+--metrics <space_separated_list_of_eval_metrics> \
+--print_eval_results=True
 ```
 
 - Train a labeler and test on test data

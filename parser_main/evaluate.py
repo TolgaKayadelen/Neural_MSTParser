@@ -13,8 +13,8 @@ accuracy for UAS.
 Usage:
 bazel build parser_main:evaluate && 
 bazel-bin/parser_main/evaluate \
---gold_data=./data/testdata/parser_main/eval_data_gold \
---test_data= ./data_testdata/parser_main/eval_data_test \
+--gold_data=./data/testdata/parser_main/eval_data_gold.pbtxt \
+--test_data= ./data_testdata/parser_main/eval_data_test.pbtxt \
 --metrics all \
 --print_results=True
 
@@ -121,6 +121,8 @@ class Evaluator:
     def _LasTotal(self):
         "Computes the total Labeled Attachment Score of the parser."
         las = 0.0
+        labels = list(set().union(*map(get_labels, self.test)))
+        assert len(labels) > 1, "Can't compute LAS: Test data doesn't have any labels!"
         for gold_sent, test_sent in self.gold_and_test:
             gold_heads = [(token.selected_head.address, token.label)
                 for token in gold_sent.token[1:]]

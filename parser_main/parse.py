@@ -42,7 +42,10 @@ def parse(args):
 
     # load the model.
     model = DependencyParser(decoding="mst")
-    model.Load(args.model)
+    if args.arcfeatures:
+      model.Load(args.model, features=args.arcfeatures)
+    else:
+      model.Load(args.model)
     logging.info("Loading model from {}".format(args.model))
     logging.info("Number of features: {}".format(model.arc_perceptron.feature_count))
     raw_input("Press any key to continue: ")
@@ -58,7 +61,12 @@ def parse(args):
     test_data = list(test_treebank.sentence)
     logging.info("Total sentences in test data {}".format(len(test_data)))
     #print(text_format.MessageToString(test_data[0], as_utf8=True))
-
+    
+    # remove dependency labels from the data if there's any.
+    for sentence in test_data:
+      for token in sentence.token:
+        token.ClearField("label")
+    
     # parse sentences with the loaded model.
     test_data = map(common.ConnectSentenceNodes, test_data)
     test_data = map(common.ExtendSentence, test_data)

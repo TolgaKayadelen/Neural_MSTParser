@@ -282,16 +282,21 @@ class ArcPerceptron(AveragedPerceptron):
         #common.PPrintWeights(self._timestamps)
         return correct, nr_child
     
-    def LoadModel(self, name):
+    def LoadModel(self, name, feature_file=None):
         """Load model features and weights from a json file.
         Args:
             name = the name of the model to load.
+            feature_file = the feature file to use to initialize the feature extractor.
         """
         name = name + ".json" if not name.endswith(".json") else name
         input_file = os.path.join(_MODEL_DIR, "{}".format(name))
         with open(input_file, "r") as inp:
             model = json.load(inp)
         featureset = json_format.Parse(model["featureset"], featureset_pb2.FeatureSet())
+        if feature_file:
+          self.feature_extractor = FeatureExtractor("arcfeatures", feature_file)
+        else:
+          self.feature_extractor = FeatureExtractor("arcfeatures", model["feature_file"])
         accuracy = model["test_accuracy"]
         logging.info("Arc accuracy of the loaded model: {}".format(accuracy))
         self.InitializeWeights(featureset, load=True)
@@ -315,7 +320,7 @@ class ArcPerceptron(AveragedPerceptron):
             "test_data_path": test_data_path,
             "epochs_trained": nr_epochs,
             "test_accuracy": test_accuracy,
-            "faature_file": feature_file,
+            "feature_file": feature_file,
             "featureset": json_format.MessageToJson(self.featureset,
             	including_default_value_fields=True)
         }
