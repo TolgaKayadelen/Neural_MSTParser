@@ -231,7 +231,8 @@ def train_parser(args):
     test_data_path = args.test_data if args.test_data else args.train_data
     parser.Save(
         args.model, train_data_path=args.train_data,
-        test_data_path=test_data_path, nr_epochs=args.epochs,
+        test_data_path=test_data_path, feature_file=args.arcfeatures,
+        nr_epochs=args.epochs,
         test_accuracy=dict(
             test_unavg = round(test_acc_unavg, 2),
             test_avg = round(test_acc_avg, 2)

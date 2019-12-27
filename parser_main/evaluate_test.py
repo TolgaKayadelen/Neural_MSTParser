@@ -311,7 +311,7 @@ class EvaluateTest(unittest.TestCase):
             count: 3
             prec: 1.0
             recall: 0.33
-            f1: 0.33
+            f1: 0.496
           }
           f1 {
             label: NSUBJ
@@ -325,7 +325,7 @@ class EvaluateTest(unittest.TestCase):
             count: 2
             prec: 0.67
             recall: 1.0
-            f1: 1.0
+            f1: 0.802
           }
           f1 {
             label: POBJ

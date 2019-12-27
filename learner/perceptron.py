@@ -297,12 +297,14 @@ class ArcPerceptron(AveragedPerceptron):
         self.InitializeWeights(featureset, load=True)
 
     def SaveModel(self, name, train_data_path=None, test_data_path=None,
-    	 nr_epochs=None, test_accuracy=None):
+    	 feature_file=None, nr_epochs=None, test_accuracy=None):
         """Save model features and weights in json format.
         Args:
             name: string, the name of the model.
-            data_path: string, the data path with which the model was trained.
-            epocsh: the training epochs.
+            train_data_path: string, the data path with which the model was trained.
+            test_data_path: string, the data path on which the model is tested.
+            feature_file: string, pointer to the feature file.
+            nr_epochs: the training epochs.
             test_accuracy: the arc accuracy on test data.
         """
         if not hasattr(self, "featureset"):
@@ -313,6 +315,7 @@ class ArcPerceptron(AveragedPerceptron):
             "test_data_path": test_data_path,
             "epochs_trained": nr_epochs,
             "test_accuracy": test_accuracy,
+            "faature_file": feature_file,
             "featureset": json_format.MessageToJson(self.featureset,
             	including_default_value_fields=True)
         }
@@ -324,8 +327,9 @@ class ArcPerceptron(AveragedPerceptron):
             test_data: {},
             epochs: {},
             test_accuracy: {},
+            feature_file: {},
             feature_count: {}""".format(train_data_path, test_data_path, nr_epochs,
-                                        test_accuracy, self.feature_count))
+                                        test_accuracy, feature_file, self.feature_count))
     
 
 
