@@ -33,7 +33,7 @@ from util import common
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
-_MODEL_DIR = "model/pretrained"
+_MODEL_DIR = "model/pretrained/parser"
 
 class Model(object):
   """A model object is a pretrained labeler or parser model."""

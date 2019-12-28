@@ -132,6 +132,25 @@ class DependencyLabeler:
 
     def _Accuracy(self, prediction, gold):
         return 100 * sum(pl == gl for pl, gl in zip(prediction, gold)) / len(prediction)
+      
+    def Save(self, path, train_data_path=None, test_data_path=None,
+      labels=None, nr_epochs=None, test_accuracy=None):
+        assert isinstance(train_data_path, str), "Invalid Data Path!"
+        assert isinstance(test_data_path, str), "Invalid Data Path!"
+        assert isinstance(nr_epochs, int), "Invalid number of epochs!"
+        assert isinstance(test_accuracy, dict), "Invalid data type for test accuracy!"
+        self.test_accuracy = test_accuracy
+        self.label_perceptron.SaveModel(
+            name=path, train_data_path=train_data_path, test_data_path=test_data_path,
+            labels=labels,
+            nr_epochs=nr_epochs,
+            test_accuracy=self.test_accuracy
+        )
+      
+    def Load(self, path, features=None):
+        assert isinstance(path, str), "Invalid Path!"
+        self.label_perceptron.LoadModel(path, features)
+    
 
 def main():
     labeler = DependencyLabeler()

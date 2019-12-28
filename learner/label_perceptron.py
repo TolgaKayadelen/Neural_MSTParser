@@ -4,6 +4,7 @@
 
 import argparse
 import numpy as np
+import json
 import os
 import random
 
@@ -24,6 +25,7 @@ from util import writer
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
+_MODEL_DIR = "model/pretrained/labeler"
 
 class LabelPerceptron(AveragedPerceptron):
     """A perceptron for labeling dependency arcs."""
@@ -250,4 +252,94 @@ class LabelPerceptron(AveragedPerceptron):
                     weight=weight,
                 )
         #print(text_format.MessageToString(featureset, as_utf8=True))
-        return featureset          
+        return featureset
+      
+    def SaveModel(self, name, train_data_path=None, test_data_path=None, labels=None,
+    	 feature_file=None, nr_epochs=None, test_accuracy=None):
+        """Save model features and weights in json format.
+        Args:
+            name: string, the name of the model.
+            train_data_path: string, the data path with which the model was trained.
+            test_data_path: string, the data path on which the model is tested.
+            labels = the model labels.
+            feature_file: string, pointer to the feature file.
+            nr_epochs: the training epochs.
+            test_accuracy: the arc accuracy on test data.
+        """
+        features_dict = {}
+        for class_ in self.labels:
+          features_dict[class_] = json_format.MessageToJson(
+            self._ConvertWeightsToProto(class_), including_default_value_fields=True)
+        name = name + ".json" if not name.endswith(".json") else name
+        model = {
+            "train_data_path": train_data_path,
+            "test_data_path": test_data_path,
+            "epochs_trained": nr_epochs,
+            "test_accuracy": test_accuracy,
+            "feature_file": self._extractor._feature_file.split("/")[2].strip(".txt"),
+            "label_features": features_dict,
+            "labels": labels,
+            "weights": self.weights,
+            #"featureset": json_format.MessageToJson(self.featureset,
+            #	including_default_value_fields=True)
+        }
+        output_file = os.path.join(_MODEL_DIR, "{}".format(name))
+        with open(output_file, "w") as output:
+            json.dump(model, output, indent=4)
+        logging.info("""Saved model with the following specs:
+            train_data: {},
+            test_data: {},
+            labels: {},
+            epochs: {},
+            test_accuracy: {},
+            feature_file: {},
+            feature_count: {}""".format(train_data_path, test_data_path, labels, nr_epochs,
+                                        test_accuracy, model["feature_file"], self.feature_count)
+        )
+
+    def LoadModel(self, name, feature_file=None):
+      """Load model features and label weights from a json file.
+      
+      Args:
+        name: json, the name of the model to load.
+        feature_file: the feature_file to use to initialize the feature extractor.
+      """
+      def features_to_dict(features):
+        featureset = json_format.Parse(features, featureset_pb2.FeatureSet())
+        weights = defaultdict(OrderedDict)
+        for feature in featureset.feature:
+          weights[feature.name].update({feature.value: feature.weight})
+        return weights
+      
+      name = name + ".json" if not name.endswith(".json") else name
+      input_file = os.path.join(_MODEL_DIR, "{}".format(name))
+      with open(input_file, "r") as inp:
+        model = json.load(inp)
+      
+      if feature_file:
+        self._extractor = FeatureExtractor("labelfeatures", feature_file)
+      else:
+        self._extractor = FeatureExtractor("labelfeatures", model["feature_file"])
+      
+      accuracy = model["test_accuracy"]
+      logging.info("Label accuracy of the loaded model: {}".format(accuracy))
+      self.labels = model["labels"]
+      logging.info("Read {} labels from the loaded model".format(self.labels))
+      self.weights = model["weights"] 
+      
+      for class_ in self.labels:
+        self.label_weights[class_] = features_to_dict(model["label_features"][class_])
+        self._label_timestamps[class_] = deepcopy(self.weights)
+        self._label_timestamps[class_]["bias"] = {"bias":0.0}
+        self._label_accumulator[class_] = deepcopy(self.weights)
+        self._label_accumulator[class_]["bias"] = {"bias":0.0}
+    
+      random_class = random.choice(list(self.label_weights))
+      self.feature_count = sum(
+        [len(self.label_weights[random_class][key]) for key in self.label_weights[random_class].keys()]
+          )-1
+      logging.info("Total features: {}".format(self.feature_count))
+      
+
+
+                                  

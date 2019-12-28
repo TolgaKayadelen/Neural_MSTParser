@@ -91,11 +91,16 @@ def train_labeler(args):
   logging.info("Training data size {}".format(len(training_data)))
   if len(test_data) > 0:
     logging.info("Test data size {}".format(len(test_data)))
+  
   labeler = DependencyLabeler(feature_file=args.labelfeatures)
-  labeler.MakeFeatures(training_data)
-  logging.info("Number of features for dependency labeler {}".format(
-    labeler.label_perceptron.feature_count
-  ))
+  if not args.load:
+    labeler.MakeFeatures(training_data)
+  else:
+    logging.info("Loading dependency labeler model from: {}..".format(args.model))
+    labeler.Load(args.model)
+  logging.info("Number of features for dependency labeler: {}".format(
+        labeler.label_perceptron.feature_count
+      ))
   
   # Train
   logging.info("learning_rate is {}".format(args.learning_rate))
@@ -134,7 +139,7 @@ def train_labeler(args):
     "train_data_size": len(training_data),
     "test_data": args.test_data if args.test_data else "split_%10",
     "test_data_size": len(test_data),
-    "train_acc": None, # TODO: find a way to log this.
+    "train_acc": labeler.label_accuracy_train, # TODO: find a way to log this.
     "test_acc_unavg": test_acc_unavg,
     "test_acc_avg": test_acc_avg,
     "epochs": args.epochs,
@@ -142,7 +147,20 @@ def train_labeler(args):
     "features": args.labelfeatures,
     "feature_count": labeler.label_perceptron.feature_count
   }
-  writer.write_model_dict(model_output, labeler=True)
+  writer.write_model_output(model_dict, labeler=True)
+  
+  # Save the model.
+  logging.info("Saving model to {}".format(args.model))
+  test_data_path = args.test_data if args.test_data else args.train_data
+  labeler.Save(
+      args.model, train_data_path=args.train_data,
+      test_data_path=test_data_path, labels=labeler.label_perceptron.labels,
+      nr_epochs=args.epochs,
+      test_accuracy=dict(
+          test_unavg = round(test_acc_unavg, 2),
+          test_avg = round(test_acc_avg, 2)
+          )
+      )
 
 def train_parser(args):
     """Trains a dependency parser.
@@ -231,7 +249,7 @@ def train_parser(args):
     test_data_path = args.test_data if args.test_data else args.train_data
     parser.Save(
         args.model, train_data_path=args.train_data,
-        test_data_path=test_data_path, feature_file=args.arcfeatures,
+        test_data_path=test_data_path,
         nr_epochs=args.epochs,
         test_accuracy=dict(
             test_unavg = round(test_acc_unavg, 2),

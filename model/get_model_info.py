@@ -14,7 +14,7 @@ from util import common
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
-_model_dir = "model/pretrained"
+_model_dir = "model/pretrained/parser"
 
 # type: model util
 def GetModel(name, top_features=None):
@@ -35,11 +35,9 @@ def GetModel(name, top_features=None):
     with open(input_file, "r") as inp:
         model = json.load(inp)
     featureset = json_format.Parse(model["featureset"], featureset_pb2.FeatureSet())
-    feature_options = model["feature_options"]
-    accuracy = model["accuracy"]
+    accuracy = model["test_accuracy"]
     #feature_count = model["feature_count"]
     logging.info("Arc accuracy: {}".format(accuracy))
-    logging.info("Feature options: {}".format(feature_options))
     #logging.info("Total number of features: {}".format(feature_count))
     logging.info("Epochs: {}".format(model["epochs_trained"]))
     logging.info("Feature Count: {}".format(len(featureset.feature)))

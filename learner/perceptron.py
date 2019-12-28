@@ -25,7 +25,7 @@ from util import writer
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
-_MODEL_DIR = "model/pretrained"
+_MODEL_DIR = "model/pretrained/parser"
 
 class AveragedPerceptron(object):
     """Base methods for the Averaged Perceptron."""
@@ -302,7 +302,7 @@ class ArcPerceptron(AveragedPerceptron):
         self.InitializeWeights(featureset, load=True)
 
     def SaveModel(self, name, train_data_path=None, test_data_path=None,
-    	 feature_file=None, nr_epochs=None, test_accuracy=None):
+    	 nr_epochs=None, test_accuracy=None):
         """Save model features and weights in json format.
         Args:
             name: string, the name of the model.
@@ -320,7 +320,7 @@ class ArcPerceptron(AveragedPerceptron):
             "test_data_path": test_data_path,
             "epochs_trained": nr_epochs,
             "test_accuracy": test_accuracy,
-            "feature_file": feature_file,
+            "feature_file": self.feature_extractor._feature_file.split("/")[2].strip(".txt"),
             "featureset": json_format.MessageToJson(self.featureset,
             	including_default_value_fields=True)
         }
@@ -334,7 +334,7 @@ class ArcPerceptron(AveragedPerceptron):
             test_accuracy: {},
             feature_file: {},
             feature_count: {}""".format(train_data_path, test_data_path, nr_epochs,
-                                        test_accuracy, feature_file, self.feature_count))
+                                        test_accuracy, model["feature_file"], self.feature_count))
     
 
 

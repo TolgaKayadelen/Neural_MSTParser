@@ -168,7 +168,7 @@ class ArcPerceptronTest(unittest.TestCase):
     def testLoadModel(self):
         print("Running testLoadModel..")
         percept = perceptron.ArcPerceptron(feature_file="arcfeatures_base")
-        percept.LoadModel("test_model")
+        percept.LoadModel("test_model", feature_file="arcfeatures_base" )
         self.assertEqual(percept.feature_count, 13360)
         print("Passed!")
 
