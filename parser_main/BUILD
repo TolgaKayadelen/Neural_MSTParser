@@ -7,9 +7,10 @@ py_binary(
 	deps = [
 		"//parser:dependency_parser_lib",
 		"//data/treebank:treebank_py_pb2",
-		"parse",
-		"train",
-		"evaluate",
+		":parse",
+    ":label",
+		":train",
+		":evaluate",
 	],
 )
 
@@ -25,6 +26,16 @@ py_library(
 )
 
 py_library(
+  name = "label",
+  srcs = ["label.py"],
+  deps = [
+    "//parser:dependency_parser_lib",
+    "//parser:dependency_labeler",
+    "//data/treebank:treebank_py_pb2",
+  ],
+)
+
+py_library(
 	name = "train",
 	srcs = ["train.py"],
 	deps = [
@@ -32,7 +43,6 @@ py_library(
     "//parser:dependency_labeler",
 		"//data/treebank:treebank_py_pb2",
 	],
-
 )
 
 py_library(

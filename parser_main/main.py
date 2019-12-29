@@ -5,6 +5,7 @@
 import argparse
 import sys
 from parser_main.parse import parse
+from parser_main.label import label
 from parser_main.train import train_parser, train_labeler
 from parser_main.evaluate import evaluate_parser
 
@@ -29,7 +30,7 @@ def validate_args(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=["train", "evaluate", "plot", "parse"], 
+    parser.add_argument("--mode", choices=["train", "evaluate", "plot", "parse", "label"], 
                         help="Choose action for the parser.")
     parser.add_argument("--parser", type=bool, help="Whether to train a dependency parser.")
     parser.add_argument("--labeler", type=bool, help="Whether to train a dependency labeler.")
@@ -93,6 +94,8 @@ if __name__ == "__main__":
       train_labeler(args)
     elif args.mode == "parse":
       parse(args)
+    elif args.mode == "label":
+      label(path=args.test_data, model=args.model, language=args.language)
     elif args.mode == "evaluate":
       evaluate_parser(args, print_results=args.print_eval_results)
     

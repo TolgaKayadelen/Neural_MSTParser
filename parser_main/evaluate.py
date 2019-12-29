@@ -14,7 +14,7 @@ Usage:
 bazel build parser_main:evaluate && 
 bazel-bin/parser_main/evaluate \
 --gold_data=./data/testdata/parser_main/eval_data_gold.pbtxt \
---test_data= ./data_testdata/parser_main/eval_data_test.pbtxt \
+--test_data= ./data/testdata/parser_main/eval_data_test.pbtxt \
 --metrics all \
 --print_results=True
 
