@@ -48,7 +48,6 @@ def parse(args):
       model.Load(args.model)
     logging.info("Loading model from {}".format(args.model))
     logging.info("Number of features: {}".format(model.arc_perceptron.feature_count))
-    raw_input("Press any key to continue: ")
 
     # read the sentences to parse into proto
     # NOTE: it doesn't matter if the test data we read here already have

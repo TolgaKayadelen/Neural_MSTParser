@@ -339,7 +339,4 @@ class LabelPerceptron(AveragedPerceptron):
         [len(self.label_weights[random_class][key]) for key in self.label_weights[random_class].keys()]
           )-1
       logging.info("Total features: {}".format(self.feature_count))
-      
-
-
-                                  
+             
