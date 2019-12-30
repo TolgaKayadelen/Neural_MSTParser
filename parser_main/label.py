@@ -32,6 +32,11 @@ def label(path, **kwargs):
     treebank where dependency arcs are labeled. 
   """
   languages = {"Turkish": 1, "English": 2}
+  
+  # NOTE: it doesn't matter if the test data we read here already have
+  # label fields populated, because at the the system already clears the
+  # existing label fields and re-populates them with the labels predicted
+  # by the system.
   _TEST_DATA_DIR = os.path.join(_TREEBANK_DIR, kwargs["language"], "test")
   treebank_path = os.path.join(_TEST_DATA_DIR, "{}.pbtxt".format(path))
   treebank = reader.ReadTreebankTextProto(treebank_path)
