@@ -84,7 +84,6 @@ class DependencyParser:
 
     def _Evaluate(self, eval_data):
         """Evaluates the performance of arc perceptron on data.
-
         Args:
             eval_data = list, list of sentence_pb2.Sentence() objects.
         Returns:
@@ -132,9 +131,9 @@ class DependencyParser:
             test_accuracy=self.test_accuracy
         )
 
-    def Load(self, path, features=None):
+    def Load(self, path, feature_file=None):
         assert isinstance(path, str), "Invalid Path!"
-        self.arc_perceptron.LoadModel(path, features)
+        self.arc_perceptron.LoadModel(path, feature_file=feature_file)
 
 
 

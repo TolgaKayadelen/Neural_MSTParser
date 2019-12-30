@@ -11,6 +11,7 @@ py_binary(
     ":label",
 		":train",
 		":evaluate",
+    ":parse_and_label",
 	],
 )
 
@@ -56,6 +57,15 @@ py_library(
 	data = [
 		"//model:label_to_enum",
 	]
+)
+
+py_library(
+  name = "parse_and_label",
+  srcs = ["parse_and_label.py"],
+  deps = [
+    ":parse",
+    ":label",
+  ],
 )
 
 # Tests

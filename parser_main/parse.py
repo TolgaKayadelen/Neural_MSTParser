@@ -21,11 +21,12 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 _TREEBANK_DIR = "data/UDv23"
 
 
-def parse(args):
+def parse(args, save_treebank=True):
     """Parses a set of sentences with the loaded parsing model.
 
     Args:
         args: the command line arguments.
+        save_treebank: whether to save the parsed treebank to file.
     Returns:
         treebank: treebank_pb2.Treebank, a treebank of sentences parsed with the
         loaded model.
@@ -37,16 +38,16 @@ def parse(args):
     # sanity check on the command line arguments
     assert args.train_data is None, "Cannot train in parse mode!"
     assert args.load is not False, "Specify which model to use!"
-    if args.model == "model.json":
+    if args.parser_model == "model.json":
         logging.info("No model specified, using the default one!")
 
     # load the model.
     model = DependencyParser(decoding="mst")
     if args.arcfeatures:
-      model.Load(args.model, features=args.arcfeatures)
+      model.Load(args.parser_model, feature_file=args.arcfeatures)
     else:
-      model.Load(args.model)
-    logging.info("Loading model from {}".format(args.model))
+      model.Load(args.parser_model)
+    logging.info("Loading model from {}".format(args.parser_model))
     logging.info("Number of features: {}".format(model.arc_perceptron.feature_count))
 
     # read the sentences to parse into proto
@@ -73,14 +74,15 @@ def parse(args):
         parsed, predicted_heads = model.Parse(sentence)
         # add the parsed sentence into the output treebank
         output_treebank.sentence.extend([parsed])
-    print("----------")
-    print("Treebank")
-    print(text_format.MessageToString(output_treebank, as_utf8=True))
+    #print("----------")
+    #print("Treebank")
+    #print(text_format.MessageToString(output_treebank, as_utf8=True))
 
     # save the parsed sentences to an output
-    _OUTPUT_DIR = os.path.join(_TREEBANK_DIR, args.language, "parsed")
-    output_path = os.path.join(_OUTPUT_DIR, "parsed_{}_{}.pbtxt".format(args.model, args.test_data))
-    write_proto_as_text(output_treebank, output_path)
-    logging.info("{} sentences written to {}".format(len(output_treebank.sentence), output_path))
+    if save_treebank:
+      _OUTPUT_DIR = os.path.join(_TREEBANK_DIR, args.language, "parsed")
+      output_path = os.path.join(_OUTPUT_DIR, "parsed_{}_{}.pbtxt".format(args.parser_model, args.test_data))
+      write_proto_as_text(output_treebank, output_path)
+      logging.info("{} sentences written to {}".format(len(output_treebank.sentence), output_path))
 
     return output_treebank

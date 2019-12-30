@@ -96,8 +96,8 @@ def train_labeler(args):
   if not args.load:
     labeler.MakeFeatures(training_data)
   else:
-    logging.info("Loading dependency labeler model from: {}..".format(args.model))
-    labeler.Load(args.model)
+    logging.info("Loading dependency labeler model from: {}..".format(args.labeler_model))
+    labeler.Load(args.labeler_model)
   logging.info("Number of features for dependency labeler: {}".format(
         labeler.label_perceptron.feature_count
       ))
@@ -150,10 +150,10 @@ def train_labeler(args):
   writer.write_model_output(model_dict, labeler=True)
   
   # Save the model.
-  logging.info("Saving model to {}".format(args.model))
+  logging.info("Saving model to {}".format(args.labeler_model))
   test_data_path = args.test_data if args.test_data else args.train_data
   labeler.Save(
-      args.model, train_data_path=args.train_data,
+      args.labeler_model, train_data_path=args.train_data,
       test_data_path=test_data_path, labels=labeler.label_perceptron.labels,
       nr_epochs=args.epochs,
       test_accuracy=dict(
@@ -185,8 +185,11 @@ def train_parser(args):
     # Make the model
     parser = DependencyParser(feature_file=args.arcfeatures, decoding="mst")
     if args.load:
-        logging.info("Loading model from {}".format(args.model))
-        parser.Load(args.model)
+        logging.info("Loading model from {}".format(args.parser_model))
+        if args.arcfeatures:
+          parser.Load(args.parser_model, feature_file=args.arcfeatures)
+        else:
+          parser.Load(args.parser_model)
     else:
         logging.info("Creating featureset..")
         parser.MakeFeatures(training_data)
@@ -245,10 +248,10 @@ def train_parser(args):
     writer.write_model_output(model_dict, parser=True)
 
     # Save the model.
-    logging.info("Saving model to {}".format(args.model))
+    logging.info("Saving model to {}".format(args.parser_model))
     test_data_path = args.test_data if args.test_data else args.train_data
     parser.Save(
-        args.model, train_data_path=args.train_data,
+        args.parser_model, train_data_path=args.train_data,
         test_data_path=test_data_path,
         nr_epochs=args.epochs,
         test_accuracy=dict(

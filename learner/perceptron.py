@@ -296,6 +296,7 @@ class ArcPerceptron(AveragedPerceptron):
         if feature_file:
           self.feature_extractor = FeatureExtractor("arcfeatures", feature_file)
         else:
+          print(model["feature_file"])
           self.feature_extractor = FeatureExtractor("arcfeatures", model["feature_file"])
         accuracy = model["test_accuracy"]
         logging.info("Arc accuracy of the loaded model: {}".format(accuracy))
