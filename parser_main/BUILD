@@ -65,6 +65,7 @@ py_library(
   deps = [
     ":parse",
     ":label",
+    "//util:writer",
   ],
 )
 

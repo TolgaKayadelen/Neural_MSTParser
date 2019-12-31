@@ -20,13 +20,14 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
 _TREEBANK_DIR = "data/UDv23"
 
-def label(**kwargs):
+def label(save_treebank=True, **kwargs):
   """Label dependency arcs in a treebank.
   Expected kwargs:
     path: path to the treebank to read.
     model: the model to label the sentences with.
     treebank: the treebank with dependency arcs.
     treebank_name: the name to give to the treebank while saving.
+    save_treebank: whether to save the treebank to output.
   Returns:
     treebank where dependency arcs are labeled. 
   """
@@ -64,16 +65,18 @@ def label(**kwargs):
     output_treebank.sentence.extend([labeled_sentence])
   
   assert len(sentences) == len(output_treebank.sentence), "Mismatch in the number of input and output sentences!!"
-  try:
-    output_dir = os.path.join(_TREEBANK_DIR, kwargs["language"], "labeled")
-  except:
-    logging.warning("Couldn't find the output folder.")
-    output_dir = os.path.join(_TREEBANK_DIR, "Turkish", "labeled")
   
-  output_path = os.path.join(output_dir, "labeled_{}_{}.pbtxt".format(
-    kwargs["model"], kwargs["treebank_name"]))
-  write_proto_as_text(output_treebank, output_path)
-  logging.info("{} sentences written to {}".format(len(sentences), output_path))
+  if save_treebank:
+    try:
+      output_dir = os.path.join(_TREEBANK_DIR, kwargs["language"], "labeled")
+    except:
+      logging.warning("Couldn't find the output folder.")
+      output_dir = os.path.join(_TREEBANK_DIR, "Turkish", "labeled")
+  
+    output_path = os.path.join(output_dir, "labeled_{}_{}.pbtxt".format(
+      kwargs["model"], kwargs["treebank_name"]))
+    write_proto_as_text(output_treebank, output_path)
+    logging.info("{} sentences written to {}".format(len(sentences), output_path))
   
   return output_treebank
     

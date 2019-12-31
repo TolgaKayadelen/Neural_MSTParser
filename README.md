@@ -101,3 +101,13 @@ bazel-bin/parser_main/main \
 --learning_rate=1.0 \
 --labelfeatures=labelfeatures_exp # and/or arcfeatures=feature_file
 ```
+
+- Parse and label a treebank at the same time.
+bazel-bin/parser_main/main \ 
+--load=True \
+--parser_model=imst_0_500 \
+--labeler_model=test_model_0_50 \
+--mode=parse_and_label \
+--language=Turkish \
+--test_data=treebank_0_3 \
+--arcfeatures=arcfeatures_exp7

@@ -10,6 +10,9 @@ package data.treebank;
 message Treebank {
 	optional Language language = 1 [default = UNKNOWN_LANGUAGE]; 
 	repeated data.treebank.Sentence sentence = 2; /*required*/
+  optional bool is_gold = 3;
+  optional string parser_model = 4;
+  optional string labeler_model = 5;
 }
 
 enum Language {
