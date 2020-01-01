@@ -280,8 +280,7 @@ class LabelPerceptron(AveragedPerceptron):
             "label_features": features_dict,
             "labels": labels,
             "weights": self.weights,
-            #"featureset": json_format.MessageToJson(self.featureset,
-            #	including_default_value_fields=True)
+            "feature_count": self.feature_count
         }
         output_file = os.path.join(_MODEL_DIR, "{}".format(name))
         with open(output_file, "w") as output:

@@ -22,6 +22,7 @@ bazel-bin/model/model --name=<model name> --print_feature_impact=<whether to pri
 import os
 import csv
 import json
+import sys
 import pandas as pd
 import argparse 
 from collections import defaultdict
@@ -33,12 +34,17 @@ from util import common
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
-_MODEL_DIR = "model/pretrained/parser"
+_MODEL_DIR = "model/pretrained/"
 
 class Model(object):
   """A model object is a pretrained labeler or parser model."""
   
-  def __init__(self, name):
+  def __init__(self, name, _type):
+    if args.type == "parser":
+      model_dir = os.path.join(_MODEL_DIR, "parser")
+    else:
+      model_dir = os.path.join(_MODEL_DIR, "labeler")
+    self._type = _type
     self.name = name + ".json" if not name.endswith(".json") else name
     self.model = self._load_model(self.name)
 
@@ -55,7 +61,7 @@ class Model(object):
     return self.model[key]
   
   def write_features_as_tsv(self):
-    output = os.path.join(MODEL_EXP_DIR, name.strip(".json")+"_features.tsv")
+    output = os.path.join(MODEL_DIR, self._type, name.strip(".json")+"_features.tsv")
     fieldnames = ["feature_name", "feature_value", "feature_weight"]
     with open(os.path.join(output), "a") as tsvfile:
       writer = csv.DictWriter(tsvfile, fieldnames=fieldnames, delimiter="\t")
@@ -105,7 +111,7 @@ class Model(object):
   
   def save(self, name):
     name = name + ".json" if not name.endswith(".json") else name
-    output_file = os.path.join(_MODEL_DIR, "{}".format(name))
+    output_file = os.path.join(_MODEL_DIR, self._type, "{}".format(name))
     model = {
         "train_data_path": self.model["train_data_path"],
         "test_data_path": self.model["test_data_path"],
@@ -136,8 +142,9 @@ class Model(object):
       "train_data: {}\n".format(self.model["train_data_path"]) +
       "test_data: {}\n".format(self.model["test_data_path"]) + 
       "test_accuracy: {}\n".format(self.model["test_accuracy"]) +
-      "nr_epochs: {}\n".format(self.model["epochs_trained"]) + 
-      "feature_count: {}".format(len(self.get_value("featureset").feature)))
+      "nr_epochs: {}\n".format(self.model["epochs_trained"]) +
+      #"feature_count: {}".format(len(self.get_value("featureset").feature)))
+      "feature_count: {}\n".format(self.model["feature_count"]))
 
   def _load_model(self, name):
     """Loads a model from memory.
@@ -147,14 +154,14 @@ class Model(object):
     Returns:
       model: a json formatted dictionary.
     """ 
-    print("loading model from {}".format(name))
-    input_file = os.path.join(_MODEL_DIR, "{}".format(name))
+    print("loading model from {}/{}".format(self._type, name))
+    input_file = os.path.join(_MODEL_DIR, self._type, "{}".format(name))
     with open(input_file, "r") as inp:
       model = json.load(inp)
     return model
   
 def main(args):
-  model = Model(args.name)
+  model = Model(args.name, args.type)
   #print(model)
   if args.print_feature_impact:
     model.feature_impact()
@@ -177,5 +184,7 @@ if __name__ == "__main__":
   parser.add_argument("--write_feature_tsv", type=bool, help="whether to write the features as tsv file")
   parser.add_argument("--print_feature_impact", type=bool, help="whether to print the feature impacts")
   parser.add_argument("--info", type=bool, help="whether to print model info.")
+  parser.add_argument("--type", choices=["parser", "labeler"], default="parser",
+                      help="Choose the type of model.")
   args = parser.parse_args()
   main(args)

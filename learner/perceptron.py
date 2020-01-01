@@ -323,7 +323,8 @@ class ArcPerceptron(AveragedPerceptron):
             "test_accuracy": test_accuracy,
             "feature_file": self.feature_extractor._feature_file.split("/")[2].strip(".txt"),
             "featureset": json_format.MessageToJson(self.featureset,
-            	including_default_value_fields=True)
+            	including_default_value_fields=True),
+            "feature_count": self.feature_count
         }
         output_file = os.path.join(_MODEL_DIR, "{}".format(name))
         with open(output_file, "w") as output:
