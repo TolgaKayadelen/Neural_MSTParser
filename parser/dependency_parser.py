@@ -62,25 +62,33 @@ class DependencyParser:
 
     def Train(self, niters, training_data, test_data=None):
         """Train the arc perceptron."""
+        epochs = []
+        train_scores = []
+        test_scores = []
         for i in range(niters):
             print("\n**************-------------------*************")
             logging.info("Starting Training Epoch {}".format(i+1))
             #Train arc perceptron for one epoch.
             nr_correct_heads, nr_childs = self.arc_perceptron.Train(training_data)
             #Evaluate the arc perceptron
-            if (i+1) % 5 == 0 or i+1 == niters:
+            if (i+1) % 3 == 0 or i+1 == niters:
                 train_acc = self._Evaluate(training_data)
                 logging.info("Train acc after iter {}: {}".format(i+1, train_acc))
+                train_scores.append(train_acc)
+                epochs.append(i+1)
             if test_data:
                 logging.info("Evaluating on test data..")
                 test_acc = self._Evaluate(test_data)
                 # Comment out if you're not interested in seeing test acc after
                 # each epoch.
                 logging.info("Test acc after iter {}: {}".format(i+1, test_acc))
+                if (i+1) % 3 == 0 or i+1 == niters:
+                  test_scores.append(test_acc)
             #if train_acc == 100:
             #    break
             np.random.shuffle(training_data)
         self.train_acc = train_acc
+        return epochs, train_scores, test_scores
 
     def _Evaluate(self, eval_data):
         """Evaluates the performance of arc perceptron on data.

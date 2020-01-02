@@ -7,7 +7,7 @@ import argparse
 import os
 import pickle
 import random
-import tempfile
+import matplotlib.pyplot as plt
 from copy import deepcopy
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
@@ -63,24 +63,21 @@ def _get_data(args):
 
     return training_data, test_data
 
-def _get_size(object):
-    """Dump a pickle of object to accurately get the size of the model.
-    Args:
-        object: the model.
-    Returns:
-        gigabytes: the size of the model.
-    """
-    tmp = tempfile.gettempdir()
-    path = os.path.join(tmp, 'object.pkl')
-    print(path)
-    with open(path, 'wb') as f:
-        pickle.dump(object, f)
-    bytes = os.path.getsize(path)
-    os.remove(path)
-    print(path)
-    gigabytes = bytes / 1e9
-    return gigabytes
 
+def plot(x, y, z, model_name, _type="parsing"):
+  fig = plt.figure()
+  ax = plt.axes()
+  ax.plot(x,y, "-g", label="training", color="blue")
+  ax.plot(x,z, "-g", label="test", color="red")
+  #if not type(x) == list:
+  #  plt.xlim(1, len(x))
+  plt.ylim(min(z)-10,105)
+  plt.title("Dependency {} performance on training and test data".format(_type))
+  plt.xlabel("epochs")
+  plt.ylabel("accuracy")
+  plt.legend()
+  plt.savefig(os.path.join("./model/pretrained/plot", "{}_{}.png".format(_type, model_name.strip(".json"))))
+  logging.info("Saved plot to ./model/pretrained/plot/{}".format(model_name.strip(".json")))
 
 def train_labeler(args):
   """Trains a dependency labeler.
@@ -104,7 +101,8 @@ def train_labeler(args):
   
   # Train
   logging.info("learning_rate is {}".format(args.learning_rate))
-  labeler.Train(args.epochs, training_data, test_data, args.learning_rate)
+  epochs, train_scores, test_scores = labeler.Train(args.epochs, training_data, test_data, args.learning_rate)
+  plot(epochs, train_scores, test_scores, args.labeler_model, "labeling")
   
   # Evaluate
   print("\n*******----------------------*******")
@@ -199,7 +197,8 @@ def train_parser(args):
 
 
     # Train
-    parser.Train(args.epochs, training_data, test_data=test_data)
+    epochs, train_scores, test_scores = parser.Train(args.epochs, training_data, test_data=test_data)
+    plot(epochs, train_scores, test_scores, args.parser_model, "parsing")
 
     # Evaluate
     print("\n*******----------------------*******")

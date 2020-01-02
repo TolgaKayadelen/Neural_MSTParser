@@ -77,24 +77,33 @@ class DependencyLabeler:
           test_data = list of sentence_pb2.Sentence objects or None.
           learning_rate = the learning rate for the perceptron.
         """
+        epochs = []
+        train_scores = []
+        test_scores = []
+        
         for i in range(niters):
             print("\n**************-------------------*************")
             logging.info("Starting LP Training Epoch {}".format(i+1))
+            epochs.append(i+1)
+            
             #Train label perceptron for one epoch.
             correct = self.label_perceptron.Train(training_data, learning_rate)
+            
             #Evaluate the label perceptron
             train_acc = self.Evaluate(training_data)
             logging.info("LP train acc after iter {}: {}".format(i+1, train_acc))
-            #raw_input("Press a key to continue: ")
+            train_scores.append(train_acc)
+            
             if test_data:
                 test_acc = self.Evaluate(test_data, eval_type="test")
                 # Comment out if you're not interested in seeing test acc after
                 # each epoch.
                 logging.info("LP Test acc after iter {}: {}".format(i+1, test_acc))
-                #raw_input("Press a key to continue: ")
+                test_scores.append(test_acc)
             #if train_acc == 100:
             #    break
             np.random.shuffle(training_data)
+        return epochs, train_scores, test_scores
 
     def Evaluate(self, eval_data, eval_type="train"):
         """Evaluates the performance of label perceptron on data.
