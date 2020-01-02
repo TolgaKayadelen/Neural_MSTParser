@@ -66,6 +66,9 @@ def label(save_treebank=True, **kwargs):
   
   assert len(sentences) == len(output_treebank.sentence), "Mismatch in the number of input and output sentences!!"
   
+  output_treebank.is_gold = False
+  output_treebank.labeler_model = kwargs["model"]
+  
   if save_treebank:
     try:
       output_dir = os.path.join(_TREEBANK_DIR, kwargs["language"], "labeled")

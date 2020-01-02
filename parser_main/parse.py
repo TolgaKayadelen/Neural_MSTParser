@@ -74,14 +74,13 @@ def parse(args, save_treebank=True):
         parsed, predicted_heads = model.Parse(sentence)
         # add the parsed sentence into the output treebank
         output_treebank.sentence.extend([parsed])
-    #print("----------")
-    #print("Treebank")
-    #print(text_format.MessageToString(output_treebank, as_utf8=True))
+    output_treebank.is_gold = False
+    output_treebank.parser_model = args.parser_model
 
     # save the parsed sentences to an output
     if save_treebank:
       _OUTPUT_DIR = os.path.join(_TREEBANK_DIR, args.language, "parsed")
-      output_path = os.path.join(_OUTPUT_DIR, "parsed_{}_{}.pbtxt".format(args.parser_model, args.test_data))
+      output_path = os.path.join(_OUTPUT_DIR, "parsed_{}.pbtxt".format(args.test_data))
       write_proto_as_text(output_treebank, output_path)
       logging.info("{} sentences written to {}".format(len(output_treebank.sentence), output_path))
 

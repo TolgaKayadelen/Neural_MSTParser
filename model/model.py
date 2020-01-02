@@ -142,9 +142,9 @@ class Model(object):
       "train_data: {}\n".format(self.model["train_data_path"]) +
       "test_data: {}\n".format(self.model["test_data_path"]) + 
       "test_accuracy: {}\n".format(self.model["test_accuracy"]) +
-      "nr_epochs: {}\n".format(self.model["epochs_trained"]) +
+      "nr_epochs: {}\n".format(self.model["epochs_trained"]))
       #"feature_count: {}".format(len(self.get_value("featureset").feature)))
-      "feature_count: {}\n".format(self.model["feature_count"]))
+      #"feature_count: {}\n".format(self.model["feature_count"]))
 
   def _load_model(self, name):
     """Loads a model from memory.
