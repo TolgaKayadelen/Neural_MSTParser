@@ -40,3 +40,5 @@ time	train_data	train_data_size	test_data	test_data_size	train_acc	test_acc_unav
 01/02/20, 00:09:48	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	97.88941454760497	88.41814946619218	90.17615658362989	10	1.0	labelfeatures_exp	152011
 01/02/20, 03:13:16	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	99.4983244628425	91.00889679715303	91.95373665480427	10	1.0	labelfeatures_exp_1	423836
 01/02/20, 13:25:55	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	99.46047703528484	90.05516014234875	90.96085409252669	10	1.0	labelfeatures_exp_2	416638
+01/03/20, 03:41:07	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	96.40626848018924	87.04804270462634	90.02135231316726	10	1.0	labelfeatures_exp	152011
+01/03/20, 14:44:55	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	99.21959392864183	90.34341637010677	91.82918149466192	10	1.0	labelfeatures_exp_1	423836
