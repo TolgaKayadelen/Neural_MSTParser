@@ -1,0 +1,27 @@
+frame_id: "uzlaş"
+verb {
+  lemma: "uzlaş"
+  argument_structure {
+    id: "uzlaş.01"
+    sense: "Karşılıklı anlaşmak ve mutabık kalmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "uzlaşan"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle uzalştığı"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "topic"
+      description: "hangi konuda uzlaşıldığı"
+    }
+    example: "Gürcistan\'a operasyonları durdurduğunu açıklayan Rus Devlet Başkanı Medvedev, Sarkozy ile barış için altı ilke üzerinde uzlaştı."
+  }
+}

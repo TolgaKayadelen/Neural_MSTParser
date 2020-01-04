@@ -1,0 +1,28 @@
+frame_id: "sapla"
+verb {
+  lemma: "sapla"
+  argument_structure {
+    id: "sapla.01"
+    sense: "Batırmak, koymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "saplayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "saplanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye saplandığı"
+    }
+    example: "Bıçağı kapıya sapladılar."
+  }
+}

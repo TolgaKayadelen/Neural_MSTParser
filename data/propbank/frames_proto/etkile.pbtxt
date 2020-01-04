@@ -1,0 +1,26 @@
+frame_id: "etkile"
+verb {
+  lemma: "etkile"
+  argument_structure {
+    id: "etkile.01"
+    sense: "Etkiye uğratmak, tesir etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "stimulus"
+      description: "etkileyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "experiencer"
+      description: "neyi/kimi etkilediği"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "nasıl etkilediği"
+    }
+    example: "Toplumu etkileyen olaylara herkes kendi yorumunu katıyor."
+  }
+}

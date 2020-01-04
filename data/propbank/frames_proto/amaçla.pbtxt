@@ -1,0 +1,27 @@
+frame_id: "amaçla"
+verb {
+  lemma: "amaçla"
+  argument_structure {
+    id: "amaçla.01"
+    sense: "Bir amaca ulaşmayı istemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "amaçlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "goal"
+      description: "amaçlanan"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "nasıl hedefe ulaşacağı (-erek, -arak da olabilir)"
+    }
+    example: "İlerdeki müzik yaşamı için tecrübe edinmeyi amaçlıyordu."
+  }
+}

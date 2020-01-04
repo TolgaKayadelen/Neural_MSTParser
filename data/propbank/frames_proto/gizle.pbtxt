@@ -1,0 +1,27 @@
+frame_id: "gizle"
+verb {
+  lemma: "gizle"
+  argument_structure {
+    id: "gizle.01"
+    sense: "Saklamak, görünmeyecek, belli olmayacak bir yere veya bir duruma koymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "saklayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "saklanılan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "beneficiary"
+      description: "neyden/nereden gizlendiği"
+    }
+    example: "Siperleri çalılarla örterek uçaklardan gizlediler."
+  }
+}

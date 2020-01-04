@@ -1,0 +1,19 @@
+frame_id: "hedefle"
+verb {
+  lemma: "hedefle"
+  argument_structure {
+    id: "hedefle.01"
+    sense: "Hedef yapmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "hedefleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "hedeflenen"
+    }
+    example: "Ağaca çıkmak istiyorsan, yıldızları hedefle."
+  }
+}

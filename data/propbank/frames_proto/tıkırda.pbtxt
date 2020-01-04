@@ -1,0 +1,15 @@
+frame_id: "tıkırda"
+verb {
+  lemma: "tıkırda"
+  argument_structure {
+    id: "tıkırda.01"
+    sense: "Ses çıkarmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "tıkırdayan"
+    }
+    example: "Kapı tıkırdadı."
+  }
+}

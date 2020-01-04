@@ -1,0 +1,15 @@
+frame_id: "ışı"
+verb {
+  lemma: "ışı"
+  argument_structure {
+    id: "ışı.01"
+    sense: "Işıklanmak, aydınlanmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "ışıyan"
+    }
+    example: "Yarın daha gün ışımadan kovduracağım onları obadan."
+  }
+}

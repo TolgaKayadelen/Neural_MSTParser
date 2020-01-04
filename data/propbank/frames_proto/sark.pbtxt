@@ -1,0 +1,19 @@
+frame_id: "sark"
+verb {
+  lemma: "sark"
+  argument_structure {
+    id: "sark.01"
+    sense: "Aşağı/ileri uza(n)mak"
+    argument {
+      number: A1
+      case: NOM
+      description: "sarkan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye sarktığı"
+    }
+    example: "Küpeleri sarkıyor."
+  }
+}

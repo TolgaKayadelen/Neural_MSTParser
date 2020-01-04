@@ -1,0 +1,13 @@
+frame_id: "üre"
+verb {
+  lemma: "üre"
+  argument_structure {
+    id: "üre.01"
+    sense: "Çoğalmak, artmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "üreyen"
+    }
+  }
+}

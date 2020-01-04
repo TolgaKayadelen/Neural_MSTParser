@@ -1,0 +1,27 @@
+frame_id: "tak"
+verb {
+  lemma: "tak"
+  argument_structure {
+    id: "tak.01"
+    sense: "Bir şeyi başka bir yere uygun bir biçimde tutturmak,"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "takan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "takılan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "takıldığı kişi/yer"
+    }
+    example: "Ona bu adı kim takmıştır, ne zaman takmıştır, bilemiyor."
+  }
+}

@@ -1,0 +1,15 @@
+frame_id: "işe"
+verb {
+  lemma: "işe"
+  argument_structure {
+    id: "işe.01"
+    sense: "Çiş yapmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "işeyen"
+    }
+    example: "Sokağa işedi."
+  }
+}

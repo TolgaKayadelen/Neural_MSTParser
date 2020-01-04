@@ -1,0 +1,21 @@
+frame_id: "doku"
+verb {
+  lemma: "doku"
+  argument_structure {
+    id: "doku.01"
+    sense: "Kumaş yapmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dokuyan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "product"
+      description: "dokunan şey"
+    }
+    example: "Orada kilim dokuyan kadınların arasında yaşam savaşı veriyordu."
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "yüzleş"
+verb {
+  lemma: "yüzleş"
+  argument_structure {
+    id: "yüzleş.01"
+    sense: "Yüz yüze gelmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yüzleşen"
+    }
+    argument {
+      number: A1
+      case: INS
+      description: "yüzleşilen"
+    }
+    example: "40\'ına gelesiye, çok ağır, yakıcı sorunlarla yüzleşti Mustafa."
+  }
+}

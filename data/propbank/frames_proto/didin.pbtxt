@@ -1,0 +1,15 @@
+frame_id: "didin"
+verb {
+  lemma: "didin"
+  argument_structure {
+    id: "didin.01"
+    sense: "Sürekli çalışmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çalışan kişi"
+    }
+    example: "Size de tiyatronuza da biraz yararlı olabilmek için didiniyorum, parçalanıyorum."
+  }
+}

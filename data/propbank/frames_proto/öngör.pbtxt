@@ -1,0 +1,21 @@
+frame_id: "öngör"
+verb {
+  lemma: "öngör"
+  argument_structure {
+    id: "öngör.01"
+    sense: "tahmin etmek, kestirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "öngören"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "öngörülen"
+    }
+    example: "OECD, Euro Bölgesi\'nin de durgunluğa gireceğini öngördü."
+  }
+}

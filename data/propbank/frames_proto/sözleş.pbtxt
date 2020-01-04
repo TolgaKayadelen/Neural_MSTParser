@@ -1,0 +1,27 @@
+frame_id: "sözleş"
+verb {
+  lemma: "sözleş"
+  argument_structure {
+    id: "sözleş.01"
+    sense: "Herhangi bir iş konusunda birbirine karşılıklı söz vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "sözleşen"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "theme"
+      description: "hangi konuda sözleşildiği"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle sözleşildiği"
+    }
+    example: "Bir gün annemle babam sözleşmişler, ikimizi de karşılarına oturtarak ikaz konuşması yaptılar."
+  }
+}

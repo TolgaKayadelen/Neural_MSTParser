@@ -1,0 +1,20 @@
+frame_id: "yazıl"
+verb {
+  lemma: "yazıl"
+  argument_structure {
+    id: "yazıl.01"
+    sense: "kayıt olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kayıt olan (yazılan)"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "destination"
+      description: "nereye kayıtlı olduğu (yazıldığı)"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "diret"
+verb {
+  lemma: "diret"
+  argument_structure {
+    id: "diret.01"
+    sense: "İnat etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "inat eden kişi"
+    }
+    argument {
+      number: A1
+      case: LOC
+      theta_role: "topic"
+      description: "inat edilen konu"
+    }
+    example: "Annesi ile ablası adamın kaçırılacak bir kısmet olmadığını öne sürerek evlenmesi için diretiyorlardı."
+  }
+}

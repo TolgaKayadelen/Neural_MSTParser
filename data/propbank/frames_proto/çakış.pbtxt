@@ -1,0 +1,21 @@
+frame_id: "çakış"
+verb {
+  lemma: "çakış"
+  argument_structure {
+    id: "çakış.01"
+    sense: "Denk gelmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme1"
+      description: "çakışan"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "theme2"
+      description: "ne ile çakıştığı"
+    }
+    example: "İki sınıfın dersleri çakıştı."
+  }
+}

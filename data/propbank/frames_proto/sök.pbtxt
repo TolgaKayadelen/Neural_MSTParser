@@ -1,0 +1,19 @@
+frame_id: "sök"
+verb {
+  lemma: "sök"
+  argument_structure {
+    id: "sök.01"
+    sense: "Çıkarmak, ayırmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "söken"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "sökülen"
+    }
+    example: "Çivileri sökmemiz gerek."
+  }
+}

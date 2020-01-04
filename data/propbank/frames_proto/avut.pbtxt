@@ -1,0 +1,44 @@
+frame_id: "avut"
+verb {
+  lemma: "avut"
+  argument_structure {
+    id: "avut.01"
+    sense: "Teselli etmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "stimulus"
+      description: "avutan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "experiencer"
+      description: "avutulan kişi/şey"
+    }
+    example: "Düşün, bir acın var ki ben avutamıyorum."
+  }
+  argument_structure {
+    id: "avut.02"
+    sense: "Oyalamak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "stimulus"
+      description: "avutan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "experiencer"
+      description: "avutulan kişi"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile avutulduğu"
+    }
+    example: "Beni bebek gibi avutmak istiyordu."
+  }
+}

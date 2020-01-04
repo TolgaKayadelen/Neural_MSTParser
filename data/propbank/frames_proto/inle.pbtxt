@@ -1,0 +1,26 @@
+frame_id: "inle"
+verb {
+  lemma: "inle"
+  argument_structure {
+    id: "inle.01"
+    sense: "Acı, üzüntü belirten kesik sesler çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "inleyen kişi"
+    }
+    example: "O, inledikçe benim de yüreğim sızlıyor."
+  }
+  argument_structure {
+    id: "inle.02"
+    sense: "Gür, uğultulu, yankılı ses çıkarmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "inleyen şey"
+    }
+    example: "Yer gök inlesin."
+  }
+}

@@ -1,0 +1,38 @@
+frame_id: "göç"
+verb {
+  lemma: "göç"
+  argument_structure {
+    id: "göç.01"
+    sense: "Yerleşmek amacıyla mahalle, köy, şehir veya ülke değiştirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yer değiştiren"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden gidildiği"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye gidildiği"
+    }
+    example: "Selanik elden çıkınca ailesi İzmir\'e göçmüştür."
+  }
+  argument_structure {
+    id: "göç.02"
+    sense: "Ölmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "ölen kişi"
+    }
+    example: "Hepimiz bir gün bu dünyadan göçeceğiz."
+  }
+}

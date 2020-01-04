@@ -1,0 +1,21 @@
+frame_id: "gerek"
+verb {
+  lemma: "gerek"
+  argument_structure {
+    id: "gerek.01"
+    sense: "Lazım olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "gereken şey"
+    }
+    argument {
+      number: A0
+      case: DAT
+      theta_role: "beneficiary"
+      description: "neye/kime gerektiği"
+    }
+    example: "Dünyaya bakmayı aşıp dünyayı görme noktasına ulaştığımızda neye talip olmamız gerektiğini de anlarız."
+  }
+}

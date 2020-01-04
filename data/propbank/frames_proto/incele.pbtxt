@@ -1,0 +1,19 @@
+frame_id: "incele"
+verb {
+  lemma: "incele"
+  argument_structure {
+    id: "incele.01"
+    sense: "öğrenmeye çalışmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "inceleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "incelenen"
+    }
+    example: "Bu formülü incelemek gerek."
+  }
+}

@@ -1,0 +1,15 @@
+frame_id: "incin"
+verb {
+  lemma: "incin"
+  argument_structure {
+    id: "incin.01"
+    sense: "Çarpma, sıkışma, burkulma"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "incinen kişi/şey"
+    }
+    example: "İncinir düz caddede dağda gezen ayaklar."
+  }
+}

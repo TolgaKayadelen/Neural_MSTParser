@@ -1,0 +1,22 @@
+frame_id: "der"
+verb {
+  lemma: "der"
+  argument_structure {
+    id: "der.01"
+    sense: "Bir araya getirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "toplayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "toplanan"
+    }
+    example: "Bir çiçek dermeden sevgi bağından..."
+  }
+}

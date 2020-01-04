@@ -1,0 +1,51 @@
+frame_id: "ara"
+verb {
+  lemma: "ara"
+  argument_structure {
+    id: "ara.01"
+    sense: "Birini veya bir şeyi bulmaya çalışmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "arayan kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "aranan kişi/şey"
+    }
+    example: "Dükkanın içinde gözleriyle bir şeyler aradı."
+  }
+  argument_structure {
+    id: "ara.02"
+    sense: "Özlemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "özleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "özlenen"
+    }
+    example: "Seni çok arıyorum, Ziyacığım."
+  }
+  argument_structure {
+    id: "ara.03"
+    sense: "Telefon etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "telefon eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "telefon edilen"
+    }
+    example: "Dün akşam beni aramışsın."
+  }
+}

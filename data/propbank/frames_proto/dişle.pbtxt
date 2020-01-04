@@ -1,0 +1,21 @@
+frame_id: "dişle"
+verb {
+  lemma: "dişle"
+  argument_structure {
+    id: "dişle.01"
+    sense: "Bir şeyin bir parçasını koparmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dişleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "dişlenen"
+    }
+    example: "Bu elmayı kim dişledi?"
+  }
+}

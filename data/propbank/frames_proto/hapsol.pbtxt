@@ -1,0 +1,19 @@
+frame_id: "hapsol"
+verb {
+  lemma: "hapsol"
+  argument_structure {
+    id: "hapsol.01"
+    sense: "Bulunduğu yerden dışarı çıkamamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "hapsolan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "nereye hapsolduğu"
+    }
+    example: "1960\'lar yükselişine fren koyan 12 Mart sonrasında, sol giderek savunma mevzilerine hapsoldu."
+  }
+}

@@ -1,0 +1,33 @@
+frame_id: "don"
+verb {
+  lemma: "don"
+  argument_structure {
+    id: "don.01"
+    sense: "Buz tutmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "donan"
+    }
+    example: "Bütün kafaların donmuş, taşlaşmış olmasını istiyorlar."
+  }
+  argument_structure {
+    id: "don.02"
+    sense: "Hareketsiz kalmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "hareketsiz kalan"
+    }
+  }
+  argument_structure {
+    id: "don.03"
+    sense: "Çok üşümek"
+    argument {
+      number: A1
+      case: NOM
+      description: "üşüyen kişi"
+    }
+  }
+}

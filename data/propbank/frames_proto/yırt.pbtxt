@@ -1,0 +1,36 @@
+frame_id: "yırt"
+verb {
+  lemma: "yırt"
+  argument_structure {
+    id: "yırt.01"
+    sense: "Kağıt, kumaş gibi bükülüp katlanan şeyleri parçalamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yırtan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "yırtılan"
+    }
+    example: "Artık küstahlığın perdelerini yırtmasam da camlarını çatlatabilirim."
+  }
+  argument_structure {
+    id: "yırt.02"
+    sense: "Bir işi yapmaktan kurtulmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yırtan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "neyden yırttığı"
+    }
+    example: "Haydi bu işten de yırttık"
+  }
+}

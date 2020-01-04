@@ -1,0 +1,13 @@
+frame_id: "çırpın"
+verb {
+  lemma: "çırpın"
+  argument_structure {
+    id: "çırpın.01"
+    sense: "Acı ile debelenmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "çırpınan"
+    }
+  }
+}

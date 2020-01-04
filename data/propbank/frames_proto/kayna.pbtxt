@@ -1,0 +1,15 @@
+frame_id: "kayna"
+verb {
+  lemma: "kayna"
+  argument_structure {
+    id: "kayna.01"
+    sense: "buhar durumuna geçmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "kaynayan"
+    }
+    example: "Su 100 derecede kaynar."
+  }
+}

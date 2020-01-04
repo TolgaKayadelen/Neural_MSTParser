@@ -1,0 +1,24 @@
+frame_id: "soyutla"
+verb {
+  lemma: "soyutla"
+  argument_structure {
+    id: "soyutla.01"
+    sense: "Bir kimseyi, durumu, düşünce vb.ni içinde bulunduğu toplum, durum veya düşünceden ayrı tutmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "soyutlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "soyutlanan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "nereden/neyden soyutlandığı"
+    }
+    example: "Kitap beni gerçek dünyadan soyutladı."
+  }
+}

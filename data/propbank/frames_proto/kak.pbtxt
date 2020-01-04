@@ -1,0 +1,21 @@
+frame_id: "kak"
+verb {
+  lemma: "kak"
+  argument_structure {
+    id: "kak.01"
+    sense: "İtmek, vurmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kakan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "kakılan"
+    }
+    example: "Etiler\'in renkli gece hayatında, onlarca kamera önünde sevgilisini dövdü, itip kaktı"
+  }
+}

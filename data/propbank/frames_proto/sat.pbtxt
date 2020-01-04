@@ -1,0 +1,27 @@
+frame_id: "sat"
+verb {
+  lemma: "sat"
+  argument_structure {
+    id: "sat.01"
+    sense: "Bir değer karşılığında bir malı alıcıya vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "satan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "satılan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/nereye sattığı"
+    }
+    example: "Bir kadın oğluna meyve bahçesi sattı."
+  }
+}

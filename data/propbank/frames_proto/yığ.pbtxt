@@ -1,0 +1,28 @@
+frame_id: "yığ"
+verb {
+  lemma: "yığ"
+  argument_structure {
+    id: "yığ.01"
+    sense: "Bırakmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yığan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "yığılan"
+    }
+    argument {
+      number: A3
+      case: DAT
+      theta_role: "destination"
+      description: "nereye yığıldığı"
+    }
+    example: "Odunları bodruma yığ."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "şaşır"
+verb {
+  lemma: "şaşır"
+  argument_structure {
+    id: "şaşır.01"
+    sense: "Herhangi bir durum karşısında şaşkınlık duymak, hayret etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "şaşıran"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "neye şaşırdığı"
+    }
+    example: "Aldığı kilolara şaştım kaldım."
+  }
+}

@@ -1,0 +1,15 @@
+frame_id: "saçmala"
+verb {
+  lemma: "saçmala"
+  argument_structure {
+    id: "saçmala.01"
+    sense: "Anlamsız, gereksiz, tutarsız, saçma sapan sözler söylemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "saçmalayan"
+    }
+    example: "Konuşması büsbütün dağıldı, tutarsızlaştı. Artık saçmalıyor."
+  }
+}

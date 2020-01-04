@@ -1,0 +1,38 @@
+frame_id: "kaydet"
+verb {
+  lemma: "kaydet"
+  argument_structure {
+    id: "kaydet.01"
+    sense: "Hatırlamak için yazmak, not etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kaydeden"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "kaydedilen"
+    }
+    example: "Önüne bir şeyler kaydederken görür gibiyim."
+  }
+  argument_structure {
+    id: "kaydet.02"
+    sense: "Belirtmek, söylemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "belirten kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "belirtilen şey"
+    }
+    example: "Abdurrahman Çelik, devletin sansürcü olmadığını kaydetti."
+  }
+}

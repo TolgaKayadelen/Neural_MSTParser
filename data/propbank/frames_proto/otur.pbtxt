@@ -1,0 +1,38 @@
+frame_id: "otur"
+verb {
+  lemma: "otur"
+  argument_structure {
+    id: "otur.01"
+    sense: "Bir yere yerleşmek (sandalye, koltuk vb...)"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "oturan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye oturduğu"
+    }
+    example: "Şöyle geç, koltuğa otur."
+  }
+  argument_structure {
+    id: "otur.02"
+    sense: "Bir yerde sürekli olarak kalmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "oturan"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede oturduğu"
+    }
+    example: "Bostancı, Kadıköy\'de oturuyordu."
+  }
+}

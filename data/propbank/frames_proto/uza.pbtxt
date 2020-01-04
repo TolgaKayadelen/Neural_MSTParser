@@ -1,0 +1,30 @@
+frame_id: "uza"
+verb {
+  lemma: "uza"
+  argument_structure {
+    id: "uza.01"
+    sense: "Uzun duruma gelmek, boyu büyümek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "uzayan"
+    }
+    argument {
+      number: A2
+      case: INS
+      description: "nasıl/ne ile uzadığı"
+    }
+    example: "Kısa boylu Japon cinsi bile sporla üç parmak uzadı."
+  }
+  argument_structure {
+    id: "uza.02"
+    sense: "Çok zaman tutmak, uzun sürmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "uzayan"
+    }
+    example: "Yılan masalı gibi uzadı gitti bu iş"
+  }
+}

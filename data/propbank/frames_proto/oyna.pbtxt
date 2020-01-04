@@ -1,0 +1,51 @@
+frame_id: "oyna"
+verb {
+  lemma: "oyna"
+  argument_structure {
+    id: "oyna.01"
+    sense: "Eğlenme, oyalanma"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "oynayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "oynanan"
+    }
+    argument {
+      number: A3
+      case: INS
+      description: "kim ile oynandığı"
+    }
+    example: "Benimki senin küçük oğlanla saklambaç oynuyor."
+  }
+  argument_structure {
+    id: "oyna.02"
+    sense: "Rol yapma"
+    argument {
+      number: A0
+      case: NOM
+      description: "oynayan"
+    }
+    argument {
+      number: A1
+      case: INS
+      description: "kim ile oynadığı"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "nerede oynadığı (film/tiyatro)"
+    }
+    argument {
+      number: A3
+      case: UNKNOWN_CASE
+      description: "hangi rolü oynadığı"
+    }
+    example: "Genco Erkal kiminle oynuyor bu sahnede ?"
+  }
+}

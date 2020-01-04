@@ -1,0 +1,31 @@
+frame_id: "uyuş"
+verb {
+  lemma: "uyuş"
+  argument_structure {
+    id: "uyuş.01"
+    sense: "Vücudun bir yerinde hareketin geçici olarak azalması"
+    argument {
+      number: A1
+      case: NOM
+      description: "uyuşan - genelde bir vücut parçası"
+    }
+    example: "Öğle yemeğinden sonra sinirlerim uyuştu, ufak bir uyku kestireyim diye kompartımanımda uzandım"
+  }
+  argument_structure {
+    id: "uyuş.02"
+    sense: "Her konuda birbirine uymak, imtizaç etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "theme1"
+      description: "uyan parça"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "theme2"
+      description: "ne ile uyuştuğu"
+    }
+    example: "Birbirinizle uyuşmuşsunuz"
+  }
+}

@@ -1,0 +1,44 @@
+frame_id: "aydınlat"
+verb {
+  lemma: "aydınlat"
+  argument_structure {
+    id: "aydınlat.01"
+    sense: "Görünür duruma getirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "aydınlatan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "aydınlatılan"
+    }
+    example: "Işık yüzüne tam tepeden düşüyor ve onu iyice aydınlatıyordu."
+  }
+  argument_structure {
+    id: "aydınlat.02"
+    sense: "Bilgi vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "aydınlatan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "aydınlatılan"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "topic"
+      description: "bilgi verilen konu"
+    }
+    example: "Okuduğum son kitap beni annelik konusunda aydınlattı."
+  }
+}

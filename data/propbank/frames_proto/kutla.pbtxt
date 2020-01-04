@@ -1,0 +1,21 @@
+frame_id: "kutla"
+verb {
+  lemma: "kutla"
+  argument_structure {
+    id: "kutla.01"
+    sense: "tebrik etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kutlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "kutlanan"
+    }
+    example: "Seni kutluyorum kızım."
+  }
+}

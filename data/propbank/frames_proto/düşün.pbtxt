@@ -1,0 +1,22 @@
+frame_id: "düşün"
+verb {
+  lemma: "düşün"
+  argument_structure {
+    id: "düşün.01"
+    sense: "Beynini kullanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "düşünen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "ne düşündüğü"
+    }
+    example: "Bakın böylesine bir dilimiz olmasaydı, nasıl anlaşacaktık şimdi?"
+  }
+}

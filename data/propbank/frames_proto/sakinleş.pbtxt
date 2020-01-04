@@ -1,0 +1,14 @@
+frame_id: "sakinleş"
+verb {
+  lemma: "sakinleş"
+  argument_structure {
+    id: "sakinleş.01"
+    sense: "Yatışmak, durgun duruma gelmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "sakinleşen"
+    }
+    example: "Annen sakinleşti, gelebilirsin."
+  }
+}

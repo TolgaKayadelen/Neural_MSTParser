@@ -1,0 +1,27 @@
+frame_id: "vur"
+verb {
+  lemma: "vur"
+  argument_structure {
+    id: "vur.01"
+    sense: "Elini veya elinde tuttuğu bir şeyi bir yere hızla çarpmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "vuran kişi"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "nereye/kime vurduğu"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      theta_role: "patient"
+      description: "vurduğu araç (neyi vurduğu / ne ile vurduğu)"
+    }
+    example: "Birinin başına vurdum."
+  }
+}

@@ -1,0 +1,125 @@
+frame_id: "geçir"
+verb {
+  lemma: "geçir"
+  argument_structure {
+    id: "geçir.01"
+    sense: "Geçme işini yaptırmak, geçmesini sağlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "geçiren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "geçirilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye geçirildiği"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden geçirildiği"
+    }
+  }
+  argument_structure {
+    id: "geçir.02"
+    sense: "Zaman harcamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "zaman harcayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "time"
+      description: "ne kadar zaman harcadığı"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      description: "zamanı nasıl harcadığı"
+    }
+  }
+  argument_structure {
+    id: "geçir.03"
+    sense: "Başına gelmek, yaşamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yaşayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yaşanan olay"
+    }
+    example: "Operasyon geçirmek, ameliyat geçirmek"
+  }
+}
+verb {
+  lemma: "gözden_geçir"
+  argument_structure {
+    id: "geçir.04"
+    sense: "Hızlıca bakmak, okumak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "gözden geçiren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "gözden geçirilen"
+    }
+  }
+}
+verb {
+  lemma: "ele_geçir"
+  argument_structure {
+    id: "geçir.05"
+    sense: "Yakalamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yakalayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "yakalanan"
+    }
+  }
+  argument_structure {
+    id: "geçir.06"
+    sense: "Sahibi olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sahibi olan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "sahibi olunan"
+    }
+    example: "Türkler İstanbul\'u ele geçirdi."
+  }
+}

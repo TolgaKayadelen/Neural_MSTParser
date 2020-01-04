@@ -1,0 +1,37 @@
+frame_id: "bayıl"
+verb {
+  lemma: "bayıl"
+  argument_structure {
+    id: "bayıl.01"
+    sense: "Baygın duruma girmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "experiencer"
+      description: "bayılan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "neden bayıldığı"
+    }
+    example: "Kokudan bayıldım ayol."
+  }
+  argument_structure {
+    id: "bayıl.02"
+    sense: "Çok hoşlanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "seven"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "sevilen"
+    }
+    example: "Celal parfümüme bayıldı."
+  }
+}

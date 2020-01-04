@@ -1,0 +1,18 @@
+frame_id: "değil"
+verb {
+  lemma: "değil"
+  argument_structure {
+    id: "değil.01"
+    sense: "Olumsuzluk için kullanılan ek fiil (copula)"
+    argument {
+      number: A0
+      case: NOM
+      description: "isim"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      description: "predicate"
+    }
+  }
+}

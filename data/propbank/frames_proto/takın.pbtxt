@@ -1,0 +1,21 @@
+frame_id: "takın"
+verb {
+  lemma: "takın"
+  argument_structure {
+    id: "takın.01"
+    sense: "Bir nitelik veya durum almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "takınan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "takındığı durum/şey"
+    }
+    example: "Takındığı bu sıfatı boynundaki kravattan fazla mühimsediği de yoktu"
+  }
+}

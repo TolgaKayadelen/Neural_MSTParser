@@ -1,0 +1,18 @@
+frame_id: "yer"
+verb {
+  lemma: "yer"
+  argument_structure {
+    id: "yer.01"
+    sense: "Kötülüklerini söylemek, zemmetmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yeren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "yerilen"
+    }
+  }
+}

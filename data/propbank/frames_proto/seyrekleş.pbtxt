@@ -1,0 +1,14 @@
+frame_id: "seyrekleş"
+verb {
+  lemma: "seyrekleş"
+  argument_structure {
+    id: "seyrekleş.01"
+    sense: "Seyrek duruma gelmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "seyrekleşen"
+    }
+    example: "Saçlarım seyrekleşti."
+  }
+}

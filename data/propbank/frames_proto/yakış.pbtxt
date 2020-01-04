@@ -1,0 +1,21 @@
+frame_id: "yakış"
+verb {
+  lemma: "yakış"
+  argument_structure {
+    id: "yakış.01"
+    sense: "iyi gitmek, yaraşmak, uygun gelmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yakışan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/neye yakıştığı"
+    }
+    example: "Öyle şey küçüklerin ağzına yakışmaz."
+  }
+}

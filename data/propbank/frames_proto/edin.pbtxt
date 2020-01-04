@@ -1,0 +1,45 @@
+frame_id: "edin"
+verb {
+  lemma: "edin"
+  argument_structure {
+    id: "edin.01"
+    sense: "Kendini bir şeye sahip kılmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "edinen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "edinilen şey"
+    }
+    example: "Başlangıçta ücretini düşük tutup el mahareti edindi."
+  }
+  argument_structure {
+    id: "edin.02"
+    sense: "İzlenim edinmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "izlenim edinen"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "stimulus"
+      description: "nereden izlenim edindiği"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "edindiği izlenim"
+    }
+    example: "Bu izlenimi nereden edindin ?"
+  }
+}

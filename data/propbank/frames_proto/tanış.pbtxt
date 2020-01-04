@@ -1,0 +1,21 @@
+frame_id: "tanış"
+verb {
+  lemma: "tanış"
+  argument_structure {
+    id: "tanış.01"
+    sense: "Daha önce birbirini tanımayan kimseler birbirini tanır duruma gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "tanışan"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle/ne ile tanışıldığı"
+    }
+    example: "Çağır hele arkadaşını, onunla da tanışalım, dedi."
+  }
+}

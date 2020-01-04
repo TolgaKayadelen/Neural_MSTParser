@@ -1,0 +1,72 @@
+frame_id: "tara"
+verb {
+  lemma: "tara"
+  argument_structure {
+    id: "tara.01"
+    sense: "Bir şeyin tellerini birbirinden ayırıp karışıklığını gidermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tarayan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "taranan şey"
+    }
+    example: "Fotoğrafları taradın mı?"
+  }
+  argument_structure {
+    id: "tara.02"
+    sense: "Kafasından geçirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kafasından geçiren"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "taranan yer"
+    }
+    example: "Belleğimde taradığım yazarların yarısına yakını hastalıklı idiler."
+  }
+  argument_structure {
+    id: "tara.03"
+    sense: "Bilgisayar ortamına aktarmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tarayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "taranan şey"
+    }
+    example: "Belgeleri taradım."
+  }
+  argument_structure {
+    id: "tara.04"
+    sense: "Göz gezdirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tarayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "taranan"
+    }
+    example: "Ajans haberlerini taramak, kitapları taramak"
+  }
+}

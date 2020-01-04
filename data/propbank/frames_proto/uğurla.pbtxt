@@ -1,0 +1,19 @@
+frame_id: "uğurla"
+verb {
+  lemma: "uğurla"
+  argument_structure {
+    id: "uğurla.01"
+    sense: "Yolcu etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "uğurlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "uğurlanan"
+    }
+    example: "Ev sahibi onları uğurladıktan sonra döndü."
+  }
+}

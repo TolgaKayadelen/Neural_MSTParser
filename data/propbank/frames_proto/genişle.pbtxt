@@ -1,0 +1,14 @@
+frame_id: "genişle"
+verb {
+  lemma: "genişle"
+  argument_structure {
+    id: "genişle.01"
+    sense: "Geniş duruma gelmek, büyümek"
+    argument {
+      number: A0
+      case: NOM
+      description: "genişleyen"
+    }
+    example: "Ünü, ölümünden sonra daha da genişlemişti."
+  }
+}

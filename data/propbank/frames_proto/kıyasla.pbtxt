@@ -1,0 +1,27 @@
+frame_id: "kıyasla"
+verb {
+  lemma: "kıyasla"
+  argument_structure {
+    id: "kıyasla.01"
+    sense: "Karşılaştırmak, oranlamak, örneksemek, mukayese etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kıyaslayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme1"
+      description: "neyi kıyasladığı"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "theme2"
+      description: "ne ile kıyasladığı"
+    }
+    example: "Kendini sadece kendinle kıyasla."
+  }
+}

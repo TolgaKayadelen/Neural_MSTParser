@@ -1,0 +1,21 @@
+frame_id: "sabırsızlan"
+verb {
+  lemma: "sabırsızlan"
+  argument_structure {
+    id: "sabırsızlan.01"
+    sense: "Sabırlı davranmamak, sabır göstermemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "sabırsızlanan"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      theta_role: "stimulus"
+      description: "ne için sabırsızlandığı"
+    }
+    example: "Devlet erkânı, rahipler, kumandanlar, yağcılar, mabeyinciler merdivenlere dizilmiş, halk aşağıda Tanrı\'nın kızını görmek için sabırsızlanıyor"
+  }
+}

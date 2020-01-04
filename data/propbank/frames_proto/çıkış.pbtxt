@@ -1,0 +1,29 @@
+frame_id: "çıkış"
+verb {
+  lemma: "çıkış"
+  argument_structure {
+    id: "çıkış.01"
+    sense: "Sert sözler söylemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "çıkışan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "kime/neye çıkışıldığı"
+    }
+    example: "Ben de ona bile bile sert çıkıştım"
+  }
+  argument_structure {
+    id: "çıkış.02"
+    sense: "Yeter olmak, yetmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "yeterli olan şey"
+    }
+    example: "Param çıkışmadığı için arkadaşımdan borç aldım."
+  }
+}

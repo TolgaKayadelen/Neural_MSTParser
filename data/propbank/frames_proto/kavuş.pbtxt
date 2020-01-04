@@ -1,0 +1,21 @@
+frame_id: "kavuş"
+verb {
+  lemma: "kavuş"
+  argument_structure {
+    id: "kavuş.01"
+    sense: "Sevilen bir kimseyle bir araya gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "kavuşan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "actor2"
+      description: "neye kavuştuğu"
+    }
+    example: "Biz 1923\'te bir Mustafa Kemal\'e kavuşmasaydık, gelecek zamanlara doğru yollarımızı tıkayan aşılmaz setleri yıkamazdık."
+  }
+}

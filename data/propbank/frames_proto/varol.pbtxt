@@ -1,0 +1,24 @@
+frame_id: "varol"
+verb {
+  lemma: "varol"
+  argument_structure {
+    id: "varol.01"
+    sense: "yaşamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "varolan"
+    }
+    argument {
+      number: A1
+      case: INS
+      description: "ne ile var olduğu"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "nerede var olduğu"
+    }
+    example: "Türküleriyle varoldu Kahramanmaraş\'ın Elbistan ilçesinin Berçencik köyünde 1940 yılında doğdu Mahsuni Şerif."
+  }
+}

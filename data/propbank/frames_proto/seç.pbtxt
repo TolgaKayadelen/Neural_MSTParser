@@ -1,0 +1,39 @@
+frame_id: "seç"
+verb {
+  lemma: "seç"
+  argument_structure {
+    id: "seç.01"
+    sense: "Benzerleri arasında hoşa gideni seçip almak veya yararlanmak için ayırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "seçen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "seçilen"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "nereden seçiliyor"
+    }
+    argument {
+      number: A3
+      case: DAT
+      theta_role: "beneficiary"
+      description: "nereye seçiliyor"
+    }
+    argument {
+      number: A4
+      case: UNKNOWN_CASE
+      description: "ne seçildiği (şampiyon, milletvekili vs...)"
+    }
+    example: "Güzeller içinden bir seni seçtim."
+  }
+}

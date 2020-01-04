@@ -1,0 +1,20 @@
+frame_id: "yarala"
+verb {
+  lemma: "yarala"
+  argument_structure {
+    id: "yarala.01"
+    sense: "incitmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yaralayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "yaralanan"
+    }
+  }
+}

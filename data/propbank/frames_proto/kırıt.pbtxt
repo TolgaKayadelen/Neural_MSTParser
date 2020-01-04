@@ -1,0 +1,14 @@
+frame_id: "kırıt"
+verb {
+  lemma: "kırıt"
+  argument_structure {
+    id: "kırıt.01"
+    sense: "cilveli davranışlarda bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kırıtan"
+    }
+  }
+}

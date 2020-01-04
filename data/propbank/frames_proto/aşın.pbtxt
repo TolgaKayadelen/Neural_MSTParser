@@ -1,0 +1,14 @@
+frame_id: "aşın"
+verb {
+  lemma: "aşın"
+  argument_structure {
+    id: "aşın.01"
+    sense: "Eskimek, yıpranmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "aşınan"
+    }
+  }
+}

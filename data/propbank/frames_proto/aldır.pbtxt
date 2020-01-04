@@ -1,0 +1,36 @@
+frame_id: "aldır"
+verb {
+  lemma: "aldır"
+  argument_structure {
+    id: "aldır.01"
+    sense: "Önem vermek, değer vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "aldıran"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "aldırdığı şey"
+    }
+    example: "Aldırma sen hemen çalış"
+  }
+  argument_structure {
+    id: "aldır.02"
+    sense: "Çocuk aldırmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "aldıran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "aldırılan"
+    }
+    example: "Bu seferkini de aldırmış."
+  }
+}

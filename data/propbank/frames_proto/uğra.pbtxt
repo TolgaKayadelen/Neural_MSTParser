@@ -1,0 +1,19 @@
+frame_id: "uğra"
+verb {
+  lemma: "uğra"
+  argument_structure {
+    id: "uğra.01"
+    sense: "bir yerde/kişide/durumda kısa bir süre kalmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "ziyaretçi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "ziyaret ettiği yer/kişi/durum"
+    }
+    example: "Alışverişe giderken annemlere de uğrayalım."
+  }
+}

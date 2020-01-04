@@ -1,0 +1,19 @@
+frame_id: "tüket"
+verb {
+  lemma: "tüket"
+  argument_structure {
+    id: "tüket.01"
+    sense: "Kullanarak, harcayarak yok etmek, bitirmek, yoğaltmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "tüketen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "tüketilen"
+    }
+    example: "Titreyen elleri baş ucundaki sürahiye gide gele içindeki suyu tüketmişti"
+  }
+}

@@ -1,0 +1,49 @@
+frame_id: "fırla"
+verb {
+  lemma: "fırla"
+  argument_structure {
+    id: "fırla.01"
+    sense: "Hızla, birdenbire bulunduğu yerden çıkmak, ayrılmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "fırlayan kişi"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye fırladığı"
+    }
+    example: "Çalgıcıların oğlu, elinde kenarları zilli kocaman bir tefle ortaya fırladı."
+  }
+  argument_structure {
+    id: "fırla.02"
+    sense: "Yerinden oynayıp ileriye doğru çıkıntı yapmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "fırlayan kişi/şey"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden fırladığı"
+    }
+    example: "Bütün vücudu titriyor, gözleri yuvalarından fırlayacakmış gibi oluyordu."
+  }
+  argument_structure {
+    id: "fırla.03"
+    sense: "Fiyatı birdenbire yükselmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "fiyatı artan şey"
+    }
+    example: "Borsada altın fiyatları fırladı."
+  }
+}

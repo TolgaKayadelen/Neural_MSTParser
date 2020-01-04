@@ -1,0 +1,21 @@
+frame_id: "taşın"
+verb {
+  lemma: "taşın"
+  argument_structure {
+    id: "taşın.01"
+    sense: "Başka bir yere gitmek, göçmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "taşınan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye taşındığı"
+    }
+    example: "Elif geçen sene Amerika\'ya taşındı."
+  }
+}

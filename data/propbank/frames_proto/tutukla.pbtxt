@@ -1,0 +1,21 @@
+frame_id: "tutukla"
+verb {
+  lemma: "tutukla"
+  argument_structure {
+    id: "tutukla.01"
+    sense: "Kanun yoluyla hürriyeti kısıtlayarak bir yere kapatmak, tevkif etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tutuklayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "beneficiary"
+      description: "tutuklanan"
+    }
+    example: "Kayıtları araştırdığımı duyan yüzbaşı beni tutukladı."
+  }
+}

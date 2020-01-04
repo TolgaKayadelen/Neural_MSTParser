@@ -1,0 +1,15 @@
+frame_id: "büyü"
+verb {
+  lemma: "büyü"
+  argument_structure {
+    id: "büyü.01"
+    sense: "İrileşmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "büyüyen şey/kimse"
+    }
+    example: "İkinci de okuduktan sonra kavga büyüdü."
+  }
+}

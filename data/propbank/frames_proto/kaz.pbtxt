@@ -1,0 +1,22 @@
+frame_id: "kaz"
+verb {
+  lemma: "kaz"
+  argument_structure {
+    id: "kaz.01"
+    sense: "çukur, kuyu, yol vb. oluşturmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kazan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "product"
+      description: "kazılan"
+    }
+    example: "Tünel kazıyorlar."
+  }
+}

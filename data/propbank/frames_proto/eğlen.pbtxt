@@ -1,0 +1,28 @@
+frame_id: "eğlen"
+verb {
+  lemma: "eğlen"
+  argument_structure {
+    id: "eğlen.01"
+    sense: "Neşeli, hoşça vakit geçirmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "eğlenen"
+    }
+  }
+  argument_structure {
+    id: "eğlen.02"
+    sense: "Alay etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "alay eden"
+    }
+    argument {
+      number: A1
+      case: INS
+      description: "alay edilen"
+    }
+    example: "Yalnız bunları sordu ve inan ki benimle eğlendi."
+  }
+}

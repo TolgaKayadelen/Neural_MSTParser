@@ -1,0 +1,19 @@
+frame_id: "unut"
+verb {
+  lemma: "unut"
+  argument_structure {
+    id: "unut.01"
+    sense: "Aklında kalmamak, hatırlamamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "unutan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "unutulan şey"
+    }
+    example: "Kaç kere aynı palavralarla kendimi avutmuş, öfkemi geçirmiş, sonradan hepsini unutmuştum."
+  }
+}

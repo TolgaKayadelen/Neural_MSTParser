@@ -1,0 +1,32 @@
+frame_id: "kırış"
+verb {
+  lemma: "kırış"
+  argument_structure {
+    id: "kırış.01"
+    sense: "Kırışık oluşmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "kırışan şey"
+    }
+    example: "Boynu uzamış, kararmış, yaşlı adamların boynu gibi kırışmıştı."
+  }
+  argument_structure {
+    id: "kırış.02"
+    sense: "Bir şeyi eşit olarak paylaşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "paylaşanlar"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "actor2"
+      description: "paylaşılan"
+    }
+    example: "Parayı babasıyla kırıştılar."
+  }
+}

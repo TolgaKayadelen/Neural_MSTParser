@@ -1,0 +1,18 @@
+frame_id: "elver"
+verb {
+  lemma: "elver"
+  argument_structure {
+    id: "elver.01"
+    sense: "yetmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "elveren"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "neye elverdiği"
+    }
+  }
+}

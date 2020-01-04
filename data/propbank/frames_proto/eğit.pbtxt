@@ -1,0 +1,19 @@
+frame_id: "eğit"
+verb {
+  lemma: "eğit"
+  argument_structure {
+    id: "eğit.01"
+    sense: "Eğitim vermek"
+    argument {
+      number: A0
+      case: NOM
+      description: "eğiten"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "eğitilen"
+    }
+    example: "Çocukları eğitmek."
+  }
+}

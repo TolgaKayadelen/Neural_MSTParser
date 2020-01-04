@@ -1,0 +1,25 @@
+frame_id: "sağ"
+verb {
+  lemma: "sağ"
+  argument_structure {
+    id: "sağ.01"
+    sense: "Memeyi parmaklar arasında sıkarak sütünü akıtmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "sağan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "sağılan (genelde süt)"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "kimden sağıldığı"
+    }
+    example: "Gözümüzün önünde keçilerden sağdıkları köpüklü sütlerimizi yarıda bırakıp kalktık."
+  }
+}

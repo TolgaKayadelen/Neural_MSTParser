@@ -1,0 +1,15 @@
+frame_id: "buna"
+verb {
+  lemma: "buna"
+  argument_structure {
+    id: "buna"
+    sense: "Zihin gücünü yitirmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "bunayan kimse"
+    }
+    example: "Ajda Pekkan bunadı."
+  }
+}

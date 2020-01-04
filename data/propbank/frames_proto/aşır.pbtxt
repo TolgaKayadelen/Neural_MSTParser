@@ -1,0 +1,28 @@
+frame_id: "aşır"
+verb {
+  lemma: "aşır"
+  argument_structure {
+    id: "aşır.01"
+    sense: "Alıkoymak, almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "aşıran"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "aşırılan"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden aşırıldığı"
+    }
+    example: "Söyle benden aşırdığın kalemleri nereye sakladığını."
+  }
+}

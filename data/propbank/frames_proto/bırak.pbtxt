@@ -1,0 +1,108 @@
+frame_id: "bırak"
+verb {
+  lemma: "bırak"
+  argument_structure {
+    id: "bırak.01"
+    sense: "Elde bulunan bir şeyi tutmaz olmak, terketmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bırakan kimse"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "bırakılan şey / kişi"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "attribute"
+      description: "nasıl bırakıldığı (yalnız, tek başına vb...)"
+    }
+    argument {
+      number: A3
+      case: DAT
+      theta_role: "destination"
+      description: "nereye bıraktığı"
+    }
+    example: "Kalemi masaya bıraktı."
+  }
+  argument_structure {
+    id: "bırak.02"
+    sense: "Belli bir fiyata vermeyi kabul etmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bırakan kimse"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "bırakıldığı kişi"
+    }
+    example: "Başkalarına on ikiye veriyoruz ama sana onar kuruştan bırakayım."
+  }
+  argument_structure {
+    id: "bırak.03"
+    sense: "teslim etmek, göndermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bırakan kimse"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "bırakılan şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "kime/nereye bırakıldığı"
+    }
+    example: "Eşyamı size bırakacağım."
+  }
+  argument_structure {
+    id: "bırak.04"
+    sense: "Meydana getirmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bırakan şey"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "bırakılan şey"
+    }
+    example: "Bende iz bıraktı."
+  }
+  argument_structure {
+    id: "bırak.05"
+    sense: "Kalmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "bırakılan"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede bırakıldığı"
+    }
+    example: "Aranmadık yer bırakmadım."
+  }
+}

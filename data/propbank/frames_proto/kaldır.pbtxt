@@ -1,0 +1,103 @@
+frame_id: "kaldır"
+verb {
+  lemma: "kaldır"
+  argument_structure {
+    id: "kaldır.01"
+    sense: "Bulunduğu yerden almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kaldıran kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "kaldırılan şey"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "nereden kaldırıldığı"
+    }
+    example: "Örtüyü masanın üzerinden kaldır."
+  }
+  argument_structure {
+    id: "kaldır.02"
+    sense: "Çekmek, taşımak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "taşıyan şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "taşınan şey"
+    }
+    example: "Bu araba bu yükü kaldırmaz."
+  }
+  argument_structure {
+    id: "kaldır.03"
+    sense: "Hastayı hastaneye götürmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "hastayı götüren kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "agent"
+      description: "hastayı kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "götürüldüğü yer"
+    }
+    example: "Fransız Hastanesi\'ne kaldırdılar."
+  }
+  argument_structure {
+    id: "kaldır.04"
+    sense: "Uyandırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "uyandıran kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "uyandırılan kişi"
+    }
+    example: "Saat altıda kaldırın beni."
+  }
+  argument_structure {
+    id: "kaldır.05"
+    sense: "Katlanmak, tahammül etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "katlanan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "experiencer"
+      description: "katlananılan"
+    }
+    example: "Yüreğim kaldırmıyor, acıyorum."
+  }
+}

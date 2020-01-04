@@ -1,0 +1,28 @@
+frame_id: "ata"
+verb {
+  lemma: "ata"
+  argument_structure {
+    id: "ata.01"
+    sense: "Birini bir göreve getirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "atayan kişi/şey"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "atanan kişi/şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "atandığı yer/görev"
+    }
+    example: "Abdullah Gül üç üniversiteye rektör atadı."
+  }
+}

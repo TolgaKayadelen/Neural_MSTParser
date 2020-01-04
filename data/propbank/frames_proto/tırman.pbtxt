@@ -1,0 +1,48 @@
+frame_id: "tırman"
+verb {
+  lemma: "tırman"
+  argument_structure {
+    id: "tırman.01"
+    sense: "El ve ayaklarıyla tutunarak veya tırnaklarını iliştirerek dik bir yere çıkmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tırmanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye tırmandığı"
+    }
+    example: "Adam yüze yüze geldi ve bir maymun çevikliğiyle küpeşteye tırmanıp güverteye atıldı."
+  }
+  argument_structure {
+    id: "tırman.02"
+    sense: "Yokuş, merdiven vb. çıkmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çıkan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çıkılan şey"
+    }
+    example: "Yokuşu çıkmak zordur inmek kolay."
+  }
+  argument_structure {
+    id: "tırman.03"
+    sense: "Belli bir durum, olay gittikçe güç kazanmak, giderek etkisini artırmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "tırmanan şey"
+    }
+    example: "Olayların tırmanmasına izin vermemli."
+  }
+}

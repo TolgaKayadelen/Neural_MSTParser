@@ -1,0 +1,21 @@
+frame_id: "çatış"
+verb {
+  lemma: "çatış"
+  argument_structure {
+    id: "çatış.01"
+    sense: "Birbirine çatmak veya çatılmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "çatışan"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "çatışılan"
+    }
+    example: "Ulu denizin üstünü çatışan, şimşeklenen kara bulutlar sardı."
+  }
+}

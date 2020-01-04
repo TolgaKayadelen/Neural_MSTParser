@@ -1,0 +1,38 @@
+frame_id: "dal"
+verb {
+  lemma: "dal"
+  argument_structure {
+    id: "dal.01"
+    sense: "Suyun içine girmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dalan kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye daldığı"
+    }
+    example: "Serin denize dalmışım gibi rahatladım."
+  }
+  argument_structure {
+    id: "dal.02"
+    sense: "Kendinden geçmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "dalan kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "neye daldığı"
+    }
+    example: "Çocuk ateşi çıkınca daldı."
+  }
+}

@@ -1,0 +1,27 @@
+frame_id: "daya"
+verb {
+  lemma: "daya"
+  argument_structure {
+    id: "daya.01"
+    sense: "Yaslamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dayayan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "dayanan şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye dayandığı"
+    }
+    example: "Sol kolunu yürürken hep kalçasına dayardı."
+  }
+}

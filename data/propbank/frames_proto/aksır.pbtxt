@@ -1,0 +1,15 @@
+frame_id: "aksır"
+verb {
+  lemma: "aksır"
+  argument_structure {
+    id: "aksır"
+    sense: "Hapşırmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "aksıran"
+    }
+    example: "Açığa aksır, mikropları üstümüze savurma."
+  }
+}

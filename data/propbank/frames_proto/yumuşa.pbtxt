@@ -1,0 +1,14 @@
+frame_id: "yumuşa"
+verb {
+  lemma: "yumuşa"
+  argument_structure {
+    id: "yumuşa.01"
+    sense: "Sertliği kalmamak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "yumuşayan kişi/şey"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+frame_id: "anlat"
+verb {
+  lemma: "anlat"
+  argument_structure {
+    id: "anlat.01"
+    sense: "Söylemek, bir konu hakkında konuşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "konuşan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "topic"
+      description: "konuşulan konu"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kiminle konuşulduğu"
+    }
+    example: "Son beraber olduğum adamı anlatmış mıydım sana ?"
+  }
+}

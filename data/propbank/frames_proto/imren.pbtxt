@@ -1,0 +1,21 @@
+frame_id: "imren"
+verb {
+  lemma: "imren"
+  argument_structure {
+    id: "imren.01"
+    sense: "Beğenilen, hoşlanılan bir şeyi edinme isteği duymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "imrenen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "neye imrendiği"
+    }
+    example: "Çağımızın yazarları arasında da klasiklere imrenenler yok değildir."
+  }
+}

@@ -1,0 +1,22 @@
+frame_id: "iç"
+verb {
+  lemma: "iç"
+  argument_structure {
+    id: "iç.01"
+    sense: "Bir sıvıyı ağza alıp yutmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "içen kişi/şey"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "patient"
+      description: "içilen şey"
+    }
+    example: "Çeşme suyunu  içti."
+  }
+}

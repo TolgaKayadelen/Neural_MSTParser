@@ -1,0 +1,29 @@
+frame_id: "yansı"
+verb {
+  lemma: "yansı"
+  argument_structure {
+    id: "yansı.01"
+    sense: "Işık dalgaları yansıtıcı bir yüzeye çarparak yön değiştirmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "yansıyan"
+    }
+    example: "Işık yansıyor."
+  }
+  argument_structure {
+    id: "yansı.02"
+    sense: "Aksetmek, etki etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "etkileyen şey (yansıyan)"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "etkilediği şey (neye yansıdığı)"
+    }
+    example: "Gezi Parkının protestosu, seçim sonuçlarına da yansıdı."
+  }
+}

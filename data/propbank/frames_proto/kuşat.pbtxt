@@ -1,0 +1,22 @@
+frame_id: "kuşat"
+verb {
+  lemma: "kuşat"
+  argument_structure {
+    id: "kuşat.01"
+    sense: "Çevresini sarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kuşatan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "kuşatılan şey"
+    }
+    example: "Denize bakan yönü ile yan sınırlarını rüzgârı kesen sık kargılıklar kuşatıyordu."
+  }
+}

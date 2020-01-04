@@ -1,0 +1,44 @@
+frame_id: "döv"
+verb {
+  lemma: "döv"
+  argument_structure {
+    id: "döv.01"
+    sense: "canını acıtmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "döven kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "dövdüğü kişi"
+    }
+    example: "Harp Divanına vermeden önce, şurada kemiklerini kırıncaya kadar bir dövsem!"
+  }
+  argument_structure {
+    id: "döv.02"
+    sense: "ezmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ezen kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "ezilen şey"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede ezildiği"
+    }
+    example: "Döveçte karabiber dövdü."
+  }
+}

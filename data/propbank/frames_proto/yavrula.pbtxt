@@ -1,0 +1,13 @@
+frame_id: "yavrula"
+verb {
+  lemma: "yavrula"
+  argument_structure {
+    id: "yavrula.01"
+    sense: "doğurmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yavrulayan"
+    }
+  }
+}

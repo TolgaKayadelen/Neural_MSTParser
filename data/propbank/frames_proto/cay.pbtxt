@@ -1,0 +1,19 @@
+frame_id: "cay"
+verb {
+  lemma: "cay"
+  argument_structure {
+    id: "cay.01"
+    sense: "Sözünden, kararından dönmek, vazgeçmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "cayan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "neyden caydığı"
+    }
+    example: "Bu saatten sonra sözünden cayamazsın."
+  }
+}

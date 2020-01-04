@@ -1,0 +1,55 @@
+frame_id: "ez"
+verb {
+  lemma: "ez"
+  argument_structure {
+    id: "ez.01"
+    sense: "Yassılaştırmak, biçimini değiştirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ezen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "ezilen şey"
+    }
+    example: "Ben aruzu bir bal mumu gibi ezer, oynar, istediğim şekle sokardım."
+  }
+  argument_structure {
+    id: "ez.02"
+    sense: "Ağır bir şey, başka bir şeyin üzerinden geçmek, çiğnemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çiğneyen şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "çiğnenen şey"
+    }
+    example: "Araba çocuğu ezdi."
+  }
+  argument_structure {
+    id: "ez.03"
+    sense: "Sıvı içinde bastırıp karıştırarak eritmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "karıştıran kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "karıştırılan şey"
+    }
+    example: "Şerbet için şeker ezdi."
+  }
+}

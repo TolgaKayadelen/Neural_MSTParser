@@ -1,0 +1,28 @@
+frame_id: "sok"
+verb {
+  lemma: "sok"
+  argument_structure {
+    id: "sok.01"
+    sense: "Bir yere girmesini sağlamak, içeri almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sokan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye soktuğu"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "sokulan şey/kişi"
+    }
+    example: "Bizi küçük bir odaya soktu"
+  }
+}

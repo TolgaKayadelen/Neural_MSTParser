@@ -1,0 +1,21 @@
+frame_id: "kaybet"
+verb {
+  lemma: "kaybet"
+  argument_structure {
+    id: "kaybet.01"
+    sense: "Yitirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kaybeden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "kaybedilen"
+    }
+    example: "Hemen Yunus\'un gençliğinde yavuklusu iken kaybettiği güzel kızı hatırladım"
+  }
+}

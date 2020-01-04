@@ -1,0 +1,15 @@
+frame_id: "gevşe"
+verb {
+  lemma: "gevşe"
+  argument_structure {
+    id: "gevşe.01"
+    sense: "Sertlik ve gerginliği bozulmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "gevşeyen şey"
+    }
+    example: "Ayakkabısının bağcıkları gevşemişti."
+  }
+}

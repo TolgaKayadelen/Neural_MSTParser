@@ -1,0 +1,15 @@
+frame_id: "din"
+verb {
+  lemma: "din"
+  argument_structure {
+    id: "din.01"
+    sense: "Sona ermek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "dinen şey"
+    }
+    example: "Gözyaşlarım dindi, ferahladım, eski hayatıma kavuştum."
+  }
+}

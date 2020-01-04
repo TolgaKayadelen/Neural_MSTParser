@@ -1,0 +1,29 @@
+frame_id: "küçül"
+verb {
+  lemma: "küçül"
+  argument_structure {
+    id: "küçül.01"
+    sense: "Büyükken herhangi bir sebeple küçük duruma gelmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "küçülen parça"
+    }
+    example: "Buz eridikçe küçüldü."
+  }
+  argument_structure {
+    id: "küçül.02"
+    sense: "Değer ve onurunu azaltacak davranışta bulunmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "küçülen kimse"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "kimin için değerinin (nerede) azaldığı"
+    }
+    example: "Daha fazla yalan söyleyip gözümde küçülme."
+  }
+}

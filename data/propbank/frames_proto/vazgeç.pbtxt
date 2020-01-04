@@ -1,0 +1,19 @@
+frame_id: "vazgeç"
+verb {
+  lemma: "vazgeç"
+  argument_structure {
+    id: "vazgeç.01"
+    sense: "Kendi hakkı saydığı bir şeyi artık istemez olmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "vazgeçen"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "neyden vazgeçtiği"
+    }
+    example: "Ben bu sevdadan vazgeçmez iken"
+  }
+}

@@ -1,0 +1,83 @@
+frame_id: "yay"
+verb {
+  lemma: "yay"
+  argument_structure {
+    id: "yay.01"
+    sense: "Bir şeyi açarak, düzelterek bir alanı örtecek biçimde sermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "yayılan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "location"
+      description: "nereye yayıldığı"
+    }
+    example: "Kardeşleri çardağın içine, dışına yatakları yayıyorlardı."
+  }
+  argument_structure {
+    id: "yay.02"
+    sense: "Birçok kimseye duyurmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "duyuran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "topic"
+      description: "duyurulan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "kime / neye duyurulduğu"
+    }
+    example: "Kıran Bey, çetesinin şöhretini her tarafa yaydı."
+  }
+  argument_structure {
+    id: "yay.03"
+    sense: "Çevreye dağılmasına sebep olmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "yayılan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye yayıldığı"
+    }
+  }
+  argument_structure {
+    id: "yay.04"
+    sense: "Işık kaynağı, ışığı kendinden dışarıya doğru çeşitli yönlere göndermek. Saçmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      description: "yayılan"
+    }
+  }
+}

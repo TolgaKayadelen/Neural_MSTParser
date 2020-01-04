@@ -1,0 +1,13 @@
+frame_id: "ayaklan"
+verb {
+  lemma: "ayaklan"
+  argument_structure {
+    id: "ayaklan.01"
+    sense: "Başkaldırmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "ayaklananlar (çoğul ya da topluluk)"
+    }
+  }
+}

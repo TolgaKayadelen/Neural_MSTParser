@@ -1,0 +1,15 @@
+frame_id: "diren"
+verb {
+  lemma: "diren"
+  argument_structure {
+    id: "diren.01"
+    sense: "Israr etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "karşı koyan kişi"
+    }
+    example: "Tek tük direnen çıktıysa da çürük yumurta gibi kısa zamanda eziliverdi."
+  }
+}

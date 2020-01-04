@@ -1,0 +1,21 @@
+frame_id: "barın"
+verb {
+  lemma: "barın"
+  argument_structure {
+    id: "barın.01"
+    sense: "Oturmak, yaşamak, tutunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "barınan"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "barınılan yer"
+    }
+    example: "Seni burada barındırmazlar."
+  }
+}

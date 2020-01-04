@@ -1,0 +1,21 @@
+frame_id: "tanı"
+verb {
+  lemma: "tanı"
+  argument_structure {
+    id: "tanı.01"
+    sense: "Kim veya ne olduğunu hatırlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tanıyan"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      theta_role: ""
+      description: "tanınan"
+    }
+    example: "İngiltere 1783 Paris Antlaşmasıyla, kolonilerin bağımsızlığını resmen tanıdı."
+  }
+}

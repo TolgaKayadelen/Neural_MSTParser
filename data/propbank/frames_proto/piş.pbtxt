@@ -1,0 +1,15 @@
+frame_id: "piş"
+verb {
+  lemma: "piş"
+  argument_structure {
+    id: "piş.01"
+    sense: "Ateşte, fırında, kaynar suda veya yağda ısı etkisiyle yenilebilir duruma gelmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "pişen"
+    }
+    example: "Börek geç pişer."
+  }
+}

@@ -1,0 +1,1341 @@
+frame_id: "et"
+verb {
+  lemma: "et"
+  argument_structure {
+    id: "et.01"
+    sense: "Bir işi meslek gibi yapmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yapan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yaptığı iş"
+    }
+    example: "Şemsi, sıra düştükçe emlak komisyonculuğu ediyordu."
+  }
+  argument_structure {
+    id: "et.02"
+    sense: "Bulmak, erişmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "erişen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "erişilen şey"
+    }
+    example: "Hemşerileri gelir, kemençe gibi bir çalgıyla sabahı ederlerdi."
+  }
+  argument_structure {
+    id: "et.03"
+    sense: "Birini bir şeyden yoksun bırakmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yoksun bırakan kişi"
+    }
+    argument {
+      number: A4
+      case: ACC
+      theta_role: "beneficiary"
+      description: "yoksun bırakılan kişi"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "theme"
+      description: "yoksun bırakıldığı şey"
+    }
+    example: "Doping, Ali Gürbüz\'ü altın kemerden etti."
+  }
+  argument_structure {
+    id: "et.04"
+    sense: "Eşit değer kazanmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme1"
+      description: "karşılaştırılan şey"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "theme2"
+      description: "karşılaştırıldığı şey"
+    }
+    example: "Üç artı iki, beş eder."
+  }
+  argument_structure {
+    id: "et.05"
+    sense: "Kötülükte bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kötülükte bulunan kişi/şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "beneficiary"
+      description: "kötülükte bulunduğu kişi/şey"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yapılan kötülük"
+    }
+    example: "Ah, iki bardak süt sen bana neler ettin?"
+  }
+  argument_structure {
+    id: "et.06"
+    sense: "Yapmak anlamında olan Yardımcı Fiil"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "eden, yapan"
+    }
+    argument {
+      number: A_LVB
+      case: NOM
+      description: "ne ettiği/yaptığı"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "edilen/yapılan"
+    }
+    example: "yardım etmek, teslim etmek, yataklık etmek, kontrol etmek , hapsetmek"
+  }
+  argument_structure {
+    id: "et.07"
+    sense: "Tuvaletini yapmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "eden"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "edilen"
+    }
+  }
+}
+verb {
+  lemma: "iddia_et"
+  argument_structure {
+    id: "et.08"
+    sense: "Sözünde direnmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "direnen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "topic"
+      description: "direndiği konu"
+    }
+  }
+}
+verb {
+  lemma: "davet_et"
+  argument_structure {
+    id: "et.09"
+    sense: "Çağırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çağıran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "çağrılan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye çağırıldığı"
+    }
+  }
+}
+verb {
+  lemma: "ifade_et"
+  argument_structure {
+    id: "et.10"
+    sense: "Anlatmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "anlatıcı"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "topic"
+      description: "anlatılan"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "attribute"
+      description: "nasıl anlatıldığı"
+    }
+  }
+}
+verb {
+  lemma: "fark_et"
+  argument_structure {
+    id: "et.11"
+    sense: "Anlamak, sezmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "fark eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "neyi fark ettiği"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      theta_role: "cause"
+      description: "ne zaman, nasıl fark ettiği"
+    }
+    example: "Profesör tekrar o yöne bakınca bir kıpırtı fark etti."
+  }
+}
+verb {
+  lemma: "isyan_et"
+  argument_structure {
+    id: "et.12"
+    sense: "Ayaklanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ayaklanan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "topic"
+      description: "neye isyan ettiği"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      theta_role: "attribute"
+      description: "nasıl isyan ettiği"
+    }
+    example: "Nurcan Taylan son olaylara isyan etti."
+  }
+}
+verb {
+  lemma: "teşekkür_et"
+  argument_structure {
+    id: "et.13"
+    sense: "Hoşnutluğunu anlatmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "teşekkür eden"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      theta_role: "cause"
+      description: "teşekkür etme sebebi"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime teşekkür ettiği"
+    }
+  }
+}
+verb {
+  lemma: "ısrar_et"
+  argument_structure {
+    id: "et.14"
+    sense: "Ayak diremek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ısrarcı"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "topic"
+      description: "ısrar ettiği konu"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime ısrar ettiği"
+    }
+  }
+}
+verb {
+  lemma: "zarar_et"
+  argument_structure {
+    id: "et.15"
+    sense: "Kayba uğramak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "zarar eden"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "product"
+      description: "zarar edilen ürün"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "asset"
+      description: "ne kadar zarar edildiği"
+    }
+    argument {
+      number: A3
+      case: NOM
+      theta_role: "time"
+      description: "zarar etme zamanı"
+    }
+    example: "Şirket, 2001 yılında 104.8 trilyon lira zarar etti."
+  }
+}
+verb {
+  lemma: "tercih_et"
+  argument_structure {
+    id: "et.16"
+    sense: "Yeğlemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tercih eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme1"
+      description: "tercih edilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "theme2"
+      description: "tercih edilmeyen"
+    }
+    example: "Yumurtayı brokoliye tercih ederim."
+  }
+}
+verb {
+  lemma: "istifa_et"
+  argument_structure {
+    id: "et.17"
+    sense: "İşi bırakmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "istifa eden"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "source"
+      description: "istifa ettiği kurum"
+    }
+    example: "Aynaroz\'daki gümrük kâtipliği görevinden istifa etti."
+  }
+}
+verb {
+  lemma: "devam_et"
+  argument_structure {
+    id: "et.18"
+    sense: "Sürdürmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "devam eden"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "devam edilen iş"
+    }
+    example: "Egzersizlere devam et."
+  }
+}
+verb {
+  lemma: "sohbet_et"
+  argument_structure {
+    id: "et.19"
+    sense: "Konuşarak hoş bir vakit geçirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "sohbet eden"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle sohbet edildiği"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "time"
+      description: "sohbet süresi"
+    }
+    example: "Yemekte Kral ve Cumhurbaşkanı uzun süre sohbet etti."
+  }
+}
+verb {
+  lemma: "terk_et"
+  argument_structure {
+    id: "et.20"
+    sense: "Bırakmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "bırakan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "bırakılan"
+    }
+  }
+}
+verb {
+  lemma: "kabul_et"
+  argument_structure {
+    id: "et.21"
+    sense: "Onaylamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kabul eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "kabul edilen"
+    }
+    example: "İtirazını kabul etti."
+  }
+}
+verb {
+  lemma: "tereddüt_et"
+  argument_structure {
+    id: "et.22"
+    sense: "Duraksamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tereddüt eden"
+    }
+    argument {
+      number: A1
+      case: LOC
+      theta_role: "topic"
+      description: "tereddüt edilen konu"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "time"
+      description: "tereddüt etme zamanı"
+    }
+  }
+}
+verb {
+  lemma: "itiraf_et"
+  argument_structure {
+    id: "et.23"
+    sense: "Gerçeği söylemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "söyleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "gerçek"
+    }
+    example: "Oğlan da suçunu itiraf etti zaten."
+  }
+}
+verb {
+  lemma: "telefon_et"
+  argument_structure {
+    id: "et.24"
+    sense: "Aramak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "telefon eden"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "aranan"
+    }
+    example: "Dün sana telefon etmiştim."
+  }
+}
+verb {
+  lemma: "mücadele_et"
+  argument_structure {
+    id: "et.25"
+    sense: "Savaşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "savaşan"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "patient"
+      description: "neye karşı savaşıldığı"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede savaştığı"
+    }
+    argument {
+      number: A3
+      case: UNKNOWN_CASE
+      theta_role: "goal"
+      description: "savaşma amacı"
+    }
+    example: "Kendisi de hastalığı ile mücadele etti."
+  }
+}
+verb {
+  lemma: "ilan_et"
+  argument_structure {
+    id: "et.26"
+    sense: "Durumu yaymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ilan eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "ilan edilen"
+    }
+    example: "Cumhuriyeti ilan ettik."
+  }
+}
+verb {
+  lemma: "teslim_et"
+  argument_structure {
+    id: "et.27"
+    sense: "Sahibine vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "veren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "verilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime verildği"
+    }
+  }
+}
+verb {
+  lemma: "ayırt_et"
+  argument_structure {
+    id: "et.28"
+    sense: "Birbirinden ayıran niteliği anlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ayırt eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme1"
+      description: "ayırt edilen"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "theme2"
+      description: "neyden ayırt edildiği"
+    }
+  }
+}
+verb {
+  lemma: "idare_et"
+  argument_structure {
+    id: "et.29"
+    sense: "Yönetmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yöneten"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "yönetilen"
+    }
+  }
+}
+verb {
+  lemma: "teşvik_et"
+  argument_structure {
+    id: "et.30"
+    sense: "Özendirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "özendiren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "özendirilen kişi"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "neye özendirildiği"
+    }
+  }
+}
+verb {
+  lemma: "dikkat_et"
+  argument_structure {
+    id: "et.31"
+    sense: "Özen göstermek"
+    argument {
+      number: A0
+      case: NOM
+      description: "özen gösteren"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "neye özen gösterildiği"
+    }
+  }
+}
+verb {
+  lemma: "müdahele_et"
+  argument_structure {
+    id: "et.32"
+    sense: "Müdahelede bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "karışan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "patient"
+      description: "neye müdahele edildiği"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      description: "müdahele sebebi"
+    }
+    example: "Bunun üzerine Amerika Meksika\'ya müdahele etti."
+  }
+}
+verb {
+  lemma: "eşlik_et"
+  argument_structure {
+    id: "et.33"
+    sense: "Yarenlik yapmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "eşlik eden"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "kime eşlik edildiği"
+    }
+  }
+}
+verb {
+  lemma: "söz_et"
+  argument_structure {
+    id: "et.34"
+    sense: "Bahsetmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bahseden"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "topic"
+      description: "bahsedilen konu"
+    }
+    example: "Hür Adam gazetesinin güzel yazılarından söz etti."
+  }
+}
+verb {
+  lemma: "elde_et"
+  argument_structure {
+    id: "et.35"
+    sense: "Bir şeye sahip olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sahip olan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "sahip olunan"
+    }
+  }
+}
+verb {
+  lemma: "teklif_et"
+  argument_structure {
+    id: "et.36"
+    sense: "Önermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "öneren"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "topic"
+      description: "önerilen şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime önerildiği"
+    }
+    example: "Vali onları ziyaret etmeyi teklif etti."
+  }
+}
+verb {
+  lemma: "yardım_et"
+  argument_structure {
+    id: "et.37"
+    sense: "Birine iyilik yapmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yardım eden"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "yardım edilen"
+    }
+    example: "Efendimiz, elbisesini temizlemeğe yardım etti."
+  }
+}
+verb {
+  lemma: "müracaat_et"
+  argument_structure {
+    id: "et.38"
+    sense: "Başvurmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "başvuran"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "başvurulan"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      description: "başvuru sebebi"
+    }
+    example: "Anayasa Mahkemesi\'ne kanunun iptali için müracaat etti."
+  }
+}
+verb {
+  lemma: "ikna_et"
+  argument_structure {
+    id: "et.39"
+    sense: "İnandırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ikna eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "ikna edilen"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "topic"
+      description: "ikna edildiği konu"
+    }
+    example: "Ankara, Denktaş\'ı kamuoyuna daha kısıtlı bilgiler sunması konusunda da ikna etti."
+  }
+}
+verb {
+  lemma: "talep_et"
+  argument_structure {
+    id: "et.40"
+    sense: "İstemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "isteyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "istenen şey"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "kimden istendiği"
+    }
+    example: "Yönetim Kurulu yedek üyeliğinden çıkarılmasını TÜRK-İŞ\'ten talep etti."
+  }
+}
+verb {
+  lemma: "merak_et"
+  argument_structure {
+    id: "et.41"
+    sense: "Anlamak istemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "merak eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "merak edilen"
+    }
+  }
+}
+verb {
+  lemma: "çark_et"
+  argument_structure {
+    id: "et.42"
+    sense: "Değişmek, dönmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "değişen"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "theme1"
+      description: "önceki durum"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "theme2"
+      description: "sonraki durum"
+    }
+  }
+}
+verb {
+  lemma: "nefret_et"
+  argument_structure {
+    id: "et.43"
+    sense: "Tiksinti duymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "tiksinti duyan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "stimulus"
+      description: "tiksinti sebebi"
+    }
+  }
+}
+verb {
+  lemma: "kavga_et"
+  argument_structure {
+    id: "et.44"
+    sense: "dövüşmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "Dövüşen"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle dövüşüldüğü"
+    }
+  }
+}
+verb {
+  lemma: "tehdit_et"
+  argument_structure {
+    id: "et.45"
+    sense: "Gözdağı vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "gözdağı veren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "tehdit edilen"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile tehdit edildiği"
+    }
+    example: "Irak\'taki askerleri disiplin cezası vermekle tehdit etti."
+  }
+}
+verb {
+  lemma: "intihar_et"
+  argument_structure {
+    id: "et.46"
+    sense: "kendini öldürmek"
+    argument {
+      number: A0
+      case: UNKNOWN_CASE
+      description: "öldüren"
+    }
+  }
+}
+verb {
+  lemma: "işaret_et"
+  argument_structure {
+    id: "et.47"
+    sense: "Göstermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "gösteren"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "gösterilen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "gösterilen"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "nasıl gösterdiği"
+    }
+  }
+}
+verb {
+  lemma: "ziyaret_et"
+  argument_structure {
+    id: "et.48"
+    sense: "Birini, bir yeri görmeye gitmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "ziyaret eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "ziyaret edilen"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      description: "ne kadar sıklıkla ziyaret edildiği"
+    }
+  }
+}
+verb {
+  lemma: "iptal_et"
+  argument_structure {
+    id: "et.49"
+    sense: "Kullanıştan kaldırmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "iptal eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "iptal edilen"
+    }
+  }
+}
+verb {
+  lemma: "ikram_et"
+  argument_structure {
+    id: "et.50"
+    sense: "Konuğa bir şey sunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ikram eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "ikram edilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "beneficiary"
+      description: "kime ikram edildiği"
+    }
+  }
+}
+verb {
+  lemma: "iftihar_et"
+  argument_structure {
+    id: "et.51"
+    sense: "Kıvanç duymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "kıvanç duyan"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "stimulus"
+      description: "kıvanç duyma sebebi"
+    }
+  }
+}
+verb {
+  lemma: "alay_et"
+  argument_structure {
+    id: "et.52"
+    sense: "Dalga geçmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "dalga geçen"
+    }
+    argument {
+      number: A1
+      case: INS
+      description: "ne ile dalga geçildiği"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      description: "nasıl alay edildiği"
+    }
+  }
+}
+verb {
+  lemma: "hak_et"
+  argument_structure {
+    id: "et.53"
+    sense: "Layık olduğu şeyi almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "hak eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "neyi hak ettiği"
+    }
+  }
+}
+verb {
+  lemma: "şikayet_et"
+  argument_structure {
+    id: "et.54"
+    sense: "Yakınmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yakınan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "şikayet edilen kişi/kurum"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime şikayet edildiği"
+    }
+  }
+}
+verb {
+  lemma: "tahsis_et"
+  argument_structure {
+    id: "et.55"
+    sense: "Ayırmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "ayıran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "ayırılan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "kime / neye rezerve edildiği"
+    }
+    example: "Antalya Beldibi\'nde bir araziyi Çiller ailesine tahsis etti!"
+  }
+}
+verb {
+  lemma: "göç_et"
+  argument_structure {
+    id: "et.56"
+    sense: "Bir yerden başka bir yere gitmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "göç eden"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden başlandığı"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye gidildiği"
+    }
+  }
+}
+verb {
+  lemma: "hayal_et"
+  argument_structure {
+    id: "et.57"
+    sense: "Düşlemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "hayal eden"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "hayal edilen"
+    }
+  }
+}
+verb {
+  lemma: "itiraz_et"
+  argument_structure {
+    id: "et.58"
+    sense: "Karşı çıkmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "itiraz eden"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "itiraz edilen konu"
+    }
+  }
+}
+verb {
+  lemma: "tayin_et"
+  argument_structure {
+    id: "et.59"
+    sense: "Belirlemek, kararlaştırmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "tayin eden"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "tayin edilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye/neye tayin edildiği"
+    }
+  }
+}
+verb {
+  lemma: "taklit_et"
+  argument_structure {
+    id: "et.60"
+    sense: "bir kimseye veya bir şeye benzemeye çalışmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "taklit eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "taklit edilen"
+    }
+  }
+}
+verb {
+  lemma: "zehir_et"
+  argument_structure {
+    id: "et.61"
+    sense: "Burnundan getirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "zehir eden"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "zehir edilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "kime/neye zehir ettiği"
+    }
+  }
+}

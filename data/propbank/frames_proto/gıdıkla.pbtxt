@@ -1,0 +1,21 @@
+frame_id: "gıdıkla"
+verb {
+  lemma: "gıdıkla"
+  argument_structure {
+    id: "gıdıkla.01"
+    sense: "Vücudun bazı yerlerine dokunarak ürperme"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "stimulus"
+      description: "gıdıklayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "experiencer"
+      description: "gıdıklanan"
+    }
+    example: "Seslendi, ayağının altını gıdıkladı, yüzünü tokatladı, ama Toto\'yu canlandıramadı."
+  }
+}

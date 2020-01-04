@@ -1,0 +1,36 @@
+frame_id: "kavra"
+verb {
+  lemma: "kavra"
+  argument_structure {
+    id: "kavra.01"
+    sense: "Elle sıkıca tutmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tutan/kavrayan kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "tuttuğu/kavradığı kişi/şey"
+    }
+    example: "Çocuğu koltuk altlarından kavrayıp kaldırdı."
+  }
+  argument_structure {
+    id: "kavra.02"
+    sense: "Anlamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "anlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "anlanan şey"
+    }
+    example: "Bilim yoluyla olguları kavrayıp sıralayabiliriz."
+  }
+}

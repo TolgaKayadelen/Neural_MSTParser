@@ -1,0 +1,21 @@
+frame_id: "kop"
+verb {
+  lemma: "kop"
+  argument_structure {
+    id: "kop.01"
+    sense: "Herhangi bir yerinden ikiye ayrılmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "kopan şey"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "nereden koptuğu"
+    }
+    example: "Kısa bir süre yaşamdan koptu sanki."
+  }
+}

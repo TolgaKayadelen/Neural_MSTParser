@@ -1,0 +1,15 @@
+frame_id: "çoğal"
+verb {
+  lemma: "çoğal"
+  argument_structure {
+    id: "çoğal.01"
+    sense: "Artmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "çoğalan"
+    }
+    example: "Çocuklar çoğalıyor."
+  }
+}

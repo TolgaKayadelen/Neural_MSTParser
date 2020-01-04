@@ -1,0 +1,15 @@
+frame_id: "ayıl"
+verb {
+  lemma: "ayıl"
+  argument_structure {
+    id: "ayıl"
+    sense: "Kendine gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ayılan kişi"
+    }
+    example: "Ayıldı ve Avrupa haşmetinin tesirini silkeledi üzerinden."
+  }
+}

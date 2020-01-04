@@ -1,0 +1,19 @@
+frame_id: "destekle"
+verb {
+  lemma: "destekle"
+  argument_structure {
+    id: "destekle.01"
+    sense: "Destek koymak"
+    argument {
+      number: A0
+      case: NOM
+      description: "destekleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "desteklenen"
+    }
+    example: "Kapıyı ardından destekleyip varını yoğunu amcasının şerrinden koruyacaktı"
+  }
+}

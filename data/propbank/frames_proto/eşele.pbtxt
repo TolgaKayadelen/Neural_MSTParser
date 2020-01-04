@@ -1,0 +1,20 @@
+frame_id: "eşele"
+verb {
+  lemma: "eşele"
+  argument_structure {
+    id: "eşele.01"
+    sense: "Karıştırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "karıştıran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "karıştırılan"
+    }
+  }
+}

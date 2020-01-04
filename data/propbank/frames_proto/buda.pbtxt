@@ -1,0 +1,21 @@
+frame_id: "buda"
+verb {
+  lemma: "buda"
+  argument_structure {
+    id: "buda"
+    sense: "Dallarını kesmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "budayan kimse"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "budanan şey"
+    }
+    example: "Aylıkları budadık."
+  }
+}

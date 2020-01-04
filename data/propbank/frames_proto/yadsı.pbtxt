@@ -1,0 +1,19 @@
+frame_id: "yadsı"
+verb {
+  lemma: "yadsı"
+  argument_structure {
+    id: "yadsı.01"
+    sense: "Yaptığını saklamak, inkar etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "inkar eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "inkar edilen"
+    }
+    example: "Söylediklerini sonradan yadsımış, duyduğu güvensizliği ortaya koymuştur."
+  }
+}

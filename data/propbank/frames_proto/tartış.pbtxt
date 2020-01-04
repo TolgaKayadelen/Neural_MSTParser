@@ -1,0 +1,27 @@
+frame_id: "tartış"
+verb {
+  lemma: "tartış"
+  argument_structure {
+    id: "tartış.01"
+    sense: "Bir konu üzerinde, birbirine ters olan görüş ve inançları karşılıklı savunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "tartışan kişi"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle tartıştığı"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "topic"
+      description: "neyi tartıştığı"
+    }
+    example: "Güney Kore Ulusal Güvenlik Konseyi de dün tarafları uzlaştırma önerilerini tartıştı."
+  }
+}

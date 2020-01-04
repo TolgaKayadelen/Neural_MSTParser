@@ -1,0 +1,14 @@
+frame_id: "yavaşla"
+verb {
+  lemma: "yavaşla"
+  argument_structure {
+    id: "yavaşla.01"
+    sense: "Hızını azaltmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yavaşlayan"
+    }
+    example: "Öfke ve siniri dalga gibi dinerek sesi yavaşladı."
+  }
+}

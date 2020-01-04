@@ -1,0 +1,133 @@
+frame_id: "git"
+verb {
+  lemma: "git"
+  argument_structure {
+    id: "git.01"
+    sense: "Bir yere doğru yönelmek, ulaşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "giden"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye gidildiği"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden gidildiği"
+    }
+    example: "Nereye gidiyorsun?"
+  }
+  argument_structure {
+    id: "git.02"
+    sense: "Bir durumun sürmesi"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "süren şey"
+    }
+    example: "Ama böyle giderse Allah hemen sonunu hayırlara tebdil etsin."
+  }
+  argument_structure {
+    id: "git.03"
+    sense: "Yakışmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yakışan kişi/şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "neye/kime yakıştığı"
+    }
+    example: "Bu renk ona gitmedi."
+  }
+  argument_structure {
+    id: "git.04"
+    sense: "Tüketilmek, harcanmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "tüketilen şey"
+    }
+    example: "Eline geçen paranın çoğu da İstanbul\'da çoluğa çocuğa gidiyor."
+  }
+  argument_structure {
+    id: "git.05"
+    sense: "Yeter olmak, yetmek, yetişmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yeten şey"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "time"
+      description: "yettiği süre"
+    }
+    example: "İki ton kömür üç ay gider."
+  }
+  argument_structure {
+    id: "git.06"
+    sense: "Yok olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yok olan şey"
+    }
+    example: "Gemiler ve saray hepsi gitti."
+  }
+  argument_structure {
+    id: "git.07"
+    sense: "Satılmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "satılan şey"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "asset"
+      description: "ne kadara satıldığı"
+    }
+    example: "Altın kaçtan gidiyor?"
+  }
+  argument_structure {
+    id: "git.08"
+    sense: "Yardımcı Fiil: Değerlendirmek, saymak, karşılamak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "değerlendirilen şey (giden)"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "değerlendirme sonucu (neye gittiği)"
+    }
+    argument {
+      number: A0
+      case: UNKNOWN_CASE
+      theta_role: "agent"
+      description: "değerlendiren"
+    }
+    example: "Bu iş hoşuma gitmedi, tuhafıma gitti."
+  }
+}

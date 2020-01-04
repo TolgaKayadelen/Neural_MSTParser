@@ -1,0 +1,21 @@
+frame_id: "alış"
+verb {
+  lemma: "alış"
+  argument_structure {
+    id: "alış.01"
+    sense: "Bir işi tekrarlayarak kolaylıkla yapabilmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "alışan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "alıştığı şey"
+    }
+    example: "Muhtaç değiliz ama ben çalışmaya alıştım."
+  }
+}

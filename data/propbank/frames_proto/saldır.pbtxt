@@ -1,0 +1,20 @@
+frame_id: "saldır"
+verb {
+  lemma: "saldır"
+  argument_structure {
+    id: "saldır.01"
+    sense: "Hücum etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "saldıran"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "recipient"
+      description: "kime / neye saldırdığı"
+    }
+  }
+}

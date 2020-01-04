@@ -1,0 +1,21 @@
+frame_id: "hakla"
+verb {
+  lemma: "hakla"
+  argument_structure {
+    id: "hakla.01"
+    sense: "Perişan etmek, yenmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "haklayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "haklanan"
+    }
+    example: "Ben de dördünü beşini evelallah haklarım."
+  }
+}

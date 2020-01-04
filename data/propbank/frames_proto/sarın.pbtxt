@@ -1,0 +1,19 @@
+frame_id: "sarın"
+verb {
+  lemma: "sarın"
+  argument_structure {
+    id: "sarın.01"
+    sense: "Kendi üstüne sarmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "sarınan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "neye sarındığı"
+    }
+    example: "Çıkınca yıkandı, kurulandı, havluya sarınıp odasına döndü."
+  }
+}

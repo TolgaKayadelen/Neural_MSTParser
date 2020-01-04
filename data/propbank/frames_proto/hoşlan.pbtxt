@@ -1,0 +1,21 @@
+frame_id: "hoşlan"
+verb {
+  lemma: "hoşlan"
+  argument_structure {
+    id: "hoşlan.01"
+    sense: "Hoşuna gitmek, hoş bulmak, hazzetmek, sevmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "hoşlanan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "stimulus"
+      description: "hoşlanılan"
+    }
+    example: "Çırağın ilgisinden hoşlandı"
+  }
+}

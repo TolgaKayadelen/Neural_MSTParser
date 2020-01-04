@@ -1,0 +1,15 @@
+frame_id: "daral"
+verb {
+  lemma: "daral"
+  argument_structure {
+    id: "daral.01"
+    sense: "Dar duruma gelmek, küçülmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "daralan kişi/şey"
+    }
+    example: "İleride yolun daraldığını göre göre gaza yüklendi."
+  }
+}

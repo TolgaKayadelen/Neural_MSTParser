@@ -1,0 +1,24 @@
+frame_id: "yeğle"
+verb {
+  lemma: "yeğle"
+  argument_structure {
+    id: "yeğle.01"
+    sense: "Bir şeyi öbürüne  tercih etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yeğleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "neyi yeğlediği"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "neye yeğlediği (tercih edilmeyen şey)"
+    }
+    example: "Aslında susmayı yeğlerdi şu anda."
+  }
+}

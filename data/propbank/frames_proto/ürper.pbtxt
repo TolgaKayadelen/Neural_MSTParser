@@ -1,0 +1,15 @@
+frame_id: "ürper"
+verb {
+  lemma: "ürper"
+  argument_structure {
+    id: "ürper.01"
+    sense: "ani titreme"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "titreyen kişi"
+    }
+    example: "Fısıltılar duyarım, ürperirim."
+  }
+}

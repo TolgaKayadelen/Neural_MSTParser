@@ -1,0 +1,21 @@
+frame_id: "bük"
+verb {
+  lemma: "bük"
+  argument_structure {
+    id: "bük.01"
+    sense: "Sertçe çevirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "büken kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "bükülen şey"
+    }
+    example: "Çelik halatı büktü."
+  }
+}

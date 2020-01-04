@@ -1,0 +1,19 @@
+frame_id: "sıkış"
+verb {
+  lemma: "sıkış"
+  argument_structure {
+    id: "sıkış.01"
+    sense: "Dar, küçük bir alanda kalmak, sığmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "sıkışan şey/kişi"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye sıkıştığı"
+    }
+    example: "Sıkışmayın oraya gelin burada oturun."
+  }
+}

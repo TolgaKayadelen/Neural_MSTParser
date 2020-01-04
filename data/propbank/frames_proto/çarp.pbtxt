@@ -1,0 +1,89 @@
+frame_id: "çarp"
+verb {
+  lemma: "çarp"
+  argument_structure {
+    id: "çarp.01"
+    sense: "Hızla değmek, vurmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çarpan kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "destination"
+      description: "çarptığı şey"
+    }
+    example: "Ortada duran uzun bir masaya çarptım."
+  }
+  argument_structure {
+    id: "çarp.02"
+    sense: "Etkisiyle birdenbire hasta etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "hasta eden şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "hasta olan kişi"
+    }
+    example: "Güneş çarptı."
+  }
+  argument_structure {
+    id: "çarp.03"
+    sense: "Dolandırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çalan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çalınan şey"
+    }
+    example: "Köprüden denizi seyredenlerin cüzdanını hep çarparlar."
+  }
+  argument_structure {
+    id: "çarp.04"
+    sense: "Kalp, hızlı hızlı vurmak."
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "kalp genellikle"
+    }
+    example: "Onu görünce kalbim hızlı hızlı çarpıyor."
+  }
+  argument_structure {
+    id: "çarp.05"
+    sense: "Matematik işlemi."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çarpan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme1"
+      description: "çarpan sayı"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "theme2"
+      description: "çarpılan sayı"
+    }
+    example: "İki ile ikiyi çarparsak, dört eder."
+  }
+}

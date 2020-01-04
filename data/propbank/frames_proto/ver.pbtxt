@@ -1,0 +1,290 @@
+frame_id: "ver"
+verb {
+  lemma: "ver"
+  argument_structure {
+    id: "ver.01"
+    sense: "Transfer etmek, iletmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "veren kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "verilen şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/neye verildiği"
+    }
+    example: "Yemlerini ben veririm."
+  }
+  argument_structure {
+    id: "ver.02"
+    sense: "Tespit etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tespiti yapan kişi (veren)"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yapılan tespit (verilen)"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "kime/neye verildiği"
+    }
+    example: "Randevu vermek. Ad vermek. İsim vermek."
+  }
+  argument_structure {
+    id: "ver.03"
+    sense: "Ayırmak, harcamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "veren"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "verilen şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "goal"
+      description: "ne için verildiği"
+    }
+    example: "Emek vermek. Zaman vermek. Öncelik vermek."
+  }
+  argument_structure {
+    id: "ver.04"
+    sense: "Haber vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "veren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "verilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/nereye verildiği"
+    }
+    example: "Bunu sana kim haber verdi ?"
+  }
+  argument_structure {
+    id: "ver.05"
+    sense: "Karar, hüküm vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "karar veren"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "topic"
+      description: "neye karar verildiği"
+    }
+    example: "Misafirine ikramda bulunmaya karar verdi."
+  }
+  argument_structure {
+    id: "ver.06"
+    sense: "Yanıt vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "veren"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "topic"
+      description: "verilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime verildiği"
+    }
+    example: "Cevap vermek, yanıt vermek, karşılık vermek"
+  }
+  argument_structure {
+    id: "ver.07"
+    sense: "Hissettirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "hissettiren"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "stimulus"
+      description: "verilen duygu"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "experiencer"
+      description: "kime hissettirdiği"
+    }
+    example: "Artık bana heyecan vermiyor."
+  }
+}
+verb {
+  lemma: "söz_ver"
+  argument_structure {
+    id: "ver.08"
+    sense: "Bir işi yapacağını kesinlikle bildirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "söz veren"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "topic"
+      description: "söz verdiği konu"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime söz verildiği"
+    }
+    example: "Cengiz\'e sadık kalacağına söz verdi."
+  }
+}
+verb {
+  lemma: "izin_ver"
+  argument_structure {
+    id: "ver.09"
+    sense: "İzin vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "izin veren"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "izin verilen konu"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "izin verilen kişi"
+    }
+    example: "Onun için gitmelerine izin verdi."
+  }
+}
+verb {
+  lemma: "kulak_ver"
+  argument_structure {
+    id: "ver.10"
+    sense: "Dikkatlice dinlemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dinleyen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "dinlenen kişi / şey"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "topic"
+      description: "konu"
+    }
+  }
+}
+verb {
+  lemma: "hesap_ver"
+  argument_structure {
+    id: "ver.11"
+    sense: "Yargılanmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "yargılanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "hesap soran"
+    }
+  }
+}
+verb {
+  lemma: "son_ver"
+  argument_structure {
+    id: "ver.12"
+    sense: "bitirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "bitiren"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "bitirilen"
+    }
+  }
+}
+verb {
+  lemma: "boş_ver"
+  argument_structure {
+    id: "ver.13"
+    sense: "Aldırmamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "boşveren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "stimulus"
+      description: "boşverilen"
+    }
+  }
+}

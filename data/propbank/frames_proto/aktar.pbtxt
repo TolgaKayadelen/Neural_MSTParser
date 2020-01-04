@@ -1,0 +1,27 @@
+frame_id: "aktar"
+verb {
+  lemma: "aktar"
+  argument_structure {
+    id: "aktar.01"
+    sense: "Bir şeyi bir yerden, başka bir yere geçirmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "aktaran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "aktarılan"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye/kime aktarıldığı"
+    }
+    example: "Derdini size aktarıp arınmış, sizi zehirleyip bırakmıştır."
+  }
+}

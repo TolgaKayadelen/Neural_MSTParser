@@ -1,0 +1,24 @@
+frame_id: "yorumla"
+verb {
+  lemma: "yorumla"
+  argument_structure {
+    id: "yorumla.01"
+    sense: "Bir yazıyı veya bir sözü yorum yaparak açıklamak, tefsir etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yorumlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "yorumlanan"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      description: "nasıl yorumladığı"
+    }
+    example: "Bütün ülkede bugün aynı anda yapılacak biyoloji sınavının sorularının dün karaborsada alıcı bulduğunu iddia eden İngiliz basını, bu durumu \"eğitim rezaleti\" olarak yorumladı."
+  }
+}

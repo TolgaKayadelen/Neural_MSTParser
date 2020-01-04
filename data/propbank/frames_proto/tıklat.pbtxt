@@ -1,0 +1,19 @@
+frame_id: "tıklat"
+verb {
+  lemma: "tıklat"
+  argument_structure {
+    id: "tıklat.01"
+    sense: "\"Tık\" sesi çıkararak hafifçe vurmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "vuran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "vurulan"
+    }
+    example: "Kapıyı tıklattı."
+  }
+}

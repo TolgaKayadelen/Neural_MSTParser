@@ -1,0 +1,51 @@
+frame_id: "kapa"
+verb {
+  lemma: "kapa"
+  argument_structure {
+    id: "kapa.01"
+    sense: "Bir açıklığı örtmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kapayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "kapatılan"
+    }
+    example: "Hasan, hemen kapıyı kapadı, kaçtı."
+  }
+  argument_structure {
+    id: "kapa.02"
+    sense: "Çalışamaz, görev ve iş yapamaz duruma getirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "kapayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "kapanan şey"
+    }
+    example: "Dükkanı beş gibi kapıyoruz."
+  }
+  argument_structure {
+    id: "kapa.03"
+    sense: "Bitirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "bitiren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "bitirdiği şey"
+    }
+    example: "Endeks ilk seansı 5 bin 100 puandan kapadı."
+  }
+}

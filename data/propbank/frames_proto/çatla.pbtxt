@@ -1,0 +1,32 @@
+frame_id: "çatla"
+verb {
+  lemma: "çatla"
+  argument_structure {
+    id: "çatla.01"
+    sense: "Parçaları ayrılıp dağılmayacak biçimde yarılmak."
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "çatlayan şey"
+    }
+    example: "Eğer çay doldururken bardak çatlarsa, üzerlerinde nazar olduğuna hükmeder, gidip bir koşu ateşte tuz çevirirdi."
+  }
+  argument_structure {
+    id: "çatla.02"
+    sense: "Kıskançlık duymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "çatlayan"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "stimulus"
+      description: "neden çatladığı"
+    }
+    example: "Kıskançlıktan yüreği çat deyip ortasından çatlayacaktı."
+  }
+}

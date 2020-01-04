@@ -1,0 +1,14 @@
+frame_id: "güçlen"
+verb {
+  lemma: "güçlen"
+  argument_structure {
+    id: "güçlen.01"
+    sense: "Güçlü duruma gelmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "güçlenen"
+    }
+  }
+}

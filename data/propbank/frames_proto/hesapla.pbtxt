@@ -1,0 +1,19 @@
+frame_id: "hesapla"
+verb {
+  lemma: "hesapla"
+  argument_structure {
+    id: "hesapla.01"
+    sense: "Hesap işlemini yapmak, hesap etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "hesaplayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "hesaplanan"
+    }
+    example: "Dönem giderlerini hesapladık."
+  }
+}

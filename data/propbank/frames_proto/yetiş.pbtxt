@@ -1,0 +1,21 @@
+frame_id: "yetiş"
+verb {
+  lemma: "yetiş"
+  argument_structure {
+    id: "yetiş.01"
+    sense: "Ulaşmak, ermek, varmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yetişen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye/kime yetiştiği"
+    }
+    example: "Mühendislikte babasına yetişti."
+  }
+}

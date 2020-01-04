@@ -1,0 +1,21 @@
+frame_id: "savur"
+verb {
+  lemma: "savur"
+  argument_structure {
+    id: "savur.01"
+    sense: "Havaya atıp dağıtmak, saçmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "savuran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "savrulan"
+    }
+    example: "Rüzgar küllerini savurur."
+  }
+}

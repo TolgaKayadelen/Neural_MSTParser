@@ -1,0 +1,14 @@
+frame_id: "iyileş"
+verb {
+  lemma: "iyileş"
+  argument_structure {
+    id: "iyileş.01"
+    sense: "İyi duruma gelmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "iyileşen şey / kimse"
+    }
+    example: "İyileşmek için en küçük bir gayret göstermiyorsun."
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "yalanla"
+verb {
+  lemma: "yalanla"
+  argument_structure {
+    id: "yalanla.01"
+    sense: "gerçek olmadığını bildirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yalanlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "neyi yalanladığı"
+    }
+    example: "Terim, iddiaları yalanladı."
+  }
+}

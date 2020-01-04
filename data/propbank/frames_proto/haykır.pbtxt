@@ -1,0 +1,20 @@
+frame_id: "haykır"
+verb {
+  lemma: "haykır"
+  argument_structure {
+    id: "haykır.01"
+    sense: "Telaş, şikâyet vb. sebeplerle yüksek sesle bağırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bağıran kişi"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      description: "ne diye/ nasıl bağırdığı"
+    }
+    example: "Çocuk haykırarak ağlamaya başlamıştı."
+  }
+}

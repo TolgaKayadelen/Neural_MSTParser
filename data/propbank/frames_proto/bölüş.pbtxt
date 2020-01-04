@@ -1,0 +1,21 @@
+frame_id: "bölüş"
+verb {
+  lemma: "bölüş"
+  argument_structure {
+    id: "bölüş.01"
+    sense: "paylaşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bölüşen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "bölüşülen"
+    }
+  }
+}

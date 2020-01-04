@@ -1,0 +1,21 @@
+frame_id: "üşüş"
+verb {
+  lemma: "üşüş"
+  argument_structure {
+    id: "üşüş.01"
+    sense: "Bir araya gelmek, toplanmak, birikmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "üşüşenler"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "destination"
+      description: "nereye üşüşüldüğü"
+    }
+    example: "Herifin etrafına daha trenden inerken üşüştük."
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "yara"
+verb {
+  lemma: "yara"
+  argument_structure {
+    id: "yara.01"
+    sense: "Bir şey yararlı olmak, yarar sağlamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yarar sağlayan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "ne için(neye, kime) yarar sağladığı"
+    }
+    example: "Sertleşmeyi bilmeyen bir iyilik, iyilik olmakta ısrar eden bir iyilik neye yarar?"
+  }
+}

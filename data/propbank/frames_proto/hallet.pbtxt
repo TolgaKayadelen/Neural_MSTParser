@@ -1,0 +1,21 @@
+frame_id: "hallet"
+verb {
+  lemma: "hallet"
+  argument_structure {
+    id: "hallet.01"
+    sense: "Güç görünen bir olay veya duruma çözüm yolu bulmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çözüm bulan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çözüm bulunan şey"
+    }
+    example: "Bir arkadaşa, sinema işlerinden anlayan bir arkadaşa bu konuşmayı anlattığım zaman o muammayı halletti."
+  }
+}

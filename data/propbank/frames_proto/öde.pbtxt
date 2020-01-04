@@ -1,0 +1,22 @@
+frame_id: "öde"
+verb {
+  lemma: "öde"
+  argument_structure {
+    id: "öde.01"
+    sense: "Bir alışveriş ilişkisinde, borcu alacaklıya vermek, tediye etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ödeyen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "asset"
+      description: "ödenen şey (miktar genelde)"
+    }
+    example: "Borç varsa benimkidir, onu ödemek ve teşekkür etmek lazım"
+  }
+}

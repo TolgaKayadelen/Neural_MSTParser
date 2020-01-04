@@ -1,0 +1,21 @@
+frame_id: "engelle"
+verb {
+  lemma: "engelle"
+  argument_structure {
+    id: "engelle.01"
+    sense: "Bir şeyin gerçekleşmesini veya yapılmasını önlemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "engelleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "engellediği şey"
+    }
+    example: "Çözüm çabalarını Denktaş\'ın olağanüstü inatçılığı engelliyor."
+  }
+}

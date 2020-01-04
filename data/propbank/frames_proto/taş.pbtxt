@@ -1,0 +1,27 @@
+frame_id: "taş"
+verb {
+  lemma: "taş"
+  argument_structure {
+    id: "taş.01"
+    sense: "Hacmine sığmamak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "taşan şey"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden taştığı"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye taştığı"
+    }
+    example: "Sabrımız taştı"
+  }
+}

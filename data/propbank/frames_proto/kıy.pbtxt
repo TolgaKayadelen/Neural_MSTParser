@@ -1,0 +1,38 @@
+frame_id: "kıy"
+verb {
+  lemma: "kıy"
+  argument_structure {
+    id: "kıy.01"
+    sense: "Küçük parçalar biçiminde doğramak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "doğrayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "doğranan"
+    }
+    example: "Soğanları ince ince kıyın."
+  }
+  argument_structure {
+    id: "kıy.02"
+    sense: "Feda etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "feda eden"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "feda edilen"
+    }
+    example: "Kıydınız yavrucağa."
+  }
+}

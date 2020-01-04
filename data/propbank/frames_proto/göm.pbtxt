@@ -1,0 +1,27 @@
+frame_id: "göm"
+verb {
+  lemma: "göm"
+  argument_structure {
+    id: "göm.01"
+    sense: "Yerin altına koyarak üstünü toprakla örtmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "gömen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "gömülen kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye gömüldüğü"
+    }
+    example: "Onu kalenin yanındaki küçük mezarlığa, bir zeytin ağacının yanına gömdüler."
+  }
+}

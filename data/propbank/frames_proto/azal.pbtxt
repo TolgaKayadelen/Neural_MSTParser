@@ -1,0 +1,15 @@
+frame_id: "azal"
+verb {
+  lemma: "azal"
+  argument_structure {
+    id: "azal.01"
+    sense: "Az denecek bir miktara inmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "azalan şey"
+    }
+    example: "Mevsimler soğumuş, sular azalmış"
+  }
+}

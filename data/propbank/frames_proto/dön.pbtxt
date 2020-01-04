@@ -1,0 +1,77 @@
+frame_id: "dön"
+verb {
+  lemma: "dön"
+  argument_structure {
+    id: "dön.01"
+    sense: "Kendi ekseni üzerinde hareket etmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "dönen şey"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "nerede döndüğü"
+    }
+    example: "Dişliler dönüyor hava kirliliğine katkıda bulunuyor."
+  }
+  argument_structure {
+    id: "dön.02"
+    sense: "Geri gelmek, geri gitmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "geri gelen kişi"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "trajectory"
+      description: "nereden geri geldiği"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye doğru gittiği"
+    }
+    example: "Ertesi gün aynı yoldan Bodrum\'a döndük."
+  }
+  argument_structure {
+    id: "dön.03"
+    sense: "Sapmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dönen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "dönülen"
+    }
+    example: "Gülümseyerek bir köşeyi döndü."
+  }
+  argument_structure {
+    id: "dön.04"
+    sense: "Benzemek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "benzeyen kişi/şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "goal"
+      description: "neye benzediği"
+    }
+    example: "Dikmen yolları, mabede adak için gidenlerin yollarına dönmüştü."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "sürtüş"
+verb {
+  lemma: "sürtüş"
+  argument_structure {
+    id: "sürtüş.01"
+    sense: "Tartışmak, kavga etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "sürtüşen"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kim ile sürtüştüğü"
+    }
+    example: "Kocasıyla sürtüşmüşler yine."
+  }
+}

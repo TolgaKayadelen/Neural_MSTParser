@@ -1,0 +1,21 @@
+frame_id: "tiksin"
+verb {
+  lemma: "tiksin"
+  argument_structure {
+    id: "tiksin.01"
+    sense: "Aşağılık bulmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "tiksinen"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "stimulus"
+      description: "neyden tiksindiği"
+    }
+    example: "Kıllarından tiksiniyorum."
+  }
+}

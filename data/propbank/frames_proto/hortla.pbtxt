@@ -1,0 +1,15 @@
+frame_id: "hortla"
+verb {
+  lemma: "hortla"
+  argument_structure {
+    id: "hortla.01"
+    sense: "Yeniden ortaya çıkmak (kişi veya şey)"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "hortlayan"
+    }
+    example: "Almanya birleşti, büyüdü ve ırkçılık hortladı, diyorlar."
+  }
+}

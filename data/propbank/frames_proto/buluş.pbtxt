@@ -1,0 +1,27 @@
+frame_id: "buluş"
+verb {
+  lemma: "buluş"
+  argument_structure {
+    id: "buluş.01"
+    sense: "Bir araya gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "buluşan"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle buluşulduğu"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede buluşulduğu"
+    }
+    example: "Ertesi gün yine pastacıda buluştular."
+  }
+}

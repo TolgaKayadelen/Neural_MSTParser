@@ -1,0 +1,74 @@
+frame_id: "kır"
+verb {
+  lemma: "kır"
+  argument_structure {
+    id: "kır.01"
+    sense: "Sert şeyleri vurarak veya ezerek parçalamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "parçalayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "patient"
+      description: "parçalanan"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile parçaladığı"
+    }
+    example: "Bardağı kırdı."
+  }
+  argument_structure {
+    id: "kır.02"
+    sense: "Bir şeyin fiyatını azaltmak, indirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "indiren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "indirilen"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "asset"
+      description: "indirme miktarı"
+    }
+    example: "Altının fiyatı yüzde on kırıldı."
+  }
+  argument_structure {
+    id: "kır.03"
+    sense: "Taşıtın yönünü değiştirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yön değiştiren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "yönü değiştirilen"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "yeni gidiş yönü"
+    }
+    example: "Ne tarafa doğru meyil varsa gidonu o tarafa doğru kıracaksınız ki bisiklet doğrulsun."
+  }
+}

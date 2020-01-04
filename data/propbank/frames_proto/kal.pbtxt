@@ -1,0 +1,227 @@
+frame_id: "kal"
+verb {
+  lemma: "kal"
+  argument_structure {
+    id: "kal.01"
+    sense: "Olduğu yeri ve durumu korumak, sürdürmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "kalan"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "attribute"
+      description: "nasıl kaldığı"
+    }
+    example: "Sıkı sıkı kucakladı ve öylece kaldı."
+  }
+  argument_structure {
+    id: "kal.02"
+    sense: "Geriye kalmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "asset"
+      description: "kalan miktar (zaman, uzaklık, nicelik)"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "kaldığı yer"
+    }
+    example: "Sadece üç gün kaldı."
+  }
+  argument_structure {
+    id: "kal.03"
+    sense: "Konaklamak, yaşamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "konaklayan kişi"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "konakladığı yer"
+    }
+    argument {
+      number: A3
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle konakladığı"
+    }
+    example: "Hemen karargâha yerleşmezsem ne geri dönebilir ne de otelde kalabilirdim."
+  }
+  argument_structure {
+    id: "kal.04"
+    sense: "Geriye atılmak, ertelenmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "ertelenen şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "time"
+      description: "ne zamana ertelendiği"
+    }
+    example: "Mahkeme ayın on sekizine kaldı."
+  }
+  argument_structure {
+    id: "kal.05"
+    sense: "Miras olarak geçmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "miras kalan şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "recipient"
+      description: "kime miras kaldığı"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "kimden miras kaldığı"
+    }
+    example: "Çiftlik ana babasından kalmış."
+  }
+  argument_structure {
+    id: "kal.06"
+    sense: "Yardımcı Fiil: Olmak, herhangi bir durumda bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kalan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "içinde bulunulan durum (ne/nasıl kaldığı)"
+    }
+    example: "Aç kalmak, nefes nefese kalmak"
+  }
+  argument_structure {
+    id: "kal.07"
+    sense: "Daha fazlasını yapma niyetinde olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "niyetli"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "theme"
+      description: "niyet edilen iş"
+    }
+    example: "Bu kadarla kalsa iyi."
+  }
+  argument_structure {
+    id: "kal.08"
+    sense: "Limiti aşamamak, orada kalmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "kalan"
+    }
+    argument {
+      number: A3
+      case: LOC
+      description: "nerede kaldığı"
+    }
+    example: "Sayı onbeşte kaldı."
+  }
+  argument_structure {
+    id: "kal.09"
+    sense: "Birine devredilmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "sorumluluk/iş"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime verildiği"
+    }
+    example: "Bu iş olmaz bana kalsa"
+  }
+}
+verb {
+  lemma: "maruz_kal"
+  argument_structure {
+    id: "kal.10"
+    sense: "Bir durumla karşı karşıya olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "maruz kalan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "karşılaşılan durum"
+    }
+    example: "Kötü muameleye maruz kaldı."
+  }
+}
+verb {
+  lemma: "geç_kal"
+  argument_structure {
+    id: "kal.11"
+    sense: "Gecikmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "geciken"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "theme"
+      description: "geciktiği şey"
+    }
+    example: "Toplantıya yine geç kaldım."
+  }
+}
+verb {
+  lemma: "zorunda_kal"
+  argument_structure {
+    id: "kal.12"
+    sense: "Birşey yapmaya zorlanmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "zorlanan"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "theme"
+      description: "zorunda kaldığı"
+    }
+    example: "Yalan söylemek zorunda kaldım."
+  }
+}

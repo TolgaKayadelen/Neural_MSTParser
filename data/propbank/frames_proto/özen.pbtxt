@@ -1,0 +1,27 @@
+frame_id: "özen"
+verb {
+  lemma: "özen"
+  argument_structure {
+    id: "özen.01"
+    sense: "Beğendiği şeye benzemeye çalışmak, yapmaya kalkışmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "özenen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "özenilen"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "source"
+      description: "nereden özendiği"
+    }
+    example: "Elbisene çok özendim."
+  }
+}

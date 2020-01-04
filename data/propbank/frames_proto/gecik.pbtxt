@@ -1,0 +1,32 @@
+frame_id: "gecik"
+verb {
+  lemma: "gecik"
+  argument_structure {
+    id: "gecik.01"
+    sense: "Geç kalmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "geç kalan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "neye gecikti"
+    }
+    argument {
+      number: A3
+      case: NOM
+      theta_role: "time"
+      description: "ne kadar gecikti"
+    }
+    argument {
+      number: A1
+      case: LOC
+      theta_role: "theme"
+      description: "hangi konuda gecikildiği"
+    }
+  }
+}

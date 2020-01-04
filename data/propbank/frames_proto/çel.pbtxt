@@ -1,0 +1,44 @@
+frame_id: "çel"
+verb {
+  lemma: "çel"
+  argument_structure {
+    id: "çel.01"
+    sense: "Topa gidiş yönünü değiştirecek biçimde vurmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "vuran kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "vurulan şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye vurduğu"
+    }
+    example: "Vuruşu Rüştü kornere çeldi."
+  }
+  argument_structure {
+    id: "çel.02"
+    sense: "Sevgisini kazanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çelen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "neyi çeldiği"
+    }
+    example: "Behlül Dayım\'ın da aklını çeldi, bizi Manisa\'ya giden bir trene bindirdi."
+  }
+}

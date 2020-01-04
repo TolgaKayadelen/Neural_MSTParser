@@ -1,0 +1,27 @@
+frame_id: "bil"
+verb {
+  lemma: "bil"
+  argument_structure {
+    id: "bil.01"
+    sense: "Bir şeyi anlamış veya öğrenmiş bulunma"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bilen kimse"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "bilinen şey"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "attribute"
+      description: "nereden bildiği"
+    }
+    example: "Bunu bilmek içimi kederle dolduruyordu."
+  }
+}

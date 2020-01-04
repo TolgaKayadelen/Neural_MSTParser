@@ -1,0 +1,21 @@
+frame_id: "em"
+verb {
+  lemma: "em"
+  argument_structure {
+    id: "em.01"
+    sense: "İçine çekmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "içen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "içtiği şey"
+    }
+    example: "Toprak suyu emdi."
+  }
+}

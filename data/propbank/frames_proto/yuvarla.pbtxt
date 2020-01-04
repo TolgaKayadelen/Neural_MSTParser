@@ -1,0 +1,27 @@
+frame_id: "yuvarla"
+verb {
+  lemma: "yuvarla"
+  argument_structure {
+    id: "yuvarla.01"
+    sense: "İlerletmek, götürmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yuvarlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "yuvarlanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye yuvarlandığı"
+    }
+    example: "3,6\'yı 4\'e yuvarlaman yeterli."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "yarat"
+verb {
+  lemma: "yarat"
+  argument_structure {
+    id: "yarat.01"
+    sense: "Olmasına, ortaya çıkmasına yol açmak, sebep olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "cause"
+      description: "yaratan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yaratılan"
+    }
+    example: "Bu haber sinirli bir hava yarattı."
+  }
+}

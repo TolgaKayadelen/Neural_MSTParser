@@ -1,0 +1,19 @@
+frame_id: "yum"
+verb {
+  lemma: "yum"
+  argument_structure {
+    id: "yum.01"
+    sense: "Kısarak kapamak, sıkarak kapalı duruma getirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yuman"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "yumulan (genelde el ya da göz)"
+    }
+    example: "Otomobile bindiğimiz zaman başını arkaya yaslamış, gözlerini yummuştu."
+  }
+}

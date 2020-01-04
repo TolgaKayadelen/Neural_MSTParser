@@ -1,0 +1,21 @@
+frame_id: "değin"
+verb {
+  lemma: "değin"
+  argument_structure {
+    id: "değin.01"
+    sense: "Kısaca söz etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "değinen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "topic"
+      description: "neye değinildiği"
+    }
+    example: "Gündüz yüzme havuzunda açmadığı bir konuya değinmek gereksinmesi duyuyordu"
+  }
+}

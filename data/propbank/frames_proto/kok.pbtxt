@@ -1,0 +1,19 @@
+frame_id: "kok"
+verb {
+  lemma: "kok"
+  argument_structure {
+    id: "kok.01"
+    sense: "Koku çıkarmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "kokan şey"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "nasıl/ne koktuğu"
+    }
+    example: "Türkler dışarı, Türkler sarımsak kokuyor."
+  }
+}

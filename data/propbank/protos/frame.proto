@@ -4,19 +4,26 @@ syntax = "proto2";
 
 package data.propbank.protos;
 
-// A verb is a lemma associated with a frame that represents its argument structure.
-message Verb {
-  optional string lemma = 1; /*actually required*/
-  repeated Frame frame = 2;
+// A frame consists of a list of verbs that share the same lemma with
+// different argument structures.
+message Frame {
+  optional string frame_id = 1; /*actually required*/
+  repeated Verb verb = 2;
 }
 
-// A frame represents the argument structure of a verb. It stores information about
-// the sense of the verb and the set of arguments that the verb subcategorizes
-// for. 
-message Frame {
+// A verb is a verb lemma associated with a sense and argument structure.
+message Verb {
+  optional string lemma = 1; /*actually required*/
+  repeated ArgumentStructure argument_structure = 2;
+}
+
+// Argument structure of a verb. It stores information about the sense of
+// the verb and the set of arguments that the verb subcategorizes for. 
+message ArgumentStructure {
   optional string id = 1;
   optional string sense = 2;
   repeated Argument argument = 3;
+  optional string example = 4;
 }
 
 // An argument of a verb is a grammatical element that the verb requires as part of
@@ -24,7 +31,7 @@ message Frame {
 // in, its theta role, and a short description about the role it fulfills in the event
 // described by the verb.
 message Argument {
-  optional ArgNum argnum = 1;
+  optional ArgNum number = 1;
   repeated Case case = 2;
   optional string theta_role = 3;
   optional string description = 4;
@@ -38,6 +45,7 @@ enum ArgNum {
   A3 = 4;
   A4 = 5;
   A5 = 6;
+  A_LVB = 7;
 }
 
 enum Case {

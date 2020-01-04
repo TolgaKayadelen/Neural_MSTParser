@@ -1,0 +1,38 @@
+frame_id: "haşla"
+verb {
+  lemma: "haşla"
+  argument_structure {
+    id: "haşla.01"
+    sense: "Bir şeyi kaynar suya daldırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "haşlayan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "haşlanan şey"
+    }
+    example: "Ben makarnaları haşlarken o da evdeki kısıtlı malzemeyle kekikli domatesli bir sos hazırlamaya koyuldu."
+  }
+  argument_structure {
+    id: "haşla.02"
+    sense: "Sertçe paylamak, azarlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "azarlayan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "azarlanan kişi"
+    }
+    example: "Recep\'i kenara çekip fena hâlde haşladılar."
+  }
+}

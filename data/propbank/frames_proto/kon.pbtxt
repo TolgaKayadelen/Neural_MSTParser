@@ -1,0 +1,19 @@
+frame_id: "kon"
+verb {
+  lemma: "kon"
+  argument_structure {
+    id: "kon.01"
+    sense: "Kuş, kelebek, uçak, toz vb. bir yere inmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "konan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye konduğu"
+    }
+    example: "Bir bülbül gelip konmuştu havuzun kıyısına"
+  }
+}

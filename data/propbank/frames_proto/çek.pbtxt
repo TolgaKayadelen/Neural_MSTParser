@@ -1,0 +1,161 @@
+frame_id: "çek"
+verb {
+  lemma: "çek"
+  argument_structure {
+    id: "çek.01"
+    sense: "Bir şeyi tutup bir yöne doğru yürütmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çeken kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çekilen şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye çekildiği"
+    }
+    example: "İskemleleri çekerek masanın etrafında bir halka yaptılar."
+  }
+  argument_structure {
+    id: "çek.02"
+    sense: "İçine almak, emmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çeken kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çekilen şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "çekilen yer"
+    }
+    example: "Odadaki kokuyu gözlerini kapatıp iyice içine çekti."
+  }
+  argument_structure {
+    id: "çek.03"
+    sense: "Atmak, vurmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "atan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "atılan şey"
+    }
+    example: "Şut çekti."
+  }
+  argument_structure {
+    id: "çek.04"
+    sense: "Dikkat, ilgi toplamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ilgi çeken kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çekilen şey/ilgi/dikkat"
+    }
+    argument {
+      number: A4
+      case: DAT
+      description: "nereye çekildiği"
+    }
+    example: "Bu kadın biçimli vücuduyla az sonra dikkati çeker."
+  }
+  argument_structure {
+    id: "çek.05"
+    sense: "Birine benzemek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "benzeyen kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "recipient"
+      description: "benzediği kişi"
+    }
+    example: "Yeğeninin ona çeken tek yanı yoktur."
+  }
+  argument_structure {
+    id: "çek.06"
+    sense: "Görüntülemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çeken"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "görüntülenen"
+    }
+    example: "Fotoğraf, film çekmek"
+  }
+  argument_structure {
+    id: "çek.07"
+    sense: "Zorlukla karşılaşmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "experiencer"
+      description: "zorluk çeken"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "çekilen şey"
+    }
+    example: "Acı çekmek, güçlük çekmek"
+  }
+}
+verb {
+  lemma: "temize_çek"
+  argument_structure {
+    id: "çek.08"
+    sense: "Bir yazının karalamasını temiz olarak yazmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yazan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "yazılan"
+    }
+    example: "Bu notları temize çekelim."
+  }
+}

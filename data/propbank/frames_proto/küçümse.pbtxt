@@ -1,0 +1,21 @@
+frame_id: "küçümse"
+verb {
+  lemma: "küçümse"
+  argument_structure {
+    id: "küçümse.01"
+    sense: "Değer ve önem vermemek, küçük görmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "küçümseyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "küçümsenen"
+    }
+    example: "Bu bir nevi başkasını yok farz etmek ve sonunda küçümsemek değil midir ?"
+  }
+}

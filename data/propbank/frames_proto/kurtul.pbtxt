@@ -1,0 +1,21 @@
+frame_id: "kurtul"
+verb {
+  lemma: "kurtul"
+  argument_structure {
+    id: "kurtul.01"
+    sense: "İstenmeyen, sıkıntı veren, hoşlanılmayan bir kimseden, bir yerden, bir durumdan uzaklaşmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "kurtulan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "nereden/neyden kurtulduğu"
+    }
+    example: "Kurtuldum o cehennemden."
+  }
+}

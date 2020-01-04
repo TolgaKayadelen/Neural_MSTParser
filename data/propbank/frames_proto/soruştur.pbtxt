@@ -1,0 +1,19 @@
+frame_id: "soruştur"
+verb {
+  lemma: "soruştur"
+  argument_structure {
+    id: "soruştur.01"
+    sense: "Öğrenilmek istenilen şeyi birçok kişiye inceden inceye sormak, araştırmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "soruşturan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "araştırılan"
+    }
+    example: "Bu işi bir soruşturalım."
+  }
+}

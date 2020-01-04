@@ -1,0 +1,24 @@
+frame_id: "öp"
+verb {
+  lemma: "öp"
+  argument_structure {
+    id: "öp.01"
+    sense: "Sevgi, saygı, bağlılık, teşekkür belirtmek amacıya dudaklarını bir şeye veya birine değdirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "öpen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "öpülen kişi/şey"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "öpülen yer"
+    }
+    example: "Beni yanağımdan öptü."
+  }
+}

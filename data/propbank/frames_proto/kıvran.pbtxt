@@ -1,0 +1,29 @@
+frame_id: "kıvran"
+verb {
+  lemma: "kıvran"
+  argument_structure {
+    id: "kıvran.01"
+    sense: "Acı çekmek, üzülmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "kıvranan"
+    }
+  }
+  argument_structure {
+    id: "kıvran.02"
+    sense: "Bir şeye çok gereksinim duymak"
+    argument {
+      number: A0
+      case: NOM
+      description: "ihtiyaç duyan"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      description: "ihtiyaç duyulan - diye ile birlikte"
+    }
+    example: "Su, su diye kıvrandı."
+  }
+}

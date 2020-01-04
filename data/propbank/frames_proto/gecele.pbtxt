@@ -1,0 +1,18 @@
+frame_id: "gecele"
+verb {
+  lemma: "gecele"
+  argument_structure {
+    id: "gecele.01"
+    sense: "Geceyi bir yerde geçirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "geceleyen"
+    }
+    argument {
+      number: A1
+      case: LOC
+      description: "nerede gecelendiği"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+frame_id: "kus"
+verb {
+  lemma: "kus"
+  argument_structure {
+    id: "kus.01"
+    sense: "İçindekini dışarı çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kusan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "kusulan"
+    }
+    example: "Tüm gece kustu."
+  }
+}

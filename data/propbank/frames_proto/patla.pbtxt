@@ -1,0 +1,29 @@
+frame_id: "patla"
+verb {
+  lemma: "patla"
+  argument_structure {
+    id: "patla.01"
+    sense: "İnfilak etmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "patlayan şey"
+    }
+    example: "Gözlerim gene ayakkabılarıma kaydı, yanları patlamıştı."
+  }
+  argument_structure {
+    id: "patla.02"
+    sense: "Çok sıkılmak, sıkıntı ve sabırsızlığını belli etmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "patlayan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "patlama sebebi"
+    }
+    example: "Sanıyorum ki istimi fazla gelmiş kazanlar gibi hırslarından patlayacaklar."
+  }
+}

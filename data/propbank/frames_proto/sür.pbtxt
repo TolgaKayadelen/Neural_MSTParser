@@ -1,0 +1,125 @@
+frame_id: "sür"
+verb {
+  lemma: "sür"
+  argument_structure {
+    id: "sür.01"
+    sense: "Sevk etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "süren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "sürülen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye sürüldüğü"
+    }
+    example: "Doğuya sürülmek"
+  }
+  argument_structure {
+    id: "sür.02"
+    sense: "Devam etmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "süren"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      theta_role: "time"
+      description: "ne zamana kadar sürdüğü"
+    }
+    example: "Yenilenmesine karar verilen Meclisin yetkileri, yeni Meclisin seçilmesine kadar sürer."
+  }
+  argument_structure {
+    id: "sür.03"
+    sense: "Dokundurmak, değdirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dokunduran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "dokundurulan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "dokundurulduğu yer/şey"
+    }
+    example: "Yüzümü saçlarına sürmek için başımı eğdim."
+  }
+  argument_structure {
+    id: "sür.04"
+    sense: "Zaman almak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "zaman alan şey"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "time"
+      description: "ne kadar zaman aldığı"
+    }
+    example: "Her odanın ziyareti bir saat sürmüştü."
+  }
+  argument_structure {
+    id: "sür.05"
+    sense: "Düşünce, tasarı önermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "öneren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "önerilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "attribute"
+      description: "öne, ileri vb... (nereye sürdüğü)"
+    }
+    example: "Türkiye\'nin yeni pürüzlerle karşı karşıya kaldığını öne sürdü."
+  }
+  argument_structure {
+    id: "sür.06"
+    sense: "bir araç kullanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sürücü"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "sürülen taşıt"
+    }
+    example: "Araba sürmeyi sonunda öğrendim."
+  }
+}

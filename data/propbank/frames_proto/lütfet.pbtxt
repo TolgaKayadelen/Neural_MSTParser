@@ -1,0 +1,27 @@
+frame_id: "lütfet"
+verb {
+  lemma: "lütfet"
+  argument_structure {
+    id: "lütfet.01"
+    sense: "Vermek, ihsan etmek, bağışlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "lütfeden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "lütfedilen şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/neye lütfedildiği"
+    }
+    example: "Okuduğumuz şiiri bana lütfeder misiniz?"
+  }
+}

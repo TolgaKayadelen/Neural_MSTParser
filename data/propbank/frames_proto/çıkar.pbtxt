@@ -1,0 +1,28 @@
+frame_id: "çıkar"
+verb {
+  lemma: "çıkar"
+  argument_structure {
+    id: "çıkar.01"
+    sense: "Birinin veya bir şeyin çıkmasını sağlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çıkaran"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "çıkarılan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "nereden çıkarıldığı"
+    }
+    example: "O uzun kınalı saçlarını tülbendinin altından çıkardı."
+  }
+}

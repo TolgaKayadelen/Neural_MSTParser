@@ -1,0 +1,21 @@
+frame_id: "yardımlaş"
+verb {
+  lemma: "yardımlaş"
+  argument_structure {
+    id: "yardımlaş.01"
+    sense: "karşılıklı yardımda bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "yardım eden"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle yardımlaştığı"
+    }
+    example: "Denizciler aralarında, karadaki tarla sahiplerinden çok daha fazla, hem çok daha candan yardımlaşırlar."
+  }
+}

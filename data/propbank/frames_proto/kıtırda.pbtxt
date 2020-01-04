@@ -1,0 +1,14 @@
+frame_id: "kıtırda"
+verb {
+  lemma: "kıtırda"
+  argument_structure {
+    id: "kıtırda.01"
+    sense: "\"Kıtır\" diye ses çıkmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "kıtırdayan şey"
+    }
+    example: "Şoför doğruldu, gerindi, kemikleri kıtırdadı"
+  }
+}

@@ -1,0 +1,23 @@
+frame_id: "xlA"
+verb {
+  lemma: "xlA"
+  argument_structure {
+    id: "xlA.01"
+    sense: "Bir şeyi ismin/sıfatın belirttiği hale getirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "getiren (xleyen)"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "hale getirilen (xlenen)"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "aldığı durum(x)"
+    }
+  }
+}

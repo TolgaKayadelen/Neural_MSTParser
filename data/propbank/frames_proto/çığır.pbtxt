@@ -1,0 +1,22 @@
+frame_id: "çığır"
+verb {
+  lemma: "çığır"
+  argument_structure {
+    id: "çığır"
+    sense: "Çağırmak, seslenmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çığıran kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "çığırdığı kişi/şey"
+    }
+    example: "Gazi Rahman gene türküler çığıracaktır, eski türküleri çığıracaktır."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "gücen"
+verb {
+  lemma: "gücen"
+  argument_structure {
+    id: "gücen.01"
+    sense: "Kırılmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "kırılan kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "kime/neye kırıldığı"
+    }
+    example: "Benim bu işi yapmaktan kaçındığımı sandı ve haklı olarak da gücendi."
+  }
+}

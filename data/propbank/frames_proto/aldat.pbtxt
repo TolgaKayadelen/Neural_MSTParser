@@ -1,0 +1,19 @@
+frame_id: "aldat"
+verb {
+  lemma: "aldat"
+  argument_structure {
+    id: "aldat.01"
+    sense: "Beklenmedik bir davranışla yanıltmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "aldatan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "aldatılan"
+    }
+    example: "Karısını sekreteriyle aldatmış."
+  }
+}

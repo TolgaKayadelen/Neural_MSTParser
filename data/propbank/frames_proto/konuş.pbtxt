@@ -1,0 +1,38 @@
+frame_id: "konuş"
+verb {
+  lemma: "konuş"
+  argument_structure {
+    id: "konuş.01"
+    sense: "Bir konuda karşılıklı söz etmek, sohbet etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "konuşan"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle konuştuğu"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "topic"
+      description: "konuşulan konu"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "topic"
+      description: "konuşulan konu"
+    }
+    argument {
+      number: A3
+      case: UNKNOWN_CASE
+      description: "hangi dilde konuşulduğu"
+    }
+    example: "İşten sonra Nuruosmaniye\'deki İkbal kahvesinde arkadaşlarla şiir ve edebiyat konuşuyoruz."
+  }
+}

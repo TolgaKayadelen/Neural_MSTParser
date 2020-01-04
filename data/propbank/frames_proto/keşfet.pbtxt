@@ -1,0 +1,21 @@
+frame_id: "keşfet"
+verb {
+  lemma: "keşfet"
+  argument_structure {
+    id: "keşfet.01"
+    sense: "Var olduğu bilinmeyen bir şeyi bulmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bulan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "bulunan"
+    }
+    example: "Medya birdenbire Türkeş\'in değerini keşfetti."
+  }
+}

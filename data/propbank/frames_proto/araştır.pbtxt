@@ -1,0 +1,19 @@
+frame_id: "araştır"
+verb {
+  lemma: "araştır"
+  argument_structure {
+    id: "araştır.01"
+    sense: "Birini veya bir şeyi bulmak için bir yeri gözden geçirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "araştıran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "araştırılan konu/şey"
+    }
+    example: "Bu konu daha önce çokça araştırılmış."
+  }
+}

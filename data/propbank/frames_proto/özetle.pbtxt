@@ -1,0 +1,24 @@
+frame_id: "özetle"
+verb {
+  lemma: "özetle"
+  argument_structure {
+    id: "özetle.01"
+    sense: "Bir yazı, konu, söz veya filmin içeriğini daha az sözle anlatmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "özetleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "özetlenen"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "yapılan özet (diye, şeklinde geliyor başına)"
+    }
+    example: "Yergin, görüşlerini şöyle özetledi: \"Bu başarılı sonuca ulaşmamızda birkaç yıldır hasar yönetimi konusundaki yatırımlarımızın ve çalışmalarımızın önemi oldukça fazladır."
+  }
+}

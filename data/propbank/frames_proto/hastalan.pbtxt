@@ -1,0 +1,19 @@
+frame_id: "hastalan"
+verb {
+  lemma: "hastalan"
+  argument_structure {
+    id: "hastalan.01"
+    sense: "Sağlığı bozulmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "hastalanan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "hastalanma sebebi"
+    }
+    example: "Allah bilir ya çocuk üzüntüden hastalandı."
+  }
+}

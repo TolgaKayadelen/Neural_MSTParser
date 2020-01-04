@@ -1,0 +1,27 @@
+frame_id: "kat"
+verb {
+  lemma: "kat"
+  argument_structure {
+    id: "kat.01"
+    sense: "Başka bir şey eklemek, karıştırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "katan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "katılan"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "neye katıldığı"
+    }
+    example: "Sirkeye su kattım."
+  }
+}

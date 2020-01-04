@@ -1,0 +1,21 @@
+frame_id: "kışkırt"
+verb {
+  lemma: "kışkırt"
+  argument_structure {
+    id: "kışkırt.01"
+    sense: "tahrik etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kışkırtan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "kışkırtılan"
+    }
+    example: "Toplumu kışkırtmak niyetindeler."
+  }
+}

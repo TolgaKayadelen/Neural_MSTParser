@@ -1,0 +1,38 @@
+frame_id: "kap"
+verb {
+  lemma: "kap"
+  argument_structure {
+    id: "kap.01"
+    sense: "Çekerek almak, Koparmak, kıstırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çekerek alan kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "aldğı şey"
+    }
+    example: "Evvela tabibin elinden defteri kaparak fırlattım."
+  }
+  argument_structure {
+    id: "kap.02"
+    sense: "Bulaşmış olmak, geçmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kapan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "kaptığı şey"
+    }
+    example: "Bu hastalığı nerden kaptın ?"
+  }
+}

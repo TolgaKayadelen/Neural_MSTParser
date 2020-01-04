@@ -1,0 +1,19 @@
+frame_id: "içer"
+verb {
+  lemma: "içer"
+  argument_structure {
+    id: "içer.01"
+    sense: "İçine almak, içinde bulundurmak, ihtiva etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "içeren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "neyi içerdiği"
+    }
+    example: "Düpedüz tehdit içeren yazıların sayısı da hayli kabarıktı."
+  }
+}

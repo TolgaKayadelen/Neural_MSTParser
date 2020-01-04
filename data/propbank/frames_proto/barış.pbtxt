@@ -1,0 +1,38 @@
+frame_id: "barış"
+verb {
+  lemma: "barış"
+  argument_structure {
+    id: "barış.01"
+    sense: "Uzlaşmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "barışan kişiler"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle barıştığı"
+    }
+    example: "Fakat bir gün barışacaksınız ve onun da kurtulmasına yardım edeceksiniz."
+  }
+  argument_structure {
+    id: "barış.02"
+    sense: "Sevmek, zevk almak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "seven kişi"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "theme"
+      description: "sevilen şey"
+    }
+    example: "Hiçbirini sevmedim, yalnız Enderuni Vasıf Divanı ile barışabildim."
+  }
+}

@@ -1,0 +1,14 @@
+frame_id: "zırla"
+verb {
+  lemma: "zırla"
+  argument_structure {
+    id: "zırla.01"
+    sense: "Zırıldamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "zırlayan"
+    }
+    example: "Bebek zırlayıp duruyor."
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "düşle"
+verb {
+  lemma: "düşle"
+  argument_structure {
+    id: "düşle.01"
+    sense: "Hayal etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "hayal eden"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "hayal edilen"
+    }
+  }
+}

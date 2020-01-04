@@ -1,0 +1,21 @@
+frame_id: "kaşı"
+verb {
+  lemma: "kaşı"
+  argument_structure {
+    id: "kaşı.01"
+    sense: "Deriyi hafifçe ovmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kaşıyan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "kaşıdığı şey"
+    }
+    example: "Baktı ki doktor sakalını kaşıyarak susuyor."
+  }
+}

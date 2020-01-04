@@ -1,0 +1,21 @@
+frame_id: "ele"
+verb {
+  lemma: "ele"
+  argument_structure {
+    id: "ele.01"
+    sense: "Seçmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ayıran/seçen kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "ayrılan/seçilen kişi/şey"
+    }
+    example: "Kurt, ununu elemiş eleğini asmış birine benziyormuş."
+  }
+}

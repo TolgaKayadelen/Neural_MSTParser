@@ -1,0 +1,21 @@
+frame_id: "doğra"
+verb {
+  lemma: "doğra"
+  argument_structure {
+    id: "doğra.01"
+    sense: "Keserek parçalamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kesen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "kesilen şey"
+    }
+    example: "Ekmeği, bir sütçü dükkânının köpürmüş inek sütüyle dolu kâsesine doğrayacağım."
+  }
+}

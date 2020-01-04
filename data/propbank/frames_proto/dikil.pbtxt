@@ -1,0 +1,21 @@
+frame_id: "dikil"
+verb {
+  lemma: "dikil"
+  argument_structure {
+    id: "dikil.01"
+    sense: "Ayakta durmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ayakta duran kişi"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "durulan yer"
+    }
+    example: "Bütün o ağrılı, uzun gecelerimde yatak odasının kapısında dikilir, bana bakardı."
+  }
+}

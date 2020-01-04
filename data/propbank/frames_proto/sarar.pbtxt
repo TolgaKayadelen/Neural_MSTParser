@@ -1,0 +1,14 @@
+frame_id: "sarar"
+verb {
+  lemma: "sarar"
+  argument_structure {
+    id: "sarar.01"
+    sense: "Sarı olmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "sararan"
+    }
+    example: "Sigaradan sararmış dişleriyle dolgun dudaklarını kemiriyor."
+  }
+}

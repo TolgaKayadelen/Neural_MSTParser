@@ -1,0 +1,26 @@
+frame_id: "betimle"
+verb {
+  lemma: "betimle"
+  argument_structure {
+    id: "betimle.01"
+    sense: "Bir nesnenin niteliklerini söz veya yazı ile anlatmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "betimleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "betimlenen"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      description: "betimleme (şeklinde, biçiminde vs...)"
+    }
+    example: "Ana Britannica, 12 Eylül sonrası Atatürkçülüğü de şöyle betimliyor."
+  }
+}

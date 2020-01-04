@@ -1,0 +1,27 @@
+frame_id: "zorla"
+verb {
+  lemma: "zorla"
+  argument_structure {
+    id: "zorla.01"
+    sense: "Birine bir şey yaptırmak amacıyla güç kullanmak, boyun eğdirmeye çalışmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "zorlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "zorlanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "goal"
+      description: "yapmaya zorlandığı iş"
+    }
+    example: "Hükümeti erken genel seçime gitmeye zorladı."
+  }
+}

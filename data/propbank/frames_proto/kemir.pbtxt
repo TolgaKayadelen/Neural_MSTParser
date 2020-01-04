@@ -1,0 +1,21 @@
+frame_id: "kemir"
+verb {
+  lemma: "kemir"
+  argument_structure {
+    id: "kemir.01"
+    sense: "Azar azar koparmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kemiren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "kemirilen"
+    }
+    example: "Sarmaşığın dibini biri beyaz, diğeri kara iki fare kemirip durmaktadır."
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "dolan"
+verb {
+  lemma: "dolan"
+  argument_structure {
+    id: "dolan.01"
+    sense: "Gelişigüzel gezmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "gezen"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "nerede gezdiği"
+    }
+    example: "Kızlarının, gelinlerinin evleri arasında dolanıyor, hep evini, komşularını arıyordu."
+  }
+}

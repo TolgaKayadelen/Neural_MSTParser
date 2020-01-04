@@ -1,0 +1,21 @@
+frame_id: "çakıl"
+verb {
+  lemma: "çakıl"
+  argument_structure {
+    id: "çakıl.01"
+    sense: "Hızla düşüp saplanmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "çakılan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye çakıldığı"
+    }
+    example: "Uçak dağa çakıldı."
+  }
+}

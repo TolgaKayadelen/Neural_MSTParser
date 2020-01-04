@@ -1,0 +1,69 @@
+frame_id: "atla"
+verb {
+  lemma: "atla"
+  argument_structure {
+    id: "atla.01"
+    sense: "Sıçrayarak veya fırlayarak aşmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "atlayan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "nereden atladığı"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye atladığı"
+    }
+    example: "Duvardan atlamak. Hendekten atlamak."
+  }
+  argument_structure {
+    id: "atla.02"
+    sense: "Bazı bölümleri üstünkörü geçmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "atlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "atlanılan kısım"
+    }
+    example: "Ben bu kısmı atlamışım."
+  }
+  argument_structure {
+    id: "atla.03"
+    sense: "Sınıfı okumadan geçmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "sınıfı atlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "atladığı sınıf"
+    }
+    example: "Birinci sınıfı atladı."
+  }
+  argument_structure {
+    id: "atla.04"
+    sense: "Bir işe sonucunu düşünmeden hemen girişmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "atlayan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "atladığı iş"
+    }
+    example: "Sazan gibi atladın hemen bu işe."
+  }
+}

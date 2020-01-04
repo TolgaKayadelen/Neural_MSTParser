@@ -1,0 +1,43 @@
+frame_id: "sun"
+verb {
+  lemma: "sun"
+  argument_structure {
+    id: "sun.01"
+    sense: "Bir büyüğe veya nezaket gereğince bir kimseye bir şeyi vermek, arz etmek, yollamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sunan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "sunulan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime sunulduğu"
+    }
+    example: "yeni bir kartlı ödeme sistemini kullanıma sundu."
+  }
+  argument_structure {
+    id: "sun.02"
+    sense: "Radyoda, televizyonda, bir eğlence yerinde programı takdim etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sunucu"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "sunulan program"
+    }
+    example: "89 yaşındaki aktöre Bacara&Resort Spa\'da düzenlenen gala gecesinde ödülünü aktris Gena Rowlands sundu."
+  }
+}

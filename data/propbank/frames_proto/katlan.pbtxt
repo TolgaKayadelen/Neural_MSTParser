@@ -1,0 +1,21 @@
+frame_id: "katlan"
+verb {
+  lemma: "katlan"
+  argument_structure {
+    id: "katlan.01"
+    sense: "Hoş olmayan bir duruma, güç şartlara dayanmak, tahammül etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "katlanan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "neye katlanıldığı"
+    }
+    example: "Böyle bir yolculuğa katlanabilecek hâlde değildir."
+  }
+}

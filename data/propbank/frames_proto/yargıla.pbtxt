@@ -1,0 +1,19 @@
+frame_id: "yargıla"
+verb {
+  lemma: "yargıla"
+  argument_structure {
+    id: "yargıla.01"
+    sense: "Yargıç, bir karara varmak için davalı ile davacıyı dinleyerek sonuca varmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yargılayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "yargılanan"
+    }
+    example: "Akın arkadaşımız kadınları yargılıyor."
+  }
+}

@@ -1,0 +1,27 @@
+frame_id: "paylaş"
+verb {
+  lemma: "paylaş"
+  argument_structure {
+    id: "paylaş.01"
+    sense: "Aralarında bölüşmek, pay etmek, üleşmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "paylaşan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "paylaşılan"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle paylaştığı"
+    }
+    example: "Gima Alternatif Kanallar Pazarlama Müdürü Cüneyt Yüzak da CRM ile elde ettikleri başarıları katılımcılarla paylaştı."
+  }
+}

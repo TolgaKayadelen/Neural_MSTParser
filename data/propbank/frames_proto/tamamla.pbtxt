@@ -1,0 +1,19 @@
+frame_id: "tamamla"
+verb {
+  lemma: "tamamla"
+  argument_structure {
+    id: "tamamla.01"
+    sense: "Eksiksiz, tamam duruma getirmek, bütünlemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "tamamlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "tamamlanan"
+    }
+    example: "Rehberim sille, tokat hatta asker süngüsü, bir hayli darbe yedikten sonra işini tamamladı."
+  }
+}

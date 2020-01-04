@@ -1,0 +1,21 @@
+frame_id: "belirle"
+verb {
+  lemma: "belirle"
+  argument_structure {
+    id: "belirle.01"
+    sense: "Belirli duruma getirmek, tayin etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "belirleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "belirlenen"
+    }
+    example: "Başına ne geleceğini tamamen tesadüfler belirledi."
+  }
+}

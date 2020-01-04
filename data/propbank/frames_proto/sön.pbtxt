@@ -1,0 +1,15 @@
+frame_id: "sön"
+verb {
+  lemma: "sön"
+  argument_structure {
+    id: "sön.01"
+    sense: "Yanmaz, aydınlatmaz, parlamaz olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "sönen şey"
+    }
+    example: "Son yıldız vadinin üstünde bir yanıp bir sönüyordu."
+  }
+}

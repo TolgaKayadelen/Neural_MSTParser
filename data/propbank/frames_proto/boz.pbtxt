@@ -1,0 +1,38 @@
+frame_id: "boz"
+verb {
+  lemma: "boz"
+  argument_structure {
+    id: "boz.01"
+    sense: "Bir şeyi iş yapamayacak hale getirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bozan kimse/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "bozulan şey"
+    }
+    example: "Bu iki radyo istasyonu birbirini bozuyor."
+  }
+  argument_structure {
+    id: "boz.02"
+    sense: "Aklını yitirecek derecede bir şeye düşkün olmak (mecazi anlam)"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bozan kimse"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile bozduğu"
+    }
+    example: "Adamcağız politika ile bozmuş."
+  }
+}

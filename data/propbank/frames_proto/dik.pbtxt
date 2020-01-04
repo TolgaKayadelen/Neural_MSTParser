@@ -1,0 +1,42 @@
+frame_id: "dik"
+verb {
+  lemma: "dik"
+  argument_structure {
+    id: "dik.01"
+    sense: "Bir cismi dik olarak durdurmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "diken kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "dikilen şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "dikildiği yer"
+    }
+    example: "Bir yere direk dikildi."
+  }
+  argument_structure {
+    id: "dik.02"
+    sense: "Dikiş dikmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "diken"
+    }
+    argument {
+      number: A1
+      case: NOM
+      description: "dikilen şey"
+    }
+    example: "Annem bana yine elbise dikiyor."
+  }
+}

@@ -1,0 +1,61 @@
+frame_id: "ak"
+verb {
+  lemma: "ak"
+  argument_structure {
+    id: "ak.01"
+    sense: "Sıvı maddelerin bir yerden başka bir yere doğru gitmesi"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "akan şey"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden aktığı"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye doğru aktığı"
+    }
+    example: "Eskiden Sakarya, bu köprünün altından akarmış."
+  }
+  argument_structure {
+    id: "ak.02"
+    sense: "Sıvı sızdırmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "akan şey"
+    }
+    example: "Dam akıyor."
+  }
+  argument_structure {
+    id: "ak.03"
+    sense: "Art arda ve toplu olarak gitmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "akan kişi/ler"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden yolculuğa başladıkları"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye doğru gittikleri"
+    }
+    example: "Öfkeli insanlar, el ele, omuz omuza Taksim\'e doğru akıyorlardı."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "sık"
+verb {
+  lemma: "sık"
+  argument_structure {
+    id: "sık.01"
+    sense: "Basınç altına almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sıkan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "sıkılan"
+    }
+    example: "Yalnız kalan kadın titriyor, hıçkırarak kucağındaki yavrusunu sıkıyor"
+  }
+}

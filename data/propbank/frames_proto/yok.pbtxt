@@ -1,0 +1,21 @@
+frame_id: "yok"
+verb {
+  lemma: "yok"
+  argument_structure {
+    id: "yok.01"
+    sense: "Bulunmayan, mevcut olmayan var karşıtı"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "sahip olunmayan şey"
+    }
+    argument {
+      number: A0
+      case: NOM
+      theta_role: ""
+      description: "sahip olmayan kişi"
+    }
+    example: "Hiç işim yok."
+  }
+}

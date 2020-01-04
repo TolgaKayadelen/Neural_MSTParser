@@ -1,0 +1,21 @@
+frame_id: "çalkala"
+verb {
+  lemma: "çalkala"
+  argument_structure {
+    id: "çalkala.01"
+    sense: "Sarsarak karıştırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çalkalayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "çalkalanan"
+    }
+  }
+}

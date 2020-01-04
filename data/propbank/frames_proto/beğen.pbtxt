@@ -1,0 +1,21 @@
+frame_id: "beğen"
+verb {
+  lemma: "beğen"
+  argument_structure {
+    id: "beğen.01"
+    sense: "İyi veya güzel bulmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "beğenen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "beğenilen kişi/şey"
+    }
+    example: "Biz çocuklar evimizi çok beğendik."
+  }
+}

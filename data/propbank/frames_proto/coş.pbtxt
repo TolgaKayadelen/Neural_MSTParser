@@ -1,0 +1,15 @@
+frame_id: "coş"
+verb {
+  lemma: "coş"
+  argument_structure {
+    id: "coş"
+    sense: "İçten içe kaynamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "coşan kimse"
+    }
+    example: "Askerler sevgili efendilerinin yüzünü görür görmez coşuyorlar."
+  }
+}

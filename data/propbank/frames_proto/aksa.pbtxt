@@ -1,0 +1,26 @@
+frame_id: "aksa"
+verb {
+  lemma: "aksa"
+  argument_structure {
+    id: "aksa.01"
+    sense: "Hafifçe topallamak."
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "aksayan şey"
+    }
+    example: "Kızımın sol ayağı aksıyor."
+  }
+  argument_structure {
+    id: "aksa.02"
+    sense: "Bir iş gereği gibi yürümemek, geri kalmak."
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "aksayan şey"
+    }
+    example: "İşler yine aksadı."
+  }
+}

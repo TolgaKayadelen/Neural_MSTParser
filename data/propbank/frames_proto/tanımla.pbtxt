@@ -1,0 +1,24 @@
+frame_id: "tanımla"
+verb {
+  lemma: "tanımla"
+  argument_structure {
+    id: "tanımla.01"
+    sense: "Bir kavramın niteliklerini eksiksiz olarak belirtmek ve açıklamak, tarif etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "tanımlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "tanımlanan"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      description: "tanım / nasıl tanımlandığı (diye ile birlikte genelde)"
+    }
+    example: "Çok güzel bir cümleyle beni \"serçe bilekli, aslan yürekli\" diye tanımladı."
+  }
+}

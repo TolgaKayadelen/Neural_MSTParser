@@ -1,0 +1,21 @@
+frame_id: "evlen"
+verb {
+  lemma: "evlen"
+  argument_structure {
+    id: "evlen.01"
+    sense: "Erkekle kadın, aile kurmak için yasaya uygun olarak birleşmek, izdivaç etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "evlenen"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "evlenilen"
+    }
+    example: "Öyle olmasa Musa ile evlenmez, talipleri içinde en beğendiği İsa\'nın İstanbul\'dan dönmesini beklerdi."
+  }
+}

@@ -1,0 +1,15 @@
+frame_id: "öl"
+verb {
+  lemma: "öl"
+  argument_structure {
+    id: "öl.01"
+    sense: "hayatı sona ermek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "ölen"
+    }
+    example: "Şerefli insanlar olarak yaşayacak, şerefli insanlar olarak öleceğiz"
+  }
+}

@@ -1,0 +1,26 @@
+frame_id: "boya"
+verb {
+  lemma: "boya"
+  argument_structure {
+    id: "boya.01"
+    sense: "Renk vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "boyayan kimse/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "boyanan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "neye boyandığı"
+    }
+    example: "Rastıkla, yanağındaki beni de boyadı."
+  }
+}

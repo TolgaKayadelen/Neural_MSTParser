@@ -1,0 +1,19 @@
+frame_id: "yitir"
+verb {
+  lemma: "yitir"
+  argument_structure {
+    id: "yitir.01"
+    sense: "kaybetmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "kaybeden"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "kaybedilen"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "anlaş"
+verb {
+  lemma: "anlaş"
+  argument_structure {
+    id: "anlaş.01"
+    sense: "İyi ilişkileri olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "anlaşan"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle anlaştığı"
+    }
+    example: "Çok iyi anlaştılar."
+  }
+}

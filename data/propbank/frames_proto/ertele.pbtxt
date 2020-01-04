@@ -1,0 +1,21 @@
+frame_id: "ertele"
+verb {
+  lemma: "ertele"
+  argument_structure {
+    id: "ertele.01"
+    sense: "Sonraya bırakmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "erteleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "ertelenen"
+    }
+    example: "Biraz da Mine\'nin etkisiyle bu soruyu yanıtlamayı erteledim"
+  }
+}

@@ -1,0 +1,22 @@
+frame_id: "mırıldan"
+verb {
+  lemma: "mırıldan"
+  argument_structure {
+    id: "mırıldan.01"
+    sense: "Alçak sesle şarkı söylemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "mırıldanan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "mırıldanılan şey"
+    }
+    example: "Eve dönünce yatakta uyuyuncaya kadar hep o şarkıları mırıldanıyordu"
+  }
+}

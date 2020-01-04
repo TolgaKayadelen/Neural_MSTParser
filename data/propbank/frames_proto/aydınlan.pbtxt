@@ -1,0 +1,14 @@
+frame_id: "aydınlan"
+verb {
+  lemma: "aydınlan"
+  argument_structure {
+    id: "aydınlan.01"
+    sense: "Aydınlık olmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "aydınlanan"
+    }
+    example: "Ve o anda herşey aydınlandı."
+  }
+}

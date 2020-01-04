@@ -1,0 +1,19 @@
+frame_id: "oyala"
+verb {
+  lemma: "oyala"
+  argument_structure {
+    id: "oyala.01"
+    sense: "Belirli bir süre birinin dikkat ve ilgisini başka bir şey üzerine çekmek, meşgul etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "oyalayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "oyalanan"
+    }
+    example: "Ben gelene kadar kardeşini oyala."
+  }
+}

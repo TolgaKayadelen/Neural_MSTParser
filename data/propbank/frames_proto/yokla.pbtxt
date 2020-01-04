@@ -1,0 +1,20 @@
+frame_id: "yokla"
+verb {
+  lemma: "yokla"
+  argument_structure {
+    id: "yokla.01"
+    sense: "Kontrol etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yoklayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "yoklanan"
+    }
+    example: "Beni bir yokladı."
+  }
+}

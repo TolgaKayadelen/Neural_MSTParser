@@ -1,0 +1,27 @@
+frame_id: "kullan"
+verb {
+  lemma: "kullan"
+  argument_structure {
+    id: "kullan.01"
+    sense: "Bir şeyden belli bir amaçla yararlanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kullanan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "kullanılan şey"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "goal"
+      description: "ne amaçla/nerede kullanıldığı"
+    }
+    example: "Parmaklarının arasındaki mendili eskiyinceye kadar kullandığın hiç oldu mu?"
+  }
+}

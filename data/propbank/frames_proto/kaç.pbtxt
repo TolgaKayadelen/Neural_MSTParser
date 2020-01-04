@@ -1,0 +1,133 @@
+frame_id: "kaç"
+verb {
+  lemma: "kaç"
+  argument_structure {
+    id: "kaç.01"
+    sense: "Saklanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "saklanan"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "saklandığı yer"
+    }
+    argument {
+      number: A3
+      case: ABL
+      description: "kimden/neden saklanıldığı"
+    }
+    example: "Bir tehlike sezdiğin anda hemen eve kaçarsın."
+  }
+  argument_structure {
+    id: "kaç.02"
+    sense: "Firar etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "firar eden"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden kaçtığı"
+    }
+    example: "Silahını hatta başındaki şapkasını bırakıp kaçıyor."
+  }
+  argument_structure {
+    id: "kaç.03"
+    sense: "Kaçınmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kaçınan kişi"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "kaçındığı şey"
+    }
+    example: "Ben zahmetten kaçmam."
+  }
+  argument_structure {
+    id: "kaç.04"
+    sense: "İpi kopmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "ipi kopan şey"
+    }
+    example: "Çorabım kaçtı."
+  }
+  argument_structure {
+    id: "kaç.05"
+    sense: "Girmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "giren şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "girdiği yer"
+    }
+    example: "Kulağına su kaçmış."
+  }
+  argument_structure {
+    id: "kaç.06"
+    sense: "Yok olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yok olan şey"
+    }
+    example: "Rahatı kaçtı."
+  }
+  argument_structure {
+    id: "kaç.07"
+    sense: "Andırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "benzeyen şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "theme"
+      description: "benzediği şey"
+    }
+    example: "Bu mavi yeşile kaçıyor."
+  }
+  argument_structure {
+    id: "kaç.08"
+    sense: "Olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "olan"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "attribute"
+      description: "ne olduğu"
+    }
+    example: "Buraya bu muhabbet soğuk kaçtı."
+  }
+}

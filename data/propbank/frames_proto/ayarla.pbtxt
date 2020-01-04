@@ -1,0 +1,47 @@
+frame_id: "ayarla"
+verb {
+  lemma: "ayarla"
+  argument_structure {
+    id: "ayarla.01"
+    sense: "Bir ölçünün doğruluğunu belli bir örneğe göre düzeltmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "ayarlayan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "ayarlanan şey"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      description: "referans - neye göre ayarlandığı"
+    }
+    example: "Saati radyoya göre ayarlamalı."
+  }
+  argument_structure {
+    id: "ayarla.02"
+    sense: "İş ayarlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ayarlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "ayarlanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "beneficiary"
+      description: "kimin için/neye ayarlandığı"
+    }
+    example: "O halimi görünce bir komşumuz, Kıbrıslı bir öğretmenin evimize talip olduğunu söyledi ve satışı ayarladı."
+  }
+}

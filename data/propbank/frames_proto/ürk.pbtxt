@@ -1,0 +1,21 @@
+frame_id: "ürk"
+verb {
+  lemma: "ürk"
+  argument_structure {
+    id: "ürk.01"
+    sense: "Bir şeyden korkup sıçramak, tevahhuş etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "ürken"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "stimulus"
+      description: "neyden ürktüğü"
+    }
+    example: "Gölgesinden ürkmüş bir Arap atı gibi şahlandı."
+  }
+}

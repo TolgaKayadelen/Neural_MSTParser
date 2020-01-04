@@ -1,0 +1,21 @@
+frame_id: "gözlemle"
+verb {
+  lemma: "gözlemle"
+  argument_structure {
+    id: "gözlemle.01"
+    sense: "İncelemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "inceleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "incelenen"
+    }
+    example: "Bu niyetle asistanların, doçent ve profesörlerle ilişkilerini gözlemliyordu"
+  }
+}

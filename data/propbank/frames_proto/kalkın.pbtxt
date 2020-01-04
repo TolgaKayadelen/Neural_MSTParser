@@ -1,0 +1,14 @@
+frame_id: "kalkın"
+verb {
+  lemma: "kalkın"
+  argument_structure {
+    id: "kalkın.01"
+    sense: "Zenginleşmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "zenginleşen"
+    }
+    example: "Bu firma batmak üzereyken yeni müdürün çabasıyla kalkındı."
+  }
+}

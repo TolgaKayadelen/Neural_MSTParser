@@ -1,0 +1,21 @@
+frame_id: "dinle"
+verb {
+  lemma: "dinle"
+  argument_structure {
+    id: "dinle.01"
+    sense: "Kulak vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dinleyen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "dinlenen şey/konuşan kişi"
+    }
+    example: "Konağın hesabını sen söylersin, ben de dinlerim."
+  }
+}

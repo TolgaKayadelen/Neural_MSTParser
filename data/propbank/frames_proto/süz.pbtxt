@@ -1,0 +1,37 @@
+frame_id: "süz"
+verb {
+  lemma: "süz"
+  argument_structure {
+    id: "süz.01"
+    sense: "Bir sıvıyı bez veya delikli bir kaptan geçirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "süzen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "süzülen"
+    }
+    example: "Zeytinyağını süzdük."
+  }
+  argument_structure {
+    id: "süz.02"
+    sense: "Gözle inceleyerek dikkatle bakmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "inceleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "incelenen"
+    }
+    example: "Baştan aşağı süzdü beni."
+  }
+}

@@ -1,0 +1,26 @@
+frame_id: "yıka"
+verb {
+  lemma: "yıka"
+  argument_structure {
+    id: "yıka.01"
+    sense: "Su veya başka bir sıvı kullanarak bir şeyi temizlemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yıkayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "yıkanan"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "nerede yıkandığı"
+    }
+    example: "Kazı yıkayıp temizlemişler, sonra da parçalayıp tencereye koymuşlar."
+  }
+}

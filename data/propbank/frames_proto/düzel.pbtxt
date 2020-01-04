@@ -1,0 +1,14 @@
+frame_id: "düzel"
+verb {
+  lemma: "düzel"
+  argument_structure {
+    id: "düzel.01"
+    sense: "Eski iyi durumuna dönmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "düzelen"
+    }
+  }
+}

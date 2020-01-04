@@ -1,0 +1,49 @@
+frame_id: "gez"
+verb {
+  lemma: "gez"
+  argument_structure {
+    id: "gez.01"
+    sense: "Dolaşmak, yürümek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dolaşan kişi"
+    }
+    example: "Kunduralarını çıkarır, satar, yalın ayak gezerdi."
+  }
+  argument_structure {
+    id: "gez.02"
+    sense: "Bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bulunan kişi/şey"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede bulunduğu"
+    }
+    example: "Şapkam burada ne geziyor?"
+  }
+  argument_structure {
+    id: "gez.03"
+    sense: "Bir yerde gezi yapmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "gezen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "gezilen yer"
+    }
+    example: "Geçen yaz Batı Anadolu\'yu gezdik."
+  }
+}

@@ -1,0 +1,79 @@
+frame_id: "ayır"
+verb {
+  lemma: "ayır"
+  argument_structure {
+    id: "ayır.01"
+    sense: "Bölmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ayıran kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "ayrılan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "ayrılma miktarı"
+    }
+    example: "Elmayı dörde ayırdı."
+  }
+  argument_structure {
+    id: "ayır.02"
+    sense: "Saklamak, tahsis etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ayıran kişi"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "theme"
+      description: "ayrılan şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "beneficiary"
+      description: "kime/neye ayrıldığı"
+    }
+    argument {
+      number: A3
+      case: NOM
+      theta_role: "theme"
+      description: "ayrılan şey"
+    }
+    example: "Çocuklara pastadan biraz ayırdım."
+  }
+  argument_structure {
+    id: "ayır.03"
+    sense: "Birbirinden uzaklaştırmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ayıran kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient1"
+      description: "ayrılan kişi"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "patient2"
+      description: "kimden/neyden ayrıldığı"
+    }
+    example: "Karıyı kocasından ayırdılar."
+  }
+}

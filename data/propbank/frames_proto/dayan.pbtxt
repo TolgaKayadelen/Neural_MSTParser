@@ -1,0 +1,45 @@
+frame_id: "dayan"
+verb {
+  lemma: "dayan"
+  argument_structure {
+    id: "dayan.01"
+    sense: "Bir yere yaslanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dayanan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "neye dayandığı"
+    }
+    example: "Köşeye dayanmış bir adam, sanki sızmış gibi görünüyor."
+  }
+  argument_structure {
+    id: "dayan.02"
+    sense: "Karşı durmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "karşı koyan, dayanan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "karşı duyduğu, dayandığı şey"
+    }
+    example: "Haydi biraz daha dayan"
+  }
+  argument_structure {
+    id: "dayan.03"
+    sense: "Uzun süre kullanılmaya uygun olmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "dayanan"
+    }
+    example: "Bu kumaş çok dayandı"
+  }
+}

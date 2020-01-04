@@ -1,0 +1,28 @@
+frame_id: "söyle"
+verb {
+  lemma: "söyle"
+  argument_structure {
+    id: "söyle.01"
+    sense: "Düşündüğünü veya bildiğini sözle anlatmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "anlatan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "topic"
+      description: "anlatılan konu"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime anlatıldığı"
+    }
+    example: "Bu konak için de yine senelerden beri aynı şeyi söylerim."
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "onayla"
+verb {
+  lemma: "onayla"
+  argument_structure {
+    id: "onayla.01"
+    sense: "Yapılan bir işi doğru ve yerinde bularak kabul etmek, tasdik etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "onaylayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "onaylanan"
+    }
+    example: "Babam damat adayını onayladı."
+  }
+}

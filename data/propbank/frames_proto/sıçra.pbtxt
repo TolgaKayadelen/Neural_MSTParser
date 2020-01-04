@@ -1,0 +1,76 @@
+frame_id: "sıçra"
+verb {
+  lemma: "sıçra"
+  argument_structure {
+    id: "sıçra.01"
+    sense: "Hızla yukarıya veya ileriye atılmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "sıçrayan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "nereye sıçradığı"
+    }
+    example: "Çocuk taştan taşa sıçrayarak gitti."
+  }
+  argument_structure {
+    id: "sıçra.02"
+    sense: "Bir yerden başka bir yere geçmek, yayılmak (hastalık gibi)"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "sıçrayan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "yayıldığı yer"
+    }
+    example: "Hatta az önce Birgi\'ye de sıçramıştı satışlar."
+  }
+  argument_structure {
+    id: "sıçra.03"
+    sense: "Ürkerek birdenbire olduğu yerde doğrulur gibi sarsılmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "sıçrayan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "source"
+      description: "nereden sıçradığı"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "stimulus"
+      description: "sıçrama sebebi"
+    }
+    example: "Kızcağız korkudan yerinden sıçradı."
+  }
+  argument_structure {
+    id: "sıçra.04"
+    sense: "Yerinden koparak hızla, parçalar durumunda savrulmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "savrulan şey (çamur, kan)"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye savrulduğu"
+    }
+    example: "Tarlalardan kalkan çamur parçaları etrafa, bazen de üstüme sıçrıyordu."
+  }
+}

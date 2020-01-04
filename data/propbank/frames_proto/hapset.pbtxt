@@ -1,0 +1,24 @@
+frame_id: "hapset"
+verb {
+  lemma: "hapset"
+  argument_structure {
+    id: "hapset.01"
+    sense: "Bir yere kapatmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "hapseden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "hapsedilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye hapsedildiği"
+    }
+    example: "Kediyi odaya hapsetti."
+  }
+}

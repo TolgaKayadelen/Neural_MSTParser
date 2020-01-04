@@ -1,0 +1,15 @@
+frame_id: "uyu"
+verb {
+  lemma: "uyu"
+  argument_structure {
+    id: "uyu.01"
+    sense: "Uyku durumunda olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "uyuyan"
+    }
+    example: "Filmi izlerken uyumuşum."
+  }
+}

@@ -1,0 +1,27 @@
+frame_id: "bahset"
+verb {
+  lemma: "bahset"
+  argument_structure {
+    id: "bahset.01"
+    sense: "Bir konu üzerinde söz söylemek, konuşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "konuşan kişi"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime anlatıldığı"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "topic"
+      description: "bahsedilen konu"
+    }
+    example: "O, yanıma oturarak kara haberlerden, kötü rivayetlerden bahsetti."
+  }
+}

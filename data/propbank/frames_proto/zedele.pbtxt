@@ -1,0 +1,21 @@
+frame_id: "zedele"
+verb {
+  lemma: "zedele"
+  argument_structure {
+    id: "zedele.01"
+    sense: "Hafifçe yaralamak, zarar vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "zedeleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "zedelenen"
+    }
+    example: "Top oynarken bileğini zedelemiş."
+  }
+}

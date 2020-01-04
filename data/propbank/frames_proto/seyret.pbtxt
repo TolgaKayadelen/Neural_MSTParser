@@ -1,0 +1,22 @@
+frame_id: "seyret"
+verb {
+  lemma: "seyret"
+  argument_structure {
+    id: "seyret.01"
+    sense: "Bir olaya karışmadan bakmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bakan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "bakılan"
+    }
+    example: "Manzarayı seyredelim."
+  }
+}

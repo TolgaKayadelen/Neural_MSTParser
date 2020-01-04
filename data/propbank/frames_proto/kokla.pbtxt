@@ -1,0 +1,19 @@
+frame_id: "kokla"
+verb {
+  lemma: "kokla"
+  argument_structure {
+    id: "kokla.01"
+    sense: "koku almak"
+    argument {
+      number: A0
+      case: NOM
+      description: "koklayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "koklanan"
+    }
+    example: "Şu gülü bir koklasan..."
+  }
+}

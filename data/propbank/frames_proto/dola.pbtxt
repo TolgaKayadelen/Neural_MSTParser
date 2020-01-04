@@ -1,0 +1,27 @@
+frame_id: "dola"
+verb {
+  lemma: "dola"
+  argument_structure {
+    id: "dola.01"
+    sense: "Sarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "saran kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "sardığı şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye sardığı"
+    }
+    example: "Kollarını boynuma doladı, dizlerime oturmuştu."
+  }
+}

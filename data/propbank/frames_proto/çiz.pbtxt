@@ -1,0 +1,56 @@
+frame_id: "çiz"
+verb {
+  lemma: "çiz"
+  argument_structure {
+    id: "çiz.01"
+    sense: "Resmini yapmak, resmetmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çizen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çizilen kişi/şey"
+    }
+    example: "Ben sizi yazar olarak değil, insan olarak çizmek istiyorum."
+  }
+  argument_structure {
+    id: "çiz.02"
+    sense: "Çizgiler halinde belirtmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çizen kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "çizilen kişi/şey"
+    }
+    example: "Bir gün yine onlara görünmeden krokiler çiziyordum."
+  }
+  argument_structure {
+    id: "çiz.03"
+    sense: "Çizgi biçiminde yaralamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yaralayan şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "yaralanan kişi/şey"
+    }
+    example: "İğne elimi çizdi."
+  }
+}

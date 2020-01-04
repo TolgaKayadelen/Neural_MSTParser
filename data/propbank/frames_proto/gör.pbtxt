@@ -1,0 +1,171 @@
+frame_id: "gör"
+verb {
+  lemma: "gör"
+  argument_structure {
+    id: "gör.01"
+    sense: "Bir şeyin varlığını algılamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "gören kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "gördüğü şey"
+    }
+    example: "Merdivenin başındaki paravanın arkasında garip bir sahne gördüm."
+  }
+  argument_structure {
+    id: "gör.02"
+    sense: "Yapmak, etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yapan kişi/şey"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yaptığı iş"
+    }
+    example: "Bu makina artık iş görmez."
+  }
+  argument_structure {
+    id: "gör.03"
+    sense: "Birşeye erişmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "erişen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "eriştiği şey"
+    }
+    example: "Sonunda cebi para görmüştü."
+  }
+  argument_structure {
+    id: "gör.04"
+    sense: "Çok değer vermek"
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "değer verilen şey"
+    }
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "değer veren kişi/şey"
+    }
+    example: "Gözü yalnız parayı görüyor."
+  }
+  argument_structure {
+    id: "gör.05"
+    sense: "Yüzü bir yöne doğru olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "gören"
+    }
+    argument {
+      number: A4
+      case: NOM
+      case: ACC
+      theta_role: "destination"
+      description: "görülen"
+    }
+    example: "Ev güneş görüyor."
+  }
+  argument_structure {
+    id: "gör.06"
+    sense: "Bir şey hakkında bir yargıya varmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yargıya varan (gören)"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "yargıya varılan (neyi gördüğü)"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "varılan yargı (nasıl gördüğü)"
+    }
+    example: "Bu işin sonunu iyi görmüyorum."
+  }
+  argument_structure {
+    id: "gör.07"
+    sense: "Kendisine yapılmak, bir davranışla karşılaşmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "experiencer"
+      description: "davranılan kişi (gören)"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "stimulus"
+      description: "davranış (ne gördüğü)"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "davranan kişi (kimden/nereden gördüğü)"
+    }
+    example: "Yarar görmek, kötülük görmek"
+  }
+  argument_structure {
+    id: "gör.08"
+    sense: "Bir işleme uğramak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "gören"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "attribute"
+      description: "ne gördüğü"
+    }
+    example: "Teftiş görmek, tedavi görmek"
+  }
+}
+verb {
+  lemma: "kabul_gör"
+  argument_structure {
+    id: "gör.09"
+    sense: "Kabul edilmek, Onaylanmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "onaylanan"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "nerede kabul gördüğü"
+    }
+    example: "Terzaghi\'nin bu izahı geniş kabul gördü."
+  }
+}

@@ -1,0 +1,33 @@
+frame_id: "dol"
+verb {
+  lemma: "dol"
+  argument_structure {
+    id: "dol.01"
+    sense: "Dolu duruma gelmek"
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "patient"
+      description: "dolu duruma gelen şey"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "nasıl, ne ile dolduğu"
+    }
+  }
+  argument_structure {
+    id: "dol.02"
+    sense: "Bitmek, sona ermek"
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "time"
+      description: "biten şey"
+    }
+    example: "Süresi doldu, emekliye ayrıldı."
+  }
+}

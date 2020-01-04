@@ -1,0 +1,21 @@
+frame_id: "çeliş"
+verb {
+  lemma: "çeliş"
+  argument_structure {
+    id: "çeliş.01"
+    sense: "Düşünce ve davranış birbirini tutmamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "theme1"
+      description: "çelişen"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "theme2"
+      description: "ne ile çeliştiği"
+    }
+    example: "Anlattıklarının hemen tümü birbiriyle çelişiyor."
+  }
+}

@@ -1,0 +1,42 @@
+frame_id: "belle"
+verb {
+  lemma: "belle"
+  argument_structure {
+    id: "belle.01"
+    sense: "Öğrenip akılda tutmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "belleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "bellenilen"
+    }
+    example: "Çarpım tablosunu iyice belledin mi ?"
+  }
+  argument_structure {
+    id: "belle.02"
+    sense: "Sanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sanan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "sanılan"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "attribute"
+      description: "ne sandığı"
+    }
+    example: "Annesi Kadriye Hanım\'ı uzun yıllar ablası belledi."
+  }
+}

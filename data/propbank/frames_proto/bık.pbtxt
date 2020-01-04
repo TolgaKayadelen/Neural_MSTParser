@@ -1,0 +1,21 @@
+frame_id: "bık"
+verb {
+  lemma: "bık"
+  argument_structure {
+    id: "bık.01"
+    sense: "Usanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bıkan kimse"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "source"
+      description: "bıkılan şey"
+    }
+    example: "Kibrit kullanmaktan bıktığımız için bir eski çakmakla gazı yakmaktayız."
+  }
+}

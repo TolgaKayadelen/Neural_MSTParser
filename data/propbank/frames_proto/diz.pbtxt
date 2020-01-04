@@ -1,0 +1,27 @@
+frame_id: "diz"
+verb {
+  lemma: "diz"
+  argument_structure {
+    id: "diz.01"
+    sense: "Bazı nesneleri iplik, tel vb.ne geçirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dizen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "dizilen şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye dizildiği(iplik, tel...)"
+    }
+    example: "Sonra bütün tabakları masalın üzerine dizdiler."
+  }
+}

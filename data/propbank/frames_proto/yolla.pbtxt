@@ -1,0 +1,27 @@
+frame_id: "yolla"
+verb {
+  lemma: "yolla"
+  argument_structure {
+    id: "yolla.01"
+    sense: "Göndermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yollayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "yollanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye/kime yollandığı"
+    }
+    example: "Hekim hademeleri aşağıya yolladı."
+  }
+}

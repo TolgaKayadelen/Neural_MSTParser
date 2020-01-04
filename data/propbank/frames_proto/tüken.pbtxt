@@ -1,0 +1,15 @@
+frame_id: "tüken"
+verb {
+  lemma: "tüken"
+  argument_structure {
+    id: "tüken.01"
+    sense: "Bitmek, sona ermek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "tükenen şey/kişi"
+    }
+    example: "Vaktiyle yaşamış olan büyük musiki ustaları nesillerinin artık tükenmiş olduğu da söylenirdi"
+  }
+}

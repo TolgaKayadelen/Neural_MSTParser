@@ -1,0 +1,19 @@
+frame_id: "bağlan"
+verb {
+  lemma: "bağlan"
+  argument_structure {
+    id: "bağlan.01"
+    sense: "Sevmek, içten bağlı olmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "bağlanan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "bağlanılan"
+    }
+    example: "Ona bağlandığım kadar, hiçbirine bağlanmadım."
+  }
+}

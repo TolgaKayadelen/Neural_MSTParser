@@ -1,0 +1,21 @@
+frame_id: "sokul"
+verb {
+  lemma: "sokul"
+  argument_structure {
+    id: "sokul.01"
+    sense: "Yanaşmak, yaklaşmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "agent"
+      description: "yaklaşan kişi"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "neye sokulduğu"
+    }
+    example: "Aydınlık yüzlü bir kadın, bir mısır pişiricisine sokuldu, taze mısırlardan birisini işaret etti."
+  }
+}

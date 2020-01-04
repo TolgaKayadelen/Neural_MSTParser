@@ -1,0 +1,22 @@
+frame_id: "işlet"
+verb {
+  lemma: "işlet"
+  argument_structure {
+    id: "işlet.01"
+    sense: "yürütmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "işleten"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "işletilen yer"
+    }
+    example: "Bir kırtasiye dükkanı işletiyordu."
+  }
+}

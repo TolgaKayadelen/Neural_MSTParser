@@ -1,0 +1,51 @@
+frame_id: "bağışla"
+verb {
+  lemma: "bağışla"
+  argument_structure {
+    id: "bağışla.01"
+    sense: "Hoşgörmek, affetmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bağışlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "bağışlanan"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      theta_role: "attribute"
+      description: "ne için bağışladığı / suç"
+    }
+    example: "Çocuk elindeki çiçek demetini kumandanın ayağı altına atarak, babamı bağışlayınız, diyordu"
+  }
+  argument_structure {
+    id: "bağışla.02"
+    sense: "Bir mal veya hakkı karşılık beklemeden birine vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "veren"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "verilen şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "beneficiary"
+      description: "kime verildiği"
+    }
+    example: "Ödünç aldığı parayı bile kendinden daha ihtiyaçlısına bağışlayan ancak bir masal adamıdır."
+  }
+}

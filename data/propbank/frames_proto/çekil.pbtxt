@@ -1,0 +1,37 @@
+frame_id: "çekil"
+verb {
+  lemma: "çekil"
+  argument_structure {
+    id: "çekil.01"
+    sense: "Kendini geriye veya bir yana çekmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çekilen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "destination"
+      description: "nereye çekildiği"
+    }
+    example: "Yana çekil bakayım."
+  }
+  argument_structure {
+    id: "çekil.02"
+    sense: "Katılmamak, vazgeçmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "vazgeçen"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "vazgeçtiği şey"
+    }
+    example: "Doping testi sonucu yarışmadan çekilmek zorunda kaldı."
+  }
+}

@@ -1,0 +1,48 @@
+frame_id: "sağla"
+verb {
+  lemma: "sağla"
+  argument_structure {
+    id: "sağla.01"
+    sense: "Bir işin olması için gerekli durumu, şartları hazırlamak, temin etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sağlayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "sağlanan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/neye sağladı"
+    }
+    example: "Bu işbirliği, Taliban\'a meydan okunabilen toprakların artmasını sağladı."
+  }
+}
+verb {
+  lemma: "uyum_sağla"
+  argument_structure {
+    id: "sağla.02"
+    sense: "Çevreye uymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "uyan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "neye uyum sağladığı"
+    }
+    example: "Almanya\'ya uyum sağladılar."
+  }
+}

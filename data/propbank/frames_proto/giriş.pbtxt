@@ -1,0 +1,21 @@
+frame_id: "giriş"
+verb {
+  lemma: "giriş"
+  argument_structure {
+    id: "giriş.01"
+    sense: "Bir işi ele almak, başlamak, kalkışmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "girişen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "girişilen"
+    }
+    example: "Erkek arkadaşları ile sosyal nizam üzerinde sonu gelmeyen tartışmalara girişirdi"
+  }
+}

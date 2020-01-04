@@ -1,0 +1,35 @@
+frame_id: "havalan"
+verb {
+  lemma: "havalan"
+  argument_structure {
+    id: "havalan.01"
+    sense: "Temiz hava alması sağlanmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "havalanan"
+    }
+    example: "Oda biraz havalansın."
+  }
+  argument_structure {
+    id: "havalan.02"
+    sense: "Yerden ayrılıp göğe yükselmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yükselen obje"
+    }
+    example: "Uçak havalandı, geç kaldınız."
+  }
+  argument_structure {
+    id: "havalan.03"
+    sense: "Kibirli, gururlu, çalımlı davranışlarda bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "kibirlenen"
+    }
+    example: "Sen de araba aldın diye pek havalandın."
+  }
+}

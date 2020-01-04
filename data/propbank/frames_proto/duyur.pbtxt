@@ -1,0 +1,23 @@
+frame_id: "duyur"
+verb {
+  lemma: "duyur"
+  argument_structure {
+    id: "duyur.01"
+    sense: "Duymasını sağlamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "duyuran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "neyi duyurduğu"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "kime / neye duyurduğu"
+    }
+  }
+}

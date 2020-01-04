@@ -1,0 +1,42 @@
+frame_id: "sıkıl"
+verb {
+  lemma: "sıkıl"
+  argument_structure {
+    id: "sıkıl.01"
+    sense: "Bıkmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "sıkılan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "stimulus"
+      description: "neyden sıkıldığı"
+    }
+    example: "Sonra bu düşüncesinden de sıkıldı."
+  }
+  argument_structure {
+    id: "sıkıl.02"
+    sense: "Sıkıntıya düşmek"
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "sıkılan"
+    }
+    example: "Canı sıkıldı."
+  }
+  argument_structure {
+    id: "sıkıl.03"
+    sense: "Utanıp çekinmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "sıkılan"
+    }
+    example: "Evde annesi tarafından yeterince azarlanmış olan Burak çok sıkıldı."
+  }
+}

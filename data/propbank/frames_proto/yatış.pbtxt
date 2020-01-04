@@ -1,0 +1,14 @@
+frame_id: "yatış"
+verb {
+  lemma: "yatış"
+  argument_structure {
+    id: "yatış.01"
+    sense: "Sakinleşmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "experiencer"
+      description: "sakinleşen"
+    }
+  }
+}

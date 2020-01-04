@@ -1,0 +1,19 @@
+frame_id: "yetin"
+verb {
+  lemma: "yetin"
+  argument_structure {
+    id: "yetin.01"
+    sense: "Bir şeyi kendisi için yeter bularak daha çoğuna gerek görmemek,"
+    argument {
+      number: A0
+      case: NOM
+      description: "yetinen"
+    }
+    argument {
+      number: A1
+      case: INS
+      description: "ne ile yetinildiği"
+    }
+    example: "Küçük bir başarıyla yetinmezsin sen."
+  }
+}

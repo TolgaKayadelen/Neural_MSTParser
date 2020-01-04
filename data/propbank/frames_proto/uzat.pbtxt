@@ -1,0 +1,25 @@
+frame_id: "uzat"
+verb {
+  lemma: "uzat"
+  argument_structure {
+    id: "uzat.01"
+    sense: "vermek"
+    argument {
+      number: A0
+      case: NOM
+      description: "uzatan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "uzatılan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "kime/nereye uzatıldığı"
+    }
+    example: "Tuzu bana uzatır mısın ?"
+  }
+}

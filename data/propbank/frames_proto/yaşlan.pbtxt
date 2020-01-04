@@ -1,0 +1,14 @@
+frame_id: "yaşlan"
+verb {
+  lemma: "yaşlan"
+  argument_structure {
+    id: "yaşlan.01"
+    sense: "Yaşı ilerlemek, ihtiyarlamak"
+    argument {
+      number: A1
+      case: NOM
+      description: "yaşlanan"
+    }
+    example: "Allah\'ın takdiri bilinmez ama ben seni hayli yaşlanmış görüyorum."
+  }
+}

@@ -1,0 +1,43 @@
+frame_id: "postala"
+verb {
+  lemma: "postala"
+  argument_structure {
+    id: "postala.01"
+    sense: "Postaya vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "postalayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "postalanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye postalandığı"
+    }
+    example: "\"Halk, kendisine ne yapılacağından haberdar olmalı\" diye düşündü ve belgeleri Guardian\'a postaladı."
+  }
+  argument_structure {
+    id: "postala.02"
+    sense: "Herhangi bir sebeple birini yanından uzaklaştırmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "uzaklaştıran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "uzaklaştırılan"
+    }
+    example: "Çok geçmeden biri koluma girdi ve \"Özür dileriz şimdi kadınların alışveriş saati, erkekler için akşam açığız\" deyip beni kibarca postaladı."
+  }
+}

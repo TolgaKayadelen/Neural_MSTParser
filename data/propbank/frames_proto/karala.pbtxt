@@ -1,0 +1,37 @@
+frame_id: "karala"
+verb {
+  lemma: "karala"
+  argument_structure {
+    id: "karala.01"
+    sense: "Boya veya kalemle birtakım şekiller çizmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "karalayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "patient"
+      description: "karalanan"
+    }
+    example: "Deftere birşeyler karalamıştım."
+  }
+  argument_structure {
+    id: "karala.02"
+    sense: "Leke sürmek, kötülük yüklemek, iftira etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "karalayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "karalanan"
+    }
+    example: "İftiralarla ismimi karalamaya hakkınız yok."
+  }
+}

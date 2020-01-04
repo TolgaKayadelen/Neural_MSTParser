@@ -1,0 +1,44 @@
+frame_id: "in"
+verb {
+  lemma: "in"
+  argument_structure {
+    id: "in.01"
+    sense: "Yukarıdan aşağıya gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "inen kişi/şey"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden indiği"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye indiği"
+    }
+    example: "Dağdan kurt indi."
+  }
+  argument_structure {
+    id: "in.02"
+    sense: "Azalmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "azalan şey (sayı)"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye kadar azaldığı"
+    }
+    example: "Sayımız son günlerde bu miktara inmiştir."
+  }
+}

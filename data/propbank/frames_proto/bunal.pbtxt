@@ -1,0 +1,19 @@
+frame_id: "bunal"
+verb {
+  lemma: "bunal"
+  argument_structure {
+    id: "bunal.01"
+    sense: "Çok sıkılmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "bunalan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "neyden bunaldığı"
+    }
+    example: "Karmakarışık düşüncelerden bunaldı."
+  }
+}

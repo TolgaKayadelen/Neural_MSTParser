@@ -1,0 +1,14 @@
+frame_id: "öksür"
+verb {
+  lemma: "öksür"
+  argument_structure {
+    id: "öksür.01"
+    sense: "Öksürmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "öksüren"
+    }
+    example: "Kuru kuru öksürdü."
+  }
+}

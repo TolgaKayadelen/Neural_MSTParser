@@ -1,0 +1,38 @@
+frame_id: "uğraş"
+verb {
+  lemma: "uğraş"
+  argument_structure {
+    id: "uğraş.01"
+    sense: "Bir iş üzerinde sürekli çalışmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "uğraşan"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "theme"
+      description: "uğraşılan iş"
+    }
+    example: "Ekmek dağıtmakla uğraşan yaşlıca bir adama seslendi."
+  }
+  argument_structure {
+    id: "uğraş.02"
+    sense: "Bir işi başarmaya çalışmak, iş edinmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "uğraşan kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "goal"
+      description: "neye uğraştığı"
+    }
+    example: "Bir çekirgeye sigara içirmeye uğraşıyordu"
+  }
+}

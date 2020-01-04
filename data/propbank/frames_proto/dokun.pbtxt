@@ -1,0 +1,21 @@
+frame_id: "dokun"
+verb {
+  lemma: "dokun"
+  argument_structure {
+    id: "dokun.01"
+    sense: "Temas etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dokunan"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "experiencer"
+      description: "nereye dokunduğu"
+    }
+    example: "Bir elektrik zilinin düğmesine dokunduk."
+  }
+}

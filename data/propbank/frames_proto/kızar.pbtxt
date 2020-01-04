@@ -1,0 +1,15 @@
+frame_id: "kızar"
+verb {
+  lemma: "kızar"
+  argument_structure {
+    id: "kızar.01"
+    sense: "Kırmızı veya ona yakın bir renk almak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "kızaran"
+    }
+    example: "Yüzü kızardı, utandı."
+  }
+}

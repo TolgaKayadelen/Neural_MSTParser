@@ -1,0 +1,15 @@
+frame_id: "sürün"
+verb {
+  lemma: "sürün"
+  argument_structure {
+    id: "sürün.01"
+    sense: "Karnı üzerinde sürünerek gitmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sürünen"
+    }
+    example: "İçimize tekrar emniyet geldikten sonra, karnımız üstünde sürünerek Nil\'e, sonra öteki sahile geçtik."
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "dür"
+verb {
+  lemma: "dür"
+  argument_structure {
+    id: "dür.01"
+    sense: "Bir şeyi kıvırıp silindir biçiminde kendi üzerine sarmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "düren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "dürülen"
+    }
+    example: "Kâğıdı dürmek. Halıyı dürmek."
+  }
+}

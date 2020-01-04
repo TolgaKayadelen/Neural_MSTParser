@@ -1,0 +1,15 @@
+frame_id: "hıçkır"
+verb {
+  lemma: "hıçkır"
+  argument_structure {
+    id: "hıçkır.01"
+    sense: "Boğazdan hıçkırık sesi çıkarmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "hıçkıran kişi"
+    }
+    example: "Uçurtmamı isterim, diye hıçkırdı."
+  }
+}

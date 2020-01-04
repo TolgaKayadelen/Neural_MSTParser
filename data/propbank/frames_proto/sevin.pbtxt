@@ -1,0 +1,21 @@
+frame_id: "sevin"
+verb {
+  lemma: "sevin"
+  argument_structure {
+    id: "sevin.01"
+    sense: "mutlu olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "sevinen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "neye sevindiği"
+    }
+    example: "Sınavı geçmene sevindim."
+  }
+}

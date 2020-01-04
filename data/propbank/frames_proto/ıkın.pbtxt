@@ -1,0 +1,15 @@
+frame_id: "ıkın"
+verb {
+  lemma: "ıkın"
+  argument_structure {
+    id: "ıkın.01"
+    sense: "Soluğunu içinde tutarak kendini zorlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "zorlanan kişi"
+    }
+    example: "Sedef doğurmak için ıkınıyordu."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "hatırla"
+verb {
+  lemma: "hatırla"
+  argument_structure {
+    id: "hatırla.01"
+    sense: "Anımsamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "hatırlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "hatırlanan"
+    }
+    example: "İzmir\'e gittiğimiz o günü hatırlıyor musun ?"
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "dur"
+verb {
+  lemma: "dur"
+  argument_structure {
+    id: "dur.01"
+    sense: "Hareketsiz durumda olmak, kalmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "duran kişi/şey"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede durduğu"
+    }
+    example: "Aspirin getirmeyeceğini adı gibi biliyordu çünkü çekmecesinde dokunulmamış bir kutu duruyordu."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "gözetle"
+verb {
+  lemma: "gözetle"
+  argument_structure {
+    id: "gözetle.01"
+    sense: "Birine veya bir şeye gizlice bakmak, dikizlemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "gözetleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "stimulus"
+      description: "gözetlenen"
+    }
+    example: "Arkalarından bakarken, birilerinin de beni gözetlediğini sandım bir an."
+  }
+}

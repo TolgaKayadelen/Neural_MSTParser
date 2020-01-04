@@ -1,0 +1,15 @@
+frame_id: "tüt"
+verb {
+  lemma: "tüt"
+  argument_structure {
+    id: "tüt.01"
+    sense: "Duman veya buhar çıkarmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "tüten"
+    }
+    example: "Ekmeğin dumanı tütüyor."
+  }
+}

@@ -1,0 +1,24 @@
+frame_id: "fısılda"
+verb {
+  lemma: "fısılda"
+  argument_structure {
+    id: "fısılda.01"
+    sense: "Alçak sesle konuşmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "fısıldayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "fısıldanan şey (bazen diye ile birlikte)"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "kime fısıldandığı"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+frame_id: "sev"
+verb {
+  lemma: "sev"
+  argument_structure {
+    id: "sev.01"
+    sense: "Sevgi ve bağlılık duymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "seven"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "stimulus"
+      description: "sevilen"
+    }
+    example: "Çok az lakırtı söylediği için sevdiği arkadaşları bile kendisini iyice anlayamamışlardı."
+  }
+}

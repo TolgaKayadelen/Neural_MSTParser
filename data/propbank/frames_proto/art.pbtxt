@@ -1,0 +1,25 @@
+frame_id: "art"
+verb {
+  lemma: "art"
+  argument_structure {
+    id: "art.01"
+    sense: "Çoğalmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "artan"
+    }
+    example: "O zaman bedava binme olasılığı artardı."
+  }
+  argument_structure {
+    id: "art.02"
+    sense: "Bir miktar geri kalmak"
+    argument {
+      number: A1
+      case: ABL
+      description: "arta kalan şey"
+    }
+    example: "Dolmalardan arttı."
+  }
+}

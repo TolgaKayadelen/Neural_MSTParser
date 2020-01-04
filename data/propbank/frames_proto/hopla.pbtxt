@@ -1,0 +1,15 @@
+frame_id: "hopla"
+verb {
+  lemma: "hopla"
+  argument_structure {
+    id: "hopla.01"
+    sense: "Havaya doğru fırlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "fırlayan kişi/şey"
+    }
+    example: "Birden yüreği hopladı, işte oradaydı."
+  }
+}

@@ -1,0 +1,26 @@
+frame_id: "şarla"
+verb {
+  lemma: "şarla"
+  argument_structure {
+    id: "şarla.01"
+    sense: "Bağırıp çağırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "şarlayan"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      theta_role: "theme"
+      description: "nasıl şarladığı"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime şarladığı"
+    }
+  }
+}

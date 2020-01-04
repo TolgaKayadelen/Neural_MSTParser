@@ -1,0 +1,32 @@
+frame_id: "alçal"
+verb {
+  lemma: "alçal"
+  argument_structure {
+    id: "alçal.01"
+    sense: "Yüksekten aşağı doğru inmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "alçalan"
+    }
+    example: "Rüzgar gece beyaza boyanmış konduların üstüne doğru alçaldı."
+  }
+  argument_structure {
+    id: "alçal.02"
+    sense: "İnsanın değeri azalmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "alçalan"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "extent"
+      description: "alçalma miktarı"
+    }
+    example: "Hemşiremden esirgediğiniz şeyi ben kabul edecek kadar alçalmadım."
+  }
+}

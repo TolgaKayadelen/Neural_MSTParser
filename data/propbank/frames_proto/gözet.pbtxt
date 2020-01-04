@@ -1,0 +1,38 @@
+frame_id: "gözet"
+verb {
+  lemma: "gözet"
+  argument_structure {
+    id: "gözet.01"
+    sense: "Korumak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "koruyan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "korunan kişi/şey"
+    }
+    example: "Büyük kardeşler küçükleri gözetir."
+  }
+  argument_structure {
+    id: "gözet.02"
+    sense: "Beklemek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "bekleyen kişi"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "goal"
+      description: "beklediği şey"
+    }
+    example: "Teklif için uygun bir zaman gözetiyordu."
+  }
+}

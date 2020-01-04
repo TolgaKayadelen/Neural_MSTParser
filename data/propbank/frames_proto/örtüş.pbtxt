@@ -1,0 +1,21 @@
+frame_id: "örtüş"
+verb {
+  lemma: "örtüş"
+  argument_structure {
+    id: "örtüş.01"
+    sense: "Aynı noktalarda ve düzlemlerde kesişmek - işteş"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme1"
+      description: "örtüşen"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "theme2"
+      description: "ne ile örtüştüğü"
+    }
+    example: "Aslında CHP\'nin, vermek istediği mesajlarla seçim sloganları gayet güzel örtüşüyor."
+  }
+}

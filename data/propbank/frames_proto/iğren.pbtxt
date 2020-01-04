@@ -1,0 +1,21 @@
+frame_id: "iğren"
+verb {
+  lemma: "iğren"
+  argument_structure {
+    id: "iğren.01"
+    sense: "Hoşlanmamak, nefret etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "iğrenen"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "stimulus"
+      description: "neyden iğrendiği"
+    }
+    example: "Gördüğüm an iğrendim adamdan."
+  }
+}

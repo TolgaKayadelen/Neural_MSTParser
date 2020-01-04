@@ -1,0 +1,61 @@
+frame_id: "çağır"
+verb {
+  lemma: "çağır"
+  argument_structure {
+    id: "çağır.01"
+    sense: "Davet etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çağıran kimse"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çağrılan kimse"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye çağırıldığı"
+    }
+    example: "O akşam Orhan\'ı yemeğe çağırdı."
+  }
+  argument_structure {
+    id: "çağır.02"
+    sense: "Binmek için bir araç istemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "isteyen kimse"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "istenen araç"
+    }
+    example: "Bir taksi çağırdım."
+  }
+  argument_structure {
+    id: "çağır.03"
+    sense: "Birine seslenmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "seslenen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "seslenilen"
+    }
+    example: "Annem seni çağırdı."
+  }
+}

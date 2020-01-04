@@ -1,0 +1,23 @@
+frame_id: "bula"
+verb {
+  lemma: "bula"
+  argument_structure {
+    id: "bula.01"
+    sense: "Kaplamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "bulayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "bulanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "neye buladığı"
+    }
+  }
+}

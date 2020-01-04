@@ -1,0 +1,19 @@
+frame_id: "ispatla"
+verb {
+  lemma: "ispatla"
+  argument_structure {
+    id: "ispatla.01"
+    sense: "Kanıtlamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "kanıtlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "kanıtlanan"
+    }
+    example: "Daha sonraki olaylar bunu ispatladı"
+  }
+}

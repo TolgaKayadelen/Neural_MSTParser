@@ -1,0 +1,21 @@
+frame_id: "yıl"
+verb {
+  lemma: "yıl"
+  argument_structure {
+    id: "yıl.01"
+    sense: "Bir işten gözü korkup vazgeçmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "vazgeçen"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "stimulus"
+      description: "neden yıldığı"
+    }
+    example: "Düşman bile onun cesaretinden yılmıştı."
+  }
+}

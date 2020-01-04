@@ -1,0 +1,27 @@
+frame_id: "açıkla"
+verb {
+  lemma: "açıkla"
+  argument_structure {
+    id: "açıkla.01"
+    sense: "İzah etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "açıklayıcı"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "topic"
+      description: "açıklanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime açıklanıyor"
+    }
+    example: "Hasan Şaş, bir soru üzerine, Güney Kore\'de futbol oynamayı düşünmediğini açıkladı."
+  }
+}

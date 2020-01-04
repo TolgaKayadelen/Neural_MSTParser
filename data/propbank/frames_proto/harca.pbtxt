@@ -1,0 +1,50 @@
+frame_id: "harca"
+verb {
+  lemma: "harca"
+  argument_structure {
+    id: "harca.01"
+    sense: "Parayı elden çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "harcayan"
+    }
+    argument {
+      number: A3
+      case: ACC
+      theta_role: "asset"
+      description: "harcanan miktar"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "neye/kime harcandığı"
+    }
+    example: "İki maaşımı hastalığına harcadığım talebe, sonbaharla beraber ölmüştü."
+  }
+  argument_structure {
+    id: "harca.02"
+    sense: "Para dışında bir şeyi tüketmek (zaman vb...)"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tüketen kişi"
+    }
+    argument {
+      number: A3
+      case: ACC
+      theta_role: "asset"
+      description: "tüketilen şey (genelde zaman)"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "beneficiary"
+      description: "ne için/neye harcadığı"
+    }
+    example: "Bir bütün günü mutfakta harcayıp çeşitli yemekler yapıyor."
+  }
+}

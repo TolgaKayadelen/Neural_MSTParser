@@ -1,0 +1,32 @@
+frame_id: "damla"
+verb {
+  lemma: "damla"
+  argument_structure {
+    id: "damla.01"
+    sense: "Damla durumunda tane tane düşmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "damlayan şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye damladığı"
+    }
+    example: "Yüzüne bir yerden su damlıyordu"
+  }
+  argument_structure {
+    id: "damla.02"
+    sense: "İçindekini damla damla akıtmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "akıtan şey"
+    }
+    example: "Musluk damlıyor."
+  }
+}

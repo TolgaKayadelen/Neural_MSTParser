@@ -1,0 +1,37 @@
+frame_id: "yüz"
+verb {
+  lemma: "yüz"
+  argument_structure {
+    id: "yüz.01"
+    sense: "Su yüzeyinde veya su içinde ilerlemek, durmak:"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yüzen"
+    }
+    argument {
+      number: A1
+      case: LOC
+      theta_role: "location"
+      description: "nerede yüzüldüğü"
+    }
+    example: "Tahta suda yüzer"
+  }
+  argument_structure {
+    id: "yüz.02"
+    sense: "Derisini çıkarmak, derisini soymak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yüzen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "yüzülen hayvan/şey"
+    }
+  }
+}

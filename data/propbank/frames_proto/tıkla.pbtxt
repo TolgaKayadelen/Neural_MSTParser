@@ -1,0 +1,38 @@
+frame_id: "tıkla"
+verb {
+  lemma: "tıkla"
+  argument_structure {
+    id: "tıkla.01"
+    sense: "Bilgisayarda fare ile düğmeye dokunmak, kliklemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tıklayan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye tıklandığı"
+    }
+    example: "Devam etmek için bağlantıya tıklayınız."
+  }
+  argument_structure {
+    id: "tıkla.02"
+    sense: "Bir yere hafifçe vurarak \"tık\" sesi çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tıklayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "tıklanan"
+    }
+    example: "Girmeden önce kapıyı tıkladı."
+  }
+}

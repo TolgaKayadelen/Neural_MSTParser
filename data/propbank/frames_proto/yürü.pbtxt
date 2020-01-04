@@ -1,0 +1,27 @@
+frame_id: "yürü"
+verb {
+  lemma: "yürü"
+  argument_structure {
+    id: "yürü.01"
+    sense: "Adım atarak ilerlemek, gitmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yürüyen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye yürüdüğü"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "trajectory"
+      description: "nereden yürüdüğü, izlediği yol"
+    }
+    example: "Kenardan kenardan kaleye doğru yürüyordu."
+  }
+}

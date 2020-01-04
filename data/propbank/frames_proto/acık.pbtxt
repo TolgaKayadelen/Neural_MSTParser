@@ -1,0 +1,15 @@
+frame_id: "acık"
+verb {
+  lemma: "acık"
+  argument_structure {
+    id: "acık.01"
+    sense: "Açlık duymak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "experiencer"
+      description: "açlık duyan"
+    }
+    example: "Onların da karnı acıkmış."
+  }
+}

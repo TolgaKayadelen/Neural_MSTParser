@@ -1,0 +1,15 @@
+frame_id: "kıpırda"
+verb {
+  lemma: "kıpırda"
+  argument_structure {
+    id: "kıpırda.01"
+    sense: "Kımıldamak, sürekli ve hafifçe oynamak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "kıpırdayan"
+    }
+    example: "Hasta kıpırdadı."
+  }
+}

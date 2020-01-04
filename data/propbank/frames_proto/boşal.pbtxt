@@ -1,0 +1,15 @@
+frame_id: "boşal"
+verb {
+  lemma: "boşal"
+  argument_structure {
+    id: "boşal.01"
+    sense: "Boş duruma gelmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "boşalan"
+    }
+    example: "Sınıf tamamen boşaldı."
+  }
+}

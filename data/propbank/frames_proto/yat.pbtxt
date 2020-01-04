@@ -1,0 +1,21 @@
+frame_id: "yat"
+verb {
+  lemma: "yat"
+  argument_structure {
+    id: "yat.01"
+    sense: "Uyumak veya dinlenmek için yatağa girmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yatağa giren kişi"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "yatılan yer"
+    }
+    example: "Bu gece nerede yatacağız  ?"
+  }
+}

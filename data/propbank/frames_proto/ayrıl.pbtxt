@@ -1,0 +1,37 @@
+frame_id: "ayrıl"
+verb {
+  lemma: "ayrıl"
+  argument_structure {
+    id: "ayrıl.01"
+    sense: "Ayırma işine konu olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ayrılan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "attribute"
+      description: "neye ayrıldığı"
+    }
+    example: "Emekliye ayrılmak"
+  }
+  argument_structure {
+    id: "ayrıl.02"
+    sense: "Bir yerden, birinden uzaklaşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ayrılan"
+    }
+    argument {
+      number: A3
+      case: ABL
+      description: "nereden ayrıldığı"
+    }
+    example: "Oradan ayrıldı."
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "sınırla"
+verb {
+  lemma: "sınırla"
+  argument_structure {
+    id: "sınırla.01"
+    sense: "Sınırını çizmek, sınırını belirtmek veya belirlemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "sınırlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "sınırlanan"
+    }
+    example: "Testi bu konularla sınırladık."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "yapış"
+verb {
+  lemma: "yapış"
+  argument_structure {
+    id: "yapış.01"
+    sense: "Aralık bırakmayacak biçimde üzerine dokunmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme1"
+      description: "yapışan şey / kişi"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "theme2"
+      description: "nereye/kime yapıştığı"
+    }
+    example: "Islanan tül gömleği pembe vücuduna yapıştı."
+  }
+}

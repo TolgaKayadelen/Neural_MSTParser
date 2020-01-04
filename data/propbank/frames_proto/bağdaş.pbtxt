@@ -1,0 +1,21 @@
+frame_id: "bağdaş"
+verb {
+  lemma: "bağdaş"
+  argument_structure {
+    id: "bağdaş.01"
+    sense: "Anlaşmak, uymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "theme1"
+      description: "bağdaşan"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "theme2"
+      description: "ne ile bağdaştığı"
+    }
+    example: "Gerçekle bağdaşmayan ihtiraslar insanı tiksintiye zorluyor."
+  }
+}

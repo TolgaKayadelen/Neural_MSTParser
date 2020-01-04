@@ -1,0 +1,54 @@
+frame_id: "sil"
+verb {
+  lemma: "sil"
+  argument_structure {
+    id: "sil.01"
+    sense: "Bir şeyin ıslaklığını gidererek kuru duruma getirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "silen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "silinen"
+    }
+    example: "Terlemiş gibi alnını elinin tersiyle sildi."
+  }
+  argument_structure {
+    id: "sil.02"
+    sense: "Üzerine genellikle bir bez sürterek tozlarını, kirlerini almak veya parlatmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "silen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      description: "silinen"
+    }
+    example: "Türküler çağırarak tahta siliyorlar."
+  }
+  argument_structure {
+    id: "sil.03"
+    sense: "Üzerini çizerek atmak, yok etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "silen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "silinen"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "nereden silindiği"
+    }
+    example: "Defterden adını silmişler."
+  }
+}

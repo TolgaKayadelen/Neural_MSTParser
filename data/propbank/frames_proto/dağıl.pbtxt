@@ -1,0 +1,21 @@
+frame_id: "dağıl"
+verb {
+  lemma: "dağıl"
+  argument_structure {
+    id: "dağıl.01"
+    sense: "Toplu durumdayken ayrılıp birbirinden uzaklaşmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "dağılan şey/kişi"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye dağıldığı"
+    }
+    example: "Zaten arkadaşlarımın her biri bir yana dağılmıştı."
+  }
+}

@@ -1,0 +1,33 @@
+frame_id: "ölç"
+verb {
+  lemma: "ölç"
+  argument_structure {
+    id: "ölç.01"
+    sense: "Bir alet yardımıyla miktarını belirlemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ölçen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "ölçülen"
+    }
+    argument {
+      number: A4
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile ölçüldüğü"
+    }
+    argument {
+      number: A3
+      case: NOM
+      theta_role: "extent"
+      description: "ölçüm sonucu (ne kadar olarak ölçüldüğü)"
+    }
+    example: "Boyunu ölçtünüz mü ?"
+  }
+}

@@ -1,0 +1,59 @@
+frame_id: "say"
+verb {
+  lemma: "say"
+  argument_structure {
+    id: "say.01"
+    sense: "Yerine koymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme1"
+      description: "sayılan"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      theta_role: "theme2"
+      description: "neyin yerine konduğu (neye sayıldığı)"
+    }
+    example: "Her çiçekten bal eyledik / Arıya saydılar bizi"
+  }
+  argument_structure {
+    id: "say.02"
+    sense: "Sayısını bulmak için saymak"
+    argument {
+      number: A0
+      case: NOM
+      description: "sayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "sayılan"
+    }
+    example: "Kaç kalem var say bakalım."
+  }
+  argument_structure {
+    id: "say.03"
+    sense: "Hesaba katmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "hesaba katan (sayan)"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "hesaba katılan (sayılan)"
+    }
+    example: "Bundan önce verdiğimi saymıyor musun ?"
+  }
+}

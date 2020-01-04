@@ -1,0 +1,27 @@
+frame_id: "emret"
+verb {
+  lemma: "emret"
+  argument_structure {
+    id: "emret.01"
+    sense: "Buyurmak, emir vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "emreden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "topic"
+      description: "emredilen şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime emredildiği"
+    }
+    example: "Bunu böyle istiyorum ve böyle emrediyorum."
+  }
+}

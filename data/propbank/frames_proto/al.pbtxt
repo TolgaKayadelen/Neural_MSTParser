@@ -1,0 +1,521 @@
+frame_id: "al"
+verb {
+  lemma: "al"
+  argument_structure {
+    id: "al.01"
+    sense: "Bir şeyi ya da kişiyi bulunduğu yerden ayırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "alan kişi/şey"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "alınan"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile alındığı"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden alındığı"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye alındığı"
+    }
+    example: "Sağ elinin çevik bir hareketiyle başındaki tülbendi çekip aldı."
+  }
+  argument_structure {
+    id: "al.02"
+    sense: "Satın almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "alan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "alınan şey"
+    }
+    example: "Marketten süt aldım."
+  }
+  argument_structure {
+    id: "al.03"
+    sense: "Kısaltmak, eksiltmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kısaltan kişi"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden kısalttığı"
+    }
+    example: "Ceketin boyundan aldım."
+  }
+  argument_structure {
+    id: "al.04"
+    sense: "Temizlemek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "temizleyen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "temizlenen yer"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "temizleme aleti"
+    }
+    example: "Karyolanın altını süpürge ile al."
+  }
+  argument_structure {
+    id: "al.05"
+    sense: "İçeri girmesini sağlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "alan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "alınan kişi/şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "alındığı yer"
+    }
+    example: "Delikanlıyı evine almış."
+  }
+  argument_structure {
+    id: "al.06"
+    sense: "Yol gitmek, yol almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "alan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "alınan şey"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "time"
+      description: "aldığı zaman"
+    }
+    example: "O yolu bir saatte alırsınız."
+  }
+  argument_structure {
+    id: "al.07"
+    sense: "Kazanç sağlamak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "alan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "asset"
+      description: "alınan miktar"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "cause"
+      description: "alınma nedeni"
+    }
+    example: "Bir pantolondan beş yüz lira alıyorlar."
+  }
+  argument_structure {
+    id: "al.08"
+    sense: "Kabul etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kabul eden kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "kabul edilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "attribute"
+      description: "kabul edildiği yer"
+    }
+    example: "İki hafta sonra beni işe aldılar."
+  }
+  argument_structure {
+    id: "al.09"
+    sense: "Yer almak, arasında bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yer alan kişi/şey"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "theme"
+      description: "nerede yer aldığı"
+    }
+    example: "Eczacıbaşı Holding üçüncü sırada yer alıyor."
+  }
+  argument_structure {
+    id: "al.10"
+    sense: "Olarak kabul etmek (esas almak, baz almak vb...)"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "alan"
+    }
+    argument {
+      number: A2
+      case: ACC
+      theta_role: "theme"
+      description: "alınan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "attribute"
+      description: "ne almak"
+    }
+    example: "Beşinci madde esas alındığında haksız bulunur."
+  }
+  argument_structure {
+    id: "al.11"
+    sense: "bir duruma bürünmek (pozisyon, duruş almak vb...)"
+    argument {
+      number: A0
+      case: NOM
+      description: "bürünen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "durum"
+    }
+    example: "Kaleci pozisyonunu aldı."
+  }
+}
+verb {
+  lemma: "borç_al"
+  argument_structure {
+    id: "al.12"
+    sense: "Birinden para veya bir şey almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "borç alan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "kimden borç alındığı"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "neyin borç alındığı"
+    }
+    argument {
+      number: A3
+      case: NOM
+      theta_role: "asset"
+      description: "ne kadar borç alındığı"
+    }
+    example: "Zamanında IMF\'den borç aldığımız milyon dolarlara ne oldu ?"
+  }
+}
+verb {
+  lemma: "risk_al"
+  argument_structure {
+    id: "al.13"
+    sense: "Riske girmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "risk alan"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      description: "nasıl  risk aldığı"
+    }
+    example: "Kendini Avrupa\'daki güçlerden ayırarak büyük bir risk aldı."
+  }
+}
+verb {
+  lemma: "akıl_al"
+  argument_structure {
+    id: "al.14"
+    sense: "Danışmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "danışan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "danışılan"
+    }
+    example: "Senden akıl alacak değilim."
+  }
+}
+verb {
+  lemma: "biçim_al"
+  argument_structure {
+    id: "al.15"
+    sense: "Biçimlenmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "biçim alan"
+    }
+    example: "Su bulunduğu kabın biçimini aldı."
+  }
+}
+verb {
+  lemma: "ele_al"
+  argument_structure {
+    id: "al.16"
+    sense: "Bir konuyu görüşmek, incelemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ele alan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "topic"
+      description: "ele alınan konu"
+    }
+    example: "Babacan Batı Trakya\'daki Türk azınlıkları ele aldı."
+  }
+}
+verb {
+  lemma: "hafife_al"
+  argument_structure {
+    id: "al.17"
+    sense: "Küçümsemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "küçümseyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "küçümsenen"
+    }
+    example: "Beni bu kadar hafife alma."
+  }
+}
+verb {
+  lemma: "dikkate_al"
+  argument_structure {
+    id: "al.18"
+    sense: "Hesaba katmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "dikkate alan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "dikkate alınan"
+    }
+    example: "Annenin sözlerini dikkate al."
+  }
+}
+verb {
+  lemma: "nefes_al"
+  argument_structure {
+    id: "al.19"
+    sense: "Havayı ciğerlerine çekmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "nefes alan"
+    }
+  }
+}
+verb {
+  lemma: "göze_al"
+  argument_structure {
+    id: "al.20"
+    sense: "Tehlikeyi önceden kabul etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "göze alan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "tehlike"
+    }
+    example: "Ben herşeyi göze aldım."
+  }
+}
+verb {
+  lemma: "yara_al"
+  argument_structure {
+    id: "al.21"
+    sense: "Yaralanmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "yaralanan"
+    }
+    example: "Sırtımdan yara aldım."
+  }
+}
+verb {
+  lemma: "haber_al"
+  argument_structure {
+    id: "al.22"
+    sense: "Kendisine bildirilmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "haber alan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "haber kaynağı"
+    }
+    example: "Gittiğinden beri ondan haber alamadım."
+  }
+}
+verb {
+  lemma: "duş_al"
+  argument_structure {
+    id: "al.23"
+    sense: "Yıkanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yıkanan"
+    }
+  }
+}
+verb {
+  lemma: "ciddiye_al"
+  argument_structure {
+    id: "al.24"
+    sense: "Önem vermek, inanmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "ciddiye alan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "ciddiye alınan kişi/şey"
+    }
+    example: "Bence söylediklerimi ciddiye almalısın."
+  }
+}
+verb {
+  lemma: "kaleme_al"
+  argument_structure {
+    id: "al.25"
+    sense: "yazmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yazan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "yazılan"
+    }
+    example: "İzlenimlerini kaleme aldı ."
+  }
+}
+verb {
+  lemma: "karar_al"
+  argument_structure {
+    id: "al.26"
+    sense: "karar vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "karar veren"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "topic"
+      description: "karar"
+    }
+    example: "TBMM malum yasayı kaldırma kararı aldı."
+  }
+}

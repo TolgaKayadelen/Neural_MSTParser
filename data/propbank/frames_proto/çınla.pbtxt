@@ -1,0 +1,19 @@
+frame_id: "çınla"
+verb {
+  lemma: "çınla"
+  argument_structure {
+    id: "çınla.01"
+    sense: "Yankı vermek"
+    argument {
+      number: A1
+      case: NOM
+      description: "çınlayan şey / ses"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "nerede çınladığı"
+    }
+    example: "Kulaklarımda mahalle çocuklarının sesleri çınladı."
+  }
+}

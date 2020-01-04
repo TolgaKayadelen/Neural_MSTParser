@@ -1,0 +1,19 @@
+frame_id: "sıfırla"
+verb {
+  lemma: "sıfırla"
+  argument_structure {
+    id: "sıfırla.01"
+    sense: "Sıfıra getirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "sıfırlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "sıfırlanan"
+    }
+    example: "Hesabı sıfırladım babacım."
+  }
+}

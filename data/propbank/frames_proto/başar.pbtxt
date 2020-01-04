@@ -1,0 +1,21 @@
+frame_id: "başar"
+verb {
+  lemma: "başar"
+  argument_structure {
+    id: "başar.01"
+    sense: "Bir işi istenilen biçimde bitirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "başaran kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "başardığı şey"
+    }
+    example: "Bunu bir türlü başaramadım."
+  }
+}

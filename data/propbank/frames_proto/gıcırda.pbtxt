@@ -1,0 +1,14 @@
+frame_id: "gıcırda"
+verb {
+  lemma: "gıcırda"
+  argument_structure {
+    id: "gıcırda.01"
+    sense: "Gıcırtı çıkarmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "gıcırdayan"
+    }
+    example: "Defteri elime alıp şu iki sayfalık yazıyı karaladıktan sonra kapının yavaşça gıcırdadığını işittim"
+  }
+}

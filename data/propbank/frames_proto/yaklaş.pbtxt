@@ -1,0 +1,19 @@
+frame_id: "yaklaş"
+verb {
+  lemma: "yaklaş"
+  argument_structure {
+    id: "yaklaş.01"
+    sense: "aradaki uzaklığı azaltmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yaklaşan şey"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "nereye yaklaşıldığı"
+    }
+    example: "Saat sekiz buçuğa yaklaşıyordu."
+  }
+}

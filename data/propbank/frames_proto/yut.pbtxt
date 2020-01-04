@@ -1,0 +1,21 @@
+frame_id: "yut"
+verb {
+  lemma: "yut"
+  argument_structure {
+    id: "yut.01"
+    sense: "Ağızda bulunan bir şeyi yutağa geçirme"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yutan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "yutulan şey"
+    }
+    example: "Kuruyemişleri birer birer yuttu"
+  }
+}

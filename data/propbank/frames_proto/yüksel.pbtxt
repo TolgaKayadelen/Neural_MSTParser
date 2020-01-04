@@ -1,0 +1,13 @@
+frame_id: "yüksel"
+verb {
+  lemma: "yüksel"
+  argument_structure {
+    id: "yüksel.01"
+    sense: "Yükseğe çıkmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "yükselen"
+    }
+  }
+}

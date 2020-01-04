@@ -1,0 +1,21 @@
+frame_id: "bay"
+verb {
+  lemma: "bay"
+  argument_structure {
+    id: "bay.01"
+    sense: "Can sıkıntısı vermek, sıkmak, bunaltmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "stimulus"
+      description: "bayan kişi"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      theta_role: "experiencer"
+      description: "baydığı kişi"
+    }
+    example: "Beni baydı."
+  }
+}

@@ -1,0 +1,24 @@
+frame_id: "yalvar"
+verb {
+  lemma: "yalvar"
+  argument_structure {
+    id: "yalvar.01"
+    sense: "Birinden ısrarlı bir biçimde bir şey istemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yalvaran"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      description: "yalvarış (genelde diye ile)"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "kime/neye yalvarıldığı"
+    }
+    example: "Mehmet Ali, Güngör\'ün sekreterine adeta yalvardı: \"Durum çok acil, eğer geç kalırsak olayı kaçıracağız, lütfen hemen bağlar mısınız?\""
+  }
+}

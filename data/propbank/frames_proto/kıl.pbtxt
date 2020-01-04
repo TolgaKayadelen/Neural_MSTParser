@@ -1,0 +1,23 @@
+frame_id: "kıl"
+verb {
+  lemma: "kıl"
+  argument_structure {
+    id: "kıl.01"
+    sense: "Yardımcı fiil - olmak, yapmak"
+    argument {
+      number: A_LVB
+      case: UNKNOWN_CASE
+      description: "yardımcı fiil argümanı"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      description: "kılınan"
+    }
+    argument {
+      number: A0
+      case: UNKNOWN_CASE
+      description: "kılan"
+    }
+  }
+}

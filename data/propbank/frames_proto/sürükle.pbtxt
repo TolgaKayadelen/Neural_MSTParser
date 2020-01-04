@@ -1,0 +1,44 @@
+frame_id: "sürükle"
+verb {
+  lemma: "sürükle"
+  argument_structure {
+    id: "sürükle.01"
+    sense: "Bir şeyi yerden kaldırmadan iterek veya çekerek götürmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sürükleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "sürüklenen"
+    }
+    example: "Prenses koluma girdi, sürüklercesine büfeye götürdü."
+  }
+  argument_structure {
+    id: "sürükle.02"
+    sense: "Bir kimseyi, bir işi yapmaya zorlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sürükleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "sürüklenen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "topic"
+      description: "neye/nereye sürüklendiği"
+    }
+    example: "Beni o düğüne sürükleme nolur."
+  }
+}

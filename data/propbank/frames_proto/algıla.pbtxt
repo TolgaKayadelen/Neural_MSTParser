@@ -1,0 +1,24 @@
+frame_id: "algıla"
+verb {
+  lemma: "algıla"
+  argument_structure {
+    id: "algıla.01"
+    sense: "İdrak etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "algılayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "algılanan"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      description: "ne olarak algılandığı"
+    }
+    example: "Toplum da onu bizim gösterdiğimiz şekilde algıladı."
+  }
+}

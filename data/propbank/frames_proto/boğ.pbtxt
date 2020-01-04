@@ -1,0 +1,21 @@
+frame_id: "boğ"
+verb {
+  lemma: "boğ"
+  argument_structure {
+    id: "boğ.01"
+    sense: "Soluk almasını engellemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "boğan kimse/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "boğulan kimse/şey"
+    }
+    example: "Zavallıyı az kalsın gırtlağından yakalayıp boğacaktı."
+  }
+}

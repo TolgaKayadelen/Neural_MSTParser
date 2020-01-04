@@ -1,0 +1,27 @@
+frame_id: "öğret"
+verb {
+  lemma: "öğret"
+  argument_structure {
+    id: "öğret.01"
+    sense: "Bir kimseye bir konuda bilgi ve beceri kazandırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "öğreten"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "topic"
+      description: "öğretilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime öğretildiği"
+    }
+    example: "Matematiği bana babam öğretti."
+  }
+}

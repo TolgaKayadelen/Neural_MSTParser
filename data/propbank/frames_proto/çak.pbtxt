@@ -1,0 +1,44 @@
+frame_id: "çak"
+verb {
+  lemma: "çak"
+  argument_structure {
+    id: "çak.01"
+    sense: "Vurarak sokup yerleştirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çakan kimse"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çakılan şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye çakıldığı"
+    }
+    example: "Çiviyi oraya çakma bence."
+  }
+  argument_structure {
+    id: "çak.02"
+    sense: "Anlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "anlayan ya da başarısız olan kimse"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "topic"
+      description: "anladığı ya da başarısız olduğu konu"
+    }
+    example: "Ay, bu kadın İngilizceden de çakıyor mu?"
+  }
+}

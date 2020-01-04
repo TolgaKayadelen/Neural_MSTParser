@@ -1,0 +1,21 @@
+frame_id: "kız"
+verb {
+  lemma: "kız"
+  argument_structure {
+    id: "kız.01"
+    sense: "Öfkelenmek, sinirlenmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "experiencer"
+      description: "kızan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "stimulus"
+      description: "neye kızdığı"
+    }
+    example: "Ona çok kızıyorum."
+  }
+}

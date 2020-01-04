@@ -1,0 +1,27 @@
+frame_id: "devşir"
+verb {
+  lemma: "devşir"
+  argument_structure {
+    id: "devşir.01"
+    sense: "Toplamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "devşiren"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "devşirilen"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden devşirildiği"
+    }
+  }
+}

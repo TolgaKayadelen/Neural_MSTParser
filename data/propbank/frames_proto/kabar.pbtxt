@@ -1,0 +1,15 @@
+frame_id: "kabar"
+verb {
+  lemma: "kabar"
+  argument_structure {
+    id: "kabar.01"
+    sense: "Niceliği artmak, büyümek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "hacmi büyüyen şey"
+    }
+    example: "Masraf kabardı."
+  }
+}

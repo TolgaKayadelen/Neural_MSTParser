@@ -1,0 +1,19 @@
+frame_id: "yinele"
+verb {
+  lemma: "yinele"
+  argument_structure {
+    id: "yinele.01"
+    sense: "Tekrarlamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yineleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "yinelenen"
+    }
+    example: "Loş alanda gidiyor, geliyor, yineliyordu rolünün bütün sözlerini."
+  }
+}

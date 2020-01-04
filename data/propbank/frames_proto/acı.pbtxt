@@ -1,0 +1,43 @@
+frame_id: "acı"
+verb {
+  lemma: "acı"
+  argument_structure {
+    id: "acı.01"
+    sense: "Tadı acı duruma gelmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "tadı acıyan şey"
+    }
+    example: "Yağ acıdı."
+  }
+  argument_structure {
+    id: "acı.02"
+    sense: "Acılı, ağrılı olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "acılı olan şey"
+    }
+    example: "Nasıl acıdı elim, sopa elimden düştü."
+  }
+  argument_structure {
+    id: "acı.03"
+    sense: "Merhamet etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "acıyan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "stimulus"
+      description: "acınan şey/kimse"
+    }
+    example: "Çekikgöz, temiz giyimli sarhoş beyin gözlerindeki yaşları fark edince ona acıdı."
+  }
+}

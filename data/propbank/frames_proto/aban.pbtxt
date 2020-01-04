@@ -1,0 +1,21 @@
+frame_id: "aban"
+verb {
+  lemma: "aban"
+  argument_structure {
+    id: "aban.01"
+    sense: "Bir yere yaslanmak, dayanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "abanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye/kime abanıldığı"
+    }
+    example: "Kapıdan çıkar çıkmaz yüreğime dağlar taşlar abandı sanki."
+  }
+}

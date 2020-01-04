@@ -1,0 +1,89 @@
+frame_id: "göster"
+verb {
+  lemma: "göster"
+  argument_structure {
+    id: "göster.01"
+    sense: "Görülmesini sağlamak, görmesine yol açmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "gösteren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "gösterilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/neye gösterildiği"
+    }
+    example: "Size kitaplarımı göstereyim."
+  }
+  argument_structure {
+    id: "göster.02"
+    sense: "Yardımcı fiil Etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "gösteren"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "gösterilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/neye gösterdiği"
+    }
+    example: "İtaat göstermek. Dayanışma göstermek."
+  }
+}
+verb {
+  lemma: "özen_göster"
+  argument_structure {
+    id: "göster.03"
+    sense: "İtina etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "itina eden"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "itina edilen şey"
+    }
+  }
+}
+verb {
+  lemma: "yol_göster"
+  argument_structure {
+    id: "göster.04"
+    sense: "Kılavuzluk etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yol gösteren"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "kime yol gösterdiği"
+    }
+    example: "İşaret taşları hayat boyu bize yol gösterdi."
+  }
+}

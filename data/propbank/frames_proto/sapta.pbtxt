@@ -1,0 +1,19 @@
+frame_id: "sapta"
+verb {
+  lemma: "sapta"
+  argument_structure {
+    id: "sapta.01"
+    sense: "Bir şeyi belirgin kılmak, tespit etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "tespit eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "tespit edilen"
+    }
+    example: "Erotik değil ama toplumu pornografiye sürükleyen koşulları saptıyor."
+  }
+}

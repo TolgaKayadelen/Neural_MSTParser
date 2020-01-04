@@ -1,0 +1,44 @@
+frame_id: "ekle"
+verb {
+  lemma: "ekle"
+  argument_structure {
+    id: "ekle.01"
+    sense: "Bir söze ilave yapmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ekleyen"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      theta_role: "topic"
+      description: "eklenen"
+    }
+    example: "Pinhan\'ın bu sözlerden bir şey anlamadığını gördüğünde, \"meyhane\" diye ekledi."
+  }
+  argument_structure {
+    id: "ekle.02"
+    sense: "Bir şeyi ilave etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ekleyen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "eklenen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "eklendiği yer"
+    }
+    example: "Sonra mimarlar yaptıkları her eve bir banyo ekledi ve hamam denilen o masal evi, zarafetli mimarisi, incelikli kültürü, kırk çeşit raconuyla hayattan çekiliverdi."
+  }
+}

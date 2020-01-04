@@ -1,0 +1,21 @@
+frame_id: "parçala"
+verb {
+  lemma: "parçala"
+  argument_structure {
+    id: "parçala.01"
+    sense: "parçalara ayırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "parçalayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "parçalanan şey"
+    }
+    example: "Biraz iyi bakınca gördüm ki kuş, yılanı parçalayıp yiyor."
+  }
+}

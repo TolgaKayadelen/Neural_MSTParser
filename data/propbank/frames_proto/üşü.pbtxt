@@ -1,0 +1,20 @@
+frame_id: "üşü"
+verb {
+  lemma: "üşü"
+  argument_structure {
+    id: "üşü.01"
+    sense: "Soğuğun etkisini duymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "üşüyen"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "stimulus"
+      description: "üşüten / üşüme sebebi"
+    }
+  }
+}

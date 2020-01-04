@@ -1,0 +1,21 @@
+frame_id: "evir"
+verb {
+  lemma: "evir"
+  argument_structure {
+    id: "evir.01"
+    sense: "Döndürmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "döndüren kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "döndürdüğü şey"
+    }
+    example: "Veznedar lirayı aldı, evirdi, çevirdi, dudak büktü."
+  }
+}

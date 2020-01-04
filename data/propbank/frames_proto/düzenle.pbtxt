@@ -1,0 +1,21 @@
+frame_id: "düzenle"
+verb {
+  lemma: "düzenle"
+  argument_structure {
+    id: "düzenle.01"
+    sense: "Yapmak hazırlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yapan, hazırlayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "product"
+      description: "yapılan, hazırlanan"
+    }
+  }
+}

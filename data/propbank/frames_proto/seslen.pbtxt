@@ -1,0 +1,27 @@
+frame_id: "seslen"
+verb {
+  lemma: "seslen"
+  argument_structure {
+    id: "seslen.01"
+    sense: "Bir şey söylemek için sesini çıkarmak, hitap etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "seslenen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "topic"
+      description: "söylenen şey (genelde diye ile birlikte)"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime seslenildiği"
+    }
+    example: "Maalesef teknedeki alet edevatla beceremeyeceğiz bu işi diye seslendi mühendis."
+  }
+}

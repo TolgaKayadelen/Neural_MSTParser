@@ -1,0 +1,14 @@
+frame_id: "kaybol"
+verb {
+  lemma: "kaybol"
+  argument_structure {
+    id: "kaybol.01"
+    sense: "Yitmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "kaybolan"
+    }
+    example: "Kız kaybolduktan sonra aklına geldi babası olduğu"
+  }
+}

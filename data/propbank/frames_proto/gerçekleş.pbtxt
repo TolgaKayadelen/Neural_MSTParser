@@ -1,0 +1,15 @@
+frame_id: "gerçekleş"
+verb {
+  lemma: "gerçekleş"
+  argument_structure {
+    id: "gerçekleş.01"
+    sense: "Gerçek olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "gerçekleşen şey"
+    }
+    example: "Hayallerim gerçekleşti."
+  }
+}

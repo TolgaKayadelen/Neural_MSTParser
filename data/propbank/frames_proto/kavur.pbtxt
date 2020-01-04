@@ -1,0 +1,38 @@
+frame_id: "kavur"
+verb {
+  lemma: "kavur"
+  argument_structure {
+    id: "kavur.01"
+    sense: "kızartarak pişirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kavuran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "kavrulan"
+    }
+    example: "Madenden bir kap içine bunları koyup kavuracağız."
+  }
+  argument_structure {
+    id: "kavur.02"
+    sense: "Çok üzmek, yakmak, mahvetmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "stimulus"
+      description: "üzüntüye sebep olan şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "experiencer"
+      description: "neyi/kimi üzdüğü"
+    }
+    example: "Özlem onu kavurdu."
+  }
+}

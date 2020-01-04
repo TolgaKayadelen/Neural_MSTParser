@@ -1,0 +1,44 @@
+frame_id: "reddet"
+verb {
+  lemma: "reddet"
+  argument_structure {
+    id: "reddet.01"
+    sense: "Verilen veya yapılması istenen bir şeyi kabul etmemek, geri çevirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "reddeden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "reddedilen"
+    }
+    example: "Sonuçta arkadaşlarından bazılarının \"pratikçilik\" olarak isimlendirdikleri sistemi reddetti."
+  }
+  argument_structure {
+    id: "reddet.02"
+    sense: "Aileden olan birini aileden bir kişi olarak saymamak, tanımamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "reddeden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "reddedilen"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "neyden reddedildiği"
+    }
+    example: "Evlatlıktan reddettim, evime koymayacağım."
+  }
+}

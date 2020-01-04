@@ -1,0 +1,21 @@
+frame_id: "bürü"
+verb {
+  lemma: "bürü"
+  argument_structure {
+    id: "bürü"
+    sense: "Sarmak, kaplamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bürüyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "neyi/nereyi bürüdüğü"
+    }
+    example: "Tarlayı otlar bürümüştü."
+  }
+}

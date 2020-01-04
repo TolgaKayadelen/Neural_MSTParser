@@ -1,0 +1,14 @@
+frame_id: "mızıklan"
+verb {
+  lemma: "mızıklan"
+  argument_structure {
+    id: "mızıklan.01"
+    sense: "Çeşitli sebeplerle oyun bozmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "oyun bozan"
+    }
+  }
+}

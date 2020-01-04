@@ -1,0 +1,32 @@
+frame_id: "bit"
+verb {
+  lemma: "bit"
+  argument_structure {
+    id: "bit.01"
+    sense: "Tükenmek, son bulmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "biten şey"
+    }
+    example: "Dün akşam param bitmişti."
+  }
+  argument_structure {
+    id: "bit.02"
+    sense: "Çok sevmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "seven kimse"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "çok sevilen şey"
+    }
+    example: "Ben böyle sese biterim."
+  }
+}

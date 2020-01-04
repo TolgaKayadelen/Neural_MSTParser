@@ -1,0 +1,21 @@
+frame_id: "atlat"
+verb {
+  lemma: "atlat"
+  argument_structure {
+    id: "atlat.01"
+    sense: "Üstesinden gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "atlatan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "stimulus"
+      description: "atlatılan"
+    }
+    example: "Şoku atlatamadım."
+  }
+}

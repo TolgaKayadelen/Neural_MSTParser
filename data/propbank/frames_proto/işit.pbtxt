@@ -1,0 +1,22 @@
+frame_id: "işit"
+verb {
+  lemma: "işit"
+  argument_structure {
+    id: "işit.01"
+    sense: "Duymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "duyan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "stimulus"
+      description: "duyulan şey"
+    }
+    example: "Doktorun sesini işitince koştu, yanakları kırmızı, gözleri parlıyordu."
+  }
+}

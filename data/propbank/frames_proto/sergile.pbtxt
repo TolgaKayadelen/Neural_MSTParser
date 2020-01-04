@@ -1,0 +1,24 @@
+frame_id: "sergile"
+verb {
+  lemma: "sergile"
+  argument_structure {
+    id: "sergile.01"
+    sense: "Bazı şeyleri göstermek, tanıtmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "sergileyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "sergilenen"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "nerede sergilendiği"
+    }
+    example: "Kadınlar bütün mallarını, vitrin yerine kullandıkları pencerelerde sergiliyorlardı."
+  }
+}

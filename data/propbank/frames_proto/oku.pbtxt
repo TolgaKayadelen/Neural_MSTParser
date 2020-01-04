@@ -1,0 +1,65 @@
+frame_id: "oku"
+verb {
+  lemma: "oku"
+  argument_structure {
+    id: "oku.01"
+    sense: "Yazılmış bir şeyi okumak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "okuyan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "okunan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime okunduğu"
+    }
+    example: "Çocuklara kitaptan bir masal okudu."
+  }
+  argument_structure {
+    id: "oku.02"
+    sense: "Meydan okumak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kavgaya çağıran"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "recipient"
+      description: "kavgaya çağırılan"
+    }
+    example: "Topu yerde bir iki kere sektirdikten sonra, hepimize meydan okudu."
+  }
+  argument_structure {
+    id: "oku.03"
+    sense: "Okul okumak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "okuyan"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      description: "okunan"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede okunduğu"
+    }
+    example: "Üçüncü sınıfta okuyorum."
+  }
+}

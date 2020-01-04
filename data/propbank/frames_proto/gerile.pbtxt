@@ -1,0 +1,20 @@
+frame_id: "gerile"
+verb {
+  lemma: "gerile"
+  argument_structure {
+    id: "gerile.01"
+    sense: "Geri gitmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "gerileyen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye gerilediği"
+    }
+  }
+}

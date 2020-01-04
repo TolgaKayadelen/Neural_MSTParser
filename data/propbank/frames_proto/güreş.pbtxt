@@ -1,0 +1,21 @@
+frame_id: "güreş"
+verb {
+  lemma: "güreş"
+  argument_structure {
+    id: "güreş.01"
+    sense: "İki kişi türlü oyunlarla birbirinin sırtını yere getirmeye çalışmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "güreşen"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle güreştiği"
+    }
+    example: "Ama çocuk fırsatını buldu mu, koca öküzün sırtına bile biner, boğanın üstünden atlar, köpeğiyle güreşir."
+  }
+}

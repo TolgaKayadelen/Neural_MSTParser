@@ -1,0 +1,22 @@
+frame_id: "ye"
+verb {
+  lemma: "ye"
+  argument_structure {
+    id: "ye.01"
+    sense: "Ağızda çiğneyerek yutmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yiyen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "patient"
+      description: "yenen şey"
+    }
+    example: "Adam o kadar çabuk yiyor ki hizmetçi ekmek yetiştiremiyor"
+  }
+}

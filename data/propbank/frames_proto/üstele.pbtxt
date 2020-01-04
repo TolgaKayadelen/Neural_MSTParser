@@ -1,0 +1,21 @@
+frame_id: "üstele"
+verb {
+  lemma: "üstele"
+  argument_structure {
+    id: "üstele.01"
+    sense: "Bir düşünce veya istek üzerinde durmak, direnmek, ısrar etmek, tekit etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "üsteleyen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "üstelenen"
+    }
+    example: "Almazlandım gerçi ama üsteleyip elime para bile sıkıştırdı"
+  }
+}

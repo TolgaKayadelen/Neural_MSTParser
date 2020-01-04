@@ -1,0 +1,21 @@
+frame_id: "önle"
+verb {
+  lemma: "önle"
+  argument_structure {
+    id: "önle.01"
+    sense: "engel olmak, geciktirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "engel olan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "engel olunan kişi / felaket"
+    }
+    example: "Afganistan\'daki suikast girişimini ISAF önledi."
+  }
+}

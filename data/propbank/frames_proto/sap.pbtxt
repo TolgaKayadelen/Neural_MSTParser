@@ -1,0 +1,27 @@
+frame_id: "sap"
+verb {
+  lemma: "sap"
+  argument_structure {
+    id: "sap.01"
+    sense: "Yön değiştirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sapan"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden saptığı"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye saptığı"
+    }
+    example: "Ustanın evinden yana saptı"
+  }
+}

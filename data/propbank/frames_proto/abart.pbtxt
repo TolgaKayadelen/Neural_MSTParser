@@ -1,0 +1,21 @@
+frame_id: "abart"
+verb {
+  lemma: "abart"
+  argument_structure {
+    id: "abart"
+    sense: "Bir şeyi olduğundan daha önemli, daha büyük  göstermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "abartan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "abartılan şey/kimse"
+    }
+    example: "Kusura bakmayın ama, dadınız bu temizlik işini pek bir abartıyor."
+  }
+}

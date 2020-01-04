@@ -1,0 +1,15 @@
+frame_id: "dinlen"
+verb {
+  lemma: "dinlen"
+  argument_structure {
+    id: "dinlen.01"
+    sense: "Güç kazanmak için çalışmaya ara vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dinlenen"
+    }
+    example: "Pervin biraz dinlendikten sonra ayağa kalktı."
+  }
+}

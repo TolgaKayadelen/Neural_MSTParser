@@ -1,0 +1,49 @@
+frame_id: "karış"
+verb {
+  lemma: "karış"
+  argument_structure {
+    id: "karış.01"
+    sense: "Birbirinin içine girmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "actor1"
+      description: "karışan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "actor2"
+      description: "ne ile karıştığı"
+    }
+    example: "Araba sallana sallana içim bağrım birbirine karıştı."
+  }
+  argument_structure {
+    id: "karış.02"
+    sense: "Bulanmak, duruluğunu yitirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "patient"
+      description: "karışan"
+    }
+    example: "Aklım karıştı"
+  }
+  argument_structure {
+    id: "karış.03"
+    sense: "Müdahale etmek, burnunu sokmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "müdahele eden (karışan)"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "patient"
+      description: "müdahele ettiği iş/şey/kişi (neye karıştığı)"
+    }
+    example: "Sokakta herkes kadın kıyafetine karışmak hakkını kendinde görürdü."
+  }
+}

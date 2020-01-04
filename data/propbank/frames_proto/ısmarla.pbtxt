@@ -1,0 +1,44 @@
+frame_id: "ısmarla"
+verb {
+  lemma: "ısmarla"
+  argument_structure {
+    id: "ısmarla.01"
+    sense: "Sipariş etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ısmarlayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "ısmarlanan"
+    }
+    example: "Elbise için kumaş ısmarladım."
+  }
+  argument_structure {
+    id: "ısmarla.02"
+    sense: "Emanet etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "emanet eden kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "emanet edilen kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "recipient"
+      description: "kime emanet edildiği"
+    }
+    example: "Baban seni bana ısmarladı."
+  }
+}

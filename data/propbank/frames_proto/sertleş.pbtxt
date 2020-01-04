@@ -1,0 +1,15 @@
+frame_id: "sertleş"
+verb {
+  lemma: "sertleş"
+  argument_structure {
+    id: "sertleş.01"
+    sense: "Sert , güçlü bir durum almak"
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "sertleşen"
+    }
+    example: "İklim sertleşti."
+  }
+}

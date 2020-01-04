@@ -1,0 +1,63 @@
+frame_id: "soy"
+verb {
+  lemma: "soy"
+  argument_structure {
+    id: "soy.01"
+    sense: "Bir şeyin üzerinden kabuk, deri, zar vb.ni çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "soyan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "source"
+      description: "soyulan şey"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile soyduğu"
+    }
+    example: "Takkesini geçirmiş, entarisini kuşanmış, elma soyuyordu."
+  }
+  argument_structure {
+    id: "soy.02"
+    sense: "Birinin üstünde, yanında veya bir yerde bulunan şeyleri çalarak alıp götürmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "soyan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "source"
+      description: "soyulan"
+    }
+    example: "Novi Sad Kent Müzesi\'ne giren 2 hırsız, güvenlik görevlilerini bağlayarak müzeyi soydu."
+  }
+  argument_structure {
+    id: "soy.03"
+    sense: "Birinin giysilerini çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "soyan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "soyulan kişi"
+    }
+    example: "Çocuğu yıkamak için soydu annesi."
+  }
+}

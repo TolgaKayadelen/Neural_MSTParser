@@ -1,0 +1,21 @@
+frame_id: "sıyrıl"
+verb {
+  lemma: "sıyrıl"
+  argument_structure {
+    id: "sıyrıl.01"
+    sense: "Bir yerden veya bir durumdan çıkmak, kurtulmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sıyrılan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "theme"
+      description: "neyden sıyrıldığı"
+    }
+    example: "Bu donukluktan ilk sıyrılan Cemal oldu."
+  }
+}

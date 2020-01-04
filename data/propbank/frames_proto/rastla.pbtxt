@@ -1,0 +1,27 @@
+frame_id: "rastla"
+verb {
+  lemma: "rastla"
+  argument_structure {
+    id: "rastla.01"
+    sense: "Herhangi bir şeyle karşı karşıya gelmek, tesadüf etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "rastlayan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "rastlanan"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede rastlandığı"
+    }
+    example: "Amcama yolda rastladım."
+  }
+}

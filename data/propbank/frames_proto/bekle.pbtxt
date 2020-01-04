@@ -1,0 +1,59 @@
+frame_id: "bekle"
+verb {
+  lemma: "bekle"
+  argument_structure {
+    id: "bekle.01"
+    sense: "Birini ya da birşeyi beklemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bekleyen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "beklenilen kişi/şey"
+    }
+    example: "Ben de seni bekliyordum zaten."
+  }
+  argument_structure {
+    id: "bekle.02"
+    sense: "Ummak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "uman kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "umulan şey"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden beklendiği"
+    }
+    example: "Nikahtan bu kadar keramet bekleme!"
+  }
+  argument_structure {
+    id: "bekle.03"
+    sense: "Korumak"
+    argument {
+      number: A0
+      case: NOM
+      description: "koruyan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "korunan"
+    }
+    example: "Eşyaları bekle."
+  }
+}

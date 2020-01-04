@@ -1,0 +1,21 @@
+frame_id: "birleş"
+verb {
+  lemma: "birleş"
+  argument_structure {
+    id: "birleş.01"
+    sense: "Bütün durumuna gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "patient1"
+      description: "birleşen"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "patient2"
+      description: "ne ile birleştiği"
+    }
+    example: "Kafamda parçalar birbiriyle birleşti."
+  }
+}

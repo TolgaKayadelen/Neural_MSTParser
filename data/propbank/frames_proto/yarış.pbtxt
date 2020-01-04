@@ -1,0 +1,27 @@
+frame_id: "yarış"
+verb {
+  lemma: "yarış"
+  argument_structure {
+    id: "yarış.01"
+    sense: "Üstünlük kazanmak amacıyla bir yarışmaya katılmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yarışan"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle yarışıldığı"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "goal"
+      description: "ne için yarışıldığı - ödül"
+    }
+    example: "Radyolar okunan şiirleri dinleyiciye ulaştırmakta birbiriyle yarıştı."
+  }
+}

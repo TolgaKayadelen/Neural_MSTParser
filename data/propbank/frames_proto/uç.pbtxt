@@ -1,0 +1,38 @@
+frame_id: "uç"
+verb {
+  lemma: "uç"
+  argument_structure {
+    id: "uç.01"
+    sense: "Havada yol almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "uçan"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden uçtuğu"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye uçtuğu"
+    }
+    example: "Paul Fort\'un dizeleriyle avundu, Moskova\'dan Paris\'e uçtu..."
+  }
+  argument_structure {
+    id: "uç.02"
+    sense: "yok olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "yok olan şey"
+    }
+    example: "Rengi birdenbire uçtu."
+  }
+}

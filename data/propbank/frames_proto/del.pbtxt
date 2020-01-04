@@ -1,0 +1,20 @@
+frame_id: "del"
+verb {
+  lemma: "del"
+  argument_structure {
+    id: "del.01"
+    sense: "Delik açmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "delen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "delinen"
+    }
+    example: "Kulağımı deldirdim."
+  }
+}

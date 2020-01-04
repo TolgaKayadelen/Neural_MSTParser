@@ -1,0 +1,13 @@
+frame_id: "doluş"
+verb {
+  lemma: "doluş"
+  argument_structure {
+    id: "doluş.01"
+    sense: "Bir yerde toplanmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "toplanan"
+    }
+  }
+}

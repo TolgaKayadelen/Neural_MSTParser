@@ -1,0 +1,52 @@
+frame_id: "kıvır"
+verb {
+  lemma: "kıvır"
+  argument_structure {
+    id: "kıvır.01"
+    sense: "Herhangi bir şeyi bükmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kıvıran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "kıvrılan"
+    }
+    example: "Belini kıvırıyor."
+  }
+  argument_structure {
+    id: "kıvır.02"
+    sense: "Uydurmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "kıvıran"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "neyi kıvırdığı"
+    }
+    example: "Hadi canım kıvırma."
+  }
+  argument_structure {
+    id: "kıvır.03"
+    sense: "Başarmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "başaran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "başarılan iş"
+    }
+    example: "Helal olsun marangozluğu hemen kıvırdın."
+  }
+}

@@ -1,0 +1,68 @@
+frame_id: "götür"
+verb {
+  lemma: "götür"
+  argument_structure {
+    id: "götür.01"
+    sense: "Taşımak, ulaştırmak veya koymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "taşıyan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "taşınan şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye götürdüğü"
+    }
+    example: "Yemeği götürmek için o an en uygun kişiydim."
+  }
+  argument_structure {
+    id: "götür.02"
+    sense: "Öldürmek, zarar vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "öldüren şey"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "öldürdüğü kişi/şey"
+    }
+    example: "Hastalık çok insan götürdü."
+  }
+  argument_structure {
+    id: "götür.03"
+    sense: "Bir sonuca vardırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "stimulus"
+      description: "götüren kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "experiencer"
+      description: "götürülen kişi/şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "goal"
+      description: "nereye götürüldüğü"
+    }
+    example: "Bitirmeden şunu da söyleyeyim, ahlaka, gerçek ahlaka götüren başlıca yollardan biri de aşktır."
+  }
+}

@@ -1,0 +1,57 @@
+frame_id: "kırp"
+verb {
+  lemma: "kırp"
+  argument_structure {
+    id: "kırp.01"
+    sense: "Parçalara ayırmak, kesmek, kırkmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kırpan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "kırpılan"
+    }
+    example: "Kağıt parçalarını amaçsızca kırpıyorum."
+  }
+  argument_structure {
+    id: "kırp.02"
+    sense: "Göz kırpmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "kırpan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "göz (genelde)"
+    }
+    example: "Bana baktı ve göz kırptı."
+  }
+  argument_structure {
+    id: "kırp.03"
+    sense: "Kesinti yapmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "kesinti yapan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "kesinti kaynağı"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "ne için kesinti yapıldığı"
+    }
+    example: "Her hafta bu dergileri alabilmek için küçücük gündeliğimden bir parçasını, öğle yemeklerinden kırparak biriktiririm."
+  }
+}

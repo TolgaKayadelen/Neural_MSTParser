@@ -1,0 +1,39 @@
+frame_id: "kolla"
+verb {
+  lemma: "kolla"
+  argument_structure {
+    id: "kolla.01"
+    sense: "Olmasını, ortaya çıkmasını beklemek, gözetmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "kollayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "kollanan şey"
+    }
+    example: "Ona yardım etmek için fırsat kolluyordu."
+  }
+  argument_structure {
+    id: "kolla.02"
+    sense: "Korumak, gözetmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "kollayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "kollanan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "neyden kollandığı"
+    }
+    example: "Seni gözümden bile korur, kollarım."
+  }
+}

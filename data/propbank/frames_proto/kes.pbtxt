@@ -1,0 +1,110 @@
+frame_id: "kes"
+verb {
+  lemma: "kes"
+  argument_structure {
+    id: "kes.01"
+    sense: "Bir şeyi ikiye ayırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kesen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "kesilen"
+    }
+    example: "Pastayı kestik."
+  }
+  argument_structure {
+    id: "kes.02"
+    sense: "Hayvanı öldürmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kesen kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "kesilen hayvan"
+    }
+    example: "Bu kurbanda dana keseceğiz."
+  }
+  argument_structure {
+    id: "kes.03"
+    sense: "Verilecek şeyin bir bölümünü alıkoyup vermemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kesen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "kesilen"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden kesildiği"
+    }
+    example: "Ücretinden beş lira kesmişler."
+  }
+  argument_structure {
+    id: "kes.04"
+    sense: "Umudunu kesmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kesen"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "theme"
+      description: "neyden kestiği"
+    }
+    example: "Bu işten umudumu kestim artık."
+  }
+  argument_structure {
+    id: "kes.05"
+    sense: "durdurmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "durduran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "durdurulan iş"
+    }
+    example: "Kes bana bakmayı"
+  }
+  argument_structure {
+    id: "kes.06"
+    sense: "olmak - duruma geçmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "olan (kesen)"
+    }
+    argument {
+      number: A1
+      case: NOM
+      description: "olunan durum (ne kestiği)"
+    }
+    example: "Rol kesme bana."
+  }
+}

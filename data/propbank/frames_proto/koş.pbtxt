@@ -1,0 +1,56 @@
+frame_id: "koş"
+verb {
+  lemma: "koş"
+  argument_structure {
+    id: "koş.01"
+    sense: "İleri doğru hızla gitmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "theme"
+      description: "koşan"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye koştuğu"
+    }
+    example: "Kollarını açmş ona koşuyordu."
+  }
+  argument_structure {
+    id: "koş.02"
+    sense: "Kovalamak, üstüne düşmek, izlemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "üstüne düşen"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "üstüne düşülen"
+    }
+    example: "İki yıldır bu işin peşinden koşuyorum."
+  }
+}
+verb {
+  lemma: "şart_koş"
+  argument_structure {
+    id: "koş.03"
+    sense: "Önceden bir şarta bağlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "şart koşan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "neyi şart koştuğu"
+    }
+    example: "O maddenin yerine getirilmesini şart koştular."
+  }
+}

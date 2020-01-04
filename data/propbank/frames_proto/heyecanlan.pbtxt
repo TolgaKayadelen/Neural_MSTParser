@@ -1,0 +1,15 @@
+frame_id: "heyecanlan"
+verb {
+  lemma: "heyecanlan"
+  argument_structure {
+    id: "heyecanlan.01"
+    sense: "Heyecana gelmek, coşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "heyecanı hisseden kişi"
+    }
+    example: "Davut Usta önce heyecanlandı."
+  }
+}

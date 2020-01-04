@@ -1,0 +1,38 @@
+frame_id: "iliş"
+verb {
+  lemma: "iliş"
+  argument_structure {
+    id: "iliş.01"
+    sense: "Bir şeye hafifçe dokunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ilişen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "ilişilen"
+    }
+    example: "Elim çiçeklere ilişti, vazo devrildi."
+  }
+  argument_structure {
+    id: "iliş.02"
+    sense: "Karışmak, burnunu sokmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ilişen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "ilişilen"
+    }
+    example: "Derginin politikasıyla tam uyuşmasam da burada tek satırıma ilişmediler."
+  }
+}

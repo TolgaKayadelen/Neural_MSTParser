@@ -1,0 +1,14 @@
+frame_id: "sendele"
+verb {
+  lemma: "sendele"
+  argument_structure {
+    id: "sendele.01"
+    sense: "Dengesi bozularak düşecek gibi olmak, adımlarını şaşırmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "sendeleyen"
+    }
+    example: "İkimiz de birbirine sarılmış sarhoşlar gibi bir sağa bir sola sendeliyorduk."
+  }
+}

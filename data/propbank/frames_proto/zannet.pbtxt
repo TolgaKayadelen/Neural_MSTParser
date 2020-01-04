@@ -1,0 +1,19 @@
+frame_id: "zannet"
+verb {
+  lemma: "zannet"
+  argument_structure {
+    id: "zannet.01"
+    sense: "Sanmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "zanneden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "sanılan / zannedilen"
+    }
+    example: "Ada, güneşin içinde kavrulacaklarını zannetti."
+  }
+}

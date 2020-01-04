@@ -1,0 +1,27 @@
+frame_id: "koy"
+verb {
+  lemma: "koy"
+  argument_structure {
+    id: "koy.01"
+    sense: "Bir şeyi bir yere bırakmak, belli bir yere yerleştirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bırakan yerleştiren kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "bırakılan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye bırakıldığı"
+    }
+    example: "Bardağı masanın üstüne koydu."
+  }
+}

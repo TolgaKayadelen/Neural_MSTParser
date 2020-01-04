@@ -1,0 +1,27 @@
+frame_id: "zıpla"
+verb {
+  lemma: "zıpla"
+  argument_structure {
+    id: "zıpla.01"
+    sense: "Yükselmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "zıplayan"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden zıpladığı"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye zıpladığı"
+    }
+    example: "Hayal kurma sınırı yoktu, oradan oraya zıplıyordu."
+  }
+}

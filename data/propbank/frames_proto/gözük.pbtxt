@@ -1,0 +1,14 @@
+frame_id: "gözük"
+verb {
+  lemma: "gözük"
+  argument_structure {
+    id: "gözük.01"
+    sense: "Görünmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "görünen"
+    }
+    example: "Bazen hareketleriyle pek makul, bazen âdetleriyle garip ve gülünç gözükürmüş"
+  }
+}

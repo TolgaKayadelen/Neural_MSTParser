@@ -1,0 +1,18 @@
+frame_id: "dizginle"
+verb {
+  lemma: "dizginle"
+  argument_structure {
+    id: "dizginle.01"
+    sense: "Birinin aşırı davranışlarını önlemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "dizginleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "dizginlenen"
+    }
+  }
+}

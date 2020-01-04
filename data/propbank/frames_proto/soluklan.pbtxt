@@ -1,0 +1,14 @@
+frame_id: "soluklan"
+verb {
+  lemma: "soluklan"
+  argument_structure {
+    id: "soluklan.01"
+    sense: "Dinlenmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "dinlenen"
+    }
+    example: "Durup soluklanmadan aslanlı kapısıyla övünmeye başladı."
+  }
+}

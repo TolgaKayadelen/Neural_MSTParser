@@ -1,0 +1,27 @@
+frame_id: "karşılaştır"
+verb {
+  lemma: "karşılaştır"
+  argument_structure {
+    id: "karşılaştır.01"
+    sense: "Karşılaştırma işini yaptırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "karşılaştıran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient1"
+      description: "neyi karşılaştırdığı"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "patient2"
+      description: "ne ile karşılaştırıldığı"
+    }
+    example: "İlk önce ikisinin el yazısını elde edeceğiz, sonra bu mektupla karşılaştıracağız"
+  }
+}

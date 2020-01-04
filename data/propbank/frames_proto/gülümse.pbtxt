@@ -1,0 +1,13 @@
+frame_id: "gülümse"
+verb {
+  lemma: "gülümse"
+  argument_structure {
+    id: "gülümse.01"
+    sense: "Güler gibi olmak, hafifçe gülmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "gülümseyen"
+    }
+  }
+}

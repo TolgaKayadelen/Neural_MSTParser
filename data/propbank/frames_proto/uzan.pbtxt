@@ -1,0 +1,21 @@
+frame_id: "uzan"
+verb {
+  lemma: "uzan"
+  argument_structure {
+    id: "uzan.01"
+    sense: "Erişmeye çalışmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "uzanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "goal"
+      description: "nereye/neye eriştiği"
+    }
+    example: "Tuza uzanamıyorum."
+  }
+}

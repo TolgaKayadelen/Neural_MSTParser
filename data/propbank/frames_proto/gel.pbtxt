@@ -1,0 +1,322 @@
+frame_id: "gel"
+verb {
+  lemma: "gel"
+  argument_structure {
+    id: "gel.01"
+    sense: "Ulaşmak, varmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ulaşan"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden geldiği"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye geldiği"
+    }
+    example: "Gurbetten gelmişim yorgunum, hancı."
+  }
+  argument_structure {
+    id: "gel.02"
+    sense: "İsabet etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "theme"
+      description: "gelen"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye geldiği"
+    }
+    example: "Attığı top gözüme geldi."
+  }
+  argument_structure {
+    id: "gel.03"
+    sense: "Varlığını sürdürmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yaşamaya devam eden şey"
+    }
+    example: "Eski çağlardan birçok anıt çağımıza kadar gelmiştir."
+  }
+  argument_structure {
+    id: "gel.04"
+    sense: "Belli bir süre dolmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "asset"
+      description: "gelen"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye yaklaştığı/geldiği"
+    }
+    example: "Vakit kuşluğu aşmış, öğleye geliyordu."
+  }
+  argument_structure {
+    id: "gel.05"
+    sense: "İzlemek, takip etmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "takip eden kişi"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "trajectory"
+      description: "hangi yoldan geldiği"
+    }
+    example: "Çocuklar arkadan geliyordu."
+  }
+  argument_structure {
+    id: "gel.06"
+    sense: "Eklenmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "eklenen şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye eklendiği"
+    }
+    example: "Türkçede ekler kelimelerin sonuna gelir."
+  }
+  argument_structure {
+    id: "gel.07"
+    sense: "Dayanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dayanan kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "neye dayandığı"
+    }
+    example: "Birazcık üşütmeye gelmiyor, hemen hastalanıyor."
+  }
+  argument_structure {
+    id: "gel.08"
+    sense: "Doğruluğuna hak vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "hak veren kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "neye hak verdiği"
+    }
+    example: "Dediğime geldiniz mi?"
+  }
+  argument_structure {
+    id: "gel.09"
+    sense: "Etkisini herhangi bir biçimde göstermek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "agent"
+      description: "etki gösteren şey (gelen)"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "experiencer"
+      description: "kime/neye etki gösterdiği (neye geldiği)"
+    }
+    example: "Burası bana çok sıcak geldi."
+  }
+  argument_structure {
+    id: "gel.10"
+    sense: "Kazanılmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "asset"
+      description: "kazanılan miktar (ne geldiği)"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden kazanıldığı (nereden geldiği)"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "kazanan kişi/şey (kime/neye geldiği)"
+    }
+    example: "Çiftlikten onlara ayda beş yüz milyon lira gelir."
+  }
+  argument_structure {
+    id: "gel.11"
+    sense: "Uymak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme1"
+      description: "uyan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "theme2"
+      description: "uyduğu şey/kişi"
+    }
+    example: "Bu ayakkabı sana küçük gelir."
+  }
+  argument_structure {
+    id: "gel.12"
+    sense: "Görünmek, sanılmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "sanılan şey/davranış"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "attribute"
+      description: "nasıl geldiği (ayıp, tanıdık vb...)"
+    }
+    argument {
+      number: A4
+      case: DAT
+      description: "kime/neye geldiği"
+    }
+    example: "Ayıp gelmek, tanıdık gelmek"
+  }
+  argument_structure {
+    id: "gel.13"
+    sense: "Mal olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "malolan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "asset"
+      description: "kaça malolduğu"
+    }
+    example: "Bu bardakların tanesi yüz liraya geldi."
+  }
+  argument_structure {
+    id: "gel.14"
+    sense: "Herhangi bir sırada bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sıralanan kişi/şey"
+    }
+    argument {
+      number: A1
+      case: NOM
+      description: "sırası"
+    }
+    example: "Yarışta birinci geldi."
+  }
+  argument_structure {
+    id: "gel.15"
+    sense: "Yapabilmek, elinden gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yapabilen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "yapabildiği şeyler"
+    }
+  }
+  argument_structure {
+    id: "gel.16"
+    sense: "İçinden gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "istekli olan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "karşılıksız yaptığı şey"
+    }
+    example: "Çok içimden geldi."
+  }
+  argument_structure {
+    id: "gel.17"
+    sense: "Yönelme durumundaki bazı kelimelere getirilerek yapılan birleşik fiil"
+    argument {
+      number: A0
+      case: NOM
+      description: "gelen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "ulaştığı yer"
+    }
+    example: "Yola gelmek. Meydana gelmek. Hatıra gelmek. Akla gelmek"
+  }
+}
+verb {
+  lemma: "anlamına_gel"
+  argument_structure {
+    id: "gel.18"
+    sense: "Anlam bildirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "anlam bildiren"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "ne anlamına geldiği"
+    }
+    example: "Bu, istifa ettiğin anlamına geliyor herhalde ?"
+  }
+}

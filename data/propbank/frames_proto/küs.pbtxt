@@ -1,0 +1,21 @@
+frame_id: "küs"
+verb {
+  lemma: "küs"
+  argument_structure {
+    id: "küs.01"
+    sense: "Darılmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "darılan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "kime/neye darıldığı"
+    }
+    example: "Kocası öldükten sonra hayata küstü."
+  }
+}

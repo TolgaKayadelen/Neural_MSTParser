@@ -1,0 +1,50 @@
+frame_id: "dök"
+verb {
+  lemma: "dök"
+  argument_structure {
+    id: "dök.01"
+    sense: "boşaltmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "boşaltan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "boşaltılan şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye boşaltıldığı"
+    }
+    example: "Sigara tablasını döktü."
+  }
+  argument_structure {
+    id: "dök.02"
+    sense: "Saçmak, serpmek:"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "saçan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "saçtığı şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "recipient"
+      description: "nereye saçtığı"
+    }
+    example: "Tavuklara yem döktü."
+  }
+}

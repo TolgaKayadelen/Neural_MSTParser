@@ -1,0 +1,61 @@
+frame_id: "anla"
+verb {
+  lemma: "anla"
+  argument_structure {
+    id: "anla.01"
+    sense: "Bir şeyin ne demek olduğunu kavramak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "anlayan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "anladığı kişi/şey"
+    }
+    example: "Kabul etmeyeceğini ben daha o gün anlamıştım."
+  }
+  argument_structure {
+    id: "anla.02"
+    sense: "Bir şey hakkında bilgisi bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "anlayan kişi"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "topic"
+      description: "anladığı konu"
+    }
+    example: "Denizcilikten hiç anlamam."
+  }
+  argument_structure {
+    id: "anla.03"
+    sense: "Yarar sağlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "beneficiary"
+      description: "anlayan"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "neyden anladığı"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "extent"
+      description: "ne kadar anladığı"
+    }
+    example: "Bu ilaçtan hiçbir şey anlamadım."
+  }
+}

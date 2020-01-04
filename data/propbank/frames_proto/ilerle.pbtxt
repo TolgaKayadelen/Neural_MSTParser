@@ -1,0 +1,21 @@
+frame_id: "ilerle"
+verb {
+  lemma: "ilerle"
+  argument_structure {
+    id: "ilerle.01"
+    sense: "Bulunduğu yerden daha ileriye gitmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "ilerleyen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye doğru ilerlediği"
+    }
+    example: "Vapur durmadan düdük çalarak ilerliyordu."
+  }
+}

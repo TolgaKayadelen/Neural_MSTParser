@@ -1,0 +1,43 @@
+frame_id: "uyan"
+verb {
+  lemma: "uyan"
+  argument_structure {
+    id: "uyan.01"
+    sense: "Uyku durumundan çıkmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "uyanan"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "uyandıran şey / nasıl uyandığı"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "instrument"
+      description: "uyandıran şey"
+    }
+    example: "Ali bir iki kez onun sesine uyandı."
+  }
+  argument_structure {
+    id: "uyan.02"
+    sense: "Belirmek, ortaya çıkmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "ortaya çıkan şey"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "ortaya çıktığı yer"
+    }
+    example: "Gözüm daldı, hayalimde yine binbir zevk uyandı"
+  }
+}

@@ -1,0 +1,29 @@
+frame_id: "takıl"
+verb {
+  lemma: "takıl"
+  argument_structure {
+    id: "takıl.01"
+    sense: "Bir yerde bir süre kalmak, oyalanmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "takılan"
+    }
+    argument {
+      number: A1
+      case: INS
+      description: "kiminle/ne ile takıldığı"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "neye/kime takıldığı"
+    }
+    argument {
+      number: A3
+      case: LOC
+      description: "nerede takıldığı"
+    }
+    example: "Arkadaşlarla kafede takılıyoruz."
+  }
+}

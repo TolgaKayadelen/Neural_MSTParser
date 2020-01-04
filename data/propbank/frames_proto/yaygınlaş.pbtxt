@@ -1,0 +1,14 @@
+frame_id: "yaygınlaş"
+verb {
+  lemma: "yaygınlaş"
+  argument_structure {
+    id: "yaygınlaş.01"
+    sense: "Yaygın duruma gelmek, yayılmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "yayılan şey"
+    }
+    example: "Anlayana sivrisinek saz düşüncesine dayanan ve tebdil gezen bir şiir yaygınlaştı."
+  }
+}

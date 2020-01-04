@@ -1,0 +1,21 @@
+frame_id: "sulan"
+verb {
+  lemma: "sulan"
+  argument_structure {
+    id: "sulan.01"
+    sense: "İmrendiğini açığa vurmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "sulanan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "sulanılan"
+    }
+    example: "Bizim çiçeklere sulandı."
+  }
+}

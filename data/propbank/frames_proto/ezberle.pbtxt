@@ -1,0 +1,20 @@
+frame_id: "ezberle"
+verb {
+  lemma: "ezberle"
+  argument_structure {
+    id: "ezberle.01"
+    sense: "Bir şeyi olduğu gibi akılda tutmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ezberleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "ezberlenen"
+    }
+  }
+}

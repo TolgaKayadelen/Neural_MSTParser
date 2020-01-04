@@ -1,0 +1,44 @@
+frame_id: "biç"
+verb {
+  lemma: "biç"
+  argument_structure {
+    id: "biç.01"
+    sense: "Belli bir biçim vererek kesmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "biçen kimse"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "biçilen şey"
+    }
+    example: "Tahtayı biçti."
+  }
+  argument_structure {
+    id: "biç.02"
+    sense: "Tahmin etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "biçen kimse"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "biçilen şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "neye/kime biçildiği"
+    }
+    example: "Her denizci gibi onun da yol yol kırışmış yüzüne bir yaş biçmek zordu."
+  }
+}

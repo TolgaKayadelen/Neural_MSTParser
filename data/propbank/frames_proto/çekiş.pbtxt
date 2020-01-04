@@ -1,0 +1,27 @@
+frame_id: "çekiş"
+verb {
+  lemma: "çekiş"
+  argument_structure {
+    id: "çekiş.01"
+    sense: "kapışmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "mücadeleci"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kime karşı mücadele ettiği"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "attribute"
+      description: "ne çekiştikleri"
+    }
+    example: "Birbirleriyle el-ense çekiştiler."
+  }
+}

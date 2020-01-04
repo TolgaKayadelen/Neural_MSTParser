@@ -1,0 +1,24 @@
+frame_id: "koru"
+verb {
+  lemma: "koru"
+  argument_structure {
+    id: "koru.01"
+    sense: "Bir kimseyi veya bir şeyi dış etkilerden, tehlikeden, zor bir durumdan uzak tutmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "koruyan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "korunan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "neyden korunduğu"
+    }
+    example: "Onları yangından korumak için elinden geleni yaptı."
+  }
+}

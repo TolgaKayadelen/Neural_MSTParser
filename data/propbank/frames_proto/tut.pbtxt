@@ -1,0 +1,128 @@
+frame_id: "tut"
+verb {
+  lemma: "tut"
+  argument_structure {
+    id: "tut.01"
+    sense: "Elde bulundurmak, ele almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tutan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "tutulan"
+    }
+    example: "Kucağında kundaklı bir çocuk tutuyordu."
+  }
+  argument_structure {
+    id: "tut.02"
+    sense: "Ayrıcalık tanımak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ayrıcalık tanıyan (tutan)"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "ayrıcalık tanınan (tutulan)"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "ayrı tuttuğu şey (nereden tutulduğu)"
+    }
+    argument {
+      number: A3
+      case: NOM
+      theta_role: "attribute"
+      description: "muaf/ayrı (nasıl tutulduğu)"
+    }
+    example: "Muaf tutmak, ayrı tutmak"
+  }
+  argument_structure {
+    id: "tut.03"
+    sense: "cimriliği tutmak, aksiliği tutmak vb"
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      theta_role: "theme"
+      description: "tutan"
+    }
+    example: "Yine cimriliği tuttu."
+  }
+}
+verb {
+  lemma: "yerini_tut"
+  argument_structure {
+    id: "tut.04"
+    sense: "aratmamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "aratmayan (tutan)"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      theta_role: "attribute"
+      description: "aratmadığı şey (tutulan)"
+    }
+    example: "Kimse onun yerini tutmuyor."
+  }
+}
+verb {
+  lemma: "kafa_tut"
+  argument_structure {
+    id: "tut.05"
+    sense: "iddialı olma"
+    argument {
+      number: A0
+      case: NOM
+      description: "iddialı olan"
+    }
+    example: "Hocasına kafa tutuyor."
+  }
+}
+verb {
+  lemma: "yüz_tut"
+  argument_structure {
+    id: "tut.06"
+    sense: "yaklaşmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yaklaşan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "nereye yaklaştığı"
+    }
+    example: "Bu eserler unutulmaya yüz tutmuş."
+  }
+}
+verb {
+  lemma: "nöbet_tut"
+  argument_structure {
+    id: "tut.07"
+    sense: "durmak, korumak"
+    argument {
+      number: A0
+      case: NOM
+      description: "duran"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "nerede durduğu"
+    }
+    example: "Hastalnınca annem başımda nöbet tutar."
+  }
+}

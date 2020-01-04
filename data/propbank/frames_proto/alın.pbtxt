@@ -1,0 +1,27 @@
+frame_id: "alın"
+verb {
+  lemma: "alın"
+  argument_structure {
+    id: "alın.01"
+    sense: "İncinmek, kırılmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "incinen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "incindiği şey/kişi/davranış"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "stimulus"
+      description: "incindiği şey/kişi/davranış"
+    }
+    example: "Bu laflarından alınmış"
+  }
+}

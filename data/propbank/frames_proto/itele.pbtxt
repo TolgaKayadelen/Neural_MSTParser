@@ -1,0 +1,19 @@
+frame_id: "itele"
+verb {
+  lemma: "itele"
+  argument_structure {
+    id: "itele.01"
+    sense: "Sürekli itmek, arka arkaya itmek, iteklemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "iteleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "itelenen"
+    }
+    example: "Bu, insanı yanlış yollara itelese de bir çıkış noktası bulunmasına omuz verebilir."
+  }
+}

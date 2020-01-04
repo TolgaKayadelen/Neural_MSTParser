@@ -1,0 +1,32 @@
+frame_id: "doğ"
+verb {
+  lemma: "doğ"
+  argument_structure {
+    id: "doğ.01"
+    sense: "Dünyaya gelmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "doğan kişi/şey"
+    }
+    example: "Bu hastanede doğmuşum."
+  }
+  argument_structure {
+    id: "doğ.02"
+    sense: "Ortaya çıkmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ortaya çıkan şey"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "nasıl/ ne ile ortaya çıktığı"
+    }
+    example: "Nezaket denen şey, kadının hanımlaşması ile beraber doğdu."
+  }
+}

@@ -1,0 +1,15 @@
+frame_id: "kahrol"
+verb {
+  lemma: "kahrol"
+  argument_structure {
+    id: "kahrol.01"
+    sense: "Çok üzülmek, içlenmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "kahrolan"
+    }
+    example: "Annesinin ölmesiyle kahroldu."
+  }
+}

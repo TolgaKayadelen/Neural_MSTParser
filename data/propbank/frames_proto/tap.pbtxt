@@ -1,0 +1,19 @@
+frame_id: "tap"
+verb {
+  lemma: "tap"
+  argument_structure {
+    id: "tap.01"
+    sense: "Tutku ile sevmek, bağlanmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "tapan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "tapılan varlık"
+    }
+    example: "Bütün Bucaklıların bana taptıklarını anlıyorsun"
+  }
+}

@@ -1,0 +1,27 @@
+frame_id: "esirge"
+verb {
+  lemma: "esirge"
+  argument_structure {
+    id: "esirge.01"
+    sense: "Korumak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "koruyan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "korunan şey"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "theme2"
+      description: "neyden korunduğu"
+    }
+    example: "Senin genç, temiz ve fedakâr ruhunu bu felaketten esirgemek isterim."
+  }
+}

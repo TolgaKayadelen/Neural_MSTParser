@@ -1,0 +1,21 @@
+frame_id: "çiğne"
+verb {
+  lemma: "çiğne"
+  argument_structure {
+    id: "çiğne.01"
+    sense: "Ezmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çiğneyen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "çiğnenen şey"
+    }
+    example: "On iki milyonluk bir milleti çiğnemek sevdasına kapıldı."
+  }
+}

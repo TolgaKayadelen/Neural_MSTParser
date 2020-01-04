@@ -1,0 +1,35 @@
+frame_id: "büyüt"
+verb {
+  lemma: "büyüt"
+  argument_structure {
+    id: "büyüt.01"
+    sense: "Yetiştirmek, bakmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "büyüten"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "büyütülen"
+    }
+    example: "Beni doğuran, emziren, büyüten anacığımı bunlara değiştim"
+  }
+  argument_structure {
+    id: "büyüt.02"
+    sense: "Abartmak, mübalağa etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "abartan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "abartılan"
+    }
+  }
+}

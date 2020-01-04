@@ -1,0 +1,19 @@
+frame_id: "eleştir"
+verb {
+  lemma: "eleştir"
+  argument_structure {
+    id: "eleştir.01"
+    sense: "Bir yargıyı inceleyerek doğruluk veya yanlışlığını ortaya çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "eleştiren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "eleştirilen"
+    }
+    example: "Toplum ve aile içindeki sorunları çözümleyen veya eleştiren oyunlar daha çok çağdaş Fransız tiyatrosunun etkisiyle yazılmıştır."
+  }
+}

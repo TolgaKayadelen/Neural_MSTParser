@@ -1,0 +1,21 @@
+frame_id: "türe"
+verb {
+  lemma: "türe"
+  argument_structure {
+    id: "türe.01"
+    sense: "Oluşmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "türeyen"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden türediği"
+    }
+    example: "Bu kelime diğerinden türemiştir."
+  }
+}

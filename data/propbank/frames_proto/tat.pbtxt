@@ -1,0 +1,24 @@
+frame_id: "tat"
+verb {
+  lemma: "tat"
+  argument_structure {
+    id: "tat.01"
+    sense: "Dil yardımıyla bir şeyin tadının nasıl olduğunu anlamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "tadan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "tadına bakılan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "tadına bakılan"
+    }
+    example: "Fasulyeden de tat biraz."
+  }
+}

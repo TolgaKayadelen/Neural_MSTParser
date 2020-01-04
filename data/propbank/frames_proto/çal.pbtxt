@@ -1,0 +1,56 @@
+frame_id: "çal"
+verb {
+  lemma: "çal"
+  argument_structure {
+    id: "çal.01"
+    sense: "Hırsızlık etmek, aşırmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çalan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çalınan şey"
+    }
+    example: "Bizim atlarımızı çalıp İngilizlere satarlardı."
+  }
+  argument_structure {
+    id: "çal.02"
+    sense: "Bir ses çıkaran aletin çalışması"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çalan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "çalınan şey"
+    }
+    example: "Fevkalade zekidir; iyi dans eder, piyano çalar."
+  }
+  argument_structure {
+    id: "çal.03"
+    sense: "Benzemek, andırmak. (mecazi anlam) (to resemble)"
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "benzeyen şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "neye benzediği"
+    }
+    example: "Geniş alınlı, kırmızıya çalar, kahverengi saçlı, altın dişli tuhaf bir delikanlı gülümsedi."
+  }
+}

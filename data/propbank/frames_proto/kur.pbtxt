@@ -1,0 +1,22 @@
+frame_id: "kur"
+verb {
+  lemma: "kur"
+  argument_structure {
+    id: "kur.01"
+    sense: "monte etmek, hazırlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kuran"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "kurulan"
+    }
+    example: "Geniş çöl ufukları arasında çadırlarımızı kurduk."
+  }
+}

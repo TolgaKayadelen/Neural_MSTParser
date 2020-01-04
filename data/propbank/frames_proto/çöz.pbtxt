@@ -1,0 +1,38 @@
+frame_id: "çöz"
+verb {
+  lemma: "çöz"
+  argument_structure {
+    id: "çöz.01"
+    sense: "Düğmeyi iliğinden açmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çözen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çözülen"
+    }
+    example: "Yalnız göğsünün düğmelerini çöz."
+  }
+  argument_structure {
+    id: "çöz.02"
+    sense: "Çözüm bulmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çözen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çözülen"
+    }
+    example: "Kır saçlı postacı bulmacayı çözmüştü."
+  }
+}

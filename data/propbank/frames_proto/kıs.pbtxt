@@ -1,0 +1,38 @@
+frame_id: "kıs"
+verb {
+  lemma: "kıs"
+  argument_structure {
+    id: "kıs.01"
+    sense: "Birşeyi alçaltmak, kapamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kısan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "kısılan"
+    }
+    example: "Televizyonun sesini kısar mısın ?"
+  }
+  argument_structure {
+    id: "kıs.02"
+    sense: "Masraf, harcama vb.ni azaltmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kısan"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden kısıldığı"
+    }
+    example: "Yemekten kısılamaz."
+  }
+}

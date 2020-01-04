@@ -1,0 +1,49 @@
+frame_id: "eyle"
+verb {
+  lemma: "eyle"
+  argument_structure {
+    id: "eyle.01"
+    sense: "Bir kişiden veya bir şeyden yoksun bırakmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yoksun bırakan şey/kişi"
+    }
+    argument {
+      number: A4
+      case: ACC
+      theta_role: "beneficiary"
+      description: "yoksun bırakılan kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "theme"
+      description: "neyden yoksun bırakıldığı"
+    }
+    example: "Yurdumdan yuvamdan eyledi beni."
+  }
+  argument_structure {
+    id: "eyle.02"
+    sense: "Etmek, yapmak anlamında Yardımcı fiil"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "eden, yapan"
+    }
+    argument {
+      number: A_LVB
+      case: NOM
+      description: "yapılan edilen iş/şey"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "edilen"
+    }
+  }
+}

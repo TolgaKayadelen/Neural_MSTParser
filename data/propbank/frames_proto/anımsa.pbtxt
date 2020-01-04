@@ -1,0 +1,19 @@
+frame_id: "anımsa"
+verb {
+  lemma: "anımsa"
+  argument_structure {
+    id: "anımsa.01"
+    sense: "Bilinip unutulan bir şeyi akla getirmek, hatırlamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "hatırlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "hatırlanan"
+    }
+    example: "Düşünüyorum da gizemli bir korkudan başka pek bir şey anımsamıyorum"
+  }
+}

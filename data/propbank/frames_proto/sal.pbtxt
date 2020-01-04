@@ -1,0 +1,24 @@
+frame_id: "sal"
+verb {
+  lemma: "sal"
+  argument_structure {
+    id: "sal.01"
+    sense: "bırakmak, koyuvermek"
+    argument {
+      number: A0
+      case: NOM
+      description: "salan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "salınan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye salındığı"
+    }
+    example: "Derhâl kapının zincirini salıvererek kanadı arkasına kadar açtı."
+  }
+}

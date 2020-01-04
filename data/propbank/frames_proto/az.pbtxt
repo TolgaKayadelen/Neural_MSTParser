@@ -1,0 +1,15 @@
+frame_id: "az"
+verb {
+  lemma: "az"
+  argument_structure {
+    id: "az.01"
+    sense: "Taşkınlıkta ileri gitmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "azan"
+    }
+    example: "Çocuklar azdı."
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "kucakla"
+verb {
+  lemma: "kucakla"
+  argument_structure {
+    id: "kucakla.01"
+    sense: "Kollarla sarıp göğüs üzerine bastırmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "kucaklayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "kucaklanan"
+    }
+    example: "Çocuğunu şefketle kucakladı."
+  }
+}

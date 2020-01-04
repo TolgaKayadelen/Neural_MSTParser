@@ -1,0 +1,21 @@
+frame_id: "benzeş"
+verb {
+  lemma: "benzeş"
+  argument_structure {
+    id: "benzeş.01"
+    sense: "Birbirine benzemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "theme1"
+      description: "benzeşen"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "theme2"
+      description: "kiminle/neyle benzeştiği"
+    }
+    example: "Huylarımız birbiriyle benzeşiyor."
+  }
+}

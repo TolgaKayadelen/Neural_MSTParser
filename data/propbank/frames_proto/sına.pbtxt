@@ -1,0 +1,25 @@
+frame_id: "sına"
+verb {
+  lemma: "sına"
+  argument_structure {
+    id: "sına.01"
+    sense: "Test etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "test eden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "test edilen"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile/nasıl test edildiği"
+    }
+    example: "Allah kimseyi evlat acısıyla sınamasın"
+  }
+}

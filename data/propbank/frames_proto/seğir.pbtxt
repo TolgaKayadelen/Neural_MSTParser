@@ -1,0 +1,15 @@
+frame_id: "seğir"
+verb {
+  lemma: "seğir"
+  argument_structure {
+    id: "seğir.01"
+    sense: "kaslar hafifçe oynamak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "seğiren"
+    }
+    example: "Gözüm seğirdi."
+  }
+}

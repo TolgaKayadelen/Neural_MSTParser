@@ -1,0 +1,20 @@
+frame_id: "koyul"
+verb {
+  lemma: "koyul"
+  argument_structure {
+    id: "koyul.01"
+    sense: "Girişmek, başlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "başlayan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "neye başladığı"
+    }
+  }
+}

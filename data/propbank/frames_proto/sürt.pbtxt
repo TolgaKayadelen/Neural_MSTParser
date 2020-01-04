@@ -1,0 +1,27 @@
+frame_id: "sürt"
+verb {
+  lemma: "sürt"
+  argument_structure {
+    id: "sürt.01"
+    sense: "Bir şeyi bastırarak diğer bir şeyin üzerinden geçirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sürten"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "sürtülen şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye sürtüldüğü"
+    }
+    example: "Cemal ellerini hızlı hızlı birbirine sürttü."
+  }
+}

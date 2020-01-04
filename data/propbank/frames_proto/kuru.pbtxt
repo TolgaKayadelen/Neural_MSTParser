@@ -1,0 +1,14 @@
+frame_id: "kuru"
+verb {
+  lemma: "kuru"
+  argument_structure {
+    id: "kuru.01"
+    sense: "Islaklığını, nemini yitirerek kuru duruma gelmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "kuruyan"
+    }
+    example: "Ağzım kurudu."
+  }
+}

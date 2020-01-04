@@ -1,0 +1,21 @@
+frame_id: "büz"
+verb {
+  lemma: "büz"
+  argument_structure {
+    id: "büz.01"
+    sense: "Hacmini küçültmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "büzen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "büzülen"
+    }
+    example: "Herkesin ağzı torba değil ki çekip büzesiniz."
+  }
+}

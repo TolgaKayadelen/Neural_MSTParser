@@ -1,0 +1,18 @@
+frame_id: "sorgula"
+verb {
+  lemma: "sorgula"
+  argument_structure {
+    id: "sorgula.01"
+    sense: "İlgililere sorular sormak"
+    argument {
+      number: A0
+      case: NOM
+      description: "sorgulayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "sorgulanan"
+    }
+  }
+}

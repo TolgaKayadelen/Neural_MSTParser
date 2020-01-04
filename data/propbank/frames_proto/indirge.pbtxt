@@ -1,0 +1,24 @@
+frame_id: "indirge"
+verb {
+  lemma: "indirge"
+  argument_structure {
+    id: "indirge.01"
+    sense: "Daha kolay ve yalın duruma getirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "indirgeyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "indirgenen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "neye indirgendiği"
+    }
+    example: "Bilim dünyayı kemiyetlere indirgedi."
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "kaynaklan"
+verb {
+  lemma: "kaynaklan"
+  argument_structure {
+    id: "kaynaklan.01"
+    sense: "Kaynak durumunu almak"
+    argument {
+      number: A0
+      case: NOM
+      description: "kaynaklanan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "nereden kaynaklandığı"
+    }
+    example: "Şu anda yaşadığı problemler, doktorların onu tamamen yanlış anlamasından kaynaklanıyor."
+  }
+}

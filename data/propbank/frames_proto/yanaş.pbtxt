@@ -1,0 +1,20 @@
+frame_id: "yanaş"
+verb {
+  lemma: "yanaş"
+  argument_structure {
+    id: "yanaş.01"
+    sense: "Bir şeyin, bir kimsenin yanına gelmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yanaşan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "kime/nereye yanaştığı"
+    }
+    example: "Usulca avluya indim, rafa doğru yanaştım."
+  }
+}

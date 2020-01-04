@@ -1,0 +1,27 @@
+frame_id: "yasakla"
+verb {
+  lemma: "yasakla"
+  argument_structure {
+    id: "yasakla.01"
+    sense: "Bir şeyin yapılmamasını buyurmak veya istemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yasaklayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "yasaklanan hareket"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/neye yasaklandığı"
+    }
+    example: "RTÜK bu programı da yasaklamış."
+  }
+}

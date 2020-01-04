@@ -1,0 +1,27 @@
+frame_id: "danış"
+verb {
+  lemma: "danış"
+  argument_structure {
+    id: "danış.01"
+    sense: "Bir iş için bilgi veya yol sormak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "danışan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "topic"
+      description: "danışılan konu"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime danıştığı"
+    }
+    example: "Doktor, bugün size ben asıl başka mesele danışmak için geldim."
+  }
+}

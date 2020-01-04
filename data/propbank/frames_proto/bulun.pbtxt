@@ -1,0 +1,20 @@
+frame_id: "bulun"
+verb {
+  lemma: "bulun"
+  argument_structure {
+    id: "bulun.01"
+    sense: "Herhangi bir durumda/yerde olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bulunan"
+    }
+    argument {
+      number: A1
+      case: LOC
+      theta_role: "location"
+      description: "nerede/hangi durumda bulunduğu"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "boşan"
+verb {
+  lemma: "boşan"
+  argument_structure {
+    id: "boşan.01"
+    sense: "Ayrılmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "boşanan"
+    }
+    argument {
+      number: A3
+      case: ABL
+      description: "kimden boşandığı"
+    }
+    example: "Sonunda ondan boşandım."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "sars"
+verb {
+  lemma: "sars"
+  argument_structure {
+    id: "sars.01"
+    sense: "Birdenbire ve güçle kımıldatmak, sallamak, oynatmak, titretmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sarsan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "sarsılan"
+    }
+    example: "Annesinin ölümü onu çok sarstı."
+  }
+}

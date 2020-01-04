@@ -1,0 +1,19 @@
+frame_id: "planla"
+verb {
+  lemma: "planla"
+  argument_structure {
+    id: "planla.01"
+    sense: "Yapılacak bir işi belli plana göre düzenlemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "planlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "planlanan"
+    }
+    example: "Düğünümüzü tüm detaylarıyla planladık."
+  }
+}

@@ -1,0 +1,23 @@
+frame_id: "yücel"
+verb {
+  lemma: "yücel"
+  argument_structure {
+    id: "yücel.01"
+    sense: "Yükselmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "yücelen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye yüceldiği"
+    }
+    argument {
+      number: A3
+      case: ABL
+      description: "nereden yüceldiği"
+    }
+  }
+}

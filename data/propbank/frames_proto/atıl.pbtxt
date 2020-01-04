@@ -1,0 +1,21 @@
+frame_id: "atıl"
+verb {
+  lemma: "atıl"
+  argument_structure {
+    id: "atıl.01"
+    sense: "Hevesle atlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "atılan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "neye atıldığı"
+    }
+    example: "Yeni bir işe atılmak sanıldığı kadar kolay değil."
+  }
+}

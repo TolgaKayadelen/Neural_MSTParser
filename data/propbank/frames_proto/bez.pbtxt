@@ -1,0 +1,21 @@
+frame_id: "bez"
+verb {
+  lemma: "bez"
+  argument_structure {
+    id: "bez"
+    sense: "Bıkıp usanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bezen kimse"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "source"
+      description: "bezilen şey"
+    }
+    example: "Kibrit kullanmaktan bezdiğimiz için bir eski çakmakla gazı yakmaktayız."
+  }
+}

@@ -1,0 +1,54 @@
+frame_id: "salla"
+verb {
+  lemma: "salla"
+  argument_structure {
+    id: "salla.01"
+    sense: "Düzenli bir biçimde ve hep aynı doğrultuda hareket ettirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "sallayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "sallanan"
+    }
+    example: "Sen yine anahtarını çıkar, salla, eğlendir."
+  }
+  argument_structure {
+    id: "salla.02"
+    sense: "Uydurmak, kafadan atmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "sallayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "sallanan"
+    }
+    example: "Cevabını salladım."
+  }
+  argument_structure {
+    id: "salla.03"
+    sense: "Ertelemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "erteleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "ertelenen"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "ertelenme süresi"
+    }
+    example: "Ev sahibinin gözünü boyarım, kalan borcu bir müddet daha sallarım diyordu"
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "homurdan"
+verb {
+  lemma: "homurdan"
+  argument_structure {
+    id: "homurdan.01"
+    sense: "Öfke, kızgınlık, can sıkıntısıyla anlaşılmaz sesler çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "homurdanan"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      description: "homurtu - genelde diye ile birlikte"
+    }
+    example: "\"Otopsi raporunu mu istiyorsunuz?\" diye homurdandı Orhan, televizyon izlemeyi sürdürerek."
+  }
+}

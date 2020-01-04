@@ -1,0 +1,19 @@
+frame_id: "um"
+verb {
+  lemma: "um"
+  argument_structure {
+    id: "um.01"
+    sense: "Bir şeyin olmasını istemek, beklemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "uman"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "umulan/ beklenen şey"
+    }
+    example: "Gelmesini umuyorum."
+  }
+}

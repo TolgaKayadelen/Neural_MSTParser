@@ -1,0 +1,32 @@
+frame_id: "es"
+verb {
+  lemma: "es"
+  argument_structure {
+    id: "es.01"
+    sense: "rüzgar olması"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "esen şey (genelde rüzgar)"
+    }
+    example: "İki üç günden beri sert bir kış rüzgârı esiyor."
+  }
+  argument_structure {
+    id: "es.02"
+    sense: "Birdenbire karar vermek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "karar verilen şey (esen)"
+    }
+    argument {
+      number: A0
+      case: DAT
+      theta_role: "agent"
+      description: "karar veren kişi (kime estiği)"
+    }
+    example: "Bu yolculuk size nereden esti?"
+  }
+}

@@ -1,0 +1,62 @@
+frame_id: "as"
+verb {
+  lemma: "as"
+  argument_structure {
+    id: "as.01"
+    sense: "Bir şeyi sarkıtmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "asan kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "asılan kişi/şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye asıldığı"
+    }
+    example: "Lambayı tam pencerenin karşısına astı."
+  }
+  argument_structure {
+    id: "as.02"
+    sense: "İdam etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "idam edenler"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "idam edilen"
+    }
+    example: "Bugün Deniz Gezmiş\'i astılar."
+  }
+}
+verb {
+  lemma: "kulak_as"
+  argument_structure {
+    id: "as.03"
+    sense: "Önem vermek, dinlemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dinleyen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "dinlenen"
+    }
+    example: "Sen ona kulak asma..."
+  }
+}

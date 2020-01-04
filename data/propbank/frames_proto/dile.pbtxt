@@ -1,0 +1,45 @@
+frame_id: "dile"
+verb {
+  lemma: "dile"
+  argument_structure {
+    id: "dile.01"
+    sense: "Arzu etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "rica eden kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "dilediği şey"
+    }
+  }
+}
+verb {
+  lemma: "özür_dile"
+  argument_structure {
+    id: "dile.02"
+    sense: "Bağışlanmak istemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bağışlanmak isteyen"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "source"
+      description: "kimden istediği"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      theta_role: "cause"
+      description: "sebebi"
+    }
+  }
+}

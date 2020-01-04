@@ -1,0 +1,134 @@
+frame_id: "bul"
+verb {
+  lemma: "bul"
+  argument_structure {
+    id: "bul.01"
+    sense: "Aranılan bir şeye sahip olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bulan kimse"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "bulunan şey"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede bulunduğu"
+    }
+    example: "Anahtarlarımı cüzdanımda buldum."
+  }
+  argument_structure {
+    id: "bul.02"
+    sense: "Keşfetmek , icat etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bulan kimse"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "bulunan şey"
+    }
+    example: "Şu kuvvetin, cevherin sırrını bulmaya çalışıyorum."
+  }
+  argument_structure {
+    id: "bul.03"
+    sense: "Bir yargıya varmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bulan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "neyi bulduğu"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "nasıl bulduğu (varılan yargı)"
+    }
+    example: "Ben de bunu akıllıca buldum."
+  }
+  argument_structure {
+    id: "bul.04"
+    sense: "Erişmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "bulan"
+    }
+    argument {
+      number: A2
+      case: NOM
+      case: ACC
+      description: "neyi bulduğu"
+    }
+    example: "Fiyatı 500 lirayı buluyor."
+  }
+}
+verb {
+  lemma: "son_bul"
+  argument_structure {
+    id: "bul.05"
+    sense: "Bitmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "biten şey"
+    }
+  }
+}
+verb {
+  lemma: "kafa_bul"
+  argument_structure {
+    id: "bul.06"
+    sense: "Dalga geçmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dalga geçen"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "patient"
+      description: "dalga geçilen"
+    }
+  }
+}
+verb {
+  lemma: "yüz_bul"
+  argument_structure {
+    id: "bul.07"
+    sense: "şımarmak, cesaretlenmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "şımaran"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "şımarma sebebi"
+    }
+  }
+}

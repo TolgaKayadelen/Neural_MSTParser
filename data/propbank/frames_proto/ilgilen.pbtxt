@@ -1,0 +1,21 @@
+frame_id: "ilgilen"
+verb {
+  lemma: "ilgilen"
+  argument_structure {
+    id: "ilgilen.01"
+    sense: "İlgi göstermek, alakalanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ilgilenen"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "theme"
+      description: "ilgilenilen"
+    }
+    example: "Tarlaları gezdim, okuluma gittim, çocukları tanıdım, köylülerle ilgilendim."
+  }
+}

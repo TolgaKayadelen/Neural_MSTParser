@@ -1,0 +1,21 @@
+frame_id: "kaytar"
+verb {
+  lemma: "kaytar"
+  argument_structure {
+    id: "kaytar.01"
+    sense: "İş yapmaktan kaçmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kaçan kişi"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "theme"
+      description: "neyden kaytardığı"
+    }
+    example: "Toplum içinde kapısının önünü süpürmekten kaytaranlar dünyanın her yerinde çoklukta."
+  }
+}

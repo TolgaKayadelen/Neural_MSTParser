@@ -1,0 +1,19 @@
+frame_id: "yakın"
+verb {
+  lemma: "yakın"
+  argument_structure {
+    id: "yakın.01"
+    sense: "Sızlanmak, sızlanarak anlatmak, şikâyet etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yakınan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "neyden yakındığı"
+    }
+    example: "Kaç kez yakındım ona, yüzünü öyle bir yas kapladı ki yakındığıma da yakınacağıma da bin pişman oldum."
+  }
+}

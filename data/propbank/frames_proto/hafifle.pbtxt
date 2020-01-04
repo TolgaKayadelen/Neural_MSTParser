@@ -1,0 +1,13 @@
+frame_id: "hafifle"
+verb {
+  lemma: "hafifle"
+  argument_structure {
+    id: "hafifle.01"
+    sense: "Eski ağırlığı azalmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "hafifleyen"
+    }
+  }
+}

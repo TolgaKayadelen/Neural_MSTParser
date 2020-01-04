@@ -1,0 +1,14 @@
+frame_id: "gerin"
+verb {
+  lemma: "gerin"
+  argument_structure {
+    id: "gerin.01"
+    sense: "Kolları açarak gövdeyi gergin bir duruma sokmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "gerinen"
+    }
+    example: "Geç uyanmıştı, geç ve güç. Yatakta uzun uzun gerindi, esnedi."
+  }
+}

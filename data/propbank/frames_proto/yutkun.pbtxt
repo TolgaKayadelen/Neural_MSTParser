@@ -1,0 +1,14 @@
+frame_id: "yutkun"
+verb {
+  lemma: "yutkun"
+  argument_structure {
+    id: "yutkun.01"
+    sense: "bir şey yutuyormuş gibi gırtlağı hareket ettirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yutkunan"
+    }
+    example: "Oturup oturup kalkıyor, ağzını açacakken hemen yutkunup kapıyor."
+  }
+}

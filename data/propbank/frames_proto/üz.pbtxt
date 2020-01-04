@@ -1,0 +1,21 @@
+frame_id: "üz"
+verb {
+  lemma: "üz"
+  argument_structure {
+    id: "üz.01"
+    sense: "Üzüntü vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "üzüntü veren kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "experiencer"
+      description: "üzülen kişi"
+    }
+    example: "Onu biraz üzerim ama zekâsına da bayılırım."
+  }
+}

@@ -1,0 +1,101 @@
+frame_id: "getir"
+verb {
+  lemma: "getir"
+  argument_structure {
+    id: "getir.01"
+    sense: "İletmek, aktarmak, taşımak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "getiren kişi/şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye getirildiği"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "getirilen kişi/şey"
+    }
+    example: "Dün bir deri bir kemik halinde eve getirip bırakmışlar."
+  }
+  argument_structure {
+    id: "getir.02"
+    sense: "Erişmek, eriştiğini sanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "getiren kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "getirilen şey"
+    }
+    example: "Baharı getirdik."
+  }
+  argument_structure {
+    id: "getir.03"
+    sense: "Sağlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sağlayan şey"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "sağladığı şey"
+    }
+    example: "Haftada bir cuma günleri işleyen küçük bir kahve ayda ne kadar gelir getirirse."
+  }
+}
+verb {
+  lemma: "yerine_getir"
+  argument_structure {
+    id: "getir.04"
+    sense: "Bir isteği gerçekleştirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "gerçekleştiren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "gerçekleştirilen"
+    }
+    example: "Hakan titredi, saniyesinde yerine getirdi isteğini."
+  }
+}
+verb {
+  lemma: "dile_getir"
+  argument_structure {
+    id: "getir.05"
+    sense: "Belirtmek, anlatmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "belirten"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "belirtilen şey"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+frame_id: "şiş"
+verb {
+  lemma: "şiş"
+  argument_structure {
+    id: "şiş.01"
+    sense: "hacimce büyümek"
+    argument {
+      number: A1
+      case: NOM
+      description: "şişen"
+    }
+    example: "Balon şişti."
+  }
+}

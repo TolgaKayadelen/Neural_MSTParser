@@ -1,0 +1,21 @@
+frame_id: "büyüle"
+verb {
+  lemma: "büyüle"
+  argument_structure {
+    id: "büyüle.01"
+    sense: "Büyü ile etki altına almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "stimulus"
+      description: "büyüleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "experiencer"
+      description: "büyülenen"
+    }
+    example: "Kendisini büyüleyen şeyin ne olduğunu bulmaya uğraşıyor."
+  }
+}

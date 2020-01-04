@@ -1,0 +1,15 @@
+frame_id: "şımar"
+verb {
+  lemma: "şımar"
+  argument_structure {
+    id: "şımar.01"
+    sense: "Kendisine gösterilen sevgi ve saygıdan veya verilen değerden yüreklenerek yersiz ve aşırı davranışlarda bulunmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "şımaran"
+    }
+    example: "Şımarma."
+  }
+}

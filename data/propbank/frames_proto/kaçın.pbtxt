@@ -1,0 +1,21 @@
+frame_id: "kaçın"
+verb {
+  lemma: "kaçın"
+  argument_structure {
+    id: "kaçın.01"
+    sense: "Geri durmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kaçınan"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "neyden kaçınıldığı"
+    }
+    example: "Onu sinirlendirmekten kaçın."
+  }
+}

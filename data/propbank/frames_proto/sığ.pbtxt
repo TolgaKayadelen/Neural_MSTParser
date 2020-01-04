@@ -1,0 +1,19 @@
+frame_id: "sığ"
+verb {
+  lemma: "sığ"
+  argument_structure {
+    id: "sığ.01"
+    sense: "Bir kaba, bir yere bütünüyle girebilmek veya içinden geçebilmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "sığan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye sığdığı"
+    }
+    example: "Bir tavla zarı kadar küçücük eve / Bir kadın iki çocuk nasıl sığar?"
+  }
+}

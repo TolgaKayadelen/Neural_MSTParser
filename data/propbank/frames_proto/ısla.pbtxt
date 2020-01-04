@@ -1,0 +1,21 @@
+frame_id: "ısla"
+verb {
+  lemma: "ısla"
+  argument_structure {
+    id: "ısla.01"
+    sense: "Islatmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ıslatan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "ıslattığı şey"
+    }
+    example: "Su kenarında davulcu mendilini ıslayarak tıraşlı kafasına yapıştırdı."
+  }
+}

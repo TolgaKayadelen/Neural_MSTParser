@@ -1,0 +1,20 @@
+frame_id: "ısıt"
+verb {
+  lemma: "ısıt"
+  argument_structure {
+    id: "ısıt.01"
+    sense: "Sıcak duruma getirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "ısıtan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "ısıtılan"
+    }
+    example: "Her gün birkaç ev kadını orada çalı çırpıyla su ısıtıp çamaşırını yıkıyor."
+  }
+}

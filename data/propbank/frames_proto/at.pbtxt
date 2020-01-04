@@ -1,0 +1,237 @@
+frame_id: "at"
+verb {
+  lemma: "at"
+  argument_structure {
+    id: "at.01"
+    sense: "Bir cismi bir yöne doğru fırlatmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "atan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "atılan kişi/şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye/kime atıladığı"
+    }
+    example: "Taşı suya attı."
+  }
+  argument_structure {
+    id: "at.02"
+    sense: "Sille, tokat vurmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "atan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "atılan şey"
+    }
+    example: "Bana tokat attı."
+  }
+  argument_structure {
+    id: "at.03"
+    sense: "Ertelemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "erteleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "ertelenen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "time"
+      description: "ne zamana ertelendiği"
+    }
+    example: "Bu konunun tartışılmasını gelecek haftaya attılar."
+  }
+  argument_structure {
+    id: "at.04"
+    sense: "Kötü bir işi birine yüklemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "atan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "ne atıldığı"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "kime/neye atıldığı"
+    }
+    example: "Suçu onun üzerine attılar."
+  }
+  argument_structure {
+    id: "at.05"
+    sense: "İstenilmeyenden kurtulmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "atan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "patient"
+      description: "atılan"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden atıldığı"
+    }
+    example: "Ahmet\'i işten attılar."
+  }
+  argument_structure {
+    id: "at.06"
+    sense: "ses çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ses çıkaran (atan)"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "attribute"
+      description: "atılan"
+    }
+    example: "çığlık atmak, kahkaha atmak"
+  }
+}
+verb {
+  lemma: "imza_at"
+  argument_structure {
+    id: "at.07"
+    sense: "Başarılı bir iş gerçekleştirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "imzalayan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "imzalanan"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede/hangi konuda imza attığı"
+    }
+    example: "Kevin Rudd, yeni kabinesinde ilklere imza attı."
+  }
+}
+verb {
+  lemma: "ortaya_at"
+  argument_structure {
+    id: "at.08"
+    sense: "Söylemek, ileri sürmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "öne süren"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "öne sürülen"
+    }
+    example: "Televizyon kanalları kurulması önerisini ortaya attı."
+  }
+}
+verb {
+  lemma: "göz_at"
+  argument_structure {
+    id: "at.09"
+    sense: "Bakıvermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bakan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "destination"
+      description: "baktığı şey"
+    }
+  }
+}
+verb {
+  lemma: "can_at"
+  argument_structure {
+    id: "at.10"
+    sense: "Çok istemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "isteyen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "çok istediği şey"
+    }
+    example: "Onunla buluşmaya can atıyorum."
+  }
+}
+verb {
+  lemma: "adım_at"
+  argument_structure {
+    id: "at.11"
+    sense: "Adım atmak, yaklaşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "adım atan"
+    }
+    argument {
+      number: A3
+      case: NOM
+      theta_role: "attribute"
+      description: "ne kadar yaklaştığı"
+    }
+    example: "Bana doğru bir adım atsa keşke..."
+  }
+}

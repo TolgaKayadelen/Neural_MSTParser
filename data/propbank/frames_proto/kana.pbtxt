@@ -1,0 +1,15 @@
+frame_id: "kana"
+verb {
+  lemma: "kana"
+  argument_structure {
+    id: "kana.01"
+    sense: "Kan akmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "kanayan yer (vücutta bir yer)"
+    }
+    example: "Burnun kanıyor."
+  }
+}

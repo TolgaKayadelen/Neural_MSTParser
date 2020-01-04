@@ -1,0 +1,38 @@
+frame_id: "kan"
+verb {
+  lemma: "kan"
+  argument_structure {
+    id: "kan.01"
+    sense: "Konunun doğruluğuna inanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "inanan kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "neye inandığı"
+    }
+    example: "Kızların cilvesine kanma."
+  }
+  argument_structure {
+    id: "kan.02"
+    sense: "Bir gereksinimini, bir isteğini yeteri kadar karşılamış olmak, doymak (mecazi)"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "doyan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "doyulan şey"
+    }
+    example: "Siz bile bu şekil, renk, koku zenginliğine kanmış ve yorulmuş ruhunuzla..."
+  }
+}

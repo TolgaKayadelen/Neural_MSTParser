@@ -1,0 +1,15 @@
+frame_id: "kirlen"
+verb {
+  lemma: "kirlen"
+  argument_structure {
+    id: "kirlen.01"
+    sense: "Kirli duruma gelmek, pislenmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "kirlenen"
+    }
+    example: "Hele saçların kirlenmiş, kırışmış, keçeleşmiş."
+  }
+}

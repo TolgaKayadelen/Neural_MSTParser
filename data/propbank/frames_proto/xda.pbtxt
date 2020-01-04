@@ -1,0 +1,18 @@
+frame_id: "xda"
+verb {
+  lemma: "xda"
+  argument_structure {
+    id: "xda.01"
+    sense: "x ile belirtilen ışık veya ses saçma"
+    argument {
+      number: A1
+      case: NOM
+      description: "saçan"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "saçılan şey"
+    }
+  }
+}

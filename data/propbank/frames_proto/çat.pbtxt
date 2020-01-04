@@ -1,0 +1,49 @@
+frame_id: "çat"
+verb {
+  lemma: "çat"
+  argument_structure {
+    id: "çat.01"
+    sense: "Yazıyla veya sözle sataşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sataşan kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "beneficiary"
+      description: "kime/neye sataştığı"
+    }
+    example: "Yemek  pek düzgün olmasa aşçıya çatar."
+  }
+  argument_structure {
+    id: "çat.02"
+    sense: "Rastlamak, karşılaşmak (mecazi anlam)"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "karşılaşan kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "karşılaşılan kişi"
+    }
+    example: "Nerden çattım böylesi bir güzele..."
+  }
+  argument_structure {
+    id: "çat.03"
+    sense: "Sırası gelmek, zamanı gelmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "zamanı gelen şey"
+    }
+    example: "Bir karara varma zamanı gelip çatmıştı."
+  }
+}

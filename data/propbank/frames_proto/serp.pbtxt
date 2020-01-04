@@ -1,0 +1,21 @@
+frame_id: "serp"
+verb {
+  lemma: "serp"
+  argument_structure {
+    id: "serp.01"
+    sense: "Geniş alana yaymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "serpen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "serpilen"
+    }
+    example: "Naneleri kuruması için çatıya serdik."
+  }
+}

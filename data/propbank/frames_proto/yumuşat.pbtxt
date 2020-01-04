@@ -1,0 +1,20 @@
+frame_id: "yumuşat"
+verb {
+  lemma: "yumuşat"
+  argument_structure {
+    id: "yumuşat.01"
+    sense: "Sertliğini gidermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yumuşatan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "yumuşatılan"
+    }
+  }
+}

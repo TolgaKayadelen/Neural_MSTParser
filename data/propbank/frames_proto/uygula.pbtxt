@@ -1,0 +1,20 @@
+frame_id: "uygula"
+verb {
+  lemma: "uygula"
+  argument_structure {
+    id: "uygula.01"
+    sense: "hayata geçirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "uygulayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "uygulanan"
+    }
+    example: "Yaranın üzerine soğuk uygulayın."
+  }
+}

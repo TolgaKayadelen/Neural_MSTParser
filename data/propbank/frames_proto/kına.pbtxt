@@ -1,0 +1,21 @@
+frame_id: "kına"
+verb {
+  lemma: "kına"
+  argument_structure {
+    id: "kına.01"
+    sense: "ayıplamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ayıplayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "ayıplanan"
+    }
+    example: "Bu hareketini kınıyorum."
+  }
+}

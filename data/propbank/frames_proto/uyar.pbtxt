@@ -1,0 +1,33 @@
+frame_id: "uyar"
+verb {
+  lemma: "uyar"
+  argument_structure {
+    id: "uyar.01"
+    sense: "ikaz etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "uyaran kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "recipient"
+      description: "uyarılan kişi/şey"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "topic"
+      description: "ne hakkında uyarıldığı (için/hakkında)"
+    }
+    argument {
+      number: A3
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile/nasıl uyarıldığı"
+    }
+    example: "Hatta bazı dostlarımız, ondan çok etkilendiğimiz ve onun kuş olduğunu unuttuğumuz konusunda bizi uyardılar."
+  }
+}

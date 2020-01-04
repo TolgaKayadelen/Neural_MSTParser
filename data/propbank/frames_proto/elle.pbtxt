@@ -1,0 +1,19 @@
+frame_id: "elle"
+verb {
+  lemma: "elle"
+  argument_structure {
+    id: "elle.01"
+    sense: "Elle dokunmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "dokunan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "dokunulan"
+    }
+    example: "Görüyorsunuz, ben hiçbirini ellemiyor, hiçbirini açmıyorum."
+  }
+}

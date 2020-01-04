@@ -1,0 +1,52 @@
+frame_id: "yükle"
+verb {
+  lemma: "yükle"
+  argument_structure {
+    id: "yükle.01"
+    sense: "Bir yere, eşya veya araç gereç koymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yükleyen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "yüklenen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye yüklendiği"
+    }
+    example: "Eşyaları bagaja yükleyelim."
+  }
+  argument_structure {
+    id: "yükle.02"
+    sense: "Bir bilgisayar, disket vb.ne gerekli bilgileri aktarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yükleyen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "yüklenen bilgi"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye yüklendiği"
+    }
+    example: "Fotoğrafları USB\'ye yükledin mi ?"
+  }
+}

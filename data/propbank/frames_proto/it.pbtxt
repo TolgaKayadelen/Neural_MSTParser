@@ -1,0 +1,21 @@
+frame_id: "it"
+verb {
+  lemma: "it"
+  argument_structure {
+    id: "it.01"
+    sense: "Güç uygulayarak ileri götürmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "iten"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "itilen"
+    }
+    example: "Erzak yüklü arabayı arkadan iten iki uşak, sırtı tırmandılar."
+  }
+}

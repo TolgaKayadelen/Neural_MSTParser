@@ -1,0 +1,15 @@
+frame_id: "ağrı"
+verb {
+  lemma: "ağrı"
+  argument_structure {
+    id: "ağrı"
+    sense: "Vücudun bir yeri ağrılı durumda olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "ağrıyan yer"
+    }
+    example: "Başım ağrıyor."
+  }
+}

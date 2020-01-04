@@ -1,0 +1,19 @@
+frame_id: "karşıla"
+verb {
+  lemma: "karşıla"
+  argument_structure {
+    id: "karşıla.01"
+    sense: "Dışarıdan gelen bir kimseye karşılayıcı olarak çıkmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "karşılayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "karşılanan"
+    }
+    example: "Beni karşıladılar ve ağırladılar."
+  }
+}

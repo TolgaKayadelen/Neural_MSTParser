@@ -1,0 +1,20 @@
+frame_id: "duyumsa"
+verb {
+  lemma: "duyumsa"
+  argument_structure {
+    id: "duyumsa.01"
+    sense: "Algılamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "algılayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "stimulus"
+      description: "algılanan"
+    }
+  }
+}

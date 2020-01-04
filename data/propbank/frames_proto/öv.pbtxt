@@ -1,0 +1,24 @@
+frame_id: "öv"
+verb {
+  lemma: "öv"
+  argument_structure {
+    id: "öv.01"
+    sense: "Birinin veya bir şeyin iyiliklerini, üstünlüklerini söyleyerek değerini yüceltmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "öven"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "övülen"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      description: "yapılan övgü (diye ile beraber genelde)"
+    }
+    example: "Hatta kimi Alman eleştirmenler, \"Dilimizi tazeledi\' diye Özdamar\'ı övdü."
+  }
+}

@@ -1,0 +1,15 @@
+frame_id: "kımılda"
+verb {
+  lemma: "kımılda"
+  argument_structure {
+    id: "kımılda.01"
+    sense: "Yerinde hafifçe hareketlenmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "kımıldayan"
+    }
+    example: "Güneş kuru bir kütük ateşi gibi kımıldayan al alevler arasında gurup ediyordu."
+  }
+}

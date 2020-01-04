@@ -1,0 +1,21 @@
+frame_id: "sula"
+verb {
+  lemma: "sula"
+  argument_structure {
+    id: "sula.01"
+    sense: "Su vermek, sulu olmasını sağlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sulayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "sulanan"
+    }
+    example: "Çiçekleri gitmeden sulamayı unutma."
+  }
+}

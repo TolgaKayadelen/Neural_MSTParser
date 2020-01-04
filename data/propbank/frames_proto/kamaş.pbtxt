@@ -1,0 +1,15 @@
+frame_id: "kamaş"
+verb {
+  lemma: "kamaş"
+  argument_structure {
+    id: "kamaş.01"
+    sense: "dil, damak veya diş uyuşmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "kamaşan şey"
+    }
+    example: "Dilim kamaştı."
+  }
+}

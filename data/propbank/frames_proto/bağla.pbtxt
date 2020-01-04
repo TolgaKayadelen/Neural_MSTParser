@@ -1,0 +1,24 @@
+frame_id: "bağla"
+verb {
+  lemma: "bağla"
+  argument_structure {
+    id: "bağla.01"
+    sense: "Bir şeyi bir yere veya bir şeye tutturmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "bağlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "bağlanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "bağlandığı yer"
+    }
+    example: "Bu konuyu nasıl buraya bağladığını bir türlü anlamıyorum."
+  }
+}

@@ -1,0 +1,15 @@
+frame_id: "oluş"
+verb {
+  lemma: "oluş"
+  argument_structure {
+    id: "oluş.01"
+    sense: "Belli bir varlık kazanmak, ortaya çıkmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "oluşan şey"
+    }
+    example: "Gün batımına yakın İskenderun körfezini sis basıyor, sisten dağlar oluşuyor."
+  }
+}

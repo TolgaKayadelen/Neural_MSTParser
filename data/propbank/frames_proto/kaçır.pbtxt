@@ -1,0 +1,21 @@
+frame_id: "kaçır"
+verb {
+  lemma: "kaçır"
+  argument_structure {
+    id: "kaçır.01"
+    sense: "Bir daha ele geçmemek üzere yitirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kaçıran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "kaçırılan şey"
+    }
+    example: "Bu fırsatı da kaçırdım."
+  }
+}

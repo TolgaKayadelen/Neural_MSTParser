@@ -1,0 +1,21 @@
+frame_id: "yönel"
+verb {
+  lemma: "yönel"
+  argument_structure {
+    id: "yönel.01"
+    sense: "Belli bir yön tutmak, yönlenmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yönelen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "destination"
+      description: "nereye yöneldiği"
+    }
+    example: "Şiire veda etti ve sanatın başka bir bölümüne yöneldi, hikâye ve romana."
+  }
+}

@@ -1,0 +1,15 @@
+frame_id: "sus"
+verb {
+  lemma: "sus"
+  argument_structure {
+    id: "sus.01"
+    sense: "Konuşmasını kesmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "susan"
+    }
+    example: "Son mısraları acele okuyarak susmuştu."
+  }
+}

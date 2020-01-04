@@ -1,0 +1,27 @@
+frame_id: "kıskan"
+verb {
+  lemma: "kıskan"
+  argument_structure {
+    id: "kıskan.01"
+    sense: "bir başkasının ortaklığına, üstün durumda görünmesine dayanamamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "kıskanan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "stimulus"
+      description: "kıskanılan kişi"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "theme2"
+      description: "neyden/kimden kıskandığı"
+    }
+    example: "Mühür gözlüm seni elden / Sakınırım, kıskanırım."
+  }
+}

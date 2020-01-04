@@ -1,0 +1,24 @@
+frame_id: "bildir"
+verb {
+  lemma: "bildir"
+  argument_structure {
+    id: "bildir.01"
+    sense: "Herhangi bir şeyi haber vermek"
+    argument {
+      number: A0
+      case: NOM
+      description: "bildiren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "neyi bildirdiği"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "kime/nereye bildirdiği"
+    }
+    example: "Babası ile arasındaki bütün mektuplaşmaları bana da bildiriyor."
+  }
+}

@@ -1,0 +1,86 @@
+frame_id: "bas"
+verb {
+  lemma: "bas"
+  argument_structure {
+    id: "bas.01"
+    sense: "Ayağı bir yere basmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "basan kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "basılan şey/yer"
+    }
+    example: "Motor çalıştıktan sonra debriyaja basarsınız."
+  }
+  argument_structure {
+    id: "bas.02"
+    sense: "Bası işi yapmak, tabetmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "basan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "product"
+      description: "basılan şey"
+    }
+    example: "Fotoğraflarımızı basmışlar."
+  }
+  argument_structure {
+    id: "bas.03"
+    sense: "Ani bir baskın yapmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "basan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "basılan yer/kişi"
+    }
+    example: "Ölen kızın intikamını almak için köyü basıp yakmış."
+  }
+  argument_structure {
+    id: "bas.04"
+    sense: "Bir kimse bir yaşa girmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "yaşlanan kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "bastığı yaş"
+    }
+    example: "On dokuz yaşına yeni basmış, ürkek ve utangaç bir kızdım."
+  }
+}
+verb {
+  lemma: "ağır_bas"
+  argument_structure {
+    id: "bas.05"
+    sense: "Daha etkili olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "etkili olan"
+    }
+    example: "Kırmızı daha ağır basıyor."
+  }
+}

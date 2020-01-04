@@ -1,0 +1,39 @@
+frame_id: "kazan"
+verb {
+  lemma: "kazan"
+  argument_structure {
+    id: "kazan.01"
+    sense: "Kazanç sağlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kazanan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "kazanılan şey"
+    }
+    example: "Bu beş lirayı bitirmeden ben para kazanmalıyım."
+  }
+  argument_structure {
+    id: "kazan.02"
+    sense: "Olumlu, iyi bir sonuç elde etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kazanan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "kazanılan"
+    }
+    example: "Böyle yazılara hiç cevap vermeyiz ve yazı çok ağırsa dava açarak çok defa kazanırız."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "sinirlen"
+verb {
+  lemma: "sinirlen"
+  argument_structure {
+    id: "sinirlen.01"
+    sense: "öfkelenmek, köpürmek,"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "experiencer"
+      description: "sinirlenen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "stimulus"
+      description: "neye sinirlendiği"
+    }
+    example: "En çok adamın tasasız, güleç yüzüne sinirlendi."
+  }
+}

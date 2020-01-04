@@ -1,0 +1,15 @@
+frame_id: "abartıl"
+verb {
+  lemma: "abartıl"
+  argument_structure {
+    id: "abartıl"
+    sense: "Abartma işine konu olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "abartılan şey/kimse"
+    }
+    example: "Şüphesiz siviller öldü, ancak sayı abartılıyor."
+  }
+}

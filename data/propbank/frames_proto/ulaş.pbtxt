@@ -1,0 +1,38 @@
+frame_id: "ulaş"
+verb {
+  lemma: "ulaş"
+  argument_structure {
+    id: "ulaş.01"
+    sense: "Varmak, gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ulaşan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "destination"
+      description: "nereye vardığı"
+    }
+    example: "Doğudan batıya kadar ulaşmış bir zafer bestesi dinliyorum."
+  }
+  argument_structure {
+    id: "ulaş.02"
+    sense: "Erişmek, elde etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ulaşan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "nereye/kime ulaşıldığı"
+    }
+    example: "Dökümanlara erişmek."
+  }
+}

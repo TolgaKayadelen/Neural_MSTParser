@@ -1,0 +1,19 @@
+frame_id: "benze"
+verb {
+  lemma: "benze"
+  argument_structure {
+    id: "benze.01"
+    sense: "Andırmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "benzeyen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "benzediği şey"
+    }
+    example: "Ona göre işlemeyen bir saat hastalanmış bir insana benzerdi."
+  }
+}

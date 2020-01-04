@@ -1,0 +1,27 @@
+frame_id: "ada"
+verb {
+  lemma: "ada"
+  argument_structure {
+    id: "ada.01"
+    sense: "Ayırmak, tahsis etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "adayan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "adanılan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/neye adadığı"
+    }
+    example: "Nasılsa altındaki arabayı edinmişti, bütün sevme gücünü de bu arabaya adamıştı."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "eğle"
+verb {
+  lemma: "eğle"
+  argument_structure {
+    id: "eğle.01"
+    sense: "Oyalamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "oyalayan şey/kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "oyalanan kişi"
+    }
+    example: "Beni işler eğledi de vaktinde yetişemedim."
+  }
+}

@@ -1,0 +1,15 @@
+frame_id: "çıldır"
+verb {
+  lemma: "çıldır"
+  argument_structure {
+    id: "çıldır"
+    sense: "Delirmek, aklını oynatmak."
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "çıldıran kişi"
+    }
+    example: "Ölümünün üzerinden üç gün geçmemişti ki büyük kızı çıldırdı."
+  }
+}

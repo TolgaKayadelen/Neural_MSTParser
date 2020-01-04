@@ -1,0 +1,19 @@
+frame_id: "frenle"
+verb {
+  lemma: "frenle"
+  argument_structure {
+    id: "frenle.01"
+    sense: "Yavaşlatmak veya durdurmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yavaşlatan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "yavaşlatılan"
+    }
+    example: "Adam fena sinirlendi. Ama durdu, düşündü, kendini iyi frenledi."
+  }
+}

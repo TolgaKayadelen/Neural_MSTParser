@@ -1,0 +1,27 @@
+frame_id: "ilet"
+verb {
+  lemma: "ilet"
+  argument_structure {
+    id: "ilet.01"
+    sense: "Götürmek, ulaştırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ileten"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "iletilen"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye iletildiği"
+    }
+    example: "Bu sözlerimi lütfen kendisine de iletin."
+  }
+}

@@ -1,0 +1,15 @@
+frame_id: "çürü"
+verb {
+  lemma: "çürü"
+  argument_structure {
+    id: "çürü.01"
+    sense: "Sağlamlığını, dayanıklılığını yitirmek:"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "çürüyen kişi/şey"
+    }
+    example: "Sen toprakta çürürsün canım kardeşim."
+  }
+}

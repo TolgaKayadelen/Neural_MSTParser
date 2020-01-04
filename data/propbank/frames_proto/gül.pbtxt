@@ -1,0 +1,31 @@
+frame_id: "gül"
+verb {
+  lemma: "gül"
+  argument_structure {
+    id: "gül.01"
+    sense: "Sesli bir biçimde duygusunu açığa vurmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "gülen kişi"
+    }
+  }
+  argument_structure {
+    id: "gül.02"
+    sense: "Biriyle alay etmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "alay eden kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "recipient"
+      description: "alay edilen kişi/şey"
+    }
+    example: "Elbisesine hiç uymayan ayakkabılarına çok güldüm."
+  }
+}

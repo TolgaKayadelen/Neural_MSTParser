@@ -1,0 +1,72 @@
+frame_id: "kalk"
+verb {
+  lemma: "kalk"
+  argument_structure {
+    id: "kalk.01"
+    sense: "Yerinden ayrılmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kalkan kişi/şey"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden kalktığı"
+    }
+    example: "Terazinin bir gözü inince öbürü kalkar."
+  }
+  argument_structure {
+    id: "kalk.02"
+    sense: "Yola çıkmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yola çıkan (kalkan)"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "time"
+      description: "yola çıkma zamanı (ne zaman kalktığı)"
+    }
+    example: "Tren saat onda kalktı."
+  }
+  argument_structure {
+    id: "kalk.03"
+    sense: "Varlığı, hayatı son bulmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "kullanımı/varlığı sona eren şey (kalkan)"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden kalktığı"
+    }
+    example: "Halifelik kalktı."
+  }
+  argument_structure {
+    id: "kalk.04"
+    sense: "Girişmek, başlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "girişimci (kalkan)"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "giriştiği şey (neye kalktığı)"
+    }
+    example: "Sakın bana vurmaya kalkma."
+  }
+}

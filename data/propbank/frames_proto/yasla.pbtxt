@@ -1,0 +1,27 @@
+frame_id: "yasla"
+verb {
+  lemma: "yasla"
+  argument_structure {
+    id: "yasla.01"
+    sense: "Dayamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yaslayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "neyi/kimi yasladığı"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye yasladığı"
+    }
+    example: "Başını omzuma yasla."
+  }
+}

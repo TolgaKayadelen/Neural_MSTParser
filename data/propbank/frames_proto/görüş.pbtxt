@@ -1,0 +1,27 @@
+frame_id: "görüş"
+verb {
+  lemma: "görüş"
+  argument_structure {
+    id: "görüş.01"
+    sense: "Bir iş, bir konu üzerinde karşılıklı görüş ileri sürmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "görüşen"
+    }
+    argument {
+      number: A2
+      case: ACC
+      theta_role: "topic"
+      description: "üzerine görüşülen konu"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle görüştüğü"
+    }
+    example: "İki tarafta bir uğultu başladı ve benim teklifimi yeniden görüştüler."
+  }
+}

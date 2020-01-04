@@ -1,0 +1,21 @@
+frame_id: "irdele"
+verb {
+  lemma: "irdele"
+  argument_structure {
+    id: "irdele.01"
+    sense: "Bütün yönlerini birer birer incelemek, araştırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "inceleyen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "incelenen şey"
+    }
+    example: "Tanpınar sanki gördüğü, irdelediği konuları, sorunları bize bir an önce iletmek istiyor."
+  }
+}

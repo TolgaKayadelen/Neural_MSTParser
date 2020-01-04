@@ -1,0 +1,38 @@
+frame_id: "izle"
+verb {
+  lemma: "izle"
+  argument_structure {
+    id: "izle.01"
+    sense: "Birinin veya bir şeyin arkasından gitmek, takip etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "izleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "izlenen"
+    }
+    example: "Babam kaşları çatılmış, başını sallayarak izliyor bizi."
+  }
+  argument_structure {
+    id: "izle.02"
+    sense: "Eğlenmek, görmek, öğrenmek için bakmak, seyretmek (film/TV izlemek)"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "izleyen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "izlenen"
+    }
+    example: "Dün televizyonda Muhteşem Yüzyıl\'ı izledim."
+  }
+}

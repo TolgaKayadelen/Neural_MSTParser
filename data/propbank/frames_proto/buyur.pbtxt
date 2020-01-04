@@ -1,0 +1,61 @@
+frame_id: "buyur"
+verb {
+  lemma: "buyur"
+  argument_structure {
+    id: "buyur.01"
+    sense: "Emretmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "emir veren kimse"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "emredilen şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/neye emredildiği"
+    }
+    example: "Ahlak sadece kötülük etmekten çekinmeyi buyurur."
+  }
+  argument_structure {
+    id: "buyur.02"
+    sense: "İçeri geçmek, girmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "buyuran kimse"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "location"
+      description: "nereye buyrulduğu"
+    }
+    example: "Salona buyurmaz mısınız?"
+  }
+  argument_structure {
+    id: "buyur.03"
+    sense: "Almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "buyuran kimse"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "buyrulan şey"
+    }
+    example: "Buyurunuz kahvenizi!"
+  }
+}

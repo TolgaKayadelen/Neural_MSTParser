@@ -1,0 +1,56 @@
+frame_id: "yakala"
+verb {
+  lemma: "yakala"
+  argument_structure {
+    id: "yakala.01"
+    sense: "Bir kimseyi veya bir şeyi tutmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yakalayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "yakalanan"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile yakalandığı"
+    }
+    example: "O oltayla balık yakalanmaz."
+  }
+  argument_structure {
+    id: "yakala.02"
+    sense: "Bir kimseyi hoşa gitmeyecek bir durumda bulmak, bir kimsenin suçu ortaya çıkmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yakalayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient1"
+      description: "yakalanan"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "patient2"
+      description: "kiminle/neyle yakalandığı"
+    }
+    argument {
+      number: A3
+      case: LOC
+      theta_role: "location"
+      description: "nerede yakalandığı"
+    }
+    example: "Kocasını yatakta bir kadınla yakalamış"
+  }
+}

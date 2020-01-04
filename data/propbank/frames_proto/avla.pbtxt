@@ -1,0 +1,18 @@
+frame_id: "avla"
+verb {
+  lemma: "avla"
+  argument_structure {
+    id: "avla.01"
+    sense: "Bir avı ele geçirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "avlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "avlanan"
+    }
+  }
+}

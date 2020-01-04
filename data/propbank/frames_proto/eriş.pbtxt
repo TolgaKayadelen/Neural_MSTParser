@@ -1,0 +1,20 @@
+frame_id: "eriş"
+verb {
+  lemma: "eriş"
+  argument_structure {
+    id: "eriş.01"
+    sense: "Ulaşmak, varmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "erişen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "neye/nereye erişildiği"
+    }
+  }
+}

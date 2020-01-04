@@ -1,0 +1,21 @@
+frame_id: "kakala"
+verb {
+  lemma: "kakala"
+  argument_structure {
+    id: "kakala.01"
+    sense: "kötü mal satmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kakalayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "kakalanan"
+    }
+    example: "Sonra paraları sayıyorum ki, tedavülden kalkmış kağıt yüzbinlikleri bize kakalamış."
+  }
+}

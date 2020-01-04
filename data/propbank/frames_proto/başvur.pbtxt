@@ -1,0 +1,21 @@
+frame_id: "başvur"
+verb {
+  lemma: "başvur"
+  argument_structure {
+    id: "başvur.01"
+    sense: "Bir işin yapılması için bir kimsenin aracılığını istemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "başvuran"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "başvurulan şey/yer"
+    }
+    example: "Fakat ben ona başvurmadan belki Hatice bana müracaat eder."
+  }
+}

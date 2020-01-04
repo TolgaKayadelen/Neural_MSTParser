@@ -1,0 +1,19 @@
+frame_id: "mıncıkla"
+verb {
+  lemma: "mıncıkla"
+  argument_structure {
+    id: "mıncıkla.01"
+    sense: "Örseleyecek veya biçimini bozacak gibi ellemek, sıkıştırmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "mıncıklayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "mıncıklanan"
+    }
+    example: "Ellerinin parmakları bir lastik top mıncıklar gibi açılıp kapanıyor."
+  }
+}

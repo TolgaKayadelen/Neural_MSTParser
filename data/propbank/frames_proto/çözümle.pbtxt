@@ -1,0 +1,21 @@
+frame_id: "çözümle"
+verb {
+  lemma: "çözümle"
+  argument_structure {
+    id: "çözümle.01"
+    sense: "Analiz etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çözümleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "topic"
+      description: "çözümlenen"
+    }
+    example: "Kültürel kargaşayı oldukça başarılı bir şekilde çözümledi."
+  }
+}

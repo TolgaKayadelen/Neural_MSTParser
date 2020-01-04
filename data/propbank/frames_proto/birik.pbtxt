@@ -1,0 +1,15 @@
+frame_id: "birik"
+verb {
+  lemma: "birik"
+  argument_structure {
+    id: "birik.01"
+    sense: "Yığılmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yığılan şey"
+    }
+    example: "Sana verilecek havadislerim birikti."
+  }
+}

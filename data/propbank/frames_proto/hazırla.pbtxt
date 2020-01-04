@@ -1,0 +1,26 @@
+frame_id: "hazırla"
+verb {
+  lemma: "hazırla"
+  argument_structure {
+    id: "hazırla.01"
+    sense: "Bir şeyi kullanılacak, yararlanılacak duruma getirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "hazırlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "hazırlanan"
+    }
+    argument {
+      number: A3
+      case: DAT
+      theta_role: "beneficiary"
+      description: "kime/neye hazırlandığı"
+    }
+    example: "Bir çeyrek saat içinde bavullarımızı bile hazırlayamazdık."
+  }
+}

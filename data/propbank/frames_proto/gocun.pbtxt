@@ -1,0 +1,38 @@
+frame_id: "gocun"
+verb {
+  lemma: "gocun"
+  argument_structure {
+    id: "gocun.01"
+    sense: "Bir şeyden alınmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "alınan kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "stimulus"
+      description: "alınma sebebi"
+    }
+    example: "Kendiliğinden oluşuveren rol dağılımı çiğnenmediği müddetçe kimse kimseye gocunmuyordu."
+  }
+  argument_structure {
+    id: "gocun.02"
+    sense: "Çekinmek, kaçınmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çekinen kişi"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "theme"
+      description: "neyden çekindiği"
+    }
+    example: "İşkence yapıldığını söylemekten neden gocunuyor?"
+  }
+}

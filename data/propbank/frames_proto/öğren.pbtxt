@@ -1,0 +1,28 @@
+frame_id: "öğren"
+verb {
+  lemma: "öğren"
+  argument_structure {
+    id: "öğren.01"
+    sense: "Bilgi edinmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "öğrenen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "öğrenilen"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "kimden öğrendiği"
+    }
+    example: "Yüzmeyi babamdan öğrendim."
+  }
+}

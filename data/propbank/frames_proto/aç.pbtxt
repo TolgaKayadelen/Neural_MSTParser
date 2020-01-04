@@ -1,0 +1,65 @@
+frame_id: "aç"
+verb {
+  lemma: "aç"
+  argument_structure {
+    id: "aç.01"
+    sense: "Bir şeyi kapalı durumdan açık duruma getirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "açan kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "açılan şey/kişi"
+    }
+    example: "Burası beni açmadı, başka yere gidelim."
+  }
+  argument_structure {
+    id: "aç.02"
+    sense: "Başlatmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "açan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "açılan şey"
+    }
+    argument {
+      number: A3
+      case: DAT
+      theta_role: "attribute"
+      description: "açılma gayesi"
+    }
+    example: "İnternet üzerinden çeşitli servisleri hizmete açtık."
+  }
+}
+verb {
+  lemma: "yol_aç"
+  argument_structure {
+    id: "aç.03"
+    sense: "Sebep olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sebep olan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "sebep olduğu şey"
+    }
+    example: "Sıcaklık ölümlere yol açtı"
+  }
+}

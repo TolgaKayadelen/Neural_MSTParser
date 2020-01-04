@@ -1,0 +1,15 @@
+frame_id: "geber"
+verb {
+  lemma: "geber"
+  argument_structure {
+    id: "geber.01"
+    sense: "Sevilmeyen bir kişinin ölmesi"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "geberen kişi"
+    }
+    example: "İkisi de geberdi."
+  }
+}

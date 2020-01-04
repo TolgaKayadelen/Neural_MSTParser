@@ -1,0 +1,33 @@
+frame_id: "böl"
+verb {
+  lemma: "böl"
+  argument_structure {
+    id: "böl.01"
+    sense: "Taksim etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bölen kimse/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "bölünen şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "böündüğü küçük üniteler, parça sayısı"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile bölündüğü"
+    }
+    example: "Bir domates aldı, çakıyla dörde böldü."
+  }
+}

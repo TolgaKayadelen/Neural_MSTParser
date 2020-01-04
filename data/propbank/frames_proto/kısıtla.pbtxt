@@ -1,0 +1,21 @@
+frame_id: "kısıtla"
+verb {
+  lemma: "kısıtla"
+  argument_structure {
+    id: "kısıtla.01"
+    sense: "Önceden verilmiş olan hak ve hürriyetlerin sınırlarını daraltmak, tahdit etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kısıtlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "kısıtlanan"
+    }
+    example: "Sevgin rahatsız etti beni, özgürlüğümü kısıtladı."
+  }
+}

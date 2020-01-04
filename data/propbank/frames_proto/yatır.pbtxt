@@ -1,0 +1,72 @@
+frame_id: "yatır"
+verb {
+  lemma: "yatır"
+  argument_structure {
+    id: "yatır.01"
+    sense: "Uyutmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "uyutan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "uyutulan"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede uyutulduğu"
+    }
+    example: "Gece beni en üst katta bir odada yatırdılar."
+  }
+  argument_structure {
+    id: "yatır.02"
+    sense: "Parayı vermek, teslim etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yatıran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "asset"
+      description: "yatırılan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime / neye yatırıldığı"
+    }
+    example: "Telefon parasını PTT\'ye yatırdım."
+  }
+  argument_structure {
+    id: "yatır.03"
+    sense: "Hastaneye kaldırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yatıran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "yatırılan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye yatırıldığı"
+    }
+  }
+}

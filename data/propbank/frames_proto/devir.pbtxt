@@ -1,0 +1,21 @@
+frame_id: "devir"
+verb {
+  lemma: "devir"
+  argument_structure {
+    id: "devir.01"
+    sense: "Düşürmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "düşüren kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "düşürülen şey"
+    }
+    example: "Ne ince boyunlu ilaç şişesini ne kırmızı kutuyu devirdiniz."
+  }
+}

@@ -1,0 +1,20 @@
+frame_id: "yoğunlaş"
+verb {
+  lemma: "yoğunlaş"
+  argument_structure {
+    id: "yoğunlaş.01"
+    sense: "Odaklanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yoğunlaşan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "topic"
+      description: "nereye yoğunlaşıldığı"
+    }
+  }
+}

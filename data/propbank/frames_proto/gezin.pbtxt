@@ -1,0 +1,18 @@
+frame_id: "gezin"
+verb {
+  lemma: "gezin"
+  argument_structure {
+    id: "gezin.01"
+    sense: "Belirli bir çevre içinde gezip durmak, eğlenmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "gezen"
+    }
+    argument {
+      number: A1
+      case: LOC
+      description: "nerede gezdiği"
+    }
+  }
+}

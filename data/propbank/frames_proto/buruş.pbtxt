@@ -1,0 +1,14 @@
+frame_id: "buruş"
+verb {
+  lemma: "buruş"
+  argument_structure {
+    id: "buruş.01"
+    sense: "Kırışmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "buruşan"
+    }
+  }
+}

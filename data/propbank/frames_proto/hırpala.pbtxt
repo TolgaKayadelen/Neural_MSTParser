@@ -1,0 +1,38 @@
+frame_id: "hırpala"
+verb {
+  lemma: "hırpala"
+  argument_structure {
+    id: "hırpala.01"
+    sense: "Azarlamak veya yıpratmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "stimulus"
+      description: "hırpalayan şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "experiencer"
+      description: "hırpalanan şey"
+    }
+    example: "Yalnız miralayın sağ bacağını bir gülle misketi fena halde hırpalamış."
+  }
+  argument_structure {
+    id: "hırpala.02"
+    sense: "Dövmek, örselemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "döven, zarar veren kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "dövülen, yıpratılan kişi/şey"
+    }
+    example: "Ali Nebiye\'yi fena hırpaladı."
+  }
+}

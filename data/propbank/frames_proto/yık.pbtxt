@@ -1,0 +1,47 @@
+frame_id: "yık"
+verb {
+  lemma: "yık"
+  argument_structure {
+    id: "yık.01"
+    sense: "Bozmak, tahrip etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yıkan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "yıkılan"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile / nasıl yıkıldığı"
+    }
+    example: "Yangın yarım saatin içinde her yeri sardı, uğruna gelen ne varsa yaktı, yıktı."
+  }
+  argument_structure {
+    id: "yık.02"
+    sense: "Herhangi bir suç, iş vb.ni birine yüklemek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yükleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "yüklenen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "kime yüklendiği"
+    }
+    example: "Suçu bana yıktı."
+  }
+}

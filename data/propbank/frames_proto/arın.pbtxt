@@ -1,0 +1,19 @@
+frame_id: "arın"
+verb {
+  lemma: "arın"
+  argument_structure {
+    id: "arın.01"
+    sense: "Temizlenmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "temizlenen şey / kişi"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "neyden temizlendiği"
+    }
+    example: "Hatalarından büyük ölçüde arındı."
+  }
+}

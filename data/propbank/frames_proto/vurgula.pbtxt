@@ -1,0 +1,20 @@
+frame_id: "vurgula"
+verb {
+  lemma: "vurgula"
+  argument_structure {
+    id: "vurgula.01"
+    sense: "Vurgu ile söylemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "vurgulayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "topic"
+      description: "vurgulanan"
+    }
+  }
+}

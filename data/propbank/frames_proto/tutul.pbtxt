@@ -1,0 +1,21 @@
+frame_id: "tutul"
+verb {
+  lemma: "tutul"
+  argument_structure {
+    id: "tutul.01"
+    sense: "aşık olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "tutulan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "neye tutulduğu"
+    }
+    example: "Ben sana tutuldum."
+  }
+}

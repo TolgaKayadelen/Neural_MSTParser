@@ -1,0 +1,21 @@
+frame_id: "temizle"
+verb {
+  lemma: "temizle"
+  argument_structure {
+    id: "temizle.01"
+    sense: "Arıtmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "temizleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "temizlenen"
+    }
+    example: "Ortalığı temizledik."
+  }
+}

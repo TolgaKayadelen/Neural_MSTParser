@@ -1,0 +1,15 @@
+frame_id: "sağlamlaş"
+verb {
+  lemma: "sağlamlaş"
+  argument_structure {
+    id: "sağlamlaş.01"
+    sense: "Sağlam duruma gelmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "sağlam duruma gelen şey"
+    }
+    example: "Bacaklarım sağlamlaştı."
+  }
+}

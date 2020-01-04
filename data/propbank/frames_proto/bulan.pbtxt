@@ -1,0 +1,14 @@
+frame_id: "bulan"
+verb {
+  lemma: "bulan"
+  argument_structure {
+    id: "bulan.01"
+    sense: "Karışmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "bulanan"
+    }
+  }
+}

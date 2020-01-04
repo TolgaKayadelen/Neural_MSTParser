@@ -1,0 +1,19 @@
+frame_id: "katıl"
+verb {
+  lemma: "katıl"
+  argument_structure {
+    id: "katıl.01"
+    sense: "Bir topluluğa girmek, iştirak etmek, iltihak etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "katılan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "neye katıldığı"
+    }
+    example: "Üç dört ev ötedeki boş arsada çocukların oyunlarına katıldım"
+  }
+}

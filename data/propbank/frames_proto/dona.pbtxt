@@ -1,0 +1,20 @@
+frame_id: "dona"
+verb {
+  lemma: "dona"
+  argument_structure {
+    id: "dona.01"
+    sense: "Süslemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "donayan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "donanan şey"
+    }
+  }
+}

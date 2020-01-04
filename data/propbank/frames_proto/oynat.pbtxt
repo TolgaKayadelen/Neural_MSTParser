@@ -1,0 +1,15 @@
+frame_id: "oynat"
+verb {
+  lemma: "oynat"
+  argument_structure {
+    id: "oynat.01"
+    sense: "Aklını yitirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "oynatan"
+    }
+    example: "Sizinle iki gün daha çalışsam aklımı oynatabilirim."
+  }
+}

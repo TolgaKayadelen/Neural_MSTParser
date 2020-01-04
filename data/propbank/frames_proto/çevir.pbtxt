@@ -1,0 +1,144 @@
+frame_id: "çevir"
+verb {
+  lemma: "çevir"
+  argument_structure {
+    id: "çevir.01"
+    sense: "Bir şeyin yönünü değiştirmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çeviren kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "çevirdiği şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye çevirdiği"
+    }
+    example: "Sonra gözlerini gökyüzüne çevirdi."
+  }
+  argument_structure {
+    id: "çevir.02"
+    sense: "Döndürerek hareket ettirmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çeviren kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "çevirdiği şey"
+    }
+    example: "Resimleri albüme yapıştırırken kocası da radyonun düğmesini çevirdi."
+  }
+  argument_structure {
+    id: "çevir.03"
+    sense: "Yolundan alıkoymak, yoldan döndürmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çeviren kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çevirdiği kişi"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "nereden çevirdiği"
+    }
+    example: "Arkadaşı bizi çevirip evine götürdü."
+  }
+  argument_structure {
+    id: "çevir.04"
+    sense: "Çeviri yapmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çeviri yapan kişi"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "hangi dilden çevirdiği"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "hangi dile çevirdiği"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "çevrilen eser/şey"
+    }
+    example: "Romanlar, hikâyeler yazar; yahut Fransızcadan çevirirmiş."
+  }
+  argument_structure {
+    id: "çevir.05"
+    sense: "Bir yerin çevresini bir şeyle sarmak, kuşatmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çeviren kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "çevrilen şey"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "material"
+      description: "ne ile çevrelendiği"
+    }
+    example: "Bağı duvarla çevirdiler."
+  }
+  argument_structure {
+    id: "çevir.06"
+    sense: "Dönüştürmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dönüştüren kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "dönüştürülen şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "goal"
+      description: "neye dönüştürüldüğü"
+    }
+    example: "Evlerini otele çevirdiler."
+  }
+}

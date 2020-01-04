@@ -1,0 +1,28 @@
+frame_id: "ban"
+verb {
+  lemma: "ban"
+  argument_structure {
+    id: "ban"
+    sense: "Maddelerin içine batırıp çıkarmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "banan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "banılan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "banıldığı yer"
+    }
+    example: "Reçele ekmek banar, yerim."
+  }
+}

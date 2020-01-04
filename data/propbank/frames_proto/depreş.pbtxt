@@ -1,0 +1,15 @@
+frame_id: "depreş"
+verb {
+  lemma: "depreş"
+  argument_structure {
+    id: "depreş.01"
+    sense: "Nüks etmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "depreşen"
+    }
+    example: "Anılarım depreşti."
+  }
+}

@@ -1,0 +1,39 @@
+frame_id: "yor"
+verb {
+  lemma: "yor"
+  argument_structure {
+    id: "yor.01"
+    sense: "Yorgun duruma getirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yoran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "yorulan"
+    }
+    example: "Teknik teferruatla okurlarımı yormak istemiyorum."
+  }
+  argument_structure {
+    id: "yor.02"
+    sense: "Bir anlam vermek, yorumlamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "anlam veren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "anlam verilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nasıl yorumlandığı"
+    }
+    example: "Hayvanlara insanca duygu ve düşünceler yormak ne derece doğrudur bunu da kestiremiyorum"
+  }
+}

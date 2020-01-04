@@ -1,0 +1,18 @@
+frame_id: "gereksin"
+verb {
+  lemma: "gereksin"
+  argument_structure {
+    id: "gereksin.01"
+    sense: "ihtiyaç duymak"
+    argument {
+      number: A0
+      case: NOM
+      description: "gereksinen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "gereksinilen"
+    }
+  }
+}

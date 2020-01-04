@@ -1,0 +1,15 @@
+frame_id: "kay"
+verb {
+  lemma: "kay"
+  argument_structure {
+    id: "kay.01"
+    sense: "Kaygan bir yüzey üzerinde sürtünerek kolayca yer değiştirmek (mecazen Durum değiştirmek, anlam değiştirmek)"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kayan kişi"
+    }
+    example: "Buzda kaymak en büyük eğlencesiydi."
+  }
+}

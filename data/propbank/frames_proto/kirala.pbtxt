@@ -1,0 +1,69 @@
+frame_id: "kirala"
+verb {
+  lemma: "kirala"
+  argument_structure {
+    id: "kirala.01"
+    sense: "Kiraya vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kiraya veren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "kiraya verilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "beneficiary"
+      description: "kime kiralandığı"
+    }
+    example: "O evi dul bir kadına kiraladılar."
+  }
+  argument_structure {
+    id: "kirala.02"
+    sense: "Kira ile tutmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tutan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "tutulan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "beneficiary"
+      description: "kimin için/kime kiraladığı"
+    }
+    argument {
+      number: A3
+      case: DAT
+      theta_role: "asset"
+      description: "ne kadara kiraladığı"
+    }
+    argument {
+      number: A4
+      case: UNKNOWN_CASE
+      theta_role: "time"
+      description: "ne kadar süreliğine kiraladığı"
+    }
+    argument {
+      number: A5
+      case: LOC
+      theta_role: "location"
+      description: "nerede kiralandığı"
+    }
+    example: "Tuttu, sevgili eşi ve iki yavrusu için lüks iki daire kiraladı Sinan Apartmanı\'nda."
+  }
+}

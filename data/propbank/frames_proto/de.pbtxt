@@ -1,0 +1,89 @@
+frame_id: "de"
+verb {
+  lemma: "de"
+  argument_structure {
+    id: "de.01"
+    sense: "Söylemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "söyleyen kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "topic"
+      description: "söylenen şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime söylendiği"
+    }
+    example: "Eskilerin dediği gibi beşer, şaşar."
+  }
+  argument_structure {
+    id: "de.02"
+    sense: "Ad vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "adlandıran kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "ne olarak adlandırıldığı"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "recipient"
+      description: "adlandırılan şey/kişi"
+    }
+    example: "Muşmulaya döngel de derler."
+  }
+  argument_structure {
+    id: "de.03"
+    sense: "Bir dilde karşılığı olmak (anlamına gelmek)"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "diğer dildeki karşılık"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "kaynak dildeki karşılık"
+    }
+    example: "Bu ayrılık demek."
+  }
+  argument_structure {
+    id: "de.04"
+    sense: "Herhangi bir kanıya, yargıya varmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kanıya varan kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "topic"
+      description: "kanıya verilecek şey"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "varılan kanı"
+    }
+    example: "Bu işe herkes ne der?"
+  }
+}

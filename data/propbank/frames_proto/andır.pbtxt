@@ -1,0 +1,21 @@
+frame_id: "andır"
+verb {
+  lemma: "andır"
+  argument_structure {
+    id: "andır"
+    sense: "Benzer yanları bulunmak, çağrıştırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "andıran kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "andırdığı kişi/şey"
+    }
+    example: "Şiirde gazete havadisini andıran bir mısra da bulunabilir."
+  }
+}

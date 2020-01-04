@@ -1,0 +1,19 @@
+frame_id: "kalkış"
+verb {
+  lemma: "kalkış"
+  argument_structure {
+    id: "kalkış.01"
+    sense: "Yetenek, imkân ve gücü aşan bir işe girişmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "kalkışan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "kalkışılan iş"
+    }
+    example: "Bu işe hiç kalkışmamalıydık."
+  }
+}

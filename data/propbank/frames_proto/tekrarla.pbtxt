@@ -1,0 +1,19 @@
+frame_id: "tekrarla"
+verb {
+  lemma: "tekrarla"
+  argument_structure {
+    id: "tekrarla.01"
+    sense: "Bir işi bir kez daha yapmak, yinelemek, tekrar etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "tekrarlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "tekrarlanan"
+    }
+    example: "Aynı şeyleri tekrarlamaktan vazgeçmiyorsun."
+  }
+}

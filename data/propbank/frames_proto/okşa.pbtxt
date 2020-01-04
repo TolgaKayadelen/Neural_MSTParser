@@ -1,0 +1,19 @@
+frame_id: "okşa"
+verb {
+  lemma: "okşa"
+  argument_structure {
+    id: "okşa.01"
+    sense: "Hafifçe dokunmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "dokunan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "dokunulan"
+    }
+    example: "Okşuyor saçlarımı, yüzümü"
+  }
+}

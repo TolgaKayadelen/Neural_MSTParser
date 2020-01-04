@@ -1,0 +1,38 @@
+frame_id: "süzül"
+verb {
+  lemma: "süzül"
+  argument_structure {
+    id: "süzül.01"
+    sense: "Akmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "süzülen"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "nereden süzüldüğü"
+    }
+    example: "Gözlerimden yaşlar süzüldü"
+  }
+  argument_structure {
+    id: "süzül.02"
+    sense: "Havada ilerlemek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "süzülen"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede süzüldüğü"
+    }
+    example: "Kuş, gene havada süzülüp daireler çiziyor."
+  }
+}

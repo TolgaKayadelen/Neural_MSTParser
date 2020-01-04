@@ -1,0 +1,21 @@
+frame_id: "oy"
+verb {
+  lemma: "oy"
+  argument_structure {
+    id: "oy.01"
+    sense: "Keskin, sivri uçlu bir cisimle bir şeyi yontarak veya delerek çukur oluşturmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "oyan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "oyulan"
+    }
+    example: "Gözlerini oyarım senin !"
+  }
+}

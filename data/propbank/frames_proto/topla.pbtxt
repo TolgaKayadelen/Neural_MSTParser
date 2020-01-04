@@ -1,0 +1,61 @@
+frame_id: "topla"
+verb {
+  lemma: "topla"
+  argument_structure {
+    id: "topla.01"
+    sense: "Bir araya getirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "toplayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "toplanan"
+    }
+    example: "Şairin bütün eserlerini, bütün hatıralarını toplayacak"
+  }
+  argument_structure {
+    id: "topla.02"
+    sense: "Dağınıklıktan kurtarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "toplayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "toplanan"
+    }
+    example: "Odanı topla dedim sana."
+  }
+  argument_structure {
+    id: "topla.03"
+    sense: "Sayıları toplamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "toplayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme1"
+      description: "toplanan"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "theme2"
+      description: "ne ile toplandığı"
+    }
+    example: "İki ile ikiyi topladım"
+  }
+}

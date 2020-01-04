@@ -1,0 +1,36 @@
+frame_id: "fışkır"
+verb {
+  lemma: "fışkır"
+  argument_structure {
+    id: "fışkır.01"
+    sense: "Yukarıya doğru birdenbire ve hızla çıkmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "fışkıran şey"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "nereden fışkırdığı"
+    }
+    example: "Hemen hemen memleketimizin dört bucağından su fışkırmasıdır."
+  }
+  argument_structure {
+    id: "fışkır.02"
+    sense: "Bol bol olmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "bol olan şey"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "nerede bol olduğu"
+    }
+    example: "Kaldırım taşları arasından fışkırmış otların bütün sokağı bürüyeceği muhakkak"
+  }
+}

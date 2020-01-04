@@ -1,0 +1,38 @@
+frame_id: "savun"
+verb {
+  lemma: "savun"
+  argument_structure {
+    id: "savun.01"
+    sense: "Saldırıya karşı korumak, müdafaa etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "savunan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "savunuluan"
+    }
+    example: "Reklam için oradaydım, diye kendisini savundu."
+  }
+  argument_structure {
+    id: "savun.02"
+    sense: "Hareket veya düşünceyi söz ve yazı ile doğru göstermeye çalışmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ileri süren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "ileri sürülen fikir"
+    }
+    example: "Sunay Remzi, katilin kendisi olmadığını savundu."
+  }
+}

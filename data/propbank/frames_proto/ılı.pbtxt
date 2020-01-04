@@ -1,0 +1,15 @@
+frame_id: "ılı"
+verb {
+  lemma: "ılı"
+  argument_structure {
+    id: "ılı.01"
+    sense: "Ilınmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "ılık duruma gelen kişi/şey"
+    }
+    example: "Kaynar su birazcık ılıdı."
+  }
+}

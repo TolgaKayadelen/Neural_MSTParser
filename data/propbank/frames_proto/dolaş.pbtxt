@@ -1,0 +1,21 @@
+frame_id: "dolaş"
+verb {
+  lemma: "dolaş"
+  argument_structure {
+    id: "dolaş.01"
+    sense: "Gezmek, gezinmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "gezen kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "location"
+      description: "gezilen yerler"
+    }
+    example: "Büsbütün gece kapanmadan şehri biraz dolaşmak istedik."
+  }
+}

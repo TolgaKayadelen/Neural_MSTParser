@@ -1,0 +1,96 @@
+frame_id: "sakla"
+verb {
+  lemma: "sakla"
+  argument_structure {
+    id: "sakla.01"
+    sense: "Kaybolmaması, görünmemesi için gizli bir yerde tutmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "saklayıcı"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "saklanan şey"
+    }
+    argument {
+      number: A3
+      case: LOC
+      theta_role: "location"
+      description: "nereye/nerede saklandığı"
+    }
+    example: "Paralarını kasada saklıyor."
+  }
+  argument_structure {
+    id: "sakla.02"
+    sense: "Gizli tutmak, duyurmamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "saklayıcı"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "saklanan şey"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "beneficiary"
+      description: "nereden / kimden saklandığı"
+    }
+    example: "Batı, o büyük kaynaktan sık sık faydalanır ama iktibaslarını titizce saklar."
+  }
+  argument_structure {
+    id: "sakla.03"
+    sense: "Birine vermek için ayırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "saklayıcı"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "saklanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "beneficiary"
+      description: "kimin için saklandığı"
+    }
+    example: "Annem, ailemize ait nişan yüzüklerini bana saklamış."
+  }
+  argument_structure {
+    id: "sakla.04"
+    sense: "Görünmemesi için gizli bir yere götürmek, koymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "saklayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "saklanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "götürüldüğü/konulduğu yer"
+    }
+    example: "Köy yolunun kıyısında bir yere sakladı."
+  }
+}

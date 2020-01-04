@@ -1,0 +1,14 @@
+frame_id: "çisele"
+verb {
+  lemma: "çisele"
+  argument_structure {
+    id: "çisele.01"
+    sense: "Yağmur yavaşça yağmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "çiseleyen"
+    }
+    example: "Mevsim kış, hava kapalı, yağmur ince ince çiseliyor."
+  }
+}

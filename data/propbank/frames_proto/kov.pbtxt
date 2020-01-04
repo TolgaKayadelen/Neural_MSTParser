@@ -1,0 +1,27 @@
+frame_id: "kov"
+verb {
+  lemma: "kov"
+  argument_structure {
+    id: "kov.01"
+    sense: "işten çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kovan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "kovulan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "nereden kovulduğu"
+    }
+    example: "Maalesef bu işimden de kovuldum."
+  }
+}

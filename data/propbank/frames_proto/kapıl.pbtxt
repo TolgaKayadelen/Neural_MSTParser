@@ -1,0 +1,21 @@
+frame_id: "kapıl"
+verb {
+  lemma: "kapıl"
+  argument_structure {
+    id: "kapıl.01"
+    sense: "Sürüklenmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sürüklenen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "destination"
+      description: "nereye sürüklendiği"
+    }
+    example: "Garip bir hisse kapıldım."
+  }
+}

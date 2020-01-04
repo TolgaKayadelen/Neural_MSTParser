@@ -1,0 +1,21 @@
+frame_id: "kork"
+verb {
+  lemma: "kork"
+  argument_structure {
+    id: "kork.01"
+    sense: "Korku duymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "korkan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "stimulus"
+      description: "neyden korktuğu"
+    }
+    example: "Onlar hala bizden korkuyorlar"
+  }
+}

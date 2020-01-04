@@ -1,0 +1,15 @@
+frame_id: "koca"
+verb {
+  lemma: "koca"
+  argument_structure {
+    id: "koca.01"
+    sense: "Yaşlanmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "yaşlanan"
+    }
+    example: "Anam iyice kocadı."
+  }
+}

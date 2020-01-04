@@ -1,0 +1,20 @@
+frame_id: "bileş"
+verb {
+  lemma: "bileş"
+  argument_structure {
+    id: "bileş.01"
+    sense: "Bütün durumuna gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "patient1"
+      description: "bileşen"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "patient2"
+      description: "ne ile bileştiği"
+    }
+  }
+}

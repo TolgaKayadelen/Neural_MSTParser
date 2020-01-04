@@ -1,0 +1,19 @@
+frame_id: "xlAş"
+verb {
+  lemma: "xlAş"
+  argument_structure {
+    id: "xlAş.01"
+    sense: "İsmin belirttiği durumu almak"
+    argument {
+      number: A1
+      case: NOM
+      description: "durum alan, olan (xleşen)"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "aldığı durum(x)"
+    }
+    example: "Sesi kalınlaşmış."
+  }
+}

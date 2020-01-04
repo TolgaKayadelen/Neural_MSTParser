@@ -1,0 +1,27 @@
+frame_id: "bağır"
+verb {
+  lemma: "bağır"
+  argument_structure {
+    id: "bağır.01"
+    sense: "Yüksek ve gür ses çıkarmak, Kızmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bağıran"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/neye bağırdığı"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      theta_role: "attribute"
+      description: "nasıl bağırıldığı"
+    }
+    example: "Kapıda bekleşen hulamlarına bağırdı, küfretti."
+  }
+}

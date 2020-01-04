@@ -1,0 +1,21 @@
+frame_id: "uy"
+verb {
+  lemma: "uy"
+  argument_structure {
+    id: "uy.01"
+    sense: "Ölçüleri birbirini tutmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme1"
+      description: "uyan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "theme2"
+      description: "neye uyduğu"
+    }
+    example: "Şapkan montuna uymuş."
+  }
+}

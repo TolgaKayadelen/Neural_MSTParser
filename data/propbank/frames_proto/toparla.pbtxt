@@ -1,0 +1,19 @@
+frame_id: "toparla"
+verb {
+  lemma: "toparla"
+  argument_structure {
+    id: "toparla.01"
+    sense: "Bir araya getirmek, çekidüzen vermek"
+    argument {
+      number: A0
+      case: NOM
+      description: "toparlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "toparlanan"
+    }
+    example: "Odayı toparladı."
+  }
+}

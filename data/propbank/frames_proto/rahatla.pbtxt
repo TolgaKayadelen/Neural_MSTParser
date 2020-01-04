@@ -1,0 +1,15 @@
+frame_id: "rahatla"
+verb {
+  lemma: "rahatla"
+  argument_structure {
+    id: "rahatla.01"
+    sense: "tedirginlik veren bir durum ortadan kalkmak veya azalmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "rahatlayan"
+    }
+    example: "O çirkin, kaba kunduralarla sıcak günde serin denize dalmışım gibi rahatladım."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "an"
+verb {
+  lemma: "an"
+  argument_structure {
+    id: "an.01"
+    sense: "Düşünmek,  hatırlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "anan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "andığı kişi/şey"
+    }
+    example: "Onun bu fedakârlığını her yerde, her zaman minnetle anacağım."
+  }
+}

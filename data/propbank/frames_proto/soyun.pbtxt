@@ -1,0 +1,30 @@
+frame_id: "soyun"
+verb {
+  lemma: "soyun"
+  argument_structure {
+    id: "soyun.01"
+    sense: "Üstündeki giysilerin bir bölümünü veya tümünü çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "soyunan"
+    }
+    example: "Soyundu mu karşında?"
+  }
+  argument_structure {
+    id: "soyun.02"
+    sense: "Kendini herhangi bir biçimde göstermeye, bir işi, bir mesleği yapmaya girişmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "soyunan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "girişilen iş (neye soyunduğu)"
+    }
+    example: "Gizli golcülüğe soyundu."
+  }
+}

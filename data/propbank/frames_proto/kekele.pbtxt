@@ -1,0 +1,15 @@
+frame_id: "kekele"
+verb {
+  lemma: "kekele"
+  argument_structure {
+    id: "kekele.01"
+    sense: "Yineleyerek ve keserek konuşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kekeleyen"
+    }
+    example: "Çocuk kekelemeye başladı."
+  }
+}

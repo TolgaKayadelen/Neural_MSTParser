@@ -1,0 +1,25 @@
+frame_id: "eri"
+verb {
+  lemma: "eri"
+  argument_structure {
+    id: "eri.01"
+    sense: "Sıvı durumuna geçmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "eriyen şey/kişi"
+    }
+    example: "Günden güne eriyen Kerime\'yi, o tek kardeşimi kurtarabilirim ümidiyle size koştum."
+  }
+  argument_structure {
+    id: "eri.02"
+    sense: "Çok zayıflamak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "zayıflayan kişi"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+frame_id: "avun"
+verb {
+  lemma: "avun"
+  argument_structure {
+    id: "avun.01"
+    sense: "Teselli bulmak."
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "avunan kişi"
+    }
+    example: "Ne de olsa amcam; ya bir yabancıya varsa ne yapacaktık diye avunuyordu."
+  }
+  argument_structure {
+    id: "avun.02"
+    sense: "Oyalanmak."
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "avunan"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile avunduğu"
+    }
+    example: "Dünyadan bezmiş bir hâli var, hiçbir şeyle avunamıyor."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "dadan"
+verb {
+  lemma: "dadan"
+  argument_structure {
+    id: "dadan.01"
+    sense: "Bir şeyi sık sık istemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dadanan kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "neye dadandığı"
+    }
+    example: "Çocuk çikolataya pek dadandı."
+  }
+}

@@ -1,0 +1,318 @@
+frame_id: "geç"
+verb {
+  lemma: "geç"
+  argument_structure {
+    id: "geç.01"
+    sense: "Bir yerden başka bir yere gitmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "geçen kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "gittiği yer (nereye geçtiği)"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden geçtiği"
+    }
+    example: "Elindeki kitabı bırakıp bulundukları odaya geçtim."
+  }
+  argument_structure {
+    id: "geç.02"
+    sense: "Bırakmak, vazgeçmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "vazgeçen kişi"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "theme"
+      description: "neyden vazgeçtiği"
+    }
+    example: "Bana yardan geç derler."
+  }
+  argument_structure {
+    id: "geç.03"
+    sense: "Bir duruma uğramak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "geçen"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "theme"
+      description: "neyden geçtiği"
+    }
+    example: "Dayaktan geçmek. Muayeneden geçmek"
+  }
+  argument_structure {
+    id: "geç.04"
+    sense: "Olmak, vuku bulmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "geçen"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede geçtiği"
+    }
+    example: "Bu odanın içinde geçen aşk anları artık çok uzaklardaydı."
+  }
+  argument_structure {
+    id: "geç.05"
+    sense: "Bulaşmak, aktarılmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "aktarılan şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "kime aktarıldığı"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "kimden aktarıldığı"
+    }
+    example: "Bu titizlik ona babasından geçmiş."
+  }
+  argument_structure {
+    id: "geç.06"
+    sense: "Tükenmek, bitmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "tükenen şey"
+    }
+    example: "Yavaş yavaş bu hırs geçer."
+  }
+  argument_structure {
+    id: "geç.07"
+    sense: "Geride bırakmak, aşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "geride bırakan şey/kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "geride bırakılan şey/kişi"
+    }
+    example: "Bizim yelkenli vapuru geçecek."
+  }
+  argument_structure {
+    id: "geç.08"
+    sense: "Harcamak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "asset"
+      description: "geçen şey"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "goal"
+      description: "ne ile geçtiği"
+    }
+    example: "Bütün günüm seni takip etmekle geçti."
+  }
+  argument_structure {
+    id: "geç.09"
+    sense: "Yazılmak, girmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yazılan şey"
+    }
+    argument {
+      number: A4
+      case: UNKNOWN_CASE
+      theta_role: "location"
+      description: "yazıldığı yer"
+    }
+    example: "Tarihe geçti."
+  }
+  argument_structure {
+    id: "geç.10"
+    sense: "Kullanımda olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "kullanılan/geçen şey"
+    }
+    example: "Bu para artık geçmiyor."
+  }
+  argument_structure {
+    id: "geç.11"
+    sense: "Konuşmada sözü geçmek veya basında yer almak"
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "geçen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye geçtiği"
+    }
+    example: "Hatta ölümünün gazetelere bile geçmemesini istemişti."
+  }
+  argument_structure {
+    id: "geç.12"
+    sense: "pas geçmek, es geçmek, boş geçmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "geçen"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "attribute"
+      description: "ne geçtiği"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "neyi geçtiği"
+    }
+  }
+  argument_structure {
+    id: "geç.13"
+    sense: "kabul edilmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "kabul edilen"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "attribute"
+      description: "nasıl kabul edildiği"
+    }
+    example: "Yasa ezici evet oylarıyla geçti."
+  }
+}
+verb {
+  lemma: "içi_geç"
+  argument_structure {
+    id: "geç.14"
+    sense: "Uyuyakalmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "uyuyan"
+    }
+  }
+}
+verb {
+  lemma: "harekete_geç"
+  argument_structure {
+    id: "geç.15"
+    sense: "Bir işi yapmaya başlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "başlayan"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      theta_role: "goal"
+      description: "başlama amacı"
+    }
+    example: "Suç oranını düşürmek için emniyet harekete geçti"
+  }
+}
+verb {
+  lemma: "dalga_geç"
+  argument_structure {
+    id: "geç.16"
+    sense: "Alay etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dalga geçen"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "patient"
+      description: "dalga geçilen"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      theta_role: "attribute"
+      description: "nasıl dalga geçildiği"
+    }
+  }
+}
+verb {
+  lemma: "akıldan_geç"
+  argument_structure {
+    id: "geç.17"
+    sense: "aklına gelmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "akla gelen"
+    }
+  }
+}
+verb {
+  lemma: "önüne_geç"
+  argument_structure {
+    id: "geç.18"
+    sense: "engel olmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "engelleyen"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      description: "engellenen"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "uzaklaş"
+verb {
+  lemma: "uzaklaş"
+  argument_structure {
+    id: "uzaklaş.01"
+    sense: "Bir şeyden, bir yerden veya kimseden ayrılıp uzağa gitmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "uzaklaşan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "nereden uzaklaşıldığı"
+    }
+    example: "Buradan hemen uzaklaşmalıyız."
+  }
+}

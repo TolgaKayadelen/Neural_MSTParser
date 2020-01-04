@@ -1,0 +1,21 @@
+frame_id: "bile"
+verb {
+  lemma: "bile"
+  argument_structure {
+    id: "bile"
+    sense: "keskinleştirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bileyen kimse"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "bilenen şey"
+    }
+    example: "Elmayı kesmeden önce bıçağını biledi."
+  }
+}

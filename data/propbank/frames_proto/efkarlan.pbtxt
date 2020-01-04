@@ -1,0 +1,14 @@
+frame_id: "efkarlan"
+verb {
+  lemma: "efkarlan"
+  argument_structure {
+    id: "efkarlan.01"
+    sense: "Tasalanmak, kaygılanmak, üzülmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "üzülen"
+    }
+  }
+}

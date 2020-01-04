@@ -1,0 +1,27 @@
+frame_id: "görün"
+verb {
+  lemma: "görün"
+  argument_structure {
+    id: "görün.01"
+    sense: "İzlenim uyandırmak, benzemek, gözükmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "stimulus"
+      description: "görünen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "attribute"
+      description: "nasıl göründüğü"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "experiencer"
+      description: "kime/neye göründüğü"
+    }
+    example: "Bu, biraz daha inandırıcı görünüyor."
+  }
+}

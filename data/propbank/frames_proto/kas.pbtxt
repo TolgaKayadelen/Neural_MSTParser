@@ -1,0 +1,18 @@
+frame_id: "kas"
+verb {
+  lemma: "kas"
+  argument_structure {
+    id: "kas.01"
+    sense: "Kasları germek, gerilmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "kasan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "kasılan"
+    }
+  }
+}

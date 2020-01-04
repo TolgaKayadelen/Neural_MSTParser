@@ -1,0 +1,38 @@
+frame_id: "şaş"
+verb {
+  lemma: "şaş"
+  argument_structure {
+    id: "şaş.01"
+    sense: "Hayret etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "hayret eden"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "neye hayret ettiği"
+    }
+    example: "Bu kadar öfkesiz ve yumuşak oluşuna şaştı."
+  }
+  argument_structure {
+    id: "şaş.02"
+    sense: "Yolundan sapmamak, gidişini değiştirmemek, veya yanılmamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "şaşan"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "theme"
+      description: "neyden şaştığı"
+    }
+    example: "Yolundan şaşma."
+  }
+}

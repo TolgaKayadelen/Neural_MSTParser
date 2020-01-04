@@ -1,0 +1,50 @@
+frame_id: "sor"
+verb {
+  lemma: "sor"
+  argument_structure {
+    id: "sor.01"
+    sense: "Birine soru yönelterek herhangi bir konuda bilgi istemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "soran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "topic"
+      description: "sorulan konu"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime sorulduğu"
+    }
+    example: "Hastanenin nöbetçi doktoru yok mu? diye soruyorum"
+  }
+  argument_structure {
+    id: "sor.02"
+    sense: "Çok iyi bilmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sorumlu bulan (soran)"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "topic"
+      description: "sorumlu olunan konu (neyi sorduğu)"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "sorumlu olan kişi (kimden sorulduğu)"
+    }
+    example: "Bu işi benden sorarlar"
+  }
+}

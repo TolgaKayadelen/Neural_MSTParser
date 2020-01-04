@@ -1,0 +1,27 @@
+frame_id: "san"
+verb {
+  lemma: "san"
+  argument_structure {
+    id: "san.01"
+    sense: "Zannetmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "zanneden kişi (sanan)"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "stimulus"
+      description: "zannedilen şey (sanılan)"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "ne sanıldığı"
+    }
+    example: "Sen beni aptal sandın herhalde."
+  }
+}

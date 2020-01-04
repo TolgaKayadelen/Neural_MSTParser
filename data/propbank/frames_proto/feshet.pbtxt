@@ -1,0 +1,21 @@
+frame_id: "feshet"
+verb {
+  lemma: "feshet"
+  argument_structure {
+    id: "feshet.01"
+    sense: "Verilmiş bir yargıyı kaldırmak, bozmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "fesheden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "feshedilen yargı"
+    }
+    example: "Bahreyn, sözkonusu anlaşmayı feshetti."
+  }
+}

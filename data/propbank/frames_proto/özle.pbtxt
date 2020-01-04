@@ -1,0 +1,21 @@
+frame_id: "özle"
+verb {
+  lemma: "özle"
+  argument_structure {
+    id: "özle.01"
+    sense: "kavuşmayı istemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "özleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "stimulus"
+      description: "özlenilen"
+    }
+    example: "Ben bütün hayatımda bu sadeliği özledim"
+  }
+}

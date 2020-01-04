@@ -1,0 +1,20 @@
+frame_id: "gider"
+verb {
+  lemma: "gider"
+  argument_structure {
+    id: "gider.01"
+    sense: "Ortadan kaldırmak, yok etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "gideren"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "giderilen"
+    }
+    example: "Vapur sorar, yol öğrenir, merakımızı gideririz."
+  }
+}

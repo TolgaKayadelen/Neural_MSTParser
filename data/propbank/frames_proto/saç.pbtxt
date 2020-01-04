@@ -1,0 +1,20 @@
+frame_id: "saç"
+verb {
+  lemma: "saç"
+  argument_structure {
+    id: "saç.01"
+    sense: "etrafa dağıtmak, dökmek, yaymak"
+    argument {
+      number: A0
+      case: NOM
+      description: "saçan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "saçılan"
+    }
+    example: "Büyümüş gözler örste dövülen kızgın demir gibi kıvılcımlar saçtı."
+  }
+}

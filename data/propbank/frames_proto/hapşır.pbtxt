@@ -1,0 +1,15 @@
+frame_id: "hapşır"
+verb {
+  lemma: "hapşır"
+  argument_structure {
+    id: "hapşır.01"
+    sense: "Aksırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "aksıran kişi"
+    }
+    example: "Aksi gibi benim hiç durmadan esneyeceğim geliyor, hapşırmak istiyordum."
+  }
+}

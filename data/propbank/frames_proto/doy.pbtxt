@@ -1,0 +1,32 @@
+frame_id: "doy"
+verb {
+  lemma: "doy"
+  argument_structure {
+    id: "doy.01"
+    sense: "Açlığı kalmamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "doyan kişi"
+    }
+    example: "Ben biraz zeytin, biraz patates, biraz da yemişle doyarım."
+  }
+  argument_structure {
+    id: "doy.02"
+    sense: "Bir gereksinimini yeteri kadar karşılamak (mecazi anlam)"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "doyan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "neye doyduğu"
+    }
+    example: "Paraya doydum."
+  }
+}

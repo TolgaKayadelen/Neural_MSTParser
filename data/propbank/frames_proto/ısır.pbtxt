@@ -1,0 +1,38 @@
+frame_id: "ısır"
+verb {
+  lemma: "ısır"
+  argument_structure {
+    id: "ısır.01"
+    sense: "Dişleri arasına alıp sıkmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ısıran kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "ısırdığı şey"
+    }
+    example: "Dolu bir kadeh içti ve meze yerine alt dudağını ısırdı."
+  }
+  argument_structure {
+    id: "ısır.02"
+    sense: "Dişleriyle koparmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "koparan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "kopardığı şey"
+    }
+    example: "Ekmekten bir lokma ısırırken hole bakıyorum."
+  }
+}

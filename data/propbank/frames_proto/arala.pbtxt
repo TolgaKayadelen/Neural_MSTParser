@@ -1,0 +1,21 @@
+frame_id: "arala"
+verb {
+  lemma: "arala"
+  argument_structure {
+    id: "arala.01"
+    sense: "Aralık yapmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "aralayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "aralanan"
+    }
+    example: "Kapıyı aralayıp içeri baktım."
+  }
+}

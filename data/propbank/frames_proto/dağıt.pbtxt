@@ -1,0 +1,38 @@
+frame_id: "dağıt"
+verb {
+  lemma: "dağıt"
+  argument_structure {
+    id: "dağıt.01"
+    sense: "Toplu durumda bulunanları birbirinden uzaklaştırmak veya ayırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dağıtan kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "dağıttığı şey"
+    }
+    example: "Düşman ordusunu çil yavrusu gibi dağıtırlardı."
+  }
+  argument_structure {
+    id: "dağıt.02"
+    sense: "Pay etmek, vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "dağıtan kişi/şey"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "dağıtılan şey"
+    }
+    example: "Muhacir kümeleri arasında ekmek dağıtmakla uğraşan yaşlıca bir adama seslendi."
+  }
+}

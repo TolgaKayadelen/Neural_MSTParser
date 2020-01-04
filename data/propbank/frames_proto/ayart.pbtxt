@@ -1,0 +1,19 @@
+frame_id: "ayart"
+verb {
+  lemma: "ayart"
+  argument_structure {
+    id: "ayart.01"
+    sense: "kandırmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "ayartan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "ayartılan"
+    }
+    example: "Güzel sözlerle kızı ayarttı."
+  }
+}

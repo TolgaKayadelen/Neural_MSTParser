@@ -1,0 +1,145 @@
+frame_id: "gir"
+verb {
+  lemma: "gir"
+  argument_structure {
+    id: "gir.01"
+    sense: "Dışarıdan içeriye geçmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "giren kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye girildiği"
+    }
+    example: "Birlikte kiliseden içeri giriyoruz, ben topallıyorum."
+  }
+  argument_structure {
+    id: "gir.02"
+    sense: "Sığmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "sığan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "goal"
+      description: "nereye sığdığı"
+    }
+    example: "Elim bu eldivene girmiyor."
+  }
+  argument_structure {
+    id: "gir.03"
+    sense: "Katılmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "giren"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "nereye girdiği"
+    }
+    example: "Bugün edebiyat imtihanına girdim."
+  }
+  argument_structure {
+    id: "gir.04"
+    sense: "Erişmek (yaş olarak)"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "erişen kişi"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "asset"
+      description: "neye eriştiği"
+    }
+    example: "Yirmisine girdi."
+  }
+  argument_structure {
+    id: "gir.05"
+    sense: "Karışmak, eklenmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "giren"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: ""
+      description: "nereye girdiği"
+    }
+    example: "Devreye girmek, araya girmek"
+  }
+  argument_structure {
+    id: "gir.06"
+    sense: "Bir duruma geçmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "duruma geçen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "hangi duruma geçildiği"
+    }
+    example: "Şoka girdim."
+  }
+}
+verb {
+  lemma: "bahse_gir"
+  argument_structure {
+    id: "gir.07"
+    sense: "Bahse girmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "bahse giren"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kiminle bahse girildiği"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "theme"
+      description: "neyine girdiği"
+    }
+    example: "Bir kutu sigarasına bahse girdiler."
+  }
+}
+verb {
+  lemma: "yoluna_gir"
+  argument_structure {
+    id: "gir.08"
+    sense: "Gerekli olan biçimde gelişmeye başlamak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "yoluna giren şey"
+    }
+  }
+}

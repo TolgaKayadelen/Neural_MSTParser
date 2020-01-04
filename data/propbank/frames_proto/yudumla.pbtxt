@@ -1,0 +1,18 @@
+frame_id: "yudumla"
+verb {
+  lemma: "yudumla"
+  argument_structure {
+    id: "yudumla.01"
+    sense: "Yudum yudum içmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "içen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "içilen"
+    }
+  }
+}

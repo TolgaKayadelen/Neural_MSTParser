@@ -1,0 +1,21 @@
+frame_id: "er"
+verb {
+  lemma: "er"
+  argument_structure {
+    id: "er.01"
+    sense: "Erişmek, Kavuşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "erişen kişi/şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "neye/nereye eriştiği"
+    }
+    example: "Eli tavana eriyor."
+  }
+}

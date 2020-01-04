@@ -1,0 +1,32 @@
+frame_id: "bastır"
+verb {
+  lemma: "bastır"
+  argument_structure {
+    id: "bastır.01"
+    sense: "öne çıkmaya çalışmak, kazanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bastıran"
+    }
+    example: "Haydi bastır Cimbom!"
+  }
+  argument_structure {
+    id: "bastır.02"
+    sense: "gidermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "gideren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "giderilen"
+    }
+    example: "Açlığımı bastıracak birşeyler yemem lazım."
+  }
+}

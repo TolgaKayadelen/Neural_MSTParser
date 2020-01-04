@@ -1,0 +1,21 @@
+frame_id: "ona"
+verb {
+  lemma: "ona"
+  argument_structure {
+    id: "ona.01"
+    sense: "Uygun bulmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "onayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "onanan"
+    }
+    example: "Makaleniz onandı."
+  }
+}

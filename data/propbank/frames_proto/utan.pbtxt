@@ -1,0 +1,21 @@
+frame_id: "utan"
+verb {
+  lemma: "utan"
+  argument_structure {
+    id: "utan.01"
+    sense: "Sıkılmak, çekinmek, üzüntü duymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "utanan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "stimulus"
+      description: "neden utandığı"
+    }
+    example: "Doktordan utanmana gerek yok."
+  }
+}

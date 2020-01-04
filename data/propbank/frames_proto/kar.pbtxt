@@ -1,0 +1,21 @@
+frame_id: "kar"
+verb {
+  lemma: "kar"
+  argument_structure {
+    id: "kar.01"
+    sense: "Karıştırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "karıştıran kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "karıştırılan şey"
+    }
+    example: "Malzemeleri güzelce karın."
+  }
+}

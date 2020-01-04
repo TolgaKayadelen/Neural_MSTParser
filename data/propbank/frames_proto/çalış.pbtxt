@@ -1,0 +1,54 @@
+frame_id: "çalış"
+verb {
+  lemma: "çalış"
+  argument_structure {
+    id: "çalış.01"
+    sense: "emek harcamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "emek harcayan kişi"
+    }
+    example: "Çalışan ilerler, yerinde kalmaz."
+  }
+  argument_structure {
+    id: "çalış.02"
+    sense: "İşi veya görevi olmak, bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "görevli olan kişi"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: ""
+      description: "görevli olduğu yer"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      description: "hangi görevde çalıştığı"
+    }
+    example: "Artık, diğer otellerde kaç kişi çalışıyor hesaplayın."
+  }
+  argument_structure {
+    id: "çalış.03"
+    sense: "Bir şeyi öğrenmek veya yapmak için uğraşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "emek harcayan kişi"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "goal"
+      description: "emek harcadığı şey"
+    }
+    example: "Üç senedir piyano çalmaya çalışıyor."
+  }
+}

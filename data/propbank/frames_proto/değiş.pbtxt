@@ -1,0 +1,15 @@
+frame_id: "değiş"
+verb {
+  lemma: "değiş"
+  argument_structure {
+    id: "değiş.01"
+    sense: "Başka bir duruma girmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "değişen şey/kişi"
+    }
+    example: "Beş yılda her şey ne kadar çabuk değişmişti."
+  }
+}

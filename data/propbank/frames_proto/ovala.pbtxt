@@ -1,0 +1,19 @@
+frame_id: "ovala"
+verb {
+  lemma: "ovala"
+  argument_structure {
+    id: "ovala.01"
+    sense: "Ellerini bir şeye veya birbirine sürtmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "ovalayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "ovalanan"
+    }
+    example: "Kocası okurken gözleriyle satırları takip ediyor, elleriyle boncuk çantasını ovalıyordu."
+  }
+}

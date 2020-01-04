@@ -1,0 +1,26 @@
+frame_id: "yaşa"
+verb {
+  lemma: "yaşa"
+  argument_structure {
+    id: "yaşa.01"
+    sense: "Canlılığını, hayatını sürdürmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yaşayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "yaşanan hayat / olay"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "location"
+      description: "nerede yaşandığı"
+    }
+    example: "Köyde bekar yaşıyor"
+  }
+}

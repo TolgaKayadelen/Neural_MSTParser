@@ -1,0 +1,36 @@
+frame_id: "becer"
+verb {
+  lemma: "becer"
+  argument_structure {
+    id: "becer.01"
+    sense: "Üstesinden gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "beceren kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "becerilen şey"
+    }
+    example: "Bu işi de becerdik"
+  }
+  argument_structure {
+    id: "becer.02"
+    sense: "Kirletmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "kirleten"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "kirlenen"
+    }
+    example: "Bayramlık elbiseni hemen becerdin."
+  }
+}

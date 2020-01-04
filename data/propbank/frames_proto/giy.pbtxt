@@ -1,0 +1,21 @@
+frame_id: "giy"
+verb {
+  lemma: "giy"
+  argument_structure {
+    id: "giy.01"
+    sense: "Örtünmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "giyen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "giyilen"
+    }
+    example: "Kapalı çarşı zevkine göre alafranga sayılabilecek bir entari giymişti."
+  }
+}

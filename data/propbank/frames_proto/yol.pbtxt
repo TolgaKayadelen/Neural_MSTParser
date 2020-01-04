@@ -1,0 +1,21 @@
+frame_id: "yol"
+verb {
+  lemma: "yol"
+  argument_structure {
+    id: "yol.01"
+    sense: "çekip koparmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "koparan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "koparılan"
+    }
+    example: "Yoluyor mu, ne yapıyor bilmem, pişik suratlı olmuş."
+  }
+}

@@ -1,0 +1,59 @@
+frame_id: "bat"
+verb {
+  lemma: "bat"
+  argument_structure {
+    id: "bat.01"
+    sense: "Gömülmek, aşağı inmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "batan şey"
+    }
+    example: "Sonra hani bir gemimiz batmıştı."
+  }
+  argument_structure {
+    id: "bat.02"
+    sense: "Saplanmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "batan şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye battığı"
+    }
+    example: "Ayağına yolda diken batmıştı."
+  }
+  argument_structure {
+    id: "bat.03"
+    sense: "Dokunmak, incitmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "stimulus"
+      description: "batan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "experiencer"
+      description: "nereye/kime battığı"
+    }
+    example: "Onun her sözü bana batar."
+  }
+  argument_structure {
+    id: "bat.04"
+    sense: "Kirlenmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "kirlenen şey"
+    }
+    example: "Battı ortalık ."
+  }
+}

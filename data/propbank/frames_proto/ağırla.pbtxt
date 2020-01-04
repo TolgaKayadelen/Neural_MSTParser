@@ -1,0 +1,21 @@
+frame_id: "ağırla"
+verb {
+  lemma: "ağırla"
+  argument_structure {
+    id: "ağırla.01"
+    sense: "Konuğa saygı göstererek onun her türlü rahatını, gereksinimini sağlamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ağırlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "ağırlanan"
+    }
+    example: "Beni karşıladılar ve ağırladılar."
+  }
+}

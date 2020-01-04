@@ -1,0 +1,168 @@
+frame_id: "düş"
+verb {
+  lemma: "düş"
+  argument_structure {
+    id: "düş.01"
+    sense: "Dengesini yitirerek aşağı inmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "inen şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye indiği"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden indiği"
+    }
+    example: "Havada uçan kuş vurulmuş gibi birdenbire sokağa düşüyor."
+  }
+  argument_structure {
+    id: "düş.02"
+    sense: "Eksilmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "eksilen şey"
+    }
+    example: "Gündelikleri yarı yarıya düşmüştü."
+  }
+  argument_structure {
+    id: "düş.03"
+    sense: "Aşırı ilgi veya sevgi göstermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ilgi gösteren kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "topic"
+      description: "ilgi gösterdiği konu"
+    }
+    example: "Sen bu işin üstüne çok düştün."
+  }
+  argument_structure {
+    id: "düş.04"
+    sense: "Payına ayrılmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "payına düşen şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "kimin payına düştüğü"
+    }
+    example: "Mirastan ona bu ev düştü."
+  }
+  argument_structure {
+    id: "düş.05"
+    sense: "Deyimlerde kullanılan Yürümek, birlikte gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yürüyen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "destination"
+      description: "gidilen yön, yer"
+    }
+    example: "Önüne, peşine, arkasına düşmek. Yola düşmek."
+  }
+  argument_structure {
+    id: "düş.06"
+    sense: "Olmak, olumsuz bir duruma girmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "durumda bulunan"
+    }
+    argument {
+      number: A3
+      case: UNKNOWN_CASE
+      theta_role: "cause"
+      description: "sebep"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "attribute"
+      description: "bulunduğu durum"
+    }
+    example: "Yorgun düşmek. Zayıf düşmek. Şehit düşmek. Esir düşmek"
+  }
+  argument_structure {
+    id: "düş.07"
+    sense: "Uğramak, kapılmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "kapılan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "kapıldığı duygu"
+    }
+    example: "Kadınlar yeni baştan telaşa, heyecana, korkuya düştüler."
+  }
+  argument_structure {
+    id: "düş.08"
+    sense: "İptal olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "iptal olan şey"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      theta_role: "cause"
+      description: "iptal olma sebebi"
+    }
+    example: "Ders düştü, milletvekilliği düştü vb..."
+  }
+  argument_structure {
+    id: "düş.09"
+    sense: "Yakışmak, denk gelmek, uymak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme1"
+      description: "yakışan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "theme2"
+      description: "neye yakıştığı"
+    }
+    argument {
+      number: A3
+      case: NOM
+      theta_role: "attribute"
+      description: "ne düştüğü (uygun, denk vb...)"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+frame_id: "yan"
+verb {
+  lemma: "yan"
+  argument_structure {
+    id: "yan.01"
+    sense: "Ateş durumuna geçmek, tutuşmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "yanan"
+    }
+  }
+}

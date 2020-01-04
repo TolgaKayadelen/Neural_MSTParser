@@ -1,0 +1,51 @@
+frame_id: "yaz"
+verb {
+  lemma: "yaz"
+  argument_structure {
+    id: "yaz.01"
+    sense: "Söz ve düşünceyi özel işaret veya harflerle anlatmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yazan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "topic"
+      description: "yazılan şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/neye yazıldığı"
+    }
+    example: "Büyük bir heyecan, bir haz içinde şu satırları yazıyorum"
+  }
+  argument_structure {
+    id: "yaz.02"
+    sense: "Yazar olarak görev yapmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yazar"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "location"
+      description: "yazdığı yer"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "ne yazdığı"
+    }
+    example: "Artık Milliyette yazıyorum"
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "karşılaş"
+verb {
+  lemma: "karşılaş"
+  argument_structure {
+    id: "karşılaş.01"
+    sense: "Karşı karşıya gelmek, rastlaşmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "karşılaşan"
+    }
+    argument {
+      number: A1
+      case: INS
+      description: "karşılaşılan"
+    }
+    example: "Terdit, yazıda beklenmedik bir sonuçla karşılaşmak demektir."
+  }
+}

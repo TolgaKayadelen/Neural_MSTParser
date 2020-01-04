@@ -1,0 +1,19 @@
+frame_id: "yet"
+verb {
+  lemma: "yet"
+  argument_structure {
+    id: "yet.01"
+    sense: "Bir gereksinimi karşılayacak, giderecek nicelikte olmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yeten"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "neye yettiği"
+    }
+    example: "Bir sigara bir ormanı yakmaya yeter."
+  }
+}

@@ -1,0 +1,81 @@
+frame_id: "bak"
+verb {
+  lemma: "bak"
+  argument_structure {
+    id: "bak.01"
+    sense: "Bakışı bir şey üzerine çevirmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bakan kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "location"
+      description: "bakılan şey"
+    }
+    example: "Hangi resmime baksam ben değilim."
+  }
+  argument_structure {
+    id: "bak.02"
+    sense: "Beslemek, geçindirmek."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "geçindiren kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "geçindirilen kişi/ler"
+    }
+    example: "Üç çocuklu bir aileye bakıyor."
+  }
+  argument_structure {
+    id: "bak.03"
+    sense: "Anlamak, farkına varmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bakan kişi"
+    }
+    example: "Bazı akşamlar bakarım Halil savuşur, nereye gittiğini de kimseye söylemez."
+  }
+  argument_structure {
+    id: "bak.04"
+    sense: "Bir konuyu belli bir bakış açısıyla değerlendirme"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bakan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "topic"
+      description: "neye baktığı"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "attribute"
+      description: "nasıl bakıldığı"
+    }
+    example: "Bu evliliğe hiç sıcak bakmıyorum."
+  }
+  argument_structure {
+    id: "bak.05"
+    sense: "hadi bakalım, bak, imperativ"
+    argument {
+      number: A0
+      case: NOM
+      description: "bakan kişi"
+    }
+  }
+}

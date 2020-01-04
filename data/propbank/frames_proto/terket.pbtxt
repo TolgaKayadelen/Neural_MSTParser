@@ -1,0 +1,19 @@
+frame_id: "terket"
+verb {
+  lemma: "terket"
+  argument_structure {
+    id: "terket.01"
+    sense: "Bırakmak, ayrılmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "bırakan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "bırakılan"
+    }
+    example: "Ya sev ya da terket."
+  }
+}

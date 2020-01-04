@@ -1,0 +1,21 @@
+frame_id: "güven"
+verb {
+  lemma: "güven"
+  argument_structure {
+    id: "güven.01"
+    sense: "Güven duymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "güven duyan kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "recipient"
+      description: "güven duyulan kişi"
+    }
+    example: "Bu işte size güveniyorum."
+  }
+}

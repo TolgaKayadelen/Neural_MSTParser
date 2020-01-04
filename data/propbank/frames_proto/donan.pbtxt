@@ -1,0 +1,19 @@
+frame_id: "donan"
+verb {
+  lemma: "donan"
+  argument_structure {
+    id: "donan.01"
+    sense: "Yayılıp kaplanmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "donanan"
+    }
+    argument {
+      number: A2
+      case: INS
+      description: "ne ile donandığı"
+    }
+    example: "Kırk türlü kuru yemişle donanmış masanın ortasına dikilmiş bir ince, ufak mum vardı."
+  }
+}

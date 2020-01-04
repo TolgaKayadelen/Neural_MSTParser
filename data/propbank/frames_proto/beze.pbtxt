@@ -1,0 +1,27 @@
+frame_id: "beze"
+verb {
+  lemma: "beze"
+  argument_structure {
+    id: "beze.01"
+    sense: "Süslemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bezeyen kimse"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "bezenen şey"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile bezediği"
+    }
+    example: "Gördüğü iyiliğe karşılık ikram fazlasından masamızı mezelerin çeşitlisiyle bezedi."
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "yanıtla"
+verb {
+  lemma: "yanıtla"
+  argument_structure {
+    id: "yanıtla.01"
+    sense: "Cevaplamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yanıtlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "yanıtlanan şey"
+    }
+    example: "Azmi benim yerime yanıtladı."
+  }
+}

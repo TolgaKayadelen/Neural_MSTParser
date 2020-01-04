@@ -1,0 +1,21 @@
+frame_id: "deş"
+verb {
+  lemma: "deş"
+  argument_structure {
+    id: "deş.01"
+    sense: "Karıştırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "deşen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "deşilen şey"
+    }
+    example: "Bu hatıraları daha deşmek istemiyorum."
+  }
+}

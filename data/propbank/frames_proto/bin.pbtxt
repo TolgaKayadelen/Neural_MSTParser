@@ -1,0 +1,21 @@
+frame_id: "bin"
+verb {
+  lemma: "bin"
+  argument_structure {
+    id: "bin.01"
+    sense: "Bir taşıtta yer almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "binen kimse/şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "binilen taşıt/şey"
+    }
+    example: "İş inada bindi."
+  }
+}

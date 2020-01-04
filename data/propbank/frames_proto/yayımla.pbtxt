@@ -1,0 +1,22 @@
+frame_id: "yayımla"
+verb {
+  lemma: "yayımla"
+  argument_structure {
+    id: "yayımla.01"
+    sense: "Kitap, gazete, dergi vb. şeyleri basmak ve dağıtmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "basan ve dağıtan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "product"
+      description: "basılan dağıtılan"
+    }
+    example: "Türk Dil Kurumunun yeni yayımladığı kitapları gördüm."
+  }
+}

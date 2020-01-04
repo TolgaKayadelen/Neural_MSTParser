@@ -1,0 +1,14 @@
+frame_id: "fıttır"
+verb {
+  lemma: "fıttır"
+  argument_structure {
+    id: "fıttır.01"
+    sense: "Delirmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "fıttıran kişi"
+    }
+  }
+}

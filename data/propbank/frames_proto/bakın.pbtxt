@@ -1,0 +1,21 @@
+frame_id: "bakın"
+verb {
+  lemma: "bakın"
+  argument_structure {
+    id: "bakın.01"
+    sense: "Çevreye göz gezdirmek, araştırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "bakınan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "location"
+      description: "nereye bakındığı"
+    }
+    example: "Etrafına bakındı fotoğrafçıları çağırmak için"
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "ger"
+verb {
+  lemma: "ger"
+  argument_structure {
+    id: "ger.01"
+    sense: "Gergin duruma getirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çeken/geren kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "çektiği/gerdiği kişi/şey"
+    }
+    example: "Yayı daha germe / Kıracaksın."
+  }
+}

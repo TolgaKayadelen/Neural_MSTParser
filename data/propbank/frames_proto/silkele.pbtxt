@@ -1,0 +1,19 @@
+frame_id: "silkele"
+verb {
+  lemma: "silkele"
+  argument_structure {
+    id: "silkele.01"
+    sense: "Üstündeki şeyleri düşürme, silkme"
+    argument {
+      number: A0
+      case: NOM
+      description: "silkeleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "silkelenen"
+    }
+    example: "Üstünü silkeledi ve yürümeye devam etti."
+  }
+}

@@ -1,0 +1,14 @@
+frame_id: "sızla"
+verb {
+  lemma: "sızla"
+  argument_structure {
+    id: "sızla.01"
+    sense: "Hafifçe ağrımak"
+    argument {
+      number: A1
+      case: NOM
+      description: "sızlayan"
+    }
+    example: "Kafa kemiklerine varıncaya kadar her yanı sızlıyordu."
+  }
+}

@@ -1,0 +1,38 @@
+frame_id: "ağla"
+verb {
+  lemma: "ağla"
+  argument_structure {
+    id: "ağla.01"
+    sense: "Üzüntü, acı, sevinç etkisiyle gözyaşı dökmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ağlayan kişi"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "cause"
+      description: "ağlama nedeni"
+    }
+    example: "Ziyaret sırasında kabri eliyle düzeltti, üzüntüsünden ağladı."
+  }
+  argument_structure {
+    id: "ağla.02"
+    sense: "Sızlanmak, yakınmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "ağlayan kişi"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "topic"
+      description: "ağladığı konu"
+    }
+    example: "Çaresizliğine ve yalnızlığına ağladı."
+  }
+}

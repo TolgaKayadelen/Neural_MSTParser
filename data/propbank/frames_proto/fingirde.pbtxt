@@ -1,0 +1,15 @@
+frame_id: "fingirde"
+verb {
+  lemma: "fingirde"
+  argument_structure {
+    id: "fingirde.01"
+    sense: "Oynak davranmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "gülen, oynak davranan kişi"
+    }
+    example: "Senin tabirince kadın erkek hayli fingirdediler."
+  }
+}

@@ -1,0 +1,14 @@
+frame_id: "geliş"
+verb {
+  lemma: "geliş"
+  argument_structure {
+    id: "geliş.01"
+    sense: "İlerlemek, olgunlaşmak, genişlemek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "gelişen kişi/şey"
+    }
+  }
+}

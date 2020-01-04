@@ -1,0 +1,24 @@
+frame_id: "gammazla"
+verb {
+  lemma: "gammazla"
+  argument_structure {
+    id: "gammazla.01"
+    sense: "İspiyonlamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "gammazlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "gammazlanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "kime ispiyonlandığı"
+    }
+    example: "Ona, Celâl seni müdüre gammazlıyor, haberin olsun, dedi."
+  }
+}

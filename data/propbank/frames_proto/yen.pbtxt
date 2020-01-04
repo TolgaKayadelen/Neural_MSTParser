@@ -1,0 +1,21 @@
+frame_id: "yen"
+verb {
+  lemma: "yen"
+  argument_structure {
+    id: "yen.01"
+    sense: "Savaş veya yarışmada üstünlük sağlamak, üstün gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kazanan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "yenilen/kaybeden"
+    }
+    example: "Kahramanlar daima yenmek veya düşmanlarını yendikten sonra da yine yenecek düşman bulmak isterler."
+  }
+}

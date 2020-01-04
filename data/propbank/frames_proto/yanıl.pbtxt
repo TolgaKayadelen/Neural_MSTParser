@@ -1,0 +1,19 @@
+frame_id: "yanıl"
+verb {
+  lemma: "yanıl"
+  argument_structure {
+    id: "yanıl.01"
+    sense: "Aldanmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yanılan"
+    }
+    argument {
+      number: A1
+      case: LOC
+      description: "hangi konuda yanıldığı"
+    }
+    example: "Bu konuda yanılmışım."
+  }
+}

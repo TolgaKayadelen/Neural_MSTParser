@@ -1,0 +1,21 @@
+frame_id: "darıl"
+verb {
+  lemma: "darıl"
+  argument_structure {
+    id: "darıl.01"
+    sense: "Gücenmek, küsmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "darılan kişi"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "recipient"
+      description: "kime darıldığı"
+    }
+    example: "Şimdi de bize darıldı."
+  }
+}

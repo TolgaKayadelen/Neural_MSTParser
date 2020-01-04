@@ -1,0 +1,15 @@
+frame_id: "belir"
+verb {
+  lemma: "belir"
+  argument_structure {
+    id: "belir.01"
+    sense: "Ortaya çıkmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "beliren şey"
+    }
+    example: "Kafasında çeşitli kaygılar beliriyordu."
+  }
+}

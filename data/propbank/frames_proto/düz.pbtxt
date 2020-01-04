@@ -1,0 +1,21 @@
+frame_id: "düz"
+verb {
+  lemma: "düz"
+  argument_structure {
+    id: "düz.01"
+    sense: "Bir araya getirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "düzen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "topladığı şey"
+    }
+    example: "Oğlum Sıtkı için son zamanlarda epeyce temiz ev eşyası düzdü diyorlar."
+  }
+}

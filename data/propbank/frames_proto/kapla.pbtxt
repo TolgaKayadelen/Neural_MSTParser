@@ -1,0 +1,25 @@
+frame_id: "kapla"
+verb {
+  lemma: "kapla"
+  argument_structure {
+    id: "kapla.01"
+    sense: "Örtmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "kaplayan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "kaplanan"
+    }
+    argument {
+      number: A3
+      case: INS
+      description: "ne ile kaplandığı"
+    }
+    example: "Karanlık tüm gökyüzünü kapladı."
+  }
+}

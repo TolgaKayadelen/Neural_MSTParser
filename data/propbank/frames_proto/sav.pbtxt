@@ -1,0 +1,24 @@
+frame_id: "sav"
+verb {
+  lemma: "sav"
+  argument_structure {
+    id: "sav.01"
+    sense: "İstenmeyen birini yanından uzaklaştırmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "uzaklaştıran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "uzaklaştırılan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "nereden uzaklaştırıldığı"
+    }
+    example: "Öğrencisini başından savdı."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "sarıl"
+verb {
+  lemma: "sarıl"
+  argument_structure {
+    id: "sarıl.01"
+    sense: "Kucaklamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sarılan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "kime/neye sarıldığı"
+    }
+    example: "Oğluna sarıldı."
+  }
+}

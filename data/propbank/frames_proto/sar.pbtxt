@@ -1,0 +1,39 @@
+frame_id: "sar"
+verb {
+  lemma: "sar"
+  argument_structure {
+    id: "sar.01"
+    sense: "Çevresini çevirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "saran"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "nereyi sardığı"
+    }
+    example: "Sardığı sigarayı tabakasına yerleştiriyor."
+  }
+  argument_structure {
+    id: "sar.02"
+    sense: "Bir şeyi başka bir şeyin içine koyup onunla kaplamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "kaplayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "kaplanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "kaplandığı yer"
+    }
+    example: "Kitabı kâğıda sarmak"
+  }
+}

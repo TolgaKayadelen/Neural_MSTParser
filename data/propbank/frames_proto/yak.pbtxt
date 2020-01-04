@@ -1,0 +1,22 @@
+frame_id: "yak"
+verb {
+  lemma: "yak"
+  argument_structure {
+    id: "yak.01"
+    sense: "Yanmasına yol açmak, tutuşturmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yakan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "patient"
+      description: "yakılan şey"
+    }
+    example: "Kendi sigarası için yaktığı kibriti bana uzattı."
+  }
+}

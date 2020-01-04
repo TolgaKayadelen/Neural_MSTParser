@@ -1,0 +1,21 @@
+frame_id: "çırp"
+verb {
+  lemma: "çırp"
+  argument_structure {
+    id: "çırp.01"
+    sense: "İki şeyi birbirine çarpmak."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çırpan kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "çırpılan şey"
+    }
+    example: "Sonra da onu havaya atarak ellerini çırptı."
+  }
+}

@@ -1,0 +1,15 @@
+frame_id: "yankılan"
+verb {
+  lemma: "yankılan"
+  argument_structure {
+    id: "yankılan.01"
+    sense: "Yankı durumunda geri dönmek, aksetmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yankılanan"
+    }
+    example: "Tapınaklar gibi yüksek tavanlı olan bu binanın duvarlarında belli belirsiz bir ilahi yankılanıyordu."
+  }
+}

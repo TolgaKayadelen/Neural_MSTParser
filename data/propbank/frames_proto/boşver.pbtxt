@@ -1,0 +1,18 @@
+frame_id: "boşver"
+verb {
+  lemma: "boşver"
+  argument_structure {
+    id: "boşver.01"
+    sense: "aldırmamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "boşveren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "boşverilen"
+    }
+  }
+}

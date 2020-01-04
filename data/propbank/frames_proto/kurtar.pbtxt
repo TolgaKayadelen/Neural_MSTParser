@@ -1,0 +1,25 @@
+frame_id: "kurtar"
+verb {
+  lemma: "kurtar"
+  argument_structure {
+    id: "kurtar.01"
+    sense: "Bir canlıyı bir felaketten, tehlikeden veya zor durumdan uzaklaştırmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "kurtarıcı"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "kurtarılan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "neyden/nereden kurtarıldığı"
+    }
+    example: "İşte böyle bir eser onları bu külfetten kurtarmış olur."
+  }
+}

@@ -1,0 +1,61 @@
+frame_id: "iste"
+verb {
+  lemma: "iste"
+  argument_structure {
+    id: "iste.01"
+    sense: "Arzulamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "isteyen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "ne istediği"
+    }
+    example: "Kımıldamak istedi kımıldayamadı."
+  }
+  argument_structure {
+    id: "iste.02"
+    sense: "Bir şeyin kendisine verilmesini veya yapılmasını söylemek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "isteyen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "istenen şey"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "kimden istendiği"
+    }
+    example: "İspanyol aileler, savcılıktan soruşturma açmasını istedi."
+  }
+  argument_structure {
+    id: "iste.03"
+    sense: "Evlenmek dileğinde bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "erkek tarafı"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "evlenilmek istenen kız"
+    }
+    example: "Komşunun kızını istemişler."
+  }
+}

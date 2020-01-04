@@ -1,0 +1,19 @@
+frame_id: "sataş"
+verb {
+  lemma: "sataş"
+  argument_structure {
+    id: "sataş.01"
+    sense: "Bir kimseyi rahatsız edecek davranışta bulunmak, musallat olmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "sataşan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "sataşılan"
+    }
+    example: "Satışma kardeşine."
+  }
+}

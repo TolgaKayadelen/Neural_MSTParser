@@ -1,0 +1,19 @@
+frame_id: "çevrele"
+verb {
+  lemma: "çevrele"
+  argument_structure {
+    id: "çevrele.01"
+    sense: "Kuşatmak, sarmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "çevreleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "çevrelenen"
+    }
+    example: "Açık başımı çevreleyen beyaz saçlarım."
+  }
+}

@@ -1,0 +1,231 @@
+frame_id: "çık"
+verb {
+  lemma: "çık"
+  argument_structure {
+    id: "çık.01"
+    sense: "Bir yerden ayrılmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "giden kişi / şey"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden ayrıldığı"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye vardığı"
+    }
+    example: "Yeni evimizden çıkıp eski evimize taşındık."
+  }
+  argument_structure {
+    id: "çık.02"
+    sense: "Bir yere ulaşmak, varmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "ulaşan"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye ulaştığı"
+    }
+    example: "Sağa sola saptılar, demir yoluna çıktılar."
+  }
+  argument_structure {
+    id: "çık.03"
+    sense: "Yayılmak, gelmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yayılan şey"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden yayıldığı"
+    }
+    example: "Lağımdan pis kokular çıkıyor."
+  }
+  argument_structure {
+    id: "çık.04"
+    sense: "meydana gelmek, bulunmak ya da üretilmek, piyasaya sürülmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "çıkan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      theta_role: "source"
+      description: "nereden çıktığı"
+    }
+    example: "Böyle bir mesele çıktı."
+  }
+  argument_structure {
+    id: "çık.05"
+    sense: "başlamak, bir amaçla bir yere gitmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çıkan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "nereye çıktığı"
+    }
+    example: "Yarın alışverişe çıkalım."
+  }
+  argument_structure {
+    id: "çık.06"
+    sense: "görünmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "görünen"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "nerede göründüğü"
+    }
+    example: "Gazetede haberleri çıkmış."
+  }
+  argument_structure {
+    id: "çık.07"
+    sense: "olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "olan"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "attribute"
+      description: "ne olduğu"
+    }
+    example: "Sayı beklediğinden az çıktı ."
+  }
+  argument_structure {
+    id: "çık.08"
+    sense: "tırmanmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "tırmanan"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      description: "tırmanılan"
+    }
+  }
+}
+verb {
+  lemma: "ortaya_çık"
+  argument_structure {
+    id: "çık.09"
+    sense: "Bilinmeyen birşeyin bilinir hale gelmesi"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "ortaya çıkan"
+    }
+    example: "Başkan Demirören\'in bu transferi bitirdiği ortaya çıktı."
+  }
+}
+verb {
+  lemma: "başa_çık"
+  argument_structure {
+    id: "çık.10"
+    sense: "Güçlükler çıkaran biriyle olan işini, kendi istediği yolda sonuçlandırabilmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "başa çıkan"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "theme"
+      description: "başa çıktığı zorluk"
+    }
+    example: "Batı bu belayla başa çıktı."
+  }
+}
+verb {
+  lemma: "karşı_çık"
+  argument_structure {
+    id: "çık.11"
+    sense: "Bir düşünceye katılmamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "karşı çıkan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "topic"
+      description: "karşı çıktığı düşünce"
+    }
+  }
+}
+verb {
+  lemma: "sahip_çık"
+  argument_structure {
+    id: "çık.12"
+    sense: "Korumak, sahiplenmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "koruyucu"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "korunan"
+    }
+    example: "Halk nasıl sahip çıktı bayramına."
+  }
+}
+verb {
+  lemma: "yola_çık"
+  argument_structure {
+    id: "çık.13"
+    sense: "Önermede bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "öneren"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "nereden yola çıktığı"
+    }
+  }
+}

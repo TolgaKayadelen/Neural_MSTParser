@@ -1,0 +1,22 @@
+frame_id: "hisset"
+verb {
+  lemma: "hisset"
+  argument_structure {
+    id: "hisset.01"
+    sense: "Fiziksel bir uyarıyı duymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "hisseden"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "stimulus"
+      description: "hissedilen şey"
+    }
+    example: "Hançer saplanmış gibi keskin bir sızı hissetmişti kasıklarında."
+  }
+}

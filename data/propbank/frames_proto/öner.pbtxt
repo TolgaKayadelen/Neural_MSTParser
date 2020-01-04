@@ -1,0 +1,28 @@
+frame_id: "öner"
+verb {
+  lemma: "öner"
+  argument_structure {
+    id: "öner.01"
+    sense: "Tavsiye vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "öneren"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "topic"
+      description: "önerilen"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "kime/nereye önerildiği"
+    }
+    example: "Daha sonraları, Edebiyat Fakültesi\'nde asistan olduğum sırada, Falih Rıfkı, Anadolu Ajansında bana bir iş önerdi."
+  }
+}

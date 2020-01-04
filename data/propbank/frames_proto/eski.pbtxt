@@ -1,0 +1,15 @@
+frame_id: "eski"
+verb {
+  lemma: "eski"
+  argument_structure {
+    id: "eski.01"
+    sense: "Yıpranmak, yaşlanmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "eskiyen şey/kişi"
+    }
+    example: "Yerde değerli ama artık eskimiş bir halı."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "dene"
+verb {
+  lemma: "dene"
+  argument_structure {
+    id: "dene.01"
+    sense: "Sınamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "deneyen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "denenen şey"
+    }
+    example: "Gelecek ise daha denemediğimiz zaman kesitidir."
+  }
+}

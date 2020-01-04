@@ -1,0 +1,15 @@
+frame_id: "zayıfla"
+verb {
+  lemma: "zayıfla"
+  argument_structure {
+    id: "zayıfla.01"
+    sense: "Zayıf duruma gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "zayıflayan"
+    }
+    example: "Biraz zayıflamış, kolalı beyaz yakalığı bollaşmıştı."
+  }
+}

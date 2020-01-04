@@ -1,0 +1,21 @@
+frame_id: "eğ"
+verb {
+  lemma: "eğ"
+  argument_structure {
+    id: "eğ.01"
+    sense: "Bükmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "büken kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "bükülen şey"
+    }
+    example: "Ağır ağır başını eğip yere baktı ve boynunu büktü."
+  }
+}

@@ -1,0 +1,44 @@
+frame_id: "besle"
+verb {
+  lemma: "besle"
+  argument_structure {
+    id: "besle.01"
+    sense: "Doldurmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "besleyen şey/kimse"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "beslenen şey/kimse"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "instrument"
+      description: "ne ile beslendiği"
+    }
+    example: "Bacaklarımızın altını iki sabun çuvalıyla besleyerek sırtüstü yattık."
+  }
+  argument_structure {
+    id: "besle.02"
+    sense: "Yetiştirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yetiştirici"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "yetiştirilen şey"
+    }
+    example: "Herkes kanarya, kedi, köpek beslemez ya!"
+  }
+}

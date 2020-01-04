@@ -1,0 +1,18 @@
+frame_id: "belirt"
+verb {
+  lemma: "belirt"
+  argument_structure {
+    id: "belirt.01"
+    sense: "Açıklamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "belirten"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "belirtilen"
+    }
+  }
+}

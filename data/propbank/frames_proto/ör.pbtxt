@@ -1,0 +1,20 @@
+frame_id: "ör"
+verb {
+  lemma: "ör"
+  argument_structure {
+    id: "ör.01"
+    sense: "Dokumak"
+    argument {
+      number: A0
+      case: NOM
+      description: "ören"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "örülen"
+    }
+    example: "Annem bana kazak örmüş."
+  }
+}

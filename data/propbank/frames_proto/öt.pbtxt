@@ -1,0 +1,14 @@
+frame_id: "öt"
+verb {
+  lemma: "öt"
+  argument_structure {
+    id: "öt.01"
+    sense: "Ses çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "öten"
+    }
+    example: "Ötme bülbül."
+  }
+}

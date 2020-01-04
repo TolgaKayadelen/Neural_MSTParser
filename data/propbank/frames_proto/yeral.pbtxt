@@ -1,0 +1,18 @@
+frame_id: "yeral"
+verb {
+  lemma: "yeral"
+  argument_structure {
+    id: "yeral.01"
+    sense: "Arasında bulunmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "yer alan şey"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "nerede yer aldığı"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "sığın"
+verb {
+  lemma: "sığın"
+  argument_structure {
+    id: "sığın.01"
+    sense: "Tehlikelerden kaçarak güvenilir bir yere çekilmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "sığınan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "nereye sığındığı"
+    }
+    example: "Artık arkasına sığınacak bir camekânım da yok"
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "yönet"
+verb {
+  lemma: "yönet"
+  argument_structure {
+    id: "yönet.01"
+    sense: "İdare etmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "idare eden"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "idare edilen"
+    }
+  }
+}

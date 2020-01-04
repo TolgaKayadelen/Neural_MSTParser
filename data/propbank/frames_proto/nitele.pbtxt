@@ -1,0 +1,21 @@
+frame_id: "nitele"
+verb {
+  lemma: "nitele"
+  argument_structure {
+    id: "nitele.01"
+    sense: "Bir şeyin niteliğini belirtmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "niteleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "nitelenen"
+    }
+    example: "None"
+  }
+}

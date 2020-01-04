@@ -1,0 +1,32 @@
+frame_id: "meraklan"
+verb {
+  lemma: "meraklan"
+  argument_structure {
+    id: "meraklan.01"
+    sense: "Kaygılanmak, üzülmek, tasalanmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "meraklanan"
+    }
+    example: "Beni meraklandırdın."
+  }
+  argument_structure {
+    id: "meraklan.02"
+    sense: "Bir şeyin sebebini anlamak için çaba harcamak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "meraklanan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "merak edilen"
+    }
+    example: "Yeşil gözlülerin dünyayı yeşil görüp görmediklerine meraklanıp gezindiği çocukluk günlerini anlattı."
+  }
+}

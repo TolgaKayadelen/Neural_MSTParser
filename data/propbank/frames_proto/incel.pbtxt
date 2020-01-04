@@ -1,0 +1,15 @@
+frame_id: "incel"
+verb {
+  lemma: "incel"
+  argument_structure {
+    id: "incel.01"
+    sense: "İnce duruma gelmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "incelen"
+    }
+    example: "Eşofman iyice incelmiş."
+  }
+}

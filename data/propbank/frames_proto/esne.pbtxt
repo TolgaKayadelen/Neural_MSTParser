@@ -1,0 +1,26 @@
+frame_id: "esne"
+verb {
+  lemma: "esne"
+  argument_structure {
+    id: "esne.01"
+    sense: "Ağzı genişçe açarak soluk alıp vermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "esneyen"
+    }
+    example: "Birden çenelerim gerildi, uzun uzun esnedim."
+  }
+  argument_structure {
+    id: "esne.02"
+    sense: "Biçim değiştirmek"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "esneyen cisim"
+    }
+    example: "Kumaşı çok esnemiş."
+  }
+}

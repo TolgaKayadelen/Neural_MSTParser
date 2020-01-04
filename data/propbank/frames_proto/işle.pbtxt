@@ -1,0 +1,37 @@
+frame_id: "işle"
+verb {
+  lemma: "işle"
+  argument_structure {
+    id: "işle.01"
+    sense: "Bir şeye emek vererek onu daha elverişli bir duruma getirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "işleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "işlenen"
+    }
+  }
+  argument_structure {
+    id: "işle.02"
+    sense: "yapmak, etmek: suç işlemek, günah işlemek, hata işlemek, sevap işlemek vb..."
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "işleyen"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "işlenen"
+    }
+    example: "Suç işlemiş sayılırım."
+  }
+}

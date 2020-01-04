@@ -1,0 +1,27 @@
+frame_id: "suçla"
+verb {
+  lemma: "suçla"
+  argument_structure {
+    id: "suçla.01"
+    sense: "İtham etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "suçalayan kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "suçlanan kişi"
+    }
+    argument {
+      number: A2
+      case: INS
+      theta_role: "attribute"
+      description: "ne ile/niçin suçlandığı"
+    }
+    example: "Dikkatle yüzüne bakıyorum ama beni suçladığına ilişkin hiçbir belirti göremiyorum."
+  }
+}

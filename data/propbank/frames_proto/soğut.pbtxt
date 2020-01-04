@@ -1,0 +1,41 @@
+frame_id: "soğut"
+verb {
+  lemma: "soğut"
+  argument_structure {
+    id: "soğut.01"
+    sense: "Soğumasını sağlamak, soğumasına sebep olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "soğutan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "soğutulan"
+    }
+    example: "Suyu soğuttum."
+  }
+  argument_structure {
+    id: "soğut.02"
+    sense: "Bir şeye karşı duyulan sevgi ve ilginin yok olmasına yol açmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "soğutan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "neyi/kimi soğuttuğu"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "neyden soğuttuğu"
+    }
+    example: "Bizden soğudular, bizi de kendilerinden soğuttular."
+  }
+}

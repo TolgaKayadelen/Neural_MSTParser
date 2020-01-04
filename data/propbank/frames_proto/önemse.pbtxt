@@ -1,0 +1,18 @@
+frame_id: "önemse"
+verb {
+  lemma: "önemse"
+  argument_structure {
+    id: "önemse.01"
+    sense: "Önem vermek"
+    argument {
+      number: A0
+      case: NOM
+      description: "önemseyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "önemsenen"
+    }
+  }
+}

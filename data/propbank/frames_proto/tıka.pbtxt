@@ -1,0 +1,25 @@
+frame_id: "tıka"
+verb {
+  lemma: "tıka"
+  argument_structure {
+    id: "tıka.01"
+    sense: "Birşeyi itmek, tıkmak, kapamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "tıkan kişi / şey"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      description: "tıkılan kişi/şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye tıkıldığı"
+    }
+    example: "Lafları ağzına tıkadık."
+  }
+}

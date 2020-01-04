@@ -1,0 +1,24 @@
+frame_id: "öğütle"
+verb {
+  lemma: "öğütle"
+  argument_structure {
+    id: "öğütle.01"
+    sense: "nasihat etmek, tavsiye vermek"
+    argument {
+      number: A0
+      case: NOM
+      description: "öğütleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "neyi öğütlediği"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "kime/neye öğüt verildiği"
+    }
+    example: "Güzel olanın yıkılmasını kimse öğütlemez."
+  }
+}

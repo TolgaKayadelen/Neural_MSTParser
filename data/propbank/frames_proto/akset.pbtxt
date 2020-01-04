@@ -1,0 +1,21 @@
+frame_id: "akset"
+verb {
+  lemma: "akset"
+  argument_structure {
+    id: "akset.01"
+    sense: "Ulaşmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "akseden"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "destination"
+      description: "nereye aksettiği"
+    }
+    example: "Olaylar yukarı makamlara aksetti."
+  }
+}

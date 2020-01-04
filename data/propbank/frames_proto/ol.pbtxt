@@ -1,0 +1,445 @@
+frame_id: "ol"
+verb {
+  lemma: "ol"
+  argument_structure {
+    id: "ol.01"
+    sense: "Meydana gelmek, varlık kazanmak, vuku bulmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "meydana gelen olay"
+    }
+    example: "Deprem oldu!"
+  }
+  argument_structure {
+    id: "ol.02"
+    sense: "Bir ad veya sıfatın belirttiği durumu almak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "olan şey/kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "attribute"
+      description: "ne/kim olduğu"
+    }
+    example: "hazır olmak, aşık olmak, emekli olmak..."
+  }
+  argument_structure {
+    id: "ol.03"
+    sense: "Bir özellik, nitelik sahibi olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "nitelik sahibi olan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "sahip olduğu nitelik"
+    }
+    example: "Eczacı olmak bu sayılı inatlarından biri ve ilkidir."
+  }
+  argument_structure {
+    id: "ol.04"
+    sense: "Bir şeye sahip olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "elde eden"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "elde edilen"
+    }
+    example: "Mal sahibi olmak, yüksey tansiyonu olmak vb..."
+  }
+  argument_structure {
+    id: "ol.05"
+    sense: "Uygun düşmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "uygun düşen"
+    }
+    example: "Böyle iş olmaz. Oraya gitmesek de olur"
+  }
+  argument_structure {
+    id: "ol.06"
+    sense: "Hazır duruma gelmek"
+    argument {
+      number: A1
+      case: NOM
+      description: "olgunlaşan"
+    }
+    example: "Ekinler oldu. Üzümler daha olmadı"
+  }
+  argument_structure {
+    id: "ol.07"
+    sense: "Bulunmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "bulunan"
+    }
+    argument {
+      number: A2
+      case: LOC
+      description: "bulunduğu yer"
+    }
+    argument {
+      number: A3
+      case: INS
+      description: "kiminle / neyle olduğu"
+    }
+    example: "Kız da hemen olduğu yere oturdu."
+  }
+  argument_structure {
+    id: "ol.08"
+    sense: "Geçmek, tamamlanmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "time"
+      description: "zaman"
+    }
+    example: "İki yıl oldu. Nerede ise üç yıl olacak"
+  }
+  argument_structure {
+    id: "ol.09"
+    sense: "Mensup olmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "mensup"
+    }
+    argument {
+      number: A1
+      case: NOM
+      description: "grup"
+    }
+  }
+  argument_structure {
+    id: "ol.10"
+    sense: "Yaklaşmak, gelip çatmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "time"
+      description: "yaklaşan"
+    }
+    example: "Sabah oldu."
+  }
+  argument_structure {
+    id: "ol.11"
+    sense: "Uymak"
+    argument {
+      number: A1
+      case: NOM
+      description: "uyan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye uyduğu"
+    }
+    example: "Bu şapka başıma oluyor."
+  }
+  argument_structure {
+    id: "ol.12"
+    sense: "Yitirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yitiren"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "yitirilen"
+    }
+    argument {
+      number: A2
+      case: UNKNOWN_CASE
+      description: "yitirme sebebi"
+    }
+    example: "Tembelliği yüzünden işinden oldu."
+  }
+  argument_structure {
+    id: "ol.13"
+    sense: "Sıfat-fiil eki almış kelimelerden sonra yardımcı fiil"
+    argument {
+      number: A0
+      case: UNKNOWN_CASE
+      description: "nitelenen"
+    }
+    argument {
+      number: A1
+      case: UNKNOWN_CASE
+      description: "sıfat-fiil"
+    }
+    example: "Tek bildiğim bunların yapılmış olduğudur."
+  }
+  argument_structure {
+    id: "ol.14"
+    sense: "Ek fiilin geniş zamanı olan -dır (-dir) anlamında (copula)"
+    argument {
+      number: A0
+      case: NOM
+      description: "olan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      description: "olunan"
+    }
+    example: "O kadın benim annem oluyor."
+  }
+}
+verb {
+  lemma: "yük_ol"
+  argument_structure {
+    id: "ol.15"
+    sense: "Yük olmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "yük olan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "kime yük olduğu"
+    }
+    example: "Sana çok yük olduk."
+  }
+}
+verb {
+  lemma: "yardımcı_ol"
+  argument_structure {
+    id: "ol.16"
+    sense: "Yardımcı olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "yardım eden"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "yardım edilen iş / konu"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "beneficiary"
+      description: "(arg1\'den ayrıysa) yardım edilen kişi"
+    }
+    example: "Siz zaten yeterince yardımcı oldunuz."
+  }
+}
+verb {
+  lemma: "neden_ol"
+  argument_structure {
+    id: "ol.17"
+    sense: "Sebep olmak, Neden olmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "cause"
+      description: "neden olan kuvvet"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "ortaya çıkacak aksiyon"
+    }
+    example: "Tüm bunlar hüzünlenmesine neden olmuştu."
+  }
+}
+verb {
+  lemma: "musallat_ol"
+  argument_structure {
+    id: "ol.18"
+    sense: "Birini sürekli rahatsız etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "stimulus"
+      description: "musallat olan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "experiencer"
+      description: "musallat olunan"
+    }
+    example: "Doğan şimdi de Turkcell\'in başına musallat oldu."
+  }
+}
+verb {
+  lemma: "ortak_ol"
+  argument_structure {
+    id: "ol.19"
+    sense: "Bir şeyi paylaşmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "actor1"
+      description: "ortak olan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "theme"
+      description: "neye ortak olunduğu"
+    }
+    argument {
+      number: A1
+      case: INS
+      theta_role: "actor2"
+      description: "kim ile/ne ile ortak olunduğu"
+    }
+    example: "Örgütçüler, bilerek ya da bilmeyerek birçok suça ortak oldu."
+  }
+}
+verb {
+  lemma: "teslim_ol"
+  argument_structure {
+    id: "ol.20"
+    sense: "Mücadeleden vazgeçmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "teslim olan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "recipient"
+      description: "neye teslim olduğu"
+    }
+    example: "Bölge yine şiddete teslim oldu."
+  }
+}
+verb {
+  lemma: "gerek_ol"
+  argument_structure {
+    id: "ol.21"
+    sense: "gereksinim duymak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "gereksinim duyan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "stimulus"
+      description: "neye gereksinim duyduğu"
+    }
+    example: "Bu şovlara hiç gerek olmamalı."
+  }
+}
+verb {
+  lemma: "emin_ol"
+  argument_structure {
+    id: "ol.22"
+    sense: "inanmak, güvenmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "emin olan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "emin olduğu şey"
+    }
+  }
+}
+verb {
+  lemma: "razı_ol"
+  argument_structure {
+    id: "ol.23"
+    sense: "Yetinmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "razı olan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "neye razı olduğu"
+    }
+  }
+}
+verb {
+  lemma: "mezun_ol"
+  argument_structure {
+    id: "ol.24"
+    sense: "Eğitimi başarıyla bitirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "mezun olan"
+    }
+    argument {
+      number: A2
+      case: ABL
+      description: "mezun olduğu eğitim/okul"
+    }
+  }
+}
+verb {
+  lemma: "sahip_ol"
+  argument_structure {
+    id: "ol.25"
+    sense: "Elinde bulundurmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sahip olan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "neye sahip olduğu"
+    }
+  }
+}
+verb {
+  lemma: "ait_ol"
+  argument_structure {
+    id: "ol.26"
+    sense: "Birinin olmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "ait olan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye ait olduğu"
+    }
+  }
+}

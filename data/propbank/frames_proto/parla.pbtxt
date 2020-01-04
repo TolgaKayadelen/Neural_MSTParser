@@ -1,0 +1,15 @@
+frame_id: "parla"
+verb {
+  lemma: "parla"
+  argument_structure {
+    id: "parla.01"
+    sense: "Bir ışık kaynağından gelen ışınları yansıtmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "parlayan şey"
+    }
+    example: "Gözleri ışıl ışıl parlıyordu."
+  }
+}

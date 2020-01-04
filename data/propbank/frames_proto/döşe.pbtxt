@@ -1,0 +1,44 @@
+frame_id: "döşe"
+verb {
+  lemma: "döşe"
+  argument_structure {
+    id: "döşe.01"
+    sense: "sermek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "döşeyen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "döşenen şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye serildiği"
+    }
+    example: "Renklileri de kalorifer borularına döşedi."
+  }
+  argument_structure {
+    id: "döşe.02"
+    sense: "yerleştirmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "evi yerleştiren kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "yerleştirilen şey (ev)"
+    }
+    example: "On parça eşya ile döşeyip süslenmiş yaz evi..."
+  }
+}

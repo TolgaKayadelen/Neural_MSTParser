@@ -1,0 +1,44 @@
+frame_id: "davran"
+verb {
+  lemma: "davran"
+  argument_structure {
+    id: "davran.01"
+    sense: "Bir kimseye karşı belli tavır takınmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tavır takınan"
+    }
+    argument {
+      number: A2
+      case: NOM
+      theta_role: "attribute"
+      description: "nasıl davrandığı"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: ""
+      description: "neye/kime davrandığı"
+    }
+    example: "Film ekibine oraya gezmeye giden bir turist kafilesiymiş gibi davranıyor"
+  }
+  argument_structure {
+    id: "davran.02"
+    sense: "Bir şeye el atmak, girişmek, kakışmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "girişen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "neye girişildiği"
+    }
+    example: "Silahlarına davranıyor polisler."
+  }
+}

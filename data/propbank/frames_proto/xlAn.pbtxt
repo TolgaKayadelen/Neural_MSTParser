@@ -1,0 +1,19 @@
+frame_id: "xlAn"
+verb {
+  lemma: "xlAn"
+  argument_structure {
+    id: "xlAn.01"
+    sense: "x ile belirtilen isim veyva sıfatın belirttiği durumu almak (Geçişsiz)"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "durumu alan"
+    }
+    argument {
+      number: A2
+      case: NOM
+      description: "aldığı durum(x)"
+    }
+  }
+}

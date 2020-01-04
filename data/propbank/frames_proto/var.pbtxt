@@ -1,0 +1,35 @@
+frame_id: "var"
+verb {
+  lemma: "var"
+  argument_structure {
+    id: "var.01"
+    sense: "Sahiplik bildiren olumlu ad cümleleri kuran bir söz"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "theme"
+      description: "sahip olunan şey"
+    }
+    argument {
+      number: A0
+      case: NOM
+      theta_role: ""
+      description: "sahip olan kişi"
+    }
+    example: "Rahatsız etmek istemem hem de işim var."
+  }
+  argument_structure {
+    id: "var.02"
+    sense: "Ulaşmak, erişmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "varan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "nereye vardığı"
+    }
+  }
+}

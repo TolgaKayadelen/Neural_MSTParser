@@ -1,0 +1,34 @@
+frame_id: "değ"
+verb {
+  lemma: "değ"
+  argument_structure {
+    id: "değ.01"
+    sense: "Dokunmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "dokunan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "dokunulan"
+    }
+    example: "Kapıdan bir an birbirimize değerek girdik."
+  }
+  argument_structure {
+    id: "değ.02"
+    sense: "Değerinde olmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "değerli olan şey"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "ederi"
+    }
+    example: "Benim ömrümün üç günü üç yüz bin liraya değer"
+  }
+}

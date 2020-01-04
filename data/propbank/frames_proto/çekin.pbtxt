@@ -1,0 +1,21 @@
+frame_id: "çekin"
+verb {
+  lemma: "çekin"
+  argument_structure {
+    id: "çekin.01"
+    sense: "Kaçınmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "çekinen"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "theme"
+      description: "neyden çekinildiği"
+    }
+    example: "Göz göze gelmekten çekindiğini de hissettim."
+  }
+}

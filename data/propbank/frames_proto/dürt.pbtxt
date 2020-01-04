@@ -1,0 +1,21 @@
+frame_id: "dürt"
+verb {
+  lemma: "dürt"
+  argument_structure {
+    id: "dürt.01"
+    sense: "Hafifçe itmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "iten kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "ittiği şey"
+    }
+    example: "Yanındaki arkadaşı hafif dizini dürttü."
+  }
+}

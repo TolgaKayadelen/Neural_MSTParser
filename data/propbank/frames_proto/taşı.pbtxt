@@ -1,0 +1,57 @@
+frame_id: "taşı"
+verb {
+  lemma: "taşı"
+  argument_structure {
+    id: "taşı.01"
+    sense: "Bir şeyi bir yerden alıp başka bir yere götürmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "taşıyan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "patient"
+      description: "taşınan şey"
+    }
+    argument {
+      number: A4
+      case: DAT
+      theta_role: "destination"
+      description: "nereye taşındığı"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden alındığı"
+    }
+    argument {
+      number: A2
+      case: LOC
+      theta_role: "instrument"
+      description: "nasıl / ne üzerinde"
+    }
+    example: "Facebook, sosyal paylaşım sitelerini adeta farklı bir boyuta taşıdı."
+  }
+  argument_structure {
+    id: "taşı.02"
+    sense: "Sahip olmak, özellik olarak bulundurmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "sahip olan"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "theme"
+      description: "neye sahip olduğu"
+    }
+    example: "Kelimeler büyük önem taşıyor."
+  }
+}

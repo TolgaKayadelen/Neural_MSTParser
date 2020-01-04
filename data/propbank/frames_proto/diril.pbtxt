@@ -1,0 +1,13 @@
+frame_id: "diril"
+verb {
+  lemma: "diril"
+  argument_structure {
+    id: "diril.01"
+    sense: "canlanmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "dirilen"
+    }
+  }
+}

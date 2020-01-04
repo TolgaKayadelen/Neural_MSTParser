@@ -1,0 +1,20 @@
+frame_id: "titre"
+verb {
+  lemma: "titre"
+  argument_structure {
+    id: "titre.01"
+    sense: "Küçük ve hızlı salınım hareketleri yapmak"
+    argument {
+      number: A0
+      case: NOM
+      case: ACC
+      description: "titreyen kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ABL
+      description: "neden titrediği/ titreme sebebi"
+    }
+    example: "Soğuktan mı titriyordum yoksa heyecandan, üzüntüden mi, bilmem."
+  }
+}

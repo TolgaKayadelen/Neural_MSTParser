@@ -1,0 +1,15 @@
+frame_id: "geğir"
+verb {
+  lemma: "geğir"
+  argument_structure {
+    id: "geğir.01"
+    sense: "Gazı ağızdan sesli bir biçimde çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "geğiren"
+    }
+    example: "Geğirebilsem açılır mıyım acaba?"
+  }
+}

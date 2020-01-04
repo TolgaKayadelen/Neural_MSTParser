@@ -1,0 +1,19 @@
+frame_id: "üşen"
+verb {
+  lemma: "üşen"
+  argument_structure {
+    id: "üşen.01"
+    sense: "Bir işi yapmaya isteği olmamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "üşenen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "neye üşendiği"
+    }
+    example: "Üşenmiyor, her gün üç yüz metre yürüyüp çöpünü dökmeye buraya geliyor"
+  }
+}

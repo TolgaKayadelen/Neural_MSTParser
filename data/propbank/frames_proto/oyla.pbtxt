@@ -1,0 +1,21 @@
+frame_id: "oyla"
+verb {
+  lemma: "oyla"
+  argument_structure {
+    id: "oyla.01"
+    sense: "Oya koymak veya oya sunmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "oy verenler"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "oylanan"
+    }
+    example: "Beyler, kararı oyluyoruz."
+  }
+}

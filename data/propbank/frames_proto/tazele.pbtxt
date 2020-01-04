@@ -1,0 +1,19 @@
+frame_id: "tazele"
+verb {
+  lemma: "tazele"
+  argument_structure {
+    id: "tazele.01"
+    sense: "Yenisiyle veya tazesiyle değiştirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "yenileyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "yenilenen"
+    }
+    example: "Barmenle yardımcısı boşalan kadehleri tazeliyorlardı."
+  }
+}

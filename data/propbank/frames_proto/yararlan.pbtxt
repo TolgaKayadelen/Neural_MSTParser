@@ -1,0 +1,21 @@
+frame_id: "yararlan"
+verb {
+  lemma: "yararlan"
+  argument_structure {
+    id: "yararlan.01"
+    sense: "Kendine yarar sağlamak, faydalanmak, istifade etmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "beneficiary"
+      description: "yararlanan"
+    }
+    argument {
+      number: A1
+      case: ABL
+      theta_role: "source"
+      description: "neyden yararlanıldığı"
+    }
+    example: "Aftan yararlanarak üniversiteye girdi."
+  }
+}

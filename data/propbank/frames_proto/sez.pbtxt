@@ -1,0 +1,19 @@
+frame_id: "sez"
+verb {
+  lemma: "sez"
+  argument_structure {
+    id: "sez.01"
+    sense: "hissetmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "hisseden"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "hissedilen"
+    }
+    example: "Bunu kimseye sezdirme."
+  }
+}

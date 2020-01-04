@@ -1,0 +1,21 @@
+frame_id: "belgele"
+verb {
+  lemma: "belgele"
+  argument_structure {
+    id: "belgele.01"
+    sense: "Ortaya çıkarmak"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "belgeleyen"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "belgelenen"
+    }
+    example: "İşte hepsi bu yazıda belgelenmiş."
+  }
+}

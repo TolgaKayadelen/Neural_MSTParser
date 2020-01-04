@@ -1,0 +1,68 @@
+frame_id: "duy"
+verb {
+  lemma: "duy"
+  argument_structure {
+    id: "duy.01"
+    sense: "öğrenmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "öğrenen kişi"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "öğrendiği şey"
+    }
+    argument {
+      number: A3
+      case: ABL
+      theta_role: "source"
+      description: "nereden öğrendiği"
+    }
+    example: "Bir köylüden burada avlandığınızı duydum."
+  }
+  argument_structure {
+    id: "duy.02"
+    sense: "İşitmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "işiten kişi/şey"
+    }
+    argument {
+      number: A1
+      case: NOM
+      case: ACC
+      theta_role: "stimulus"
+      description: "işitilen şey"
+    }
+    example: "Çamaşırcı Fatma kadın annemin duymayan kulaklarına yalvarıyor."
+  }
+  argument_structure {
+    id: "duy.03"
+    sense: "hissetmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "experiencer"
+      description: "hisseden kişi"
+    }
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "stimulus"
+      description: "hissettiği şey"
+    }
+    argument {
+      number: A2
+      case: DAT
+      theta_role: "recipient"
+      description: "neye/ne için hissettiği"
+    }
+    example: "Hakiki bedbahtlar, sefaletlerini birdenbire açığa vurmaktan utanç duyarlar."
+  }
+}

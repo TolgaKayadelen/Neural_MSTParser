@@ -1,0 +1,43 @@
+frame_id: "tutuş"
+verb {
+  lemma: "tutuş"
+  argument_structure {
+    id: "tutuş.01"
+    sense: "Yanmaya başlamak, ateş almak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "patient"
+      description: "yanan şey"
+    }
+    example: "Bu fenerleri birbirine bağlayan çiçekli askılardaki küçük lambalar tutuştu."
+  }
+  argument_structure {
+    id: "tutuş.02"
+    sense: "Telaşlanmak"
+    argument {
+      number: A1
+      case: NOM
+      theta_role: "experiencer"
+      description: "telaşlanan"
+    }
+    example: "Onun için telaşlanmaya başladım."
+  }
+  argument_structure {
+    id: "tutuş.03"
+    sense: "Bir işe girişmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "tutuşan"
+    }
+    argument {
+      number: A1
+      case: DAT
+      theta_role: "theme"
+      description: "neye tutuşulduğu"
+    }
+    example: "Kavgaya tutuştular."
+  }
+}

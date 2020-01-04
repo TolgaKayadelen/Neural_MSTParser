@@ -1,0 +1,14 @@
+frame_id: "irkil"
+verb {
+  lemma: "irkil"
+  argument_structure {
+    id: "irkil.01"
+    sense: "Ürkerek geri çekilir gibi olmak"
+    argument {
+      number: A1
+      case: NOM
+      description: "irkilen"
+    }
+    example: "Elimi omzuna koyuyorum. İrkiliyor, sertçe çeviriyor bakışını."
+  }
+}

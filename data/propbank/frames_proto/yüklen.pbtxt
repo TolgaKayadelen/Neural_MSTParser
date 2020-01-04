@@ -1,0 +1,19 @@
+frame_id: "yüklen"
+verb {
+  lemma: "yüklen"
+  argument_structure {
+    id: "yüklen.01"
+    sense: "Üstüne düşmek, zorlamak"
+    argument {
+      number: A0
+      case: NOM
+      description: "yüklenen"
+    }
+    argument {
+      number: A1
+      case: DAT
+      description: "nereye/kime yüklenildiği"
+    }
+    example: "Hep birden yüklenmişlerdi o zaman Rahmi\'ye; saygısızlık ettin, kırdın diye."
+  }
+}

@@ -1,0 +1,21 @@
+frame_id: "aş"
+verb {
+  lemma: "aş"
+  argument_structure {
+    id: "aş.01"
+    sense: "Geçmek , üstesinden gelmek"
+    argument {
+      number: A0
+      case: NOM
+      theta_role: "agent"
+      description: "aşan kişi/şey"
+    }
+    argument {
+      number: A1
+      case: ACC
+      theta_role: "theme"
+      description: "aştığı şey"
+    }
+    example: "Sokulganlığı aşarak girişkenlik derecesini bulmuştu."
+  }
+}

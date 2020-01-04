@@ -1,0 +1,24 @@
+frame_id: "uyarla"
+verb {
+  lemma: "uyarla"
+  argument_structure {
+    id: "uyarla.01"
+    sense: "uyar duruma getirmek"
+    argument {
+      number: A0
+      case: NOM
+      description: "uyarlayan"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "uyarlanan"
+    }
+    argument {
+      number: A2
+      case: DAT
+      description: "neye uyarlandığı"
+    }
+    example: "None"
+  }
+}

@@ -1,0 +1,19 @@
+frame_id: "kapsa"
+verb {
+  lemma: "kapsa"
+  argument_structure {
+    id: "kapsa.01"
+    sense: "İçine almak, sınırları içine almak, şamil olmak"
+    argument {
+      number: A0
+      case: NOM
+      description: "içeren"
+    }
+    argument {
+      number: A1
+      case: ACC
+      description: "içerilen"
+    }
+    example: "Bu işlem diğerini kapsamakta."
+  }
+}
