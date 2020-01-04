@@ -1,0 +1,20 @@
+// Protocal buffer specification for propbank.
+
+syntax = "proto2";
+
+import "data/propbank/protos/frame.proto";
+
+package data.propbank.protos;
+
+
+// A propbank consists of set of verb frames for a language.
+message Propbank {
+  optional Language language = 1 [default = UNKNOWN_LANGUAGE];
+  repeated data.propbank.protos.Frame frame = 2; /*actually required*/
+}
+
+enum Language {
+  UNKNOWN_LANGUAGE = 0;
+  TURKISH = 1;
+  ENGLISH = 2;
+}

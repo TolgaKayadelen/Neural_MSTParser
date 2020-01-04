@@ -1,0 +1,51 @@
+// Protocal buffer specification for a verb frame.
+
+syntax = "proto2";
+
+package data.propbank.protos;
+
+// A verb is a lemma associated with a frame that represents its argument structure.
+message Verb {
+  optional string lemma = 1; /*actually required*/
+  repeated Frame frame = 2;
+}
+
+// A frame represents the argument structure of a verb. It stores information about
+// the sense of the verb and the set of arguments that the verb subcategorizes
+// for. 
+message Frame {
+  optional string id = 1;
+  optional string sense = 2;
+  repeated Argument argument = 3;
+}
+
+// An argument of a verb is a grammatical element that the verb requires as part of
+// its argument structure. We store information about the case that the argument appears
+// in, its theta role, and a short description about the role it fulfills in the event
+// described by the verb.
+message Argument {
+  optional ArgNum argnum = 1;
+  repeated Case case = 2;
+  optional string theta_role = 3;
+  optional string description = 4;
+}
+
+enum ArgNum {
+  UNKNOWN_ARG = 0;
+  A0 = 1;
+  A1 = 2; 
+  A2 = 3;
+  A3 = 4;
+  A4 = 5;
+  A5 = 6;
+}
+
+enum Case {
+  UNKNOWN_CASE = 0;
+  NOM = 1;
+  ACC = 2;
+  DAT = 3;
+  LOC = 4;
+  ABL = 5;
+  INS = 6;
+}
