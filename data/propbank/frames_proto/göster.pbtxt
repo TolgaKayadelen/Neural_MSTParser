@@ -34,6 +34,11 @@ verb {
       description: "gösteren"
     }
     argument {
+      number: A_LVB
+      case: NOM
+      description: "ne gösterdiği"
+    }
+    argument {
       number: A1
       case: NOM
       theta_role: "theme"

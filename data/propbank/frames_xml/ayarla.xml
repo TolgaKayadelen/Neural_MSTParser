@@ -9,7 +9,7 @@
 <role descr="ayarlayan kişi" f="" n="0" suffix="NOM"/>
 
 <role descr="ayarlanan şey" f="" n="1" suffix="ACC"/>
-<role descr="referans - neye göre ayarlandığı" f="" n="2" suffix="NONE"/>
+<role descr="referans - neye göre ayarlandığı" f="" n="2" suffix=""/>
 
 <note/>
 </roles>

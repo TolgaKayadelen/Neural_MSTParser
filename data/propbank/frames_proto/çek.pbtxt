@@ -120,6 +120,11 @@ verb {
       theta_role: "theme"
       description: "görüntülenen"
     }
+    argument {
+      number: A_LVB
+      case: UNKNOWN_CASE
+      description: "çekilen şey (fotoğraf/film vb..)"
+    }
     example: "Fotoğraf, film çekmek"
   }
   argument_structure {

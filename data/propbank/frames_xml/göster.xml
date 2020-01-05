@@ -77,6 +77,9 @@
 <vnrole vncls="" vntheta="agent"/>
 </role>
 
+<role descr="ne gösterdiği" f="lvb" n="m" suffix="NOM">
+</role>
+
 <role descr="gösterilen" f="" n="1" suffix="NOM">
 <vnrole vncls="" vntheta="theme"/>
 </role>

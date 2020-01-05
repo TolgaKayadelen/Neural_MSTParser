@@ -87,7 +87,6 @@ def xml_to_proto(files):
     frame.frame_id = file_.split(".")[0]
     predicates = [child for child in root if child.tag == "predicate"]
     for predicate in predicates:
-      #verb = frame_pb2.Verb()
       verb = frame.verb.add()
       verb.lemma = predicate.attrib["lemma"]
       rolesets = [child for child in predicate if child.tag == "roleset"]
@@ -96,10 +95,11 @@ def xml_to_proto(files):
         arg_str = verb.argument_structure.add()
         populate_argument_structure(roleset, arg_str)
     frames.append(frame)
+  print("Total unique senses in the data {}".format(unique_senses))
   return frames
 
 def main():
-  #files = ["gel.xml", "getir.xml"]
+  #files = ["gel.xml"]
   files = [f for f in listdir(_INPUT_FRAMES_DIR) if isfile(join(_INPUT_FRAMES_DIR, f))]
   frames = xml_to_proto(files)
   for frame in frames:
