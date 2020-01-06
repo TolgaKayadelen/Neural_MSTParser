@@ -1,5 +1,4 @@
 time  train_data train_data_size test_data test_data_size train_acc test_acc_unavg test_acc_avg epochs learning_rate features feature_count
-12/12/19, 01:55:04  treebank_0_10 7 split_%10 3 74.14285714285714 65.0 61.666666666666664 1 1.0 arcfeatures_exp2 13360
 12/12/19, 02:38:10  treebank_train_0_500 450 split_%10 50 98.98444444444445 66.18 68.54 10 1.0 arcfeatures_exp2 485529
 12/12/19, 03:40:34  treebank_train_0_500 450 split_%10 50 99.83333333333333 65.86 69.22 20 1.0 arcfeatures_exp2 485529
 12/12/19, 05:09:40  treebank_train_0_500 450 split_%10 50 99.94222222222223 70.88 67.88 30 1.0 arcfeatures_exp2 485529
@@ -15,8 +14,6 @@ time  train_data train_data_size test_data test_data_size train_acc test_acc_una
 12/12/19, 16:15:18  treebank_train_2000_2500 450 split_%10 50 99.21777777777778 64.82 68.68 10 1.0 arcfeatures_exp2 555212
 12/12/19, 17:30:17  treebank_train_2000_2500 450 split_%10 50 99.73333333333333 66.4 67.74 20 1.0 arcfeatures_exp2 555212
 12/12/19, 19:19:10  treebank_train_2000_2500 450 split_%10 50 99.85555555555555 65.24 67.64 30 1.0 arcfeatures_exp2 555212
-12/13/19, 03:12:15  treebank_tr_imst_ud_train 4660 treebank_tr_imst_ud_test_fixed 562 97.95278969957081 69.0355871886121 71.87900355871886 10 1.0 arcfeatures_exp2 4044984
-12/13/19, 10:49:37  treebank_tr_imst_ud_train 4660 treebank_tr_imst_ud_test_fixed 562 99.43605150214593 70.26868327402136 72.0017793594306 20 1.0 arcfeatures_exp2 4044984
 12/13/19, 20:58:15  treebank_train_0_500 450 split_%10 50 99.55777777777777 66.8 71.16 10 1.0 arcfeatures_exp3 541124
 12/13/19, 21:58:03  treebank_train_500_1000 450 split_%10 50 99.48 60.88 62.96 10 1.0 arcfeatures_exp3 610492
 12/14/19, 00:21:57  treebank_train_0_500 450 split_%10 50 98.56666666666666 67.12 70.7 10 1.0 arcfeatures_exp3 541279
@@ -32,8 +29,6 @@ time  train_data train_data_size test_data test_data_size train_acc test_acc_una
 12/14/19, 10:11:27  treebank_train_1500_2000 450 split_%10 50 99.82222222222222 68.9 71.64 20 1.0 arcfeatures_exp3 549849
 12/14/19, 11:27:46  treebank_train_1500_2000 450 split_%10 50 99.86888888888889 71.28 70.24 30 1.0 arcfeatures_exp3 549849
 12/14/19, 11:58:54  treebank_train_2000_2500 450 split_%10 50 98.84444444444445 67.52 67.64 10 1.0 arcfeatures_exp3 619744
-12/14/19, 17:31:15  treebank_tr_imst_ud_train 4660 treebank_tr_imst_ud_test_fixed 562 97.92854077253219 70.42704626334519 72.65658362989323 10 1.0 arcfeatures_exp3 4501303
-12/15/19, 06:03:49  treebank_tr_imst_ud_train 4660 treebank_tr_imst_ud_test_fixed 562 99.23948497854077 71.46975088967972 72.55338078291815 20 1.0 arcfeatures_exp3 4501303
 12/14/19, 10:30:46	treebank_train_0_500	450	split_%10	50	99.18	65.16	69.98	10	1.0	arcfeatures_exp3	541279
 12/15/19, 22:43:48	treebank_train_0_500	450	split_%10	50	99.38666666666667	64.42	69.82	10	1.0	arcfeatures_exp3	534461
 12/21/19, 02:21:00	treebank_train_0_500	450	split_%10	50	99.44	65.58	69.4	10	1.0	arcfeatures_exp4	534461
@@ -44,10 +39,16 @@ time  train_data train_data_size test_data test_data_size train_acc test_acc_una
 12/24/19, 14:55:42	treebank_train_0_500	450	split_%10	50	99.61777777777777	67.8	69.28	10	1.0	arcfeatures_exp7	534483
 12/24/19, 15:17:44	treebank_train_1000_1500	450	split_%10	50	99.01555555555555	71.22	74.04	10	1.0	arcfeatures_exp7	602405
 12/24/19, 16:54:07	treebank_train_0_500	450	split_%10	50	99.8711111111111	67.54	69.18	20	1.0	arcfeatures_exp7	534483
-12/25/19, 23:33:58	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_test_fixed	562	98.16609442060086	70.69039145907473	72.80427046263345	10	1.0	arcfeatures_exp7	4462450
-12/26/19, 10:12:18	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	98.22117090479007	71.63345195729538	73.45551601423487	10	1.0	arcfeatures_exp7	4796477
 12/27/19, 00:55:18	treebank_train_0_500	450	split_%10	50	99.38888888888889	67.36	69.76	10	1.0	arcfeatures_exp7	534483
 12/27/19, 14:00:48	treebank_train_0_500	450	split_%10	50	93.64222222222222	61.56	66.0	20	1.0	arcfeatures_exp8	168831
-12/27/19, 14:37:05	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	98.22550758919772	68.81138790035587	73.04270462633453	20	1.0	arcfeatures_exp7	479647701/04/20, 03:26:09	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	98.45259215454367	70.91992882562278	73.56583629893238	10	1.0	arcfeatures_exp7	4796477
-01/04/20, 22:50:47	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	97.1224127735068	70.36654804270462	73.41992882562278	10	1.0	arcfeatures_exp7	4796477
 01/05/20, 11:34:25	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	98.52197910506604	70.66903914590748	72.09074733096085	10	1.0	arcfeatures_exp2	4347060
+12/13/19, 03:12:15  treebank_tr_imst_ud_train 4660 treebank_tr_imst_ud_test_fixed 562 97.95278969957081 69.0355871886121 71.87900355871886 10 1.0 arcfeatures_exp2 4044984
+12/13/19, 10:49:37  treebank_tr_imst_ud_train 4660 treebank_tr_imst_ud_test_fixed 562 99.43605150214593 70.26868327402136 72.0017793594306 20 1.0 arcfeatures_exp2 4044984
+12/14/19, 17:31:15  treebank_tr_imst_ud_train 4660 treebank_tr_imst_ud_test_fixed 562 97.92854077253219 70.42704626334519 72.65658362989323 10 1.0 arcfeatures_exp3 4501303
+12/15/19, 06:03:49  treebank_tr_imst_ud_train 4660 treebank_tr_imst_ud_test_fixed 562 99.23948497854077 71.46975088967972 72.55338078291815 20 1.0 arcfeatures_exp3 4501303
+12/25/19, 23:33:58	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_test_fixed	562	98.16609442060086	70.69039145907473	72.80427046263345	10	1.0	arcfeatures_exp7	4462450
+12/26/19, 10:12:18	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	98.22117090479007	71.63345195729538	73.45551601423487	10	1.0	arcfeatures_exp7	4796477
+12/27/19, 14:37:05	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	98.22550758919772	68.81138790035587	73.04270462633453	20	1.0	arcfeatures_exp7	4796477
+01/04/20, 03:26:09	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	98.45259215454367	70.91992882562278	73.56583629893238	10	1.0	arcfeatures_exp7	4796477
+01/04/20, 22:50:47	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	97.1224127735068	70.36654804270462	73.41992882562278	10	1.0	arcfeatures_exp7	4796477
+

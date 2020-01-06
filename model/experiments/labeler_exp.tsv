@@ -1,44 +1,8 @@
 time	train_data	train_data_size	test_data	test_data_size	train_acc	test_acc_unavg	test_acc_avg	epochs	learning_rate 	Features	feature_count
-12/07/19, 02:00:59	treebank_train_0_500	450	split_%10	50		80.5	83.66	10	1.0	labelfeatures_base	.
-12/07/19, 02:02:48	treebank_train_500_1000	450	split_%10	50		81.34	82.94	10	1.0	labelfeatures_base	.
-12/07/19, 02:04:07	treebank_train_1000_1500	450	split_%10	50		87.3	89.14	10	1.0	labelfeatures_base	.
-12/07/19, 02:05:43	treebank_train_1500_2000	450	split_%10	50		78.6	80.2	10	1.0	labelfeatures_base	.
-12/07/19, 02:10:00	treebank_train_2000_2500	450	split_%10	50		77.62	83.72	10	1.0	labelfeatures_base	.
-12/07/19, 03:09:22	treebank_tr_imst_ud_train	4194	split_%10	466		83.17811158798280	85.46137339055790	10	1.0	labelfeatures_base	.
-12/07/19, 09:18:22	treebank_tr_imst_ud_train	4194	split_%10	466		83.37124463519310	85.62875536480690	10	0.1	labelfeatures_base	.
-12/07/19, 11:00:15	treebank_tr_imst_ud_train	4194	split_%10	466		83.27467811158800	86.00643776824040	20	0.1	labelfeatures_base	.
-12/07/19, 13:51:01	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_dev	975		72.64717948717950	85.79692307692310	1	0.1	labelfeatures_base	.
-12/07/19, 14:51:55	treebank_tr_imst_ud_train	4194	split_%10	466		83.98283261802580	85.84549356223180	30	0.1	labelfeatures_base	.
-12/07/19, 19:49:51	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_dev_fixed	413		82.88861985472160	86.65375302663440	10	0.1	labelfeatures_base	.
-12/07/19, 20:20:16	treebank_0_10	10	treebank_0_3	4		79.25	87.75	1	0.1	labelfeatures_base	.
-12/07/19, 22:01:50	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_dev_fixed	413		84.46731234866830	86.6682808716707	20	0.1	labelfeatures_base	.
-12/08/19, 00:14:02	treebank_train_0_500	450	split_%10	50		83.46	85.28	10	1.0	labelfeatures_base	.
-12/08/19, 00:21:44	treebank_train_500_1000	450	split_%10	50		79.7	82.86	10	1.0	labelfeatures_base	.
-12/08/19, 00:23:24	treebank_train_1000_1500	450	split_%10	50		86.9	88.72	10	1.0	labelfeatures_base	.
-12/08/19, 00:25:11	treebank_train_1500_2000	450	split_%10	50		80.2	81.44	10	1.0	labelfeatures_base	.
-12/08/19, 00:26:12	treebank_train_2000_2500	450	split_%10	50		81.92	84.66	10	1.0	labelfeatures_base	.
-12/08/19, 01:07:41	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_dev_fixed	413		83.57869249394670	87.05326876513320	10	0.1	labelfeatures_base	.
-12/08/19, 01:11:33	treebank_tr_imst_ud_train	4194	split_%10	466		84.00214592274680	86.13090128755360	10	0.1	labelfeatures_base	.
-12/08/19, 01:41:57	treebank_tr_imst_ud_train	4194	split_%10	466		83.60085836909870	85.96137339055790	20	0.1	labelfeatures_base	.
-12/08/19, 20:40:27	treebank_train_0_500	450	split_%10	50		82.02	87.52	10	1.0	labelfeatures_exp	20464
-12/08/19, 20:52:12	treebank_train_500_1000	450	split_%10	50		85.46	85.9	10	1.0	labelfeatures_exp	21864
-12/08/19, 21:03:39	treebank_train_1000_1500	450	split_%10	50		90.36	91.84	10	1.0	labelfeatures_exp	22055
-12/08/19, 21:15:01	treebank_train_1500_2000	450	split_%10	50		83.12	85.8	10	1.0	labelfeatures_exp	20581
-12/08/19, 21:27:19	treebank_train_2000_2500	450	split_%10	50		85.74	86.94	10	1.0	labelfeatures_exp	22243
-12/09/19, 01:47:39	treebank_train_0_500	450	split_%10	50		84.88	87.4	10	1.0	labelfeatures_exp	20464
-12/09/19, 03:07:39	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_dev_fixed	413		87.16707021791767	90.36077481840194	10	0.1	labelfeatures_exp	142305
-12/09/19, 03:11:40	treebank_tr_imst_ud_train	4194	split_%10	466		87.27038626609442	89.3969957081545	10	0.1	labelfeatures_exp	131179
-12/10/19, 13:46:18	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_test_fixed	562		87.88256227758008	90.20996441281139	10	0.1	labelfeatures_exp	142305
-12/10/19, 14:07:55	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_dev_fixed	413		88.95883777239709	90.51089588377724	20	0.1	labelfeatures_exp	142305
-12/10/19, 18:07:51	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_test_fixed	562		89.28113879003558	90.02846975088968	20	0.1	labelfeatures_exp	142305
-12/10/19, 18:46:23	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_dev_fixed	413		88.35835351089588	90.37288135593221	30	0.1	labelfeatures_exp	142305
-12/10/19, 21:37:47	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_test_fixed	562		88.63345195729538	90.1067615658363	20	0.01	labelfeatures_exp	142305
-12/10/19, 22:15:51	treebank_tr_imst_ud_train	4660	treebank_tr_imst_ud_dev_fixed	413		88.68523002421307	90.29055690072639	30	0.01	labelfeatures_exp	142305
-12/11/19, 01:14:32	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562		89.07651245551601	90.067615658363	20	1.0	labelfeatures_exp	152011
-12/11/19, 02:17:45	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562		88.57829181494662	90.01245551601423	30	1.0	labelfeatures_exp	152011
-01/01/20, 22:17:59	treebank_train_0_50	45	split_%10	5	100.0	80.4	81.6	10	1.0	labelfeatures_exp	2737
-01/02/20, 00:09:48	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	97.88941454760497	88.41814946619218	90.17615658362989	10	1.0	labelfeatures_exp	152011
-01/02/20, 03:13:16	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	99.4983244628425	91.00889679715303	91.95373665480427	10	1.0	labelfeatures_exp_1	423836
-01/02/20, 13:25:55	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	99.46047703528484	90.05516014234875	90.96085409252669	10	1.0	labelfeatures_exp_2	416638
-01/03/20, 03:41:07	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	96.40626848018924	87.04804270462634	90.02135231316726	10	1.0	labelfeatures_exp	152011
-01/03/20, 14:44:55	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	99.21959392864183	90.34341637010677	91.82918149466192	10	1.0	labelfeatures_exp_1	423836
+12/11/19, 01:14:32	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562		89.07651245551601	90.067615658363	20	1.0	labelfeatures_exp_1	152011
+12/11/19, 02:17:45	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562		88.57829181494662	90.01245551601423	30	1.0	labelfeatures_exp_1	152011
+01/02/20, 00:09:48	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	97.88941454760497	88.41814946619218	90.17615658362989	10	1.0	labelfeatures_exp_1	152011
+01/02/20, 03:13:16	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	99.4983244628425	91.00889679715303	91.95373665480427	10	1.0	labelfeatures_exp_2	423836
+01/02/20, 13:25:55	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	99.46047703528484	90.05516014234875	90.96085409252669	10	1.0	labelfeatures_exp_3	416638
+01/03/20, 03:41:07	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	96.40626848018924	87.04804270462634	90.02135231316726	10	1.0	labelfeatures_exp_1	152011
+01/03/20, 14:44:55	treebank_tr_imst_ud_train_dev	5073	treebank_tr_imst_ud_test_fixed	562	99.21959392864183	90.34341637010677	91.82918149466192	10	1.0	labelfeatures_exp_2	423836

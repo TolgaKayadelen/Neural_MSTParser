@@ -30,6 +30,7 @@ child_0_morph_person[psor]+head_0_morph_person[psor]
 # In between features
 head_0_pos+between_0_pos+child_0_pos
 head_0_category+between_0_category+child_0_category
+#head_0_morph_case+between_0_morph_case+child_0_morph_case
 
 # Context Features
 child_0_pos+head_0_pos+head_1_pos
