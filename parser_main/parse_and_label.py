@@ -22,6 +22,7 @@ def parse_and_label(args):
   parsed_and_labeled_treebank.is_gold = False
   parsed_and_labeled_treebank.parser_model = args.parser_model
   parsed_and_labeled_treebank.labeler_model = args.labeler_model
+  raw_input("Parser and labeler models loaded, ready to parse..")
   
   text_format.MessageToString(parsed_and_labeled_treebank, as_utf8=True)
   
