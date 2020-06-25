@@ -15,15 +15,16 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 class BiLSTM:
   """A BiLSTM model for sequence labeling."""
-  def __init__(self, embeddings=True):
-    self.pretrain_embeddings = embeddings
+  def __init__(self):
+    self.model = None
     
-  def pretrained_embeddings_layer(self, word2vec, words_to_index):
+  def pretrained_embeddings_layer(self, word2vec, words_to_index, embedding_dim):
     """Creates an embedding layer for the Neural Net and feeds a pretrained word2vec model into it.
     
     Args:
-      word_to_index: dictionary where keys are words and values are indices.
       word2vec: a pretrained word embeddings model.
+      word_to_index: dictionary where keys are words and values are indices.
+      embedding_dim: dimension of the embedding vector.
     Returns:
       embedding_layer: A pretrained Keras Embedding() layer with weights set as word2vec weights.
     """
@@ -37,7 +38,7 @@ class BiLSTM:
     assert(len(word2vec.wv.vocab.keys()) == vocab_len-2)
     
     # get the dimension of the embedding vector
-    embedding_dim = word2vec[index_to_words[100]].shape[0]
+    # embedding_dim = word2vec[index_to_words[100]].shape[0]
     
     # Initialize the embedding matrix as an array of zeros
     embedding_matrix = np.zeros(shape=(vocab_len, embedding_dim))
@@ -148,7 +149,7 @@ class BiLSTM:
   
       if pad and maxlen:
         pad_value = maxlen - len(indexed)
-        padded = np.pad(indexed, (0, pad_value), "constant", constant_values=(tagset["-pad-"]))
+        padded = np.pad(indexed, (0, pad_value), "constant", constant_values=(label_dict["-pad-"]))
         return padded
       return indexed
   
@@ -157,13 +158,13 @@ class BiLSTM:
       indexed = _labels_to_index(label_set)
       print(i)
       print(indexed)
-      one_hot = nn_utils.convert_to_one_hot(indexed, len(tagset))
+      one_hot = nn_utils.convert_to_one_hot(indexed, len(label_dict))
       print(one_hot)
       label_indices[i, :, :] = one_hot
     return label_indices
     
 
-  def model(self, input_shape, word2vec, word_indices, n_classes):
+  def _train_model(self, input_shape, word2vec, word_indices, n_classes, embedding_dim=None):
     """Creates a BiLSTM model.
     
     Args:
@@ -181,7 +182,7 @@ class BiLSTM:
     sentence_indices = tf.keras.layers.Input(shape=input_shape, dtype="int32")
     
     # Create the embedding layer with the word2vec model.
-    embedding_layer = self.pretrained_embeddings_layer(word2vec, word_indices)
+    embedding_layer = self.pretrained_embeddings_layer(word2vec, word_indices, embedding_dim)
     
     # Propagate sentences through the embedding layer.
     embeddings = embedding_layer(sentence_indices)
@@ -208,6 +209,46 @@ class BiLSTM:
     
     return model
 
+
+  def train(self, train_data, train_labels, label_dict, epochs, embeddings=False,
+            loss="categorical_crossentropy", optimizer="adam", batch_size=None, test_data=None,
+            test_labels=None):
+      """Trains the LSTM model."""
+      
+      if embeddings: 
+        word2vec = nn_utils.load_embeddings()
+        words_to_index, index_to_words = self.index_words(word2vec)
+        embedding_dim = word2vec[index_to_words[100]].shape[0]
+      
+      maxlen = nn_utils.maxlen(train_data)
+      
+      sentences = np.array(train_data)
+      indexed_sentences = self.index_sentences(sentences, words_to_index, maxlen)
+      print(sentences, indexed_sentences)
+      
+      self.label_dict = label_dict
+      self.reverse_label_dict = {v:k for k,v in label_dict.items()} 
+      
+      self.model = self._train_model(input_shape=(maxlen,), word2vec=word2vec,
+                                     word_indices=words_to_index,
+                                     n_classes=len(label_dict), embedding_dim=embedding_dim)
+      print(self.model.summary())
+      self.model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
+      
+      labels = mylstm.index_labels(train_labels, label_dict, sentences.shape[0], maxlen)
+      print(f"shape of the output {labels.shape}")
+      self.model.fit(indexed_sentences, labels, epochs=epochs, batch_size=batch_size)
+      
+      test_sentences = [
+        "burak bazı durumlarda kopya çeker",
+        "bana söylediği sözleri unuttu",
+        "hep geç kalır",
+        "Berna devamlı resim yapar"
+      ]
+      self.predict(self.model, test_sentences, words_to_index, maxlen, self.reverse_label_dict)
+      
+      
+      
 
   def predict(self, model, sentences, words_to_index, maxlen, reverse_tagset):
     for sentence in sentences:
@@ -252,6 +293,13 @@ def get_labels():
 
 if __name__ == "__main__":
   mylstm = BiLSTM()
+  train_data = get_data()
+  label_dict, _, train_labels = get_labels()
+  mylstm.train(train_data=train_data, train_labels=train_labels, label_dict=label_dict,
+               epochs=30, embeddings=True, loss="categorical_crossentropy", optimizer="adam",
+               batch_size=5, test_data=None, test_labels=None)
+  
+  """
   word2vec = nn_utils.load_embeddings()
   words_to_index, index_to_words = mylstm.index_words(word2vec)
   train_data = get_data()
@@ -281,5 +329,6 @@ if __name__ == "__main__":
     "Berna devamlı resim yapar"
   ]
   mylstm.predict(postagger, test_sentences, words_to_index, maxlen, reverse_tagset)
+  """
 
   
