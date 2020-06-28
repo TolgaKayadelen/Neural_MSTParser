@@ -28,4 +28,5 @@ def load_embeddings(name="tr-word2vec-model_v3.bin"):
 
 
 def maxlen(data):
-  return len(max((d.split() for d in data), key=len))
+  """Returns the length of the longest list in a list of lists."""
+  return len(max(data, key=len))

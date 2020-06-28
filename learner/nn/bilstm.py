@@ -109,7 +109,7 @@ class BiLSTM:
     The output shape should be such that it can given to an Embedding() layer. 
     
     Args:
-      sentences: array of sentences, shape(m, 1) where m is the number of sentences.
+      sentences: list of lists, where each list is a list of words representing a sentence.
       word_indices: dictionary containing each word mapped to an index.
       maxlen: scalar, maximum number of words in a sentence.
     
@@ -119,16 +119,15 @@ class BiLSTM:
     
     Sentences which have shorter than maxlen words are padded with 0s on the right.
     """
-    
-    m = sentences.shape[0]
-    
+    m = len(sentences)
     sentence_indices = np.zeros(shape=(m, maxlen))
-    for i in range(m):
-      words_in_sentence = sentences[i].split()
-      
+    for i in range(len(sentences)):
+      sentence = sentences[i]
+      print(sentence)
       j = 0
       
-      for w in words_in_sentence:
+      for w in sentence:
+        print(w)
         try:
           sentence_indices[i, j] = word_indices[w]
         except KeyError:
@@ -216,7 +215,7 @@ class BiLSTM:
       """Trains the LSTM model.
       
       Args:
-        train_data: list of sentences.
+        train_data: list of lists. Eeach list is a sequence of words representing one sentence.
         train_labels: list of lists. Each list is a sequence of tags representing the tag for the
             word in that position in the sentence. 
         label_dict: dictionary of labels, where each label is mapped to an integer value. 
@@ -235,9 +234,9 @@ class BiLSTM:
       
       maxlen = nn_utils.maxlen(train_data)
       
-      sentences = np.array(train_data)
-      indexed_sentences = self.index_sentences(sentences, words_to_index, maxlen)
-      print(sentences, indexed_sentences)
+      # sentences = train_data
+      indexed_sentences = self.index_sentences(train_data, words_to_index, maxlen)
+      # print(train_data, indexed_sentences)
       
       self.label_dict = label_dict
       self.reverse_label_dict = {v:k for k,v in label_dict.items()} 
@@ -248,7 +247,7 @@ class BiLSTM:
       print(self.model.summary())
       self.model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
       
-      labels = mylstm.index_labels(train_labels, label_dict, sentences.shape[0], maxlen)
+      labels = mylstm.index_labels(train_labels, label_dict, len(sentences), maxlen)
       print(f"shape of the output {labels.shape}")
       self.model.fit(indexed_sentences, labels, epochs=epochs, batch_size=batch_size)
       
@@ -256,15 +255,20 @@ class BiLSTM:
         self.predict(self.model, test_data, words_to_index, maxlen, self.reverse_label_dict)
 
   def predict(self, model, sentences, words_to_index, maxlen, reverse_tagset):
-    for sentence in sentences:
-      print(sentence)
-      sentence_list = sentence.split()
-      sentence_array = np.array([sentence])
-      sentence_indices = self.index_sentences(sentence_array, words_to_index, maxlen)
-      predictions = model.predict(sentence_indices)
-      for i, prediction in enumerate(predictions[0]):
-        if i < len(sentence_list):
-          print(sentence_list[i], " : ", reverse_tagset[np.argmax(prediction)])
+    """Predicts labels for tokens in sentences.
+    Args:
+      model: the trained model.
+      sentences: list of lists. Each list is a sequence of tokens representing a sentence.
+    """
+    sentence_indices = self.index_sentences(sentences, words_to_index, maxlen)
+    # the shape of the predictions is (len(sentences), maxlen, n_labels)
+    predictions = model.predict(sentence_indices)
+    for i, prediction in enumerate(predictions):
+      for j, token_prediction in enumerate(prediction):
+        if j < len(sentences[i]):
+          print(sentences[i][j], " : ", reverse_tagset[np.argmax(token_prediction)])
+      print("----")
+      
 
 
 
@@ -273,18 +277,21 @@ class BiLSTM:
 # TODO: Remove later.
 def get_data():
   train_sentences = [
-    "Can bu durumda sürekli kitap okur",
-    "Ali getirdiği bazı kitapları bana verdi",
-    "Sana verdiğim sözleri tutacağım",
-    "Kitabı okudum",
-    "Ali eve gelmedi"
+    ["Can", "bu", "durumda", "sürekli", "kitap", "okur"],
+    ["Ali", "getirdiği", "bazı", "kitapları", "bana", "verdi"],
+    ["Sana", "verdiğim", "sözleri", "tutacağım"],
+    ["Kitabı", "okudum"],
+    ["Ali", "eve", "gelmedi"]
   ]
   
   test_sentences = [
-    "burak bazı durumlarda kopya çeker",
-    "bana söylediği sözleri unuttu",
-    "hep geç kalır",
-    "Berna devamlı resim yapar"
+    ["burak", "bazı", "durumlarda", "kopya", "çeker"],
+    ["bana", "söylediği", "sözleri", "unuttu"],
+    ["hep", "geç", "kalır"],
+    ["Berna", "devamlı", "resim", "yapar"],
+    ["Ali", "getirdiği", "bazı", "kitapları", "bana", "verdi"],
+    ["Ona", "verdiğim", "sözleri", "tutacağım"],
+    ["Ali", "okula", "gitti"]
   ]
   return train_sentences, test_sentences
     
