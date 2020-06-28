@@ -19,13 +19,11 @@ class Labeler:
     
   def _get_sentences_and_labels(self):
     """Returns a list of sentences and the list of labels."""
-    _TRAIN_DATA_DIR = os.path.join(_DATA_DIR, "Turkish", "training")
-    _TEST_DATA_DIR = os.path.join(_DATA_DIR, "Turkish", "training")
-    train_path = os.path.join(_TRAIN_DATA_DIR, "{}.pbtxt".format(self.train_data))
+    train_path = os.path.join(_DATA_DIR, "Turkish", "training", "{}.pbtxt".format(self.train_data))
     train_treebank = reader.ReadTreebankTextProto(train_path)
     logging.info("Total sentences in train data {}".format(len(train_treebank.sentence)))
     training_data = list(train_treebank.sentence)
-    test_path = os.path.join(_TEST_DATA_DIR, "{}.pbtxt".format(self.test_data))
+    test_path = os.path.join(_DATA_DIR, "Turkish", "training", "{}.pbtxt".format(self.test_data))
     test_treebank = reader.ReadTreebankTextProto(test_path)
     logging.info("Total sentences in test data {}".format(len(test_treebank.sentence)))
     test_data = list(test_treebank.sentence)
@@ -46,4 +44,3 @@ if __name__ == "__main__":
                     test_data="treebank_train_0_10")
                     
   train_data, test_data = labeler._get_sentences_and_labels()
-    
