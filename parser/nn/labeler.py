@@ -20,7 +20,7 @@ class Labeler:
   def _get_sentences_and_labels(self):
     """Returns a list of sentences and the list of labels."""
     _TRAIN_DATA_DIR = os.path.join(_DATA_DIR, "Turkish", "training")
-    _TEST_DATA_DIR = os.path.join(_DATA_DIR, "Turkish", "test")
+    _TEST_DATA_DIR = os.path.join(_DATA_DIR, "Turkish", "training")
     train_path = os.path.join(_TRAIN_DATA_DIR, "{}.pbtxt".format(self.train_data))
     train_treebank = reader.ReadTreebankTextProto(train_path)
     logging.info("Total sentences in train data {}".format(len(train_treebank.sentence)))
@@ -30,7 +30,7 @@ class Labeler:
     logging.info("Total sentences in test data {}".format(len(test_treebank.sentence)))
     test_data = list(test_treebank.sentence)
     
-    return train_data, test_data
+    return training_data, test_data
     
   
   def train(self):
