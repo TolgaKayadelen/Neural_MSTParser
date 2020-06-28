@@ -213,8 +213,21 @@ class BiLSTM:
   def train(self, train_data, train_labels, label_dict, epochs, embeddings=False,
             loss="categorical_crossentropy", optimizer="adam", batch_size=None, test_data=None,
             test_labels=None):
-      """Trains the LSTM model."""
+      """Trains the LSTM model.
       
+      Args:
+        train_data: list of sentences.
+        train_labels: list of lists. Each list is a sequence of tags representing the tag for the
+            word in that position in the sentence. 
+        label_dict: dictionary of labels, where each label is mapped to an integer value. 
+        epochs: int, number of epochs. 
+        embeddings: bool, whether to use pretrained embeddings.
+        loss: the cost function. 
+        optimizer: the optimization algorithm to use.
+        batch_size: the batch size use for dividing training data into batches.
+        test_data: list of sentences. The data to test the model on. 
+        test_labels: list of lists. Similar to train_labels.  
+      """
       if embeddings: 
         word2vec = nn_utils.load_embeddings()
         words_to_index, index_to_words = self.index_words(word2vec)
@@ -239,16 +252,8 @@ class BiLSTM:
       print(f"shape of the output {labels.shape}")
       self.model.fit(indexed_sentences, labels, epochs=epochs, batch_size=batch_size)
       
-      test_sentences = [
-        "burak bazı durumlarda kopya çeker",
-        "bana söylediği sözleri unuttu",
-        "hep geç kalır",
-        "Berna devamlı resim yapar"
-      ]
-      self.predict(self.model, test_sentences, words_to_index, maxlen, self.reverse_label_dict)
-      
-      
-      
+      if test_data:
+        self.predict(self.model, test_data, words_to_index, maxlen, self.reverse_label_dict)
 
   def predict(self, model, sentences, words_to_index, maxlen, reverse_tagset):
     for sentence in sentences:
@@ -267,14 +272,21 @@ class BiLSTM:
 # ---
 # TODO: Remove later.
 def get_data():
-  sentences = [
+  train_sentences = [
     "Can bu durumda sürekli kitap okur",
     "Ali getirdiği bazı kitapları bana verdi",
     "Sana verdiğim sözleri tutacağım",
     "Kitabı okudum",
     "Ali eve gelmedi"
   ]
-  return sentences
+  
+  test_sentences = [
+    "burak bazı durumlarda kopya çeker",
+    "bana söylediği sözleri unuttu",
+    "hep geç kalır",
+    "Berna devamlı resim yapar"
+  ]
+  return train_sentences, test_sentences
     
 
 def get_labels():
@@ -293,42 +305,10 @@ def get_labels():
 
 if __name__ == "__main__":
   mylstm = BiLSTM()
-  train_data = get_data()
+  train_data, test_data = get_data()
   label_dict, _, train_labels = get_labels()
   mylstm.train(train_data=train_data, train_labels=train_labels, label_dict=label_dict,
                epochs=30, embeddings=True, loss="categorical_crossentropy", optimizer="adam",
-               batch_size=5, test_data=None, test_labels=None)
-  
-  """
-  word2vec = nn_utils.load_embeddings()
-  words_to_index, index_to_words = mylstm.index_words(word2vec)
-  train_data = get_data()
-  maxlen = nn_utils.maxlen(train_data)
-  sentences = np.array(train_data)
-  sentence_indices = mylstm.index_sentences(sentences, words_to_index, maxlen)
-  # print(sentences, sentence_indices)
-  
-  tagset, reverse_tagset, train_labels = get_labels()
-  postagger = mylstm.model(input_shape=(maxlen,),
-                           word2vec=word2vec,
-                           word_indices=words_to_index,
-                           n_classes=len(tagset))
-  print(postagger.summary())
-  postagger.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
-
-  labels = mylstm.index_labels(train_labels, tagset, sentences.shape[0], maxlen)
-
-  print(f"shape of the output {labels.shape}")
-  
-  postagger.fit(sentence_indices, labels, epochs=30, batch_size=5)
-  
-  test_sentences = [
-    "burak bazı durumlarda kopya çeker",
-    "bana söylediği sözleri unuttu",
-    "hep geç kalır",
-    "Berna devamlı resim yapar"
-  ]
-  mylstm.predict(postagger, test_sentences, words_to_index, maxlen, reverse_tagset)
-  """
+               batch_size=5, test_data=test_data, test_labels=None)
 
   
