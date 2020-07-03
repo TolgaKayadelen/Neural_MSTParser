@@ -123,11 +123,9 @@ class BiLSTM:
     sentence_indices = np.zeros(shape=(m, maxlen))
     for i in range(len(sentences)):
       sentence = sentences[i]
-      print(sentence)
       j = 0
       
       for w in sentence:
-        print(w)
         try:
           sentence_indices[i, j] = word_indices[w]
         except KeyError:
@@ -215,7 +213,7 @@ class BiLSTM:
       """Trains the LSTM model.
       
       Args:
-        train_data: list of lists. Eeach list is a sequence of words representing one sentence.
+        train_data: list of lists. Each list is a sequence of words representing one sentence.
         train_labels: list of lists. Each list is a sequence of tags representing the tag for the
             word in that position in the sentence. 
         label_dict: dictionary of labels, where each label is mapped to an integer value. 
@@ -247,7 +245,7 @@ class BiLSTM:
       print(self.model.summary())
       self.model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
       
-      labels = mylstm.index_labels(train_labels, label_dict, len(sentences), maxlen)
+      labels = self.index_labels(train_labels, label_dict, len(train_data), maxlen)
       print(f"shape of the output {labels.shape}")
       self.model.fit(indexed_sentences, labels, epochs=epochs, batch_size=batch_size)
       
