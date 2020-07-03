@@ -46,7 +46,7 @@ enum Tag {
 }
 
 // Coarse Part of Speech tags.
-num Category {
+enum Category {
   UNKNOWN_CATEGORY = 0;
   ADP = 1;              // adposition
   ADV = 2;              // adverb
