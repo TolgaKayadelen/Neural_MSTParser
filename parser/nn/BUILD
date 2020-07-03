@@ -16,6 +16,7 @@ py_library(
 	deps = [
 		"//learner/nn:bilstm",
 		"//util:reader",
+    "//model:tags_and_labels_enum_py_pb2",
 	],
 	data = [
 		"//data/testdata:parser",

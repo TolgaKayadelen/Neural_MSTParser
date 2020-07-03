@@ -231,6 +231,7 @@ class BiLSTM:
         embedding_dim = word2vec[index_to_words[100]].shape[0]
       
       maxlen = nn_utils.maxlen(train_data)
+      logging.info(f"maxlen {maxlen}")
       
       # sentences = train_data
       indexed_sentences = self.index_sentences(train_data, words_to_index, maxlen)
@@ -246,7 +247,7 @@ class BiLSTM:
       self.model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
       
       labels = self.index_labels(train_labels, label_dict, len(train_data), maxlen)
-      print(f"shape of the output {labels.shape}")
+      logging.info(f"shape of the output {labels.shape}")
       self.model.fit(indexed_sentences, labels, epochs=epochs, batch_size=batch_size)
       
       if test_data:

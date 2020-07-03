@@ -6,105 +6,100 @@ syntax = "proto2";
 package model;
 
 // Fine Part of Speech Tags.
-message Tag {
-  enum Value {
-    // Next available id: 34
-    UNKNOWN_TAG = 0;
-    Anum = 1;
-    Abr = 2;
-    Adj = 3;
-    Adverb = 4;
-    Conj = 5;
-    Demons = 6;
-    Det = 7;
-    Dup = 8;
-    Interj = 9;
-    NAdj = 10;
-    NNum = 11;
-    Neg = 12;
-    Ness = 13;
-    Noun = 14;
-    PCAbl = 15;
-    PCAcc = 16;
-    PCDat = 17;
-    PCGen = 18;
-    PCIns = 19;
-    PCNom = 20;
-    Pers = 21;
-    PostP = 22;
-    Prop = 23;
-    Punc = 24;
-    Quant = 25;
-    Ques = 26;
-    Reflex = 27;
-    Rel = 28;
-    Since = 29;
-    Top = 30;
-    Verb = 31;
-    With = 32;
-    Without = 33;
-    Zero = 34;
-  }
+enum Tag {
+  // Next available id: 34
+  UNKNOWN_TAG = 0;
+  Anum = 1;
+  Abr = 2;
+  Adj = 3;
+  Adverb = 4;
+  Conj = 5;
+  Demons = 6;
+  Det = 7;
+  Dup = 8;
+  Interj = 9;
+  NAdj = 10;
+  NNum = 11;
+  Neg = 12;
+  Ness = 13;
+  Noun = 14;
+  PCAbl = 15;
+  PCAcc = 16;
+  PCDat = 17;
+  PCGen = 18;
+  PCIns = 19;
+  PCNom = 20;
+  Pers = 21;
+  PostP = 22;
+  Prop = 23;
+  Punc = 24;
+  Quant = 25;
+  Ques = 26;
+  Reflex = 27;
+  Rel = 28;
+  Since = 29;
+  Top = 30;
+  Verb = 31;
+  With = 32;
+  Without = 33;
+  Zero = 34;
 }
 
 // Coarse Part of Speech tags.
-message Category {
-  enum Value {
-    UNKNOWN_CATEGORY = 0;
-    ADP = 1;              // adposition
-    ADV = 2;              // adverb
-    AUX = 3;              // auxiliary
-    CCONJ = 4;            // coordinating conjunction
-    DET = 5;              // determiner
-    INTJ = 6;             // interjection
-    NOUN = 7;             // noun
-    NUM = 8;              // numeral modifier
-    PRON = 9;             // pronoun
-    PROPN = 10;           // proper noun
-    PUNCT = 11;           // punctuation
-    TOP = 12;             // root
-    VERB = 13;            // verb
-    X = 14;               // nonsense
-  }
+num Category {
+  UNKNOWN_CATEGORY = 0;
+  ADP = 1;              // adposition
+  ADV = 2;              // adverb
+  AUX = 3;              // auxiliary
+  CCONJ = 4;            // coordinating conjunction
+  DET = 5;              // determiner
+  INTJ = 6;             // interjection
+  NOUN = 7;             // noun
+  NUM = 8;              // numeral modifier
+  PRON = 9;             // pronoun
+  PROPN = 10;           // proper noun
+  PUNCT = 11;           // punctuation
+  TOP = 12;             // root
+  VERB = 13;            // verb
+  X = 14;               // nonsense
 }
 
+
 // Dependency Labels.
-message Label {
-  enum Value {
-    UNKNOWN_LABEL = 0;
-    ACL = 1;              // adjective clause
-    ADVCL = 2;            // adverbial clause
-    ADVMOD = 3;           // adverbial modifier
-    ADVMOD_EMPH = 4;      // adverbial modifier ?? 
-    AMOD = 5;             // adjective modifier
-    APPOS = 6;            // apposition
-    AUX_Q = 7;            // auxiliary
-    CASE = 8;             // case
-    CC = 9;               // coordinating conjunction
-    CCOMP = 10;           // complementizer clause 
-    COMPOUND = 11;        // compound
-    COMPOUND_LVC = 12;    // compound ?? 
-    COMPOUND_REDUP = 13;  // reduplicated compount??
-    CONJ = 14;            // conjunction
-    COP = 15;             // copula
-    CSUBJ = 16;           // clausal subject
-    DEP = 17;             // dependent
-    DET = 18;             // determiner
-    DISCOURSE = 19;       // discourse ??
-    FIXED = 20;           // ??
-    FLAT = 21;            // ??
-    MARK = 22;            // complementizer
-    NMOD = 23;            // nominal modifier
-    NMOD_POSS = 24;       // nominal modifier: ??
-    NSUBJ = 25;           // nominal subject
-    NUMMOD = 26;          // numerical modification
-    OBJ = 27;             // direct object
-    OBL = 28;             // oblique object
-    PARATAXIS = 29;       // parataxis
-    POBJ = 30;            // object of prep, don't exist in Turkish dataset.
-    PREP = 31;            // PP modifier, don't exist in Turkish dataset.
-    PUNCT = 32;           // punctuation
-    ROOT = 33;            // root
-    VOCATIVE = 34;        // vocative
-  }
+enum Label {
+  UNKNOWN_LABEL = 0;
+  ACL = 1;              // adjective clause
+  ADVCL = 2;            // adverbial clause
+  ADVMOD = 3;           // adverbial modifier
+  ADVMOD_EMPH = 4;      // adverbial modifier ?? 
+  AMOD = 5;             // adjective modifier
+  APPOS = 6;            // apposition
+  AUX_Q = 7;            // auxiliary
+  CASE = 8;             // case
+  CC = 9;               // coordinating conjunction
+  CCOMP = 10;           // complementizer clause 
+  COMPOUND = 11;        // compound
+  COMPOUND_LVC = 12;    // compound ?? 
+  COMPOUND_REDUP = 13;  // reduplicated compount??
+  CONJ = 14;            // conjunction
+  COP = 15;             // copula
+  CSUBJ = 16;           // clausal subject
+  DEP = 17;             // dependent
+  DET = 18;             // determiner
+  DISCOURSE = 19;       // discourse ??
+  FIXED = 20;           // ??
+  FLAT = 21;            // ??
+  MARK = 22;            // complementizer
+  NMOD = 23;            // nominal modifier
+  NMOD_POSS = 24;       // nominal modifier: ??
+  NSUBJ = 25;           // nominal subject
+  NUMMOD = 26;          // numerical modification
+  OBJ = 27;             // direct object
+  OBL = 28;             // oblique object
+  PARATAXIS = 29;       // parataxis
+  POBJ = 30;            // object of prep, don't exist in Turkish dataset.
+  PREP = 31;            // PP modifier, don't exist in Turkish dataset.
+  PUNCT = 32;           // punctuation
+  ROOT = 33;            // root
+  VOCATIVE = 34;        // vocative
 }
