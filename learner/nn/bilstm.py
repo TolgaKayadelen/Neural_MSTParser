@@ -214,7 +214,7 @@ class BiLSTM:
       
       Args:
         train_data: list of lists. Each list is a sequence of words representing one sentence.
-        train_labels: list of lists. Each list is a sequence of tags representing the tag for the
+        train_data_labels: list of lists. Each list is a sequence of tags representing the tag for the
             word in that position in the sentence. 
         label_dict: dictionary of labels, where each label is mapped to an integer value. 
         epochs: int, number of epochs. 
@@ -222,10 +222,10 @@ class BiLSTM:
         loss: the cost function. 
         optimizer: the optimization algorithm to use.
         vld_data: list of lists. Validation data.
-        vld_labels: list of lists. Validation data labels.
+        vld_data_labels: list of lists. Validation data labels.
         batch_size: the batch size use for dividing training data into batches.
         test_data: list of sentences. The data to test the model on. 
-        test_labels: list of lists. Similar to train_labels.  
+        test_data_labels: list of lists. Similar to train_labels.  
       """
       
       if embeddings: 
@@ -322,8 +322,8 @@ if __name__ == "__main__":
   mylstm = BiLSTM()
   train_data, test_data = get_data()
   label_dict, _, train_labels = get_labels()
-  mylstm.train(train_data=train_data, train_labels=train_labels, label_dict=label_dict,
+  mylstm.train(train_data=train_data, train_data_labels=train_labels, label_dict=label_dict,
                epochs=30, embeddings=True, loss="categorical_crossentropy", optimizer="adam",
-               batch_size=5, test_data=test_data, test_labels=None)
+               batch_size=5, test_data=test_data, test_data_labels=None)
 
   
