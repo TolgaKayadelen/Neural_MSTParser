@@ -153,10 +153,10 @@ class BiLSTM:
     label_indices = np.zeros(shape=(n_sentences, maxlen, len(label_dict)))
     for i, label_set in enumerate(labels):
       indexed = _labels_to_index(label_set)
-      print(i)
-      print(indexed)
+      # print(i)
+      # print(indexed)
       one_hot = nn_utils.convert_to_one_hot(indexed, len(label_dict))
-      print(one_hot)
+      # print(one_hot)
       label_indices[i, :, :] = one_hot
     return label_indices
     
@@ -207,9 +207,9 @@ class BiLSTM:
     return model
 
 
-  def train(self, train_data, train_labels, label_dict, epochs, embeddings=False,
-            loss="categorical_crossentropy", optimizer="adam", batch_size=None, test_data=None,
-            test_labels=None):
+  def train(self, train_data, train_data_labels, label_dict, epochs, embeddings=False,
+            loss="categorical_crossentropy", optimizer="adam", batch_size=None, vld_data=None,
+            vld_data_labels=None, test_data=None, test_data_labels=None):
       """Trains the LSTM model.
       
       Args:
@@ -221,21 +221,22 @@ class BiLSTM:
         embeddings: bool, whether to use pretrained embeddings.
         loss: the cost function. 
         optimizer: the optimization algorithm to use.
+        vld_data: list of lists. Validation data.
+        vld_labels: list of lists. Validation data labels.
         batch_size: the batch size use for dividing training data into batches.
         test_data: list of sentences. The data to test the model on. 
         test_labels: list of lists. Similar to train_labels.  
       """
+      
       if embeddings: 
         word2vec = nn_utils.load_embeddings()
         words_to_index, index_to_words = self.index_words(word2vec)
         embedding_dim = word2vec[index_to_words[100]].shape[0]
       
       maxlen = nn_utils.maxlen(train_data)
-      logging.info(f"maxlen {maxlen}")
+      logging.info(f"maxlen: {maxlen}")
       
-      # sentences = train_data
-      indexed_sentences = self.index_sentences(train_data, words_to_index, maxlen)
-      # print(train_data, indexed_sentences)
+      train_sentences = self.index_sentences(train_data, words_to_index, maxlen)
       
       self.label_dict = label_dict
       self.reverse_label_dict = {v:k for k,v in label_dict.items()} 
@@ -246,9 +247,17 @@ class BiLSTM:
       print(self.model.summary())
       self.model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
       
-      labels = self.index_labels(train_labels, label_dict, len(train_data), maxlen)
-      logging.info(f"shape of the output {labels.shape}")
-      self.model.fit(indexed_sentences, labels, epochs=epochs, batch_size=batch_size)
+      train_labels = self.index_labels(train_data_labels, label_dict, len(train_data), maxlen)
+      logging.info(f"shape of the output {train_labels.shape}")
+      
+      if vld_data and vld_data_labels:
+        vld_sentences = self.index_sentences(vld_data, words_to_index, maxlen)
+        vld_labels=self.index_labels(vld_data_labels, label_dict, len(vld_data), maxlen)
+        self.model.fit(train_sentences, train_labels,
+                       validation_data=(vld_sentences, vld_labels),
+                       epochs=epochs, batch_size=batch_size)
+      else:
+        self.model.fit(train_sentences, train_labels, epochs=epochs, batch_size=batch_size)
       
       if test_data:
         self.predict(self.model, test_data, words_to_index, maxlen, self.reverse_label_dict)

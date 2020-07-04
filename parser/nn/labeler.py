@@ -3,7 +3,7 @@
 import os
 from util import reader
 from data.treebank import sentence_pb2
-from model import tags_and_labels_enum_pb2 as tags_and_labels
+from tagset.fine_pos import fine_tag_enum_pb2 as fine_tags
 from learner.nn import bilstm
 
 import logging
@@ -12,7 +12,7 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 _DATA_DIR = "data/UDv23"
 
 class Labeler:
-  def __init__(self, train_data, test_data=None, epochs=10, learning_rate=0.2):
+  def __init__(self, train_data, test_data=None, epochs=20, learning_rate=0.2):
     self.epochs = epochs
     self.train_data = train_data
     self.test_data = test_data
@@ -49,33 +49,33 @@ class Labeler:
       sentences.append(words)
       labels.append(labels_)
       counter += 1
-      if counter > 10:
-        break
-        
     return sentences, labels
     
     
   def train(self):
     learner = bilstm.BiLSTM()
     train_data, test_data = self._get_train_and_test_data()
-    train_sentences, train_labels = self._get_sentences_and_labels(train_data)
-    # print(train_sentences, train_labels)
-    
+    train_sentences, train_labels = self._get_sentences_and_labels(train_data)  
+    test_sentences, test_labels = self._get_sentences_and_labels(test_data)
+    # print("t----test sentences again ---")
+    print(len(test_sentences))
+
     label_dict = {}
-    for key in tags_and_labels.Tag.DESCRIPTOR.values_by_name.keys():
+    for key in fine_tags.Tag.DESCRIPTOR.values_by_name.keys():
       if key == "UNKNOWN_TAG":
         continue
-      label_dict[key] = tags_and_labels.Tag.Value(key)
+      label_dict[key] = fine_tags.Tag.Value(key)
     label_dict["-pad-"] = 0
     print(label_dict)
-    #input("Press to start training ..")
-    # learner.train(train_data=train_sentences, train_labels=train_labels, label_dict=label_dict,
-    #              epochs=self.epochs, embeddings=True, batch_size=10)
+    input("Press to start training ..")
+    learner.train(train_data=train_sentences, train_data_labels=train_labels, label_dict=label_dict,
+                  epochs=self.epochs, embeddings=True, batch_size=50, 
+                  vld_data=test_sentences, vld_data_labels=test_labels, test_data=test_sentences)
 
 
 
 if __name__ == "__main__":
-  labeler = Labeler(train_data="treebank_train_0_50",
-                    test_data="treebank_train_0_10")
+  labeler = Labeler(train_data="treebank_train_0_500",
+                    test_data="treebank_0_3")
                     
   labeler.train()

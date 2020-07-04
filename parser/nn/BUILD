@@ -16,10 +16,11 @@ py_library(
 	deps = [
 		"//learner/nn:bilstm",
 		"//util:reader",
-    "//model:tags_and_labels_enum_py_pb2",
+    "//tagset/fine_pos:fine_tag_enum_py_pb2",
+    "//tagset/coarse_pos:coarse_tag_enum_py_pb2",
+    "//tagset/dep_labels:dep_label_enum_py_pb2",
 	],
 	data = [
 		"//data/testdata:parser",
-    "//model:label_to_enum",
 	],
 )
