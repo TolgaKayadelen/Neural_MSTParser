@@ -3,20 +3,21 @@ syntax = "proto2";
 package tagset.coarse_pos;
 
 // Coarse Part of Speech tags.
-enum Category {
+enum Tag {
   UNKNOWN_CATEGORY = 0;
-  ADP = 1;              // adposition
-  ADV = 2;              // adverb
-  AUX = 3;              // auxiliary
-  CCONJ = 4;            // coordinating conjunction
-  DET = 5;              // determiner
-  INTJ = 6;             // interjection
-  NOUN = 7;             // noun
-  NUM = 8;              // numeral modifier
-  PRON = 9;             // pronoun
-  PROPN = 10;           // proper noun
-  PUNC = 11;            // punctuation
-  TOP = 12;             // root
-  VERB = 13;            // verb
-  X = 14;               // nonsense
+  ADJ = 1;              // adjective
+  ADP = 2;              // adposition
+  ADV = 3;              // adverb
+  AUX = 4;              // auxiliary
+  CCONJ = 5;            // coordinating conjunction
+  DET = 6;              // determiner
+  INTJ = 7;             // interjection
+  NOUN = 8;             // noun
+  NUM = 9;              // numeral modifier
+  PRON = 10;            // pronoun
+  PROPN = 11;           // proper noun
+  PUNCT = 12;            // punctuation
+  TOP = 13;             // root
+  VERB = 14;            // verb
+  X = 15;               // nonsense
 }

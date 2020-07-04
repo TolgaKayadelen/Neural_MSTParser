@@ -3,7 +3,7 @@ syntax = "proto2";
 package tagset.dep_labels;
 
 // Dependency Labels.
-enum Label {
+enum Tag {
   UNKNOWN_LABEL = 0;
   ACL = 1;              // adjective clause
   ADVCL = 2;            // adverbial clause

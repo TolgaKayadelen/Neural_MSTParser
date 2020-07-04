@@ -1,10 +1,14 @@
 """A BiLSTM based labeler to a sequence of tokens."""
 
 import os
+import sys
 import argparse
+
 from util import reader
 from data.treebank import sentence_pb2
 from tagset.fine_pos import fine_tag_enum_pb2 as fine_tags
+from tagset.coarse_pos import coarse_tag_enum_pb2 as coarse_tags
+from tagset.dep_labels import dep_label_enum_pb2 as dep_labels
 from learner.nn import bilstm
 
 import logging
@@ -40,9 +44,32 @@ class Labeler:
     
     
     return training_data, validation_data, testing_data
-    
   
-  def _get_sentences_and_labels(self, data):
+  def _read_labels(self, tagset):
+    
+    # read the tagset
+    assert(tagset), "Tagset cannot be initialized!"
+    if tagset == "fine_pos":
+      tags = fine_tags
+    elif tagset == "coarse_pos":
+      tags = coarse_tags
+    elif tagset == "dep_labels":
+      tags = dep_labels
+    else:
+      sys.exit("Couldn't determine tagset!")
+  
+    # Prepare the dictionary of labels.
+    label_dict = {}
+    for key in tags.Tag.DESCRIPTOR.values_by_name.keys():
+      if key in ["UNKNOWN_TAG", "UNKNOWN_CATEGORY", "UNKNOWN_LABEL"]:
+        continue
+      label_dict[key] = tags.Tag.Value(key)
+    label_dict["-pad-"] = 0
+    
+    logging.info(f"number of labels: {len(label_dict)}")
+    return label_dict
+  
+  def _get_sentences_and_labels(self, data, tagset):
     """Returns sentences and labels from training data.
     
     Args:
@@ -51,39 +78,39 @@ class Labeler:
       sentences: a list of lists where each list is a list of words.
       labels: a list of lists where each list is a list of labels. 
     """
+    assert(tagset in ["fine_pos", "coarse_pos", "dep_labels"]), "Invalid Tagset!"
     sentences, labels = [], []
-    counter = 0
     for sentence in data:
       words = [token.word for token in sentence.token]
-      labels_ = [token.pos for token in sentence.token]
+      if tagset == "fine_pos":
+        labels_ = [token.pos for token in sentence.token]
+      elif tagset == "coarse_pos":
+        labels_ = [token.category for token in sentence.token]
+      else:
+        labels_ = [token.label for token in sentence.token]
       sentences.append(words)
       labels.append(labels_)
-      counter += 1
     return sentences, labels
     
     
-  def train(self, epochs=20, learning_rate=0.2, batch_size=50):
+  def train(self, epochs=20, learning_rate=0.2, batch_size=50, tagset=None):
     
     # Initialize the learner.
     learner = bilstm.BiLSTM()
-  
-    # Prepare the dictionary of labels.
-    label_dict = {}
-    for key in fine_tags.Tag.DESCRIPTOR.values_by_name.keys():
-      if key == "UNKNOWN_TAG":
-        continue
-      label_dict[key] = fine_tags.Tag.Value(key)
-    label_dict["-pad-"] = 0
     
+    # Get the labels
+    label_dict = self._read_labels(tagset)
+    print(label_dict)    
     logging.info(f"number of labels: {len(label_dict)}")
+    input("Press to continue..")
     
     # Get the training, validation and test data.
     train_data, vld_data, test_data = self._read_data()
-    train_sentences, train_labels = self._get_sentences_and_labels(train_data)
-    vld_sentences, vld_labels = self._get_sentences_and_labels(vld_data)
+    train_sentences, train_labels = self._get_sentences_and_labels(train_data, tagset)
+    vld_sentences, vld_labels = self._get_sentences_and_labels(vld_data, tagset)
     
     if test_data:
-      test_sentences, test_labels = self._get_sentences_and_labels(test_data)
+      test_sentences, test_labels = self._get_sentences_and_labels(test_data, tagset)
     else:
       test_sentences = vld_sentences
     
@@ -103,8 +130,10 @@ if __name__ == "__main__":
   parser.add_argument("--vld_data", type=str, help="validation data path.")
   parser.add_argument("--test_data", type=str, help="test data path.")
   parser.add_argument("--batch_size", type=int, default=50, help="batch size.")
+  parser.add_argument("--tagset", type=str, choices=["fine_pos", "coarse_pos", "dep_labels"],
+                      help="path to tagset proto file.")
   
   args = parser.parse_args()
   labeler = Labeler(train_data=args.train_data, vld_data=args.vld_data,
                     test_data=args.test_data)
-  labeler.train(args.epochs, args.learning_rate, args.batch_size)
+  labeler.train(args.epochs, args.learning_rate, args.batch_size, args.tagset)
