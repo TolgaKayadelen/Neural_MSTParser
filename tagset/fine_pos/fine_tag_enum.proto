@@ -1,0 +1,43 @@
+syntax = "proto2";
+
+package tagset.fine_pos;
+
+// Fine Part of Speech Tags.
+enum Tag {
+  // Next available id: 34
+  UNKNOWN_TAG = 0;
+  ANum = 1;
+  Abr = 2;
+  Adj = 3;
+  Adverb = 4;
+  Conj = 5;
+  Demons = 6;
+  Det = 7;
+  Dup = 8;
+  Interj = 9;
+  NAdj = 10;
+  NNum = 11;
+  Neg = 12;
+  Ness = 13;
+  Noun = 14;
+  PCAbl = 15;
+  PCAcc = 16;
+  PCDat = 17;
+  PCGen = 18;
+  PCIns = 19;
+  PCNom = 20;
+  Pers = 21;
+  PostP = 22;
+  Prop = 23;
+  Punc = 24;
+  Quant = 25;
+  Ques = 26;
+  Reflex = 27;
+  Rel = 28;
+  Since = 29;
+  TOP = 30;
+  Verb = 31;
+  With = 32;
+  Without = 33;
+  Zero = 34;
+}

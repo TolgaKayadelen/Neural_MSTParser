@@ -13,13 +13,6 @@ py_proto_library(
 	default_runtime = "@com_google_protobuf//:protobuf_python",
 )
 
-py_proto_library(
-	name = "tags_and_labels_enum_py_pb2",
-	srcs = ["tags_and_labels_enum.proto"],
-	protoc = "@com_google_protobuf//:protoc",
-	default_runtime = "@com_google_protobuf//:protobuf_python",
-)
-
 # binaries.
 py_binary(
   name = "get_model_info",
@@ -49,6 +42,7 @@ py_binary(
 )
 
 # Data.
+# (TODO) move this to tagset package, kill all dependencies to here.
 filegroup(
     name = "label_to_enum",
     srcs = [":label_to_enum.tsv"],

@@ -1,0 +1,22 @@
+syntax = "proto2";
+
+package tagset.coarse_pos;
+
+// Coarse Part of Speech tags.
+enum Category {
+  UNKNOWN_CATEGORY = 0;
+  ADP = 1;              // adposition
+  ADV = 2;              // adverb
+  AUX = 3;              // auxiliary
+  CCONJ = 4;            // coordinating conjunction
+  DET = 5;              // determiner
+  INTJ = 6;             // interjection
+  NOUN = 7;             // noun
+  NUM = 8;              // numeral modifier
+  PRON = 9;             // pronoun
+  PROPN = 10;           // proper noun
+  PUNC = 11;            // punctuation
+  TOP = 12;             // root
+  VERB = 13;            // verb
+  X = 14;               // nonsense
+}
