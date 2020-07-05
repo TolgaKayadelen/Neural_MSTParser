@@ -63,7 +63,10 @@ class Labeler:
     for key in tags.Tag.DESCRIPTOR.values_by_name.keys():
       if key in ["UNKNOWN_TAG", "UNKNOWN_CATEGORY", "UNKNOWN_LABEL"]:
         continue
-      label_dict[key] = tags.Tag.Value(key)
+      if key in ["advmod_emph", "aux_q", "compound_lvc", "compound_redup", "nmod_poss"]:
+        label_dict[key.replace("_", ":")] = tags.Tag.Value(key)
+      else:
+        label_dict[key] = tags.Tag.Value(key)
     label_dict["-pad-"] = 0
     
     logging.info(f"number of labels: {len(label_dict)}")
@@ -87,6 +90,7 @@ class Labeler:
       elif tagset == "coarse_pos":
         labels_ = [token.category for token in sentence.token]
       else:
+        sentence.token[0].label = "TOP"
         labels_ = [token.label for token in sentence.token]
       sentences.append(words)
       labels.append(labels_)
