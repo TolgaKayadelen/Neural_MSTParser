@@ -2,8 +2,8 @@ package(default_visibility = ["//visibility:public"])
 
 # Binaries
 py_binary(
-	name = "converter",
-	srcs = ["converter.py"],
+	name = "frame_converter",
+	srcs = ["frame_converter.py"],
   deps = [
     "//util:writer",
     "//data/propbank/protos:frame_py_pb2",

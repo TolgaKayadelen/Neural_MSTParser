@@ -1,0 +1,44 @@
+syntax = "proto2";
+
+package tagset.arg_str;
+
+// Semantic Role Labels.
+// Numbered arguments refer to the core arguments of a verb's argument frame. They represent
+// a verbs selectional restrictions. Arguments with an M modifier, i.e. AM-LOC, refer to adjunct 
+// like arguments that can appear as constituents of a verb.
+// Arguments with an R-XX tag denote referential arguments, a referential entity within the same
+// sentence that refers to some argument. 
+// Arguments with C-XX tag refer to discontinuous arguments.
+enum Tag {
+  UNKNOWN_BIOTAG = 0;
+  A0 = 1;   // Arg0; usually agent or experiencer.
+  A1 = 2;   // Arg1; usually patient or theme.
+  A3 = 3;   // Arg2; usually beneficiary, instrument or recipient.
+  A2 = 4;   // Arg3; usually source, beneficiary, or instrument.
+  A4 = 5;   // Arg4; usuallly destination.
+  A_A = 6;  // Causer agent.
+  AM_ADV = 7;   //  Adverbial.
+  AM_CAU = 8;   //  Cause.
+  AM_COM = 9;   //  Commitative.
+  AM_DIR = 10;  //  Direction.  
+  AM_DIS = 11;  //  Discourse connectives.
+  AM_EXT = 12;  //  Extent.
+  AM_GOL = 13;  //  Goal.
+  AM_INS = 14;  //  Instrument.
+  AM-LOC = 15;  //  Location.
+  AM_LVB = 16;  //  Light Verb.
+  AM-MNR = 17;  //  Manner.
+  AM-NEG = 18;  //  Negation.
+  AM-PRD = 19;  //  predicative adjunct.
+  AM-TMP = 20;  //  Time, temporal modifier.
+  AM_TWO = 21;  //  Verb reduplication.
+  C_A0 = 22;
+  C_A1 = 23;
+  C_A2 = 24;
+  C_A3 = 25;
+  C_A4 = 26;
+  R_A1 = 27;
+  R_A2 = 28;
+  R_A3 = 29;
+  R_A4 = 30;
+}
