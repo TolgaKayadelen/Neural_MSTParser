@@ -31,13 +31,13 @@ class Labeler:
     
     validation_data, testing_data = None, None
     if self.vld_data:
-      vld_path = os.path.join(_DATA_DIR, "Turkish", "training", "{}.pbtxt".format(self.vld_data))
+      vld_path = os.path.join(_DATA_DIR, "Turkish", "test", "{}.pbtxt".format(self.vld_data))
       vld_treebank = reader.ReadTreebankTextProto(vld_path)
       validation_data = list(vld_treebank.sentence)
       logging.info("Total sentences in validation data {}".format(len(validation_data)))
     
     if self.test_data:
-      test_path = os.path.join(_DATA_DIR, "Turkish", "training", "{}.pbtxt".format(self.test_data))
+      test_path = os.path.join(_DATA_DIR, "Turkish", "test", "{}.pbtxt".format(self.test_data))
       test_treebank = reader.ReadTreebankTextProto(test_path)
       testing_data = list(test_treebank.sentence)
       logging.info("Total sentences in test data {}".format(len(testing_data)))
