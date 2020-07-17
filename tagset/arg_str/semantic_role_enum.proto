@@ -8,9 +8,9 @@ package tagset.arg_str;
 // like arguments that can appear as constituents of a verb.
 // Arguments with an R-XX tag denote referential arguments, a referential entity within the same
 // sentence that refers to some argument. 
-// Arguments with C-XX tag refer to discontinuous arguments.
+// Arguments with C-XX tag represent discontinuous arguments.
 enum Tag {
-  UNKNOWN_BIOTAG = 0;
+  UNKNOWN_SRL = 0;
   A0 = 1;   // Arg0; usually agent or experiencer.
   A1 = 2;   // Arg1; usually patient or theme.
   A3 = 3;   // Arg2; usually beneficiary, instrument or recipient.
@@ -25,12 +25,12 @@ enum Tag {
   AM_EXT = 12;  //  Extent.
   AM_GOL = 13;  //  Goal.
   AM_INS = 14;  //  Instrument.
-  AM-LOC = 15;  //  Location.
+  AM_LOC = 15;  //  Location.
   AM_LVB = 16;  //  Light Verb.
-  AM-MNR = 17;  //  Manner.
-  AM-NEG = 18;  //  Negation.
-  AM-PRD = 19;  //  predicative adjunct.
-  AM-TMP = 20;  //  Time, temporal modifier.
+  AM_MNR = 17;  //  Manner.
+  AM_NEG = 18;  //  Negation.
+  AM_PRD = 19;  //  predicative adjunct.
+  AM_TMP = 20;  //  Time, temporal modifier.
   AM_TWO = 21;  //  Verb reduplication.
   C_A0 = 22;
   C_A1 = 23;

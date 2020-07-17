@@ -9,6 +9,7 @@ from data.treebank import sentence_pb2
 from tagset.fine_pos import fine_tag_enum_pb2 as fine_tags
 from tagset.coarse_pos import coarse_tag_enum_pb2 as coarse_tags
 from tagset.dep_labels import dep_label_enum_pb2 as dep_labels
+from tagset.arg_str import semantic_role_enum_pb2 as srl
 from learner.nn import bilstm
 
 import logging
@@ -55,18 +56,33 @@ class Labeler:
       tags = coarse_tags
     elif tagset == "dep_labels":
       tags = dep_labels
+    elif tagset == "semantic_roles":
+      tags = srl
     else:
       sys.exit("Couldn't determine tagset!")
+    
+    def _get_bio_tags_from_srl():
+      labels_list = ["-pad-"]
+      for key in tags.Tag.DESCRIPTOR.values_by_name.keys():
+        if key == "UNKNOWN_SRL":
+          continue
+        if key.startswith(("A_", "AM_", "C_", "R_")):
+          key = key.replace("_", "-")
+        labels_list.extend(["B-"+key, "I-"+key])
+      labels_list.append("O")
+      return {v: k for k, v in enumerate(labels_list)}
   
-    # Prepare the dictionary of labels.
-    label_dict = {}
-    for key in tags.Tag.DESCRIPTOR.values_by_name.keys():
-      if key in ["UNKNOWN_TAG", "UNKNOWN_CATEGORY", "UNKNOWN_LABEL"]:
-        continue
-      if key in ["advmod_emph", "aux_q", "compound_lvc", "compound_redup", "nmod_poss"]:
-        label_dict[key.replace("_", ":")] = tags.Tag.Value(key)
-      else:
-        label_dict[key] = tags.Tag.Value(key)
+    
+    if tags == srl:
+      label_dict = _get_bio_tags_from_srl()
+    else:
+      for key in tags.Tag.DESCRIPTOR.values_by_name.keys():
+        if key in ["UNKNOWN_TAG", "UNKNOWN_CATEGORY", "UNKNOWN_LABEL"]:
+          continue
+        if key in {"advmod_emph", "aux_q", "compound_lvc", "compound_redup", "nmod_poss"}:
+          label_dict[key.replace("_", ":")] = tags.Tag.Value(key)
+        else:
+          label_dict[key] = tags.Tag.Value(key)
     label_dict["-pad-"] = 0
     
     logging.info(f"number of labels: {len(label_dict)}")
@@ -134,7 +150,8 @@ if __name__ == "__main__":
   parser.add_argument("--vld_data", type=str, help="validation data path.")
   parser.add_argument("--test_data", type=str, help="test data path.")
   parser.add_argument("--batch_size", type=int, default=50, help="batch size.")
-  parser.add_argument("--tagset", type=str, choices=["fine_pos", "coarse_pos", "dep_labels"],
+  parser.add_argument("--tagset", type=str,
+                      choices=["fine_pos", "coarse_pos", "dep_labels", "semantic_roles"],
                       help="path to tagset proto file.")
   
   args = parser.parse_args()

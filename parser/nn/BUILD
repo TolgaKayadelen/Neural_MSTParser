@@ -19,6 +19,7 @@ py_library(
     "//tagset/fine_pos:fine_tag_enum_py_pb2",
     "//tagset/coarse_pos:coarse_tag_enum_py_pb2",
     "//tagset/dep_labels:dep_label_enum_py_pb2",
+    "//tagset/arg_str:semantic_role_enum_py_pb2",
 	],
 	data = [
 		"//data/testdata:parser",
