@@ -91,3 +91,10 @@ filegroup(
 		"parser_main/*.pbtxt",
 	]),
 )
+
+filegroup(
+  name = "propbank",
+  srcs = glob([
+    "propbank/*.txt",
+  ]),
+)

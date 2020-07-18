@@ -122,7 +122,6 @@ class Labeler:
     label_dict = self._read_labels(tagset)
     print(label_dict)    
     logging.info(f"number of labels: {len(label_dict)}")
-    input("Press to continue..")
     
     # Get the training, validation and test data.
     train_data, vld_data, test_data = self._read_data()

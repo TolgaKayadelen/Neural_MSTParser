@@ -1,6 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 
-# Libraries
+# Libraries.
 py_library(
     name = "writer",
     srcs = ["writer.py"],
@@ -15,7 +15,7 @@ py_library(
 	],
 )
 
-# Binaries
+# Binaries.
 py_binary(
 	name = "common",
 	srcs = ["common.py"],
@@ -37,8 +37,19 @@ py_binary(
 	],
 )
 
-#Test
 # Tests.
+py_test(
+	name = "converter_test",
+	size = "small",
+	srcs = ["converter_test.py"],
+	data = [
+	"//data/testdata:propbank",
+	],
+	deps = [
+		":converter"
+	],
+)
+
 py_test(
 	name = "common_test",
 	size = "small",

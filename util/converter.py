@@ -40,8 +40,8 @@ import argparse
 import os
 import re
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+# reload(sys)
+# sys.setdefaultencoding('utf8')
 
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
@@ -54,10 +54,18 @@ class Converter:
         #self.sentence_list = self._ReadSentences(self._corpus)
         self.sentence_list = reader.ReadConllX(self._corpus)
         
-    def ConvertConllToProto(self, conll_sentences, output_file, writetext, writeproto, prototype, keep_igs=True):
+    def ConvertConllToProto(self, conll_sentences, output_file=None,
+                            writetext=False, writeproto=False, prototype="treebank",
+                            keep_igs=True, semantic_roles=True):
         """Converts conll-X formatted sentences to proto buffer objects.    
         Args:
-            dep_graphs: list of dependency graphs.
+            conll_sentneces: list of conll sentences.
+            output_file: path to file where protobuf sentences will be written.
+            writetext: if True, writes output as pbtxt.
+            writeproto: if True, writes output as protobuffer binary.
+            prototype: sentence proto or treebank proto.
+            keep_igs: if False, removes IGs from data.
+            semantic_roles: if True, also adds srl labels to the token.
         Returns:    
             list of proto buffers.
         """
@@ -65,11 +73,12 @@ class Converter:
         logging.debug("Converting sentences to protocol buffer.")
         for conll in conll_sentences:
             sentence = sentence_pb2.Sentence()
-            sentence_dict, metadata = self._ConvertToDict(conll)
+            sentence_dict, metadata = self._ConvertToDict(conll, semantic_roles=semantic_roles)
             
             # add metadata
-            sentence.text = metadata["text"]
-            sentence.sent_id = metadata["sent_id"]
+            if metadata:
+              sentence.text = metadata["text"]
+              sentence.sent_id = metadata["sent_id"]
             
             # add a root token
             root_token = sentence.token.add()
@@ -97,6 +106,8 @@ class Converter:
                 head.address = sentence_dict[index]["head"]
                 head.arc_score = 0.0 # default
                 token.label = sentence_dict[index]["rel"]
+                if not sentence_dict[index]["srl"] == "_":
+                  token.srl = sentence_dict[index]["srl"]
             
             # finally add sentence length
             sentence.length = len(sentence.token)
@@ -108,23 +119,23 @@ class Converter:
         assert prototype in ["sentence", "treebank"], "Unknown prototype!!"
         
         if prototype == "sentence":
-            if writetext:
+            if writetext and output_file:
                 text_output = output_file + ".pbtxt"
                 for sentence_proto in sentence_protos:
                     writer.write_proto_as_text(sentence_proto, text_output)
-            if writeproto:
+            if writeproto and output_file:
                 proto_output = output_file + ".protobuf"
                 for sentence_proto in sentence_protos:
                     writer.write_proto_as_proto(sentence_proto, proto_output)
         else:
-            if writetext:
+            if writetext and output_file:
                 text_output = output_file + ".pbtxt"
                 treebank = treebank_pb2.Treebank()
                 for sentence_proto in sentence_protos:
                     s = treebank.sentence.add()
                     s.CopyFrom(sentence_proto)
                 writer.write_proto_as_text(treebank, text_output)
-            if writeproto:
+            if writeproto and output_file:
                 proto_output = output_file + ".protobuf"
                 treebank = treebank_pb2.Treebank()
                 for sentence_proto in sentence_protos:
@@ -183,7 +194,7 @@ class Converter:
         return sentences_wo_igs
 
     
-    def _ConvertToDict(self, sentence):
+    def _ConvertToDict(self, sentence, semantic_roles=True):
         """Converts a conll-X formatted sentence to a dictionary.
         
         This is an intermediate step needed:
@@ -192,6 +203,7 @@ class Converter:
         
         Args:
             sentence: a sentence in conll-X format.
+            semantic_roles: if True, also adds semantic role label to the token.
         Returns:
             sentence mapped to a defaultdict.
             metadata: the text and the id of the sentence.
@@ -232,6 +244,8 @@ class Converter:
             sentence_dict[token]["rel"] = values[7]
             sentence_dict[token]["deps"] = values[8]
             sentence_dict[token]["misc"] = values[9]
+            if semantic_roles:
+              sentence_dict[token]["srl"] = values[12]
             token += 1
         return sentence_dict, metadata
     
@@ -281,6 +295,8 @@ class Converter:
 def main(args):
     converter = Converter(args.input_file)
     sentences = converter.sentence_list
+    print(sentences)
+    input("Press to continue..")
     protos = converter.ConvertConllToProto(
         conll_sentences = sentences, 
         output_file = args.output_file, 
@@ -295,10 +311,15 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input_file", help="Path to input file.")
-    parser.add_argument("--output_file", help="The output file to write the data.")
-    parser.add_argument("--writetext", help="wheter to save the output also in .pbtxt format", default=True)
-    parser.add_argument("--writeproto", help="whether to save the output in proto format.", default=False)
-    parser.add_argument("--prototype", help="whether sentence or treebank proto.", default="treebank")
+    parser.add_argument("--input_file",
+                        help="Path to input file.")
+    parser.add_argument("--output_file",
+                        help="The output file to write the data.")
+    parser.add_argument("--writetext",
+                        help="wheter to save the output also in .pbtxt format", default=True)
+    parser.add_argument("--writeproto",
+                        help="whether to save the output in proto format.", default=False)
+    parser.add_argument("--prototype",
+                        help="whether sentence or treebank proto.", default="treebank")
     args = parser.parse_args()
     main(args)
