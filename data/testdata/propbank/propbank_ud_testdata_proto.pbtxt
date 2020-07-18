@@ -32,7 +32,7 @@ sentence {
     }
     label: "obl"
     index: 1
-    srl: "A1"
+    srl: "B-A1"
   }
   token {
     word: "başlamalı"
@@ -69,6 +69,7 @@ sentence {
     }
     label: "root"
     index: 2
+    srl: "O"
   }
   token {
     word: "."
@@ -81,6 +82,7 @@ sentence {
     }
     label: "punct"
     index: 3
+    srl: "O"
   }
 }
 sentence {
@@ -105,6 +107,7 @@ sentence {
     }
     label: "conj"
     index: 1
+    srl: "O"
   }
   token {
     word: "annemin"
@@ -137,6 +140,7 @@ sentence {
     }
     label: "nmod:poss"
     index: 2
+    srl: "B-A1"
   }
   token {
     word: "şartları"
@@ -169,7 +173,7 @@ sentence {
     }
     label: "nsubj"
     index: 3
-    srl: "A1"
+    srl: "I-A1"
   }
   token {
     word: "vardı"
@@ -206,6 +210,7 @@ sentence {
     }
     label: "root"
     index: 4
+    srl: "O"
   }
   token {
     word: "."
@@ -218,6 +223,7 @@ sentence {
     }
     label: "punct"
     index: 5
+    srl: "O"
   }
 }
 sentence {
@@ -242,6 +248,7 @@ sentence {
     }
     label: "amod"
     index: 1
+    srl: "B-A0"
   }
   token {
     word: "parçacıklar"
@@ -261,11 +268,12 @@ sentence {
       value: "3"
     }
     selected_head {
-      address: 6
+      address: 3
       arc_score: 0.0
     }
     label: "csubj"
     index: 2
+    srl: "I-A0"
   }
   token {
     word: "sa"
@@ -293,12 +301,12 @@ sentence {
       value: "pres"
     }
     selected_head {
-      address: 2
+      address: 6
       arc_score: 0.0
     }
     label: "cop"
     index: 3
-    srl: "A0"
+    srl: "I-A0"
   }
   token {
     word: "bunların"
@@ -327,6 +335,7 @@ sentence {
     }
     label: "nmod:poss"
     index: 4
+    srl: "B-A1"
   }
   token {
     word: "hiçbirini"
@@ -363,7 +372,7 @@ sentence {
     }
     label: "obj"
     index: 5
-    srl: "A1"
+    srl: "I-A1"
   }
   token {
     word: "yapamazlar"
@@ -400,6 +409,7 @@ sentence {
     }
     label: "root"
     index: 6
+    srl: "O"
   }
   token {
     word: "."
@@ -412,6 +422,7 @@ sentence {
     }
     label: "punct"
     index: 7
+    srl: "O"
   }
 }
 sentence {
@@ -440,6 +451,7 @@ sentence {
     }
     label: "det"
     index: 1
+    srl: "B-A1"
   }
   token {
     word: "sigara"
@@ -464,7 +476,7 @@ sentence {
     }
     label: "obj"
     index: 2
-    srl: "A1"
+    srl: "I-A1"
   }
   token {
     word: "yakmıştı"
@@ -501,6 +513,7 @@ sentence {
     }
     label: "root"
     index: 3
+    srl: "O"
   }
   token {
     word: "."
@@ -513,6 +526,7 @@ sentence {
     }
     label: "punct"
     index: 4
+    srl: "O"
   }
 }
 sentence {
@@ -557,7 +571,7 @@ sentence {
     }
     label: "amod"
     index: 1
-    srl: "A2"
+    srl: "B-A2"
   }
   token {
     word: ","
@@ -570,6 +584,7 @@ sentence {
     }
     label: "punct"
     index: 2
+    srl: "O"
   }
   token {
     word: "pantolonu"
@@ -602,6 +617,7 @@ sentence {
     }
     label: "nmod:poss"
     index: 3
+    srl: "B-A0"
   }
   token {
     word: "dizlerine"
@@ -634,6 +650,7 @@ sentence {
     }
     label: "obl"
     index: 4
+    srl: "I-A0"
   }
   token {
     word: "dek"
@@ -646,6 +663,7 @@ sentence {
     }
     label: "case"
     index: 5
+    srl: "I-A0"
   }
   token {
     word: "ıslak"
@@ -658,6 +676,7 @@ sentence {
     }
     label: "amod"
     index: 6
+    srl: "I-A0"
   }
   token {
     word: ","
@@ -670,6 +689,7 @@ sentence {
     }
     label: "punct"
     index: 7
+    srl: "O"
   }
   token {
     word: "önlük"
@@ -694,6 +714,7 @@ sentence {
     }
     label: "nmod:poss"
     index: 8
+    srl: "I-A0"
   }
   token {
     word: "torbası"
@@ -721,11 +742,12 @@ sentence {
       value: "3"
     }
     selected_head {
-      address: 14
+      address: 12
       arc_score: 0.0
     }
     label: "obl"
     index: 9
+    srl: "I-A0"
   }
   token {
     word: "ham"
@@ -750,6 +772,7 @@ sentence {
     }
     label: "nmod"
     index: 10
+    srl: "I-A0"
   }
   token {
     word: "eriklerle"
@@ -774,6 +797,7 @@ sentence {
     }
     label: "obl"
     index: 11
+    srl: "I-A0"
   }
   token {
     word: "dolu"
@@ -786,6 +810,7 @@ sentence {
     }
     label: "amod"
     index: 12
+    srl: "I-A0"
   }
   token {
     word: "İbrahim"
@@ -810,7 +835,7 @@ sentence {
     }
     label: "nsubj"
     index: 13
-    srl: "A0"
+    srl: "I-A0"
   }
   token {
     word: "dikiliyordu"
@@ -851,6 +876,7 @@ sentence {
     }
     label: "root"
     index: 14
+    srl: "O"
   }
   token {
     word: "."
@@ -863,5 +889,6 @@ sentence {
     }
     label: "punct"
     index: 15
+    srl: "O"
   }
 }

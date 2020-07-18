@@ -34,6 +34,7 @@ py_binary(
 		"//data/treebank:treebank_py_pb2",
 		"//util:reader",
 		"//util:writer",
+    "//util/nn:nn_utils",
 	],
 )
 

@@ -5,7 +5,7 @@ py_binary(
 	name = "bilstm",
 	srcs = ["bilstm.py"],
   deps = [
-    "//learner/nn/utils:nn_utils",
+    "//util/nn:nn_utils",
     "//util:writer",
   ],
 )

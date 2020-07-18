@@ -9,8 +9,8 @@
 5	.	.	PUNCT	Punc	_	4	punct	_	_	_	_	_
 
 1	Sanal	sanal	ADJ	Adj	_	2	amod	_	_	_	_	_
-2	parçacıklar	parçacık	NOUN	Noun	Case=Nom|Number=Plur|Person=3	6	csubj	_	_	_	_	_
-3	sa	i	AUX	Zero	Aspect=Perf|Mood=Cnd|Number=Sing|Person=3|Tense=Pres	2	cop	_	_	_	_	A0
+2	parçacıklar	parçacık	NOUN	Noun	Case=Nom|Number=Plur|Person=3	3	csubj	_	_	_	_	_
+3	sa	i	AUX	Zero	Aspect=Perf|Mood=Cnd|Number=Sing|Person=3|Tense=Pres	6	cop	_	_	_	_	A0
 4	bunların	bu	PRON	Demons	Case=Gen|Number=Plur|Person=3|PronType=Dem	5	nmod:poss	_	_	_	_	_
 5	hiçbirini	hiçbiri	PRON	Quant	Case=Acc|Number=Sing|Number[psor]=Sing|Person=3|Person[psor]=3|PronType=Ind	6	obj	_	_	_	_	A1
 6	yapamazlar	yap	VERB	Verb	Aspect=Imp|Mood=Pot|Number=Plur|Person=3|Polarity=Neg|Tense=Aor	0	root	_	_	Y	yap.01	_
@@ -29,7 +29,7 @@
 6	ıslak	ıslak	ADJ	Adj	_	13	amod	_	_	_	_	_
 7	,	,	PUNCT	Punc	_	14	punct	_	_	_	_	_
 8	önlük	önlük	NOUN	Noun	Case=Nom|Number=Sing|Person=3	9	nmod:poss	_	_	_	_	_
-9	torbası	torba	NOUN	Noun	Case=Nom|Number=Sing|Number[psor]=Sing|Person=3|Person[psor]=3	14	obl	_	_	_	_	_
+9	torbası	torba	NOUN	Noun	Case=Nom|Number=Sing|Number[psor]=Sing|Person=3|Person[psor]=3	12	obl	_	_	_	_	_
 10	ham	ham	NOUN	Noun	Case=Nom|Number=Sing|Person=3	11	nmod	_	_	_	_	_
 11	eriklerle	erik	NOUN	Noun	Case=Ins|Number=Plur|Person=3	12	obl	_	_	_	_	_
 12	dolu	dolu	ADJ	Adj	_	13	amod	_	_	_	_	_

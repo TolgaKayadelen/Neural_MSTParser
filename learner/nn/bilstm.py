@@ -7,7 +7,7 @@ import gensim
 
 
 from util import writer
-from learner.nn.utils import nn_utils
+from util.nn import nn_utils
 
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)

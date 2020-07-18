@@ -32,6 +32,7 @@ from __future__ import print_function
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
 from util import reader, writer
+from util.nn import nn_utils
 from collections import defaultdict, OrderedDict
 from copy import deepcopy
 from google.protobuf import text_format
@@ -73,7 +74,9 @@ class Converter:
         logging.debug("Converting sentences to protocol buffer.")
         for conll in conll_sentences:
             sentence = sentence_pb2.Sentence()
-            sentence_dict, metadata = self._ConvertToDict(conll, semantic_roles=semantic_roles)
+            sentence_dict, metadata = self._ConvertToDict(
+              conll, semantic_roles=semantic_roles
+            )
             
             # add metadata
             if metadata:
@@ -106,11 +109,16 @@ class Converter:
                 head.address = sentence_dict[index]["head"]
                 head.arc_score = 0.0 # default
                 token.label = sentence_dict[index]["rel"]
-                if not sentence_dict[index]["srl"] == "_":
+                if semantic_roles and not sentence_dict[index]["srl"] == "_":
                   token.srl = sentence_dict[index]["srl"]
             
-            # finally add sentence length
+            # add sentence length
             sentence.length = len(sentence.token)
+            
+            # finally add srl argument spans (bio-tags) if semantic role
+            # annotation is requested
+            if semantic_roles:
+              sentence = nn_utils.annotate_bio_spans(sentence)
             sentence_protos.append(sentence)
     
         assert len(conll_sentences) == len(sentence_protos)
@@ -295,8 +303,8 @@ class Converter:
 def main(args):
     converter = Converter(args.input_file)
     sentences = converter.sentence_list
-    print(sentences)
-    input("Press to continue..")
+    # print(sentences)
+    # input("Press to continue..")
     protos = converter.ConvertConllToProto(
         conll_sentences = sentences, 
         output_file = args.output_file, 
