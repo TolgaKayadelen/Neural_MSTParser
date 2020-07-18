@@ -76,6 +76,7 @@ class Labeler:
     if tags == srl:
       label_dict = _get_bio_tags_from_srl()
     else:
+      label_dict = {}
       for key in tags.Tag.DESCRIPTOR.values_by_name.keys():
         if key in ["UNKNOWN_TAG", "UNKNOWN_CATEGORY", "UNKNOWN_LABEL"]:
           continue
@@ -84,7 +85,6 @@ class Labeler:
         else:
           label_dict[key] = tags.Tag.Value(key)
     label_dict["-pad-"] = 0
-    
     logging.info(f"number of labels: {len(label_dict)}")
     return label_dict
   
