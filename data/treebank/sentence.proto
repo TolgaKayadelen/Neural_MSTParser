@@ -23,6 +23,8 @@ message Sentence {
 	repeated Token token = 4; /*actually required*/
 	// whether the sentence is annotated with inflectional groups or not.
 	optional bool inflectional_groups = 5;
+  // the argument structures in the sentence.
+  repeated ArgumentStructure argument_structure = 7;
 	// the confidence score of this sentence as outputted by the classifier, 
 	// based on the predictions of the dependency relations. 
 	optional float score = 6;
@@ -58,17 +60,28 @@ message Token {
 	// The value of the morphological feature.
 	optional string value = 2;
 	}
-	
-	// Head of a token is represented as an (address, arc_score) pair, where the address
-	// points to the index of the head token and score represents the probability score
-	// of that token being the head for this token.
-	message Head {
-		// The token index of the head.
-		optional int32 address = 1;
-		// The score of the arc from this token to its head.
-		optional float arc_score = 2;
-	}
 }
+
+// Head of a token is represented as an (address, arc_score) pair, where the address
+// points to the index of the head token and score represents the probability score
+// of that token being the head for this token.
+message Head {
+  // The token index of the head.
+	optional int32 address = 1;
+	// The score of the arc from this token to its head.
+	optional float arc_score = 2;
+}
+
+message ArgumentStructure {
+  optional string predicate = 1;
+  repeated Argument argument = 2;
+  
+  message Argument {
+    optional string srl = 1;
+    repeated int32 token_index = 2;
+  }
+}
+
 
 // The maximum spanning tree is the highest scoring tree among the possible trees, 
 // computed based on the arc scores of the dependency relations in the sentence.

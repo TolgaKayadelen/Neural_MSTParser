@@ -28,7 +28,7 @@ bazel-bin/util/converter
 
 """
 
-from __future__ import print_function
+
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
 from util import reader, writer
@@ -40,7 +40,8 @@ from google.protobuf import text_format
 import argparse
 import os
 import re
-import sys
+import pandas as pd
+# import sys
 # reload(sys)
 # sys.setdefaultencoding('utf8')
 
@@ -299,19 +300,84 @@ class Converter:
                 ig_indices.append(idx)
         return ig_indices
         
+pd.options.display.max_columns = 100
+class PropbankConverter(Converter):
+  """A special class for propbank conversion."""
+  def __init__(self, corpus):
+    super().__init__(corpus)
+  
+  def _ReadCoNLLDataFrame(self, conll):
+    conll_df = pd.read_table(conll, sep="\t", quoting=3, header=None)
+    return conll_df
+  
+  def _DataFrameToProto(self, df, semantic_roles=True):
+    sentence = sentence_pb2.Sentence()
+    if semantic_roles:
+      predicates = {}
+      predicate_counter = 0
+    # add root token
+    sentence.token.add(
+      word="ROOT",
+      category="TOP",
+      pos="TOP",
+      selected_head=sentence_pb2.Head(address=-1),
+      index=0
+    )
+    for idx, row in df.iterrows():
+      token = sentence.token.add(
+        index=row[0],
+        word=row[1],
+        lemma=row[2],
+        category=row[3],
+        pos=row[4],
+        selected_head=sentence_pb2.Head(
+          address=row[6],
+          arc_score=0.0),
+        label=row[7]
+        
+      )
+      if not row[5] == "_":
+        feats = row[5].split("|")
+        for feat in feats:
+          morph_feat = token.morphology.add(
+            name=feat.split("=")[0].lower(),
+            value=feat.split("=")[1].lower()
+            )
+      if semantic_roles and row[10] == "Y":
+        predicate_counter += 1
+        arg_str = sentence.argument_structure.add(
+          predicate=row[11],
+        )
+        srl_roles_column = 11+predicate_counter
+        for val in df[srl_roles_column]:
+          if val != "_":
+            argument = arg_str.argument.add(
+              srl=val,
+            )
+            argument.token_index.append(1) # TODO
+          
+        
+
+      
+        
+    print(text_format.MessageToString(sentence, as_utf8=True))
 
 def main(args):
-    converter = Converter(args.input_file)
+    converter = PropbankConverter(args.input_file)
     sentences = converter.sentence_list
+    # print(converter._corpus)
     # print(sentences)
+    conll_df = converter._ReadCoNLLDataFrame(converter._corpus)
+    print(conll_df)
+    converter._DataFrameToProto(conll_df)
     # input("Press to continue..")
-    protos = converter.ConvertConllToProto(
-        conll_sentences = sentences, 
-        output_file = args.output_file, 
-        writetext = args.writetext, 
-        writeproto = args.writeproto,
-        prototype = args.prototype
-        )
+    # protos = converter.ConvertConllToProto(
+    #    conll_sentences = sentences, 
+    #    output_file = args.output_file, 
+    #    writetext = args.writetext, 
+    #    writeproto = args.writeproto,
+    #    prototype = args.prototype
+    #    )
     #written_proto = reader.ReadSentenceProto(args.output_file)
     # DO NOT DELETE THIS FOR THE SAKE OF FUTURE REFERENCE
     #print(text_format.MessageToString(written_proto, as_utf8=True))
