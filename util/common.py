@@ -34,6 +34,23 @@ def ExtendSentence(sentence):
     assert sentence.length == len(sentence.token) - 2, "Wrong sentence length after extension!"
     return sentence
 
+# type: sentence util
+def GetChildren(sentence, token_index, children=[]):
+  """Returns all the children of a token in sentence as a list.
+  Args:
+    sentence_pb2.Sentence()
+    token_index = the index of the token in the sentence.
+  Returns:
+    list of children for the token at index.
+  """
+  for token in sentence.token:
+    if token.selected_head.address == token_index:
+      # print(token.index)
+      # input("..")
+      children.append(token)
+      GetChildren(sentence, token.index, children)
+  return children
+
 
 # type: sentence util
 def GetRightMostChild(sentence, token):

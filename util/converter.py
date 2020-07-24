@@ -33,6 +33,7 @@ from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
 from util import reader, writer
 from util.nn import nn_utils
+from util import common
 from collections import defaultdict, OrderedDict
 from copy import deepcopy
 from google.protobuf import text_format
@@ -351,11 +352,13 @@ class PropbankConverter(Converter):
         srl_roles_column = 11+predicate_counter
         for val in df[srl_roles_column]:
           if val != "_":
-            argument = arg_str.argument.add(
-              srl=val,
-            )
-            argument.token_index.append(1) # TODO
-          
+            srl = val
+            argument = arg_str.argument.add(srl=srl)
+            idx, = df[srl_roles_column][df[srl_roles_column] == srl].index
+            token_index = df.loc[idx, 0]
+            children = common.GetChildren(sentence, token_index, [])
+            argument_span = sorted([token_index] + [child.index for child in children])
+            argument.token_index.extend(argument_span)
         
 
       

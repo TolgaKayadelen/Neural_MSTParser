@@ -32,6 +32,7 @@ py_binary(
 	deps = [
 		"//data/treebank:sentence_py_pb2",
 		"//data/treebank:treebank_py_pb2",
+    "//util:common",
 		"//util:reader",
 		"//util:writer",
     "//util/nn:nn_utils",
