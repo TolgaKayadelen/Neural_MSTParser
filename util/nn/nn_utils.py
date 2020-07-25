@@ -81,6 +81,37 @@ def annotate_bio_spans(sentence):
         token.srl = "I-" + token.srl    
 
   return sentence
+  
+
+def get_argument_spans(sentence, token_index, predicate_index, argument_span=[]):
+  """Returns all the argument span of an argument based on the head.
+  
+  Args:
+    sentence_pb2.Sentence()
+    token_index = the index of the token in the sentence.
+  Returns:
+    span_indices: set of token indices which represent the argument span.
+  """
+  # Special treatment for "case" tokens because of the weird way
+  # they are annotated in Turkish propbank.
+  if sentence.token[token_index].label == "case":
+    head_address = sentence.token[token_index].selected_head.address
+    head_of_span = sentence.token[head_address].index
+    if not sentence.token[head_of_span] in argument_span:
+      argument_span.append(sentence.token[head_of_span])
+  else:
+    head_of_span = token_index
+
+  for token in sentence.token:
+    if token in argument_span:
+      continue
+    if token.index == predicate_index:
+      continue
+    if token.selected_head.address == head_of_span:
+      argument_span.append(token)
+      get_argument_spans(sentence, token.index, predicate_index, argument_span)
+  span_indices = set([token.index for token in argument_span])
+  return list(span_indices)
 
 if __name__ == "__main__":
   trb = reader.ReadTreebankTextProto(

@@ -74,7 +74,8 @@ message Head {
 
 message ArgumentStructure {
   optional string predicate = 1;
-  repeated Argument argument = 2;
+  optional int32 predicate_index = 2;
+  repeated Argument argument = 3;
   
   message Argument {
     optional string srl = 1;

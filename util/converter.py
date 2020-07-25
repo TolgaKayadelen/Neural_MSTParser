@@ -38,6 +38,7 @@ from collections import defaultdict, OrderedDict
 from copy import deepcopy
 from google.protobuf import text_format
 
+import numpy as np
 import argparse
 import os
 import re
@@ -308,15 +309,23 @@ class PropbankConverter(Converter):
     super().__init__(corpus)
   
   def _ReadCoNLLDataFrame(self, conll):
-    conll_df = pd.read_table(conll, sep="\t", quoting=3, header=None)
-    return conll_df
+    conll_df = pd.read_table(conll, sep="\t", quoting=3, header=None,
+                            names=list(range(0,21)),
+                            skip_blank_lines=False)
+    # TODO: turn this into a function decorator.
+    return self._ChunkDataFrame(conll_df)
+  
+  def _ChunkDataFrame(self, df):
+    """Converts one big DF which has all sentenes to a list of DFs."""
+    df_list = np.split(df, df[df.isnull().all(1)].index)
+    return df_list
   
   def _DataFrameToProto(self, df, semantic_roles=True):
     sentence = sentence_pb2.Sentence()
     if semantic_roles:
       predicates = {}
       predicate_counter = 0
-    # add root token
+    # first we add root token
     sentence.token.add(
       word="ROOT",
       category="TOP",
@@ -324,6 +333,7 @@ class PropbankConverter(Converter):
       selected_head=sentence_pb2.Head(address=-1),
       index=0
     )
+    # then we add all tokens with syntactic information to the sentence.
     for idx, row in df.iterrows():
       token = sentence.token.add(
         index=row[0],
@@ -344,10 +354,18 @@ class PropbankConverter(Converter):
             name=feat.split("=")[0].lower(),
             value=feat.split("=")[1].lower()
             )
-      if semantic_roles and row[10] == "Y":
+    # finally we add semantic roles
+    if not semantic_roles:
+      return sentence
+    else:
+      predicates = {}
+      predicate_counter = 0
+    for idx, row in df.iterrows():
+      if row[10] == "Y":
         predicate_counter += 1
         arg_str = sentence.argument_structure.add(
           predicate=row[11],
+          predicate_index=row[0]
         )
         srl_roles_column = 11+predicate_counter
         for val in df[srl_roles_column]:
@@ -356,23 +374,32 @@ class PropbankConverter(Converter):
             argument = arg_str.argument.add(srl=srl)
             idx, = df[srl_roles_column][df[srl_roles_column] == srl].index
             token_index = df.loc[idx, 0]
-            children = common.GetChildren(sentence, token_index, [])
-            argument_span = sorted([token_index] + [child.index for child in children])
+            span_indices = nn_utils.get_argument_spans(
+              sentence,
+              token_index,
+              arg_str.predicate_index,
+              [])
+            argument_span = sorted(set([token_index] + span_indices))
             argument.token_index.extend(argument_span)
-        
 
-      
-        
     print(text_format.MessageToString(sentence, as_utf8=True))
+    input("...")
+    return sentence
 
 def main(args):
     converter = PropbankConverter(args.input_file)
     sentences = converter.sentence_list
     # print(converter._corpus)
     # print(sentences)
-    conll_df = converter._ReadCoNLLDataFrame(converter._corpus)
-    print(conll_df)
-    converter._DataFrameToProto(conll_df)
+    conll_df_list = converter._ReadCoNLLDataFrame(converter._corpus)
+    for df in conll_df_list:
+      df = df.dropna(how='all').reset_index(drop=True)
+      cols = [0, 6]
+      df = df.astype({c: int for c in cols})
+      print(df)
+      input("...")
+      if not df.empty:
+        converter._DataFrameToProto(df)
     # input("Press to continue..")
     # protos = converter.ConvertConllToProto(
     #    conll_sentences = sentences, 

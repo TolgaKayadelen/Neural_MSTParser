@@ -13,3 +13,49 @@
 13	söylediler	söyle	VERB	Verb	Aspect=Perf|Mood=Ind|Number=Plur|Person=3|Polarity=Pos|Tense=Past	0	root	_	_	Y	söyle.01	_	_	_
 14	.	.	PUNCT	Punc	_	13	punct	_	_	_	_	_	_	_
 
+1	İnşaatta	inşaat	NOUN	Noun	Case=Loc|Number=Sing|Person=3	2	obl	_	_	_	_	A2	_
+2	çalışacak	çalış	VERB	Verb	Aspect=Perf|Mood=Ind|Polarity=Pos|Tense=Fut|VerbForm=Part	4	acl	_	_	Y	çalış.02	_	_
+3	vasıfsız	vasıfsız	ADJ	Adj	_	4	amod	_	_	_	_	_	_
+4	işçilerin	işçi	NOUN	Noun	Case=Gen|Number=Plur|Person=3	5	nmod:poss	_	_	_	_	A0	_
+5	alımında	alım	NOUN	Noun	Case=Loc|Number=Sing|Number[psor]=Sing|Person=3|Person[psor]=3	13	obl	_	_	_	_	_	AM-LOC
+6	sözleşme	sözleşme	NOUN	Noun	Case=Nom|Number=Sing|Person=3	7	nmod:poss	_	_	_	_	_	_
+7	gereği	gerek	NOUN	Noun	Case=Nom|Number=Sing|Number[psor]=Sing|Person=3|Person[psor]=3	13	obl	_	_	_	_	_	AM-CAU
+8	güzergah	güzergah	NOUN	Noun	Case=Nom|Number=Sing|Person=3	9	nmod:poss	_	_	_	_	_	_
+9	boyunda	boy	NOUN	Noun	Case=Loc|Number=Sing|Number[psor]=Sing|Person=3|Person[psor]=3	11	nmod	_	_	_	_	_	_
+10	ki	ki	ADP	Rel	_	9	case	_	_	_	_	_	_
+11	köylerine	köy	NOUN	Noun	Case=Dat|Number=Plur|Number[psor]=Plur|Person=3|Person[psor]=3	13	obl	_	_	_	_	_	A2
+12	öncelik	öncelik	NOUN	Noun	Case=Nom|Number=Sing|Person=3	13	compound	_	_	_	_	_	A1
+13	verilecek	ver	VERB	Verb	Aspect=Perf|Mood=Ind|Number=Sing|Person=3|Polarity=Pos|Tense=Fut|Voice=Pass	0	root	_	_	Y	ver.03	_	_
+14	.	.	PUNCT	Punc	_	13	punct	_	_	_	_	_	_
+
+1	Karşısında	karşı	ADJ	NAdj	Case=Loc|Number=Sing|Number[psor]=Sing|Person=3|Person[psor]=3	14	amod	_	_	_	_	A2
+2	,	,	PUNCT	Punc	_	14	punct	_	_	_	_	_
+3	pantolonu	pantolon	NOUN	Noun	Case=Nom|Number=Sing|Number[psor]=Sing|Person=3|Person[psor]=3	4	nmod:poss	_	_	_	_	_
+4	dizlerine	diz	NOUN	Noun	Case=Dat|Number=Plur|Number[psor]=Sing|Person=3|Person[psor]=3	6	obl	_	_	_	_	_
+5	dek	dek	ADP	PCDat	_	4	case	_	_	_	_	_
+6	ıslak	ıslak	ADJ	Adj	_	13	amod	_	_	_	_	_
+7	,	,	PUNCT	Punc	_	14	punct	_	_	_	_	_
+8	önlük	önlük	NOUN	Noun	Case=Nom|Number=Sing|Person=3	9	nmod:poss	_	_	_	_	_
+9	torbası	torba	NOUN	Noun	Case=Nom|Number=Sing|Number[psor]=Sing|Person=3|Person[psor]=3	12	nsubj	_	_	_	_	_
+10	ham	ham	NOUN	Noun	Case=Nom|Number=Sing|Person=3	11	nmod	_	_	_	_	_
+11	eriklerle	erik	NOUN	Noun	Case=Ins|Number=Plur|Person=3	12	obl	_	_	_	_	_
+12	dolu	dolu	ADJ	Adj	_	13	amod	_	_	_	_	_
+13	İbrahim	İbrahim	PROPN	Prop	Case=Nom|Number=Sing|Person=3	14	nsubj	_	_	_	_	A0
+14	dikiliyordu	dikil	VERB	Verb	Aspect=Prog|Mood=Ind|Number=Sing|Person=3|Polarity=Pos|Polite=Infm|Tense=Past	0	root	_	_	Y	dikil.01	_
+15	.	.	PUNCT	Punc	_	14	punct	_	_	_	_	_
+
+1	Kendileriyle	kendi	PRON	Reflex	Case=Ins|Number=Plur|Number[psor]=Plur|Person=3|Person[psor]=3|Reflex=Yes	2	obl	_	_	_	_	A1	_	_	_	_	_
+2	görüştüğümden	görüş	VERB	Verb	Aspect=Perf|Case=Abl|Mood=Ind|Number[psor]=Sing|Person[psor]=1|Polarity=Pos|Tense=Past|VerbForm=Part	3	acl	_	_	Y	görüş.01	_	A3	_	_	_	_
+3	edindiğim	edin	VERB	Verb	Aspect=Perf|Mood=Ind|Number[psor]=Sing|Person[psor]=1|Polarity=Pos|Tense=Past|VerbForm=Part	4	acl	_	_	Y	edin.02	_	_	_	_	_	_
+4	izlenim	izlenim	NOUN	Noun	Case=Nom|Number=Sing|Person=3	13	nsubj	_	_	_	_	_	A1	_	_	A0	A0
+5	,	,	PUNCT	Punc	_	13	punct	_	_	_	_	_	_	_	_	_	_
+6	gazeteciye	gazeteci	NOUN	Noun	Case=Dat|Number=Sing|Person=3	7	obl	_	_	_	_	_	_	A2	_	_	_
+7	verilen	ver	VERB	Verb	Aspect=Perf|Mood=Ind|Polarity=Pos|Tense=Pres|VerbForm=Part|Voice=Pass	8	acl	_	_	Y	ver.01	_	_	_	_	_	_
+8	bilgilerle	bilgi	NOUN	Noun	Case=Ins|Number=Plur|Person=3	9	obl	_	_	_	_	_	_	A1	_	_	_
+9	alakasız	alakasız	ADJ	Adj	_	11	amod	_	_	_	_	_	_	_	_	_	_
+10	bir	bir	NUM	ANum	NumType=Card	11	det	_	_	_	_	_	_	_	_	_	_
+11	haberin	haber	NOUN	Noun	Case=Gen|Number=Sing|Person=3	12	obj	_	_	_	_	_	_	_	A1	_	_
+12	yayımlanmış	yayımla	VERB	Verb	Aspect=Perf|Evident=Nfh|Mood=Ind|Polarity=Pos|Tense=Past|VerbForm=Part|Voice=Pass	13	acl	_	_	Y	yayımla.01	_	_	_	_	A1	_
+13	olduğu	ol	VERB	Verb	Aspect=Perf|Case=Nom|Mood=Ind|Number[psor]=Sing|Person[psor]=3|Polarity=Pos|Tense=Past|VerbForm=Part	0	root	_	_	Y	ol.13	_	_	_	_	_	A1
+14	dur	i	AUX	Zero	Aspect=Perf|Mood=Gen|Number=Sing|Person=3|Tense=Pres	13	cop	_	_	Y	ol.14	_	_	_	_	_	_
+15	.	.	PUNCT	Punc	_	13	punct	_	_	_	_	_	_	_	_	_	_
