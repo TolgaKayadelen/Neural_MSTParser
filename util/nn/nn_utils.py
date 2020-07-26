@@ -97,8 +97,9 @@ def get_argument_spans(sentence, token_index, predicate_index, argument_span=[])
   if sentence.token[token_index].label == "case":
     head_address = sentence.token[token_index].selected_head.address
     head_of_span = sentence.token[head_address].index
-    if not sentence.token[head_of_span] in argument_span:
-      argument_span.append(sentence.token[head_of_span])
+    if not head_of_span == predicate_index:
+      if not sentence.token[head_of_span] in argument_span:
+        argument_span.append(sentence.token[head_of_span])
   else:
     head_of_span = token_index
 
@@ -106,6 +107,8 @@ def get_argument_spans(sentence, token_index, predicate_index, argument_span=[])
     if token in argument_span:
       continue
     if token.index == predicate_index:
+      continue
+    if token.category == "PUNCT":
       continue
     if token.selected_head.address == head_of_span:
       argument_span.append(token)

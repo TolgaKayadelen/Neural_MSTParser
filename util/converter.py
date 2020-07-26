@@ -55,12 +55,11 @@ class Converter:
     
     def __init__(self, corpus):
         self._corpus = corpus
-        #self.sentence_list = self._ReadSentences(self._corpus)
         self.sentence_list = reader.ReadConllX(self._corpus)
         
     def ConvertConllToProto(self, conll_sentences, output_file=None,
                             writetext=False, writeproto=False, prototype="treebank",
-                            keep_igs=True, semantic_roles=True):
+                            keep_igs=True):
         """Converts conll-X formatted sentences to proto buffer objects.    
         Args:
             conll_sentneces: list of conll sentences.
@@ -69,7 +68,6 @@ class Converter:
             writeproto: if True, writes output as protobuffer binary.
             prototype: sentence proto or treebank proto.
             keep_igs: if False, removes IGs from data.
-            semantic_roles: if True, also adds srl labels to the token.
         Returns:    
             list of proto buffers.
         """
@@ -77,9 +75,7 @@ class Converter:
         logging.debug("Converting sentences to protocol buffer.")
         for conll in conll_sentences:
             sentence = sentence_pb2.Sentence()
-            sentence_dict, metadata = self._ConvertToDict(
-              conll, semantic_roles=semantic_roles
-            )
+            sentence_dict, metadata = self._ConvertToDict(conll)
             
             # add metadata
             if metadata:
@@ -112,51 +108,16 @@ class Converter:
                 head.address = sentence_dict[index]["head"]
                 head.arc_score = 0.0 # default
                 token.label = sentence_dict[index]["rel"]
-                if semantic_roles and not sentence_dict[index]["srl"] == "_":
-                  token.srl = sentence_dict[index]["srl"]
             
             # add sentence length
             sentence.length = len(sentence.token)
-            
-            # finally add srl argument spans (bio-tags) if semantic role
-            # annotation is requested
-            if semantic_roles:
-              sentence = nn_utils.annotate_bio_spans(sentence)
             sentence_protos.append(sentence)
     
         assert len(conll_sentences) == len(sentence_protos)
         logging.debug("%d sentences converted to protocol buffer." % len(conll_sentences))
         
-        assert prototype in ["sentence", "treebank"], "Unknown prototype!!"
+        return sentence_protos
         
-        if prototype == "sentence":
-            if writetext and output_file:
-                text_output = output_file + ".pbtxt"
-                for sentence_proto in sentence_protos:
-                    writer.write_proto_as_text(sentence_proto, text_output)
-            if writeproto and output_file:
-                proto_output = output_file + ".protobuf"
-                for sentence_proto in sentence_protos:
-                    writer.write_proto_as_proto(sentence_proto, proto_output)
-        else:
-            if writetext and output_file:
-                text_output = output_file + ".pbtxt"
-                treebank = treebank_pb2.Treebank()
-                for sentence_proto in sentence_protos:
-                    s = treebank.sentence.add()
-                    s.CopyFrom(sentence_proto)
-                writer.write_proto_as_text(treebank, text_output)
-            if writeproto and output_file:
-                proto_output = output_file + ".protobuf"
-                treebank = treebank_pb2.Treebank()
-                for sentence_proto in sentence_protos:
-                    s = treebank.sentence.add()
-                    s.CopyFrom(sentence_proto)
-                writer.write_proto_as_proto(treebank, proto_output)            
-        
-        return sentence_protos        
-    
-    
     def _RemoveIGs(self, sentences):
         #(TODO): need to make sure this works while converting conll to proto.
         # The call from convert to proto to this function is not implemented yet. 
@@ -205,7 +166,7 @@ class Converter:
         return sentences_wo_igs
 
     
-    def _ConvertToDict(self, sentence, semantic_roles=True):
+    def _ConvertToDict(self, sentence):
         """Converts a conll-X formatted sentence to a dictionary.
         
         This is an intermediate step needed:
@@ -255,8 +216,6 @@ class Converter:
             sentence_dict[token]["rel"] = values[7]
             sentence_dict[token]["deps"] = values[8]
             sentence_dict[token]["misc"] = values[9]
-            if semantic_roles:
-              sentence_dict[token]["srl"] = values[12]
             token += 1
         return sentence_dict, metadata
     
@@ -301,7 +260,40 @@ class Converter:
                 idx = token
                 ig_indices.append(idx)
         return ig_indices
+
+
+    def Write(self, sentence_protos, output_file, prototype="treebank", writetext=False, writeproto=False):    
+        assert prototype in ["sentence", "treebank"], "Unknown prototype!!"
         
+        if prototype == "sentence":
+            if writetext and output_file:
+                text_output = output_file + ".pbtxt"
+                for sentence_proto in sentence_protos:
+                    writer.write_proto_as_text(sentence_proto, text_output)
+            if writeproto and output_file:
+                proto_output = output_file + ".protobuf"
+                for sentence_proto in sentence_protos:
+                    writer.write_proto_as_proto(sentence_proto, proto_output)
+        else:
+            if writetext and output_file:
+                text_output = output_file + ".pbtxt"
+                treebank = treebank_pb2.Treebank()
+                for sentence_proto in sentence_protos:
+                    s = treebank.sentence.add()
+                    s.CopyFrom(sentence_proto)
+                writer.write_proto_as_text(treebank, text_output)
+            if writeproto and output_file:
+                proto_output = output_file + ".protobuf"
+                treebank = treebank_pb2.Treebank()
+                for sentence_proto in sentence_protos:
+                    s = treebank.sentence.add()
+                    s.CopyFrom(sentence_proto)
+                writer.write_proto_as_proto(treebank, proto_output)
+
+        logging.info(f"{len(sentence_protos)} sentences written to {output_file}")    
+
+
+
 pd.options.display.max_columns = 100
 class PropbankConverter(Converter):
   """A special class for propbank conversion."""
@@ -310,7 +302,7 @@ class PropbankConverter(Converter):
   
   def _ReadCoNLLDataFrame(self, conll):
     conll_df = pd.read_table(conll, sep="\t", quoting=3, header=None,
-                            names=list(range(0,21)),
+                            names=list(range(0,40)),
                             skip_blank_lines=False)
     # TODO: turn this into a function decorator.
     return self._ChunkDataFrame(conll_df)
@@ -333,6 +325,8 @@ class PropbankConverter(Converter):
       selected_head=sentence_pb2.Head(address=-1),
       index=0
     )
+    # print(df)
+    # input("...")
     # then we add all tokens with syntactic information to the sentence.
     for idx, row in df.iterrows():
       token = sentence.token.add(
@@ -354,13 +348,16 @@ class PropbankConverter(Converter):
             name=feat.split("=")[0].lower(),
             value=feat.split("=")[1].lower()
             )
+    sentence.text = " ".join([token.word for token in sentence.token])
+    print(sentence.text)
     # finally we add semantic roles
     if not semantic_roles:
       return sentence
     else:
       predicates = {}
       predicate_counter = 0
-    for idx, row in df.iterrows():
+    # input("...")
+    for index, row in df.iterrows():
       if row[10] == "Y":
         predicate_counter += 1
         arg_str = sentence.argument_structure.add(
@@ -372,34 +369,36 @@ class PropbankConverter(Converter):
           if val != "_":
             srl = val
             argument = arg_str.argument.add(srl=srl)
-            idx, = df[srl_roles_column][df[srl_roles_column] == srl].index
-            token_index = df.loc[idx, 0]
-            span_indices = nn_utils.get_argument_spans(
-              sentence,
-              token_index,
-              arg_str.predicate_index,
-              [])
-            argument_span = sorted(set([token_index] + span_indices))
-            argument.token_index.extend(argument_span)
+            idx = df[srl_roles_column][df[srl_roles_column] == srl].index
+            for id_ in idx:
+              token_index = df.loc[id_, 0]
+              span_indices = nn_utils.get_argument_spans(
+                sentence,
+                token_index,
+                arg_str.predicate_index,
+                [])
+              argument_span = sorted(set([token_index] + span_indices))
+              argument.token_index.extend(argument_span)
 
-    print(text_format.MessageToString(sentence, as_utf8=True))
-    input("...")
+    # print(text_format.MessageToString(sentence, as_utf8=True))
+    # input("...")
     return sentence
 
 def main(args):
     converter = PropbankConverter(args.input_file)
     sentences = converter.sentence_list
-    # print(converter._corpus)
-    # print(sentences)
+    sentence_protos = []
     conll_df_list = converter._ReadCoNLLDataFrame(converter._corpus)
     for df in conll_df_list:
       df = df.dropna(how='all').reset_index(drop=True)
       cols = [0, 6]
       df = df.astype({c: int for c in cols})
-      print(df)
-      input("...")
       if not df.empty:
-        converter._DataFrameToProto(df)
+        sentence_proto = converter._DataFrameToProto(df)
+        sentence_protos.append(sentence_proto)
+    converter.Write(sentence_protos, output_file=args.output_file,
+                    writetext=args.writetext, writeproto=args.writeproto,
+                    prototype=args.prototype)
     # input("Press to continue..")
     # protos = converter.ConvertConllToProto(
     #    conll_sentences = sentences, 
