@@ -27,8 +27,6 @@ bazel-bin/util/converter
 
 
 """
-
-
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
 from util import reader, writer
@@ -57,9 +55,7 @@ class Converter:
         self._corpus = corpus
         self.sentence_list = reader.ReadConllX(self._corpus)
         
-    def ConvertConllToProto(self, conll_sentences, output_file=None,
-                            writetext=False, writeproto=False, prototype="treebank",
-                            keep_igs=True):
+    def ConvertConllToProto(self, conll_sentences, keep_igs=True):
         """Converts conll-X formatted sentences to proto buffer objects.    
         Args:
             conll_sentneces: list of conll sentences.
@@ -348,7 +344,7 @@ class PropbankConverter(Converter):
             name=feat.split("=")[0].lower(),
             value=feat.split("=")[1].lower()
             )
-    sentence.text = " ".join([token.word for token in sentence.token])
+    sentence.text = " ".join([token.word for token in sentence.token if token.word != "ROOT"])
     print(sentence.text)
     # finally we add semantic roles
     if not semantic_roles:
@@ -385,8 +381,10 @@ class PropbankConverter(Converter):
     return sentence
 
 def main(args):
+  print(args.propbank)
+  input("..")
+  if args.propbank:
     converter = PropbankConverter(args.input_file)
-    sentences = converter.sentence_list
     sentence_protos = []
     conll_df_list = converter._ReadCoNLLDataFrame(converter._corpus)
     for df in conll_df_list:
@@ -396,17 +394,17 @@ def main(args):
       if not df.empty:
         sentence_proto = converter._DataFrameToProto(df)
         sentence_protos.append(sentence_proto)
-    converter.Write(sentence_protos, output_file=args.output_file,
-                    writetext=args.writetext, writeproto=args.writeproto,
-                    prototype=args.prototype)
+  else:
+    # if propbank is false, we only convert dependency treebank without any 
+    # semantic roles.
+    converter = Converter(args.input_file)
     # input("Press to continue..")
-    # protos = converter.ConvertConllToProto(
-    #    conll_sentences = sentences, 
-    #    output_file = args.output_file, 
-    #    writetext = args.writetext, 
-    #    writeproto = args.writeproto,
-    #    prototype = args.prototype
-    #    )
+    sentences = converter.sentence_list
+    sentence_protos = converter.ConvertConllToProto(conll_sentences=sentences)
+
+  converter.Write(sentence_protos, output_file=args.output_file,
+                  writetext=args.writetext, writeproto=args.writeproto,
+                  prototype=args.prototype)
     #written_proto = reader.ReadSentenceProto(args.output_file)
     # DO NOT DELETE THIS FOR THE SAKE OF FUTURE REFERENCE
     #print(text_format.MessageToString(written_proto, as_utf8=True))
@@ -424,5 +422,7 @@ if __name__ == "__main__":
                         help="whether to save the output in proto format.", default=False)
     parser.add_argument("--prototype",
                         help="whether sentence or treebank proto.", default="treebank")
+    parser.add_argument("--propbank", type=bool,
+                        help="whether to convert propbank.", default=False)
     args = parser.parse_args()
     main(args)

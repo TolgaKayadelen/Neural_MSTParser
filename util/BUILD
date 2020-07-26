@@ -45,7 +45,7 @@ py_test(
 	size = "small",
 	srcs = ["converter_test.py"],
 	data = [
-	"//data/testdata:propbank",
+	"//data/testdata:converter",
 	],
 	deps = [
 		":converter"

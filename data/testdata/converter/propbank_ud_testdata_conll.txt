@@ -44,18 +44,3 @@
 14	dikiliyordu	dikil	VERB	Verb	Aspect=Prog|Mood=Ind|Number=Sing|Person=3|Polarity=Pos|Polite=Infm|Tense=Past	0	root	_	_	Y	dikil.01	_
 15	.	.	PUNCT	Punc	_	14	punct	_	_	_	_	_
 
-1	Kendileriyle	kendi	PRON	Reflex	Case=Ins|Number=Plur|Number[psor]=Plur|Person=3|Person[psor]=3|Reflex=Yes	2	obl	_	_	_	_	A1	_	_	_	_	_
-2	görüştüğümden	görüş	VERB	Verb	Aspect=Perf|Case=Abl|Mood=Ind|Number[psor]=Sing|Person[psor]=1|Polarity=Pos|Tense=Past|VerbForm=Part	3	acl	_	_	Y	görüş.01	_	A3	_	_	_	_
-3	edindiğim	edin	VERB	Verb	Aspect=Perf|Mood=Ind|Number[psor]=Sing|Person[psor]=1|Polarity=Pos|Tense=Past|VerbForm=Part	4	acl	_	_	Y	edin.02	_	_	_	_	_	_
-4	izlenim	izlenim	NOUN	Noun	Case=Nom|Number=Sing|Person=3	13	nsubj	_	_	_	_	_	A1	_	_	A0	A0
-5	,	,	PUNCT	Punc	_	13	punct	_	_	_	_	_	_	_	_	_	_
-6	gazeteciye	gazeteci	NOUN	Noun	Case=Dat|Number=Sing|Person=3	7	obl	_	_	_	_	_	_	A2	_	_	_
-7	verilen	ver	VERB	Verb	Aspect=Perf|Mood=Ind|Polarity=Pos|Tense=Pres|VerbForm=Part|Voice=Pass	8	acl	_	_	Y	ver.01	_	_	_	_	_	_
-8	bilgilerle	bilgi	NOUN	Noun	Case=Ins|Number=Plur|Person=3	9	obl	_	_	_	_	_	_	A1	_	_	_
-9	alakasız	alakasız	ADJ	Adj	_	11	amod	_	_	_	_	_	_	_	_	_	_
-10	bir	bir	NUM	ANum	NumType=Card	11	det	_	_	_	_	_	_	_	_	_	_
-11	haberin	haber	NOUN	Noun	Case=Gen|Number=Sing|Person=3	12	obj	_	_	_	_	_	_	_	A1	_	_
-12	yayımlanmış	yayımla	VERB	Verb	Aspect=Perf|Evident=Nfh|Mood=Ind|Polarity=Pos|Tense=Past|VerbForm=Part|Voice=Pass	13	acl	_	_	Y	yayımla.01	_	_	_	_	A1	_
-13	olduğu	ol	VERB	Verb	Aspect=Perf|Case=Nom|Mood=Ind|Number[psor]=Sing|Person[psor]=3|Polarity=Pos|Tense=Past|VerbForm=Part	0	root	_	_	Y	ol.13	_	_	_	_	_	A1
-14	dur	i	AUX	Zero	Aspect=Perf|Mood=Gen|Number=Sing|Person=3|Tense=Pres	13	cop	_	_	Y	ol.14	_	_	_	_	_	_
-15	.	.	PUNCT	Punc	_	13	punct	_	_	_	_	_	_	_	_	_	_

@@ -93,7 +93,7 @@ filegroup(
 )
 
 filegroup(
-  name = "propbank",
+  name = "converter",
   srcs = glob([
     "propbank/*.txt",
   ]),
