@@ -90945,7 +90945,7 @@ sentence {
     word: "ise"
     lemma: "i"
     category: "AUX"
-    pos: "Postp"
+    pos: "PostP"
     morphology {
       name: "mood"
       value: "cnd"

@@ -1,4 +1,13 @@
-"""A BiLSTM based labeler to a sequence of tokens."""
+"""A BiLSTM based labeler to a sequence of tokens.
+
+Example Use:
+bazel build //parser/nn:labeler && bazel-bin/parser/nn/labeler \
+--train_data=treebank_train_1000_1500 \
+--vld_data=treebank_train_0_50 \
+--tesd_data=treebank_0_3_test \
+--batch_size=50 \
+--tagset=fine_pos
+"""
 
 import os
 import sys
@@ -24,7 +33,11 @@ class Labeler:
     self.test_data = test_data
     
   def _read_data(self):
-    """Returns a list of sentences and the list of labels."""
+    """Returns a list of sentences for training, validation, and test.
+    
+    Returns:
+      list, a list of sentence_pb2.Sentence objects.
+    """
     train_path = os.path.join(_DATA_DIR, "Turkish", "training", "{}.pbtxt".format(self.train_data))
     train_treebank = reader.ReadTreebankTextProto(train_path)
     training_data = list(train_treebank.sentence)
@@ -43,11 +56,16 @@ class Labeler:
       testing_data = list(test_treebank.sentence)
       logging.info("Total sentences in test data {}".format(len(testing_data)))
     
-    
     return training_data, validation_data, testing_data
   
   def _read_labels(self, tagset):
+    """Returns a dict of labels.
     
+    Args:
+      tagset: the label set to use. 
+    Returns:
+      label_dict: A dict of [label:index] pairs.
+    """
     # read the tagset
     assert(tagset), "Tagset cannot be initialized!"
     if tagset == "fine_pos":
@@ -64,12 +82,12 @@ class Labeler:
     def _get_bio_tags_from_srl():
       labels_list = ["-pad-"]
       for key in tags.Tag.DESCRIPTOR.values_by_name.keys():
-        if key == "UNKNOWN_SRL":
+        if key in ["UNKNOWN_SRL", "V"]:
           continue
         if key.startswith(("A_", "AM_", "C_", "R_")):
           key = key.replace("_", "-")
         labels_list.extend(["B-"+key, "I-"+key])
-      labels_list.append("O")
+      labels_list.extend(["O", "V"])
       return {v: k for k, v in enumerate(labels_list)}
   
     
@@ -97,8 +115,28 @@ class Labeler:
       sentences: a list of lists where each list is a list of words.
       labels: a list of lists where each list is a list of labels. 
     """
-    assert(tagset in ["fine_pos", "coarse_pos", "dep_labels"]), "Invalid Tagset!"
+    assert(tagset in ["fine_pos", "coarse_pos", "dep_labels", "semantic_roles"]), "Invalid Tagset!"
     sentences, labels = [], []
+    
+    # Reading semantic role tags from data require special treatment. 
+    # We need to generate a new [sentence, labels] pair for each predicate
+    # in the sentence.
+    if tagset == "semantic_roles":
+      for sentence in data:
+        words = [token.word for token in sentence.token]
+        # Create a new training instance for each predicate-argument structure
+        # that exists in the sentence.
+        for arg_str in sentence.argument_structure:
+          sentences.append(words)
+          labels_ = ["O"] * len(words)
+          labels_[arg_str.predicate_index] = "V"
+          for argument in arg_str.argument:
+            labels_[argument.token_index[0]] = "B-"+argument.srl
+            for idx in argument.token_index[1:]:
+              labels_[idx] = "I-"+argument.srl
+          labels.append(labels_)
+      return sentences, labels
+    
     for sentence in data:
       words = [token.word for token in sentence.token]
       if tagset == "fine_pos":
@@ -126,11 +164,15 @@ class Labeler:
     # Get the training, validation and test data.
     train_data, vld_data, test_data = self._read_data()
     train_sentences, train_labels = self._get_sentences_and_labels(train_data, tagset)
-    vld_sentences, vld_labels = self._get_sentences_and_labels(vld_data, tagset)
+    for i,sentence in enumerate(train_sentences):
+      print(sentence, train_labels[i])
+    
+    if vld_data:
+      vld_sentences, vld_labels = self._get_sentences_and_labels(vld_data, tagset)
     
     if test_data:
       test_sentences, test_labels = self._get_sentences_and_labels(test_data, tagset)
-    else:
+    elif vld_data:
       test_sentences = vld_sentences
     
     # Start training
