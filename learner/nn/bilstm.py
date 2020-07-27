@@ -161,13 +161,16 @@ class BiLSTM:
     return label_indices
     
 
-  def _train_model(self, input_shape, word2vec, word_indices, n_classes, embedding_dim=None):
+  def _create_model(self, input_shape, word2vec, word_indices, n_classes,
+                    additional_input=None, embedding_dim=None):
     """Creates a BiLSTM model.
     
     Args:
       input_shape: shape of the input, usually (max_len, )
       word2vec: the word embeddings model.
       word_indices: dict, key:value pairs of words and indices.
+      n_classes: number of classes in the label set.
+      additional_input: a dictionary of values. See .train() for details.
     
     Returns:
       a Keras Model instance.
@@ -175,48 +178,63 @@ class BiLSTM:
     
     # Define sentence_indices as the Input to the graph. It has dtype=int32
     # because it contains indices for each word in the sentence, which are
-    # integers.
-    sentence_indices = tf.keras.layers.Input(shape=input_shape, dtype="int32")
-    
+    # integers. This will be of shape (batch_size, maxlen)
+    sentence_indices = tf.keras.layers.Input(shape=input_shape, dtype="int32", name="sentences")
+    print(f"sentence input shape: {sentence_indices.shape}")
+
+    if additional_input:
+      additional = tf.keras.layers.Input(shape=(additional_input["shape"]), dtype="float32", name=additional_input["name"])
+      print(f"{additional_input['name']} input shape: {additional.shape}")
     # Create the embedding layer with the word2vec model.
     embedding_layer = self.pretrained_embeddings_layer(word2vec, word_indices, embedding_dim)
     
     # Propagate sentences through the embedding layer.
     embeddings = embedding_layer(sentence_indices)
 
-    # Propagate the embeddings through an LSTM layer with 128 hideen units.
-    X = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(units=128, return_sequences=True))(embeddings)
+    # Propagate the embeddings through an LSTM layer with 128 hidden units.
+    emb_out = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(units=128, return_sequences=True))(embeddings)
     
     # Add dropout.
-    X = tf.keras.layers.Dropout(rate=0.5)(X)
+    emb_out = tf.keras.layers.Dropout(rate=0.5)(emb_out)
     
     # Propagate through another LSTM layer.
-    X = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(units=128, return_sequences=True))(X)
+    emb_out = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(units=128, return_sequences=True))(emb_out)
     
     # Add dropout.
-    X = tf.keras.layers.Dropout(rate=0.5)(X)
+    emb_out = tf.keras.layers.Dropout(rate=0.5)(emb_out)
     
-    # Add the Dense Layer.
-    X = tf.keras.layers.Dense(units=n_classes)(X)
-    # Add activation
-    X = tf.keras.layers.Activation("softmax")(X)
+    # If there's additional input, concatenate it with word embedding output.
+    if additional_input:
+      X = tf.keras.layers.Concatenate()([emb_out, additional])
+      # Add the Dense Layer.
+      X = tf.keras.layers.Dense(units=n_classes)(X)
+      # Add activation
+      X = tf.keras.layers.Activation("softmax")(X)
+    else:
+      # Add the Dense Layer.
+      X = tf.keras.layers.Dense(units=n_classes)(emb_out)
+      # Add activation
+      X = tf.keras.layers.Activation("softmax")(X)
     
     # Create the model.
-    model = tf.keras.Model(inputs=sentence_indices, outputs=X)
+    if additional_input:
+      model = tf.keras.Model(inputs=[sentence_indices, additional], outputs=X)
+    else:
+      model = tf.keras.Model(inputs=sentence_indices, outputs=X)
     
     return model
 
 
   def train(self, train_data, train_data_labels, label_dict, epochs, embeddings=False,
             loss="categorical_crossentropy", optimizer="adam", batch_size=None, vld_data=None,
-            vld_data_labels=None, test_data=None, test_data_labels=None):
+            vld_data_labels=None, test_data=None, test_data_labels=None,
+            additional_input=None, additional_input_vld=None, additional_input_test=None):
       """Trains the LSTM model.
       
       Args:
         train_data: list of lists. Each list is a sequence of words representing one sentence.
-        train_data_labels: list of lists. Each list is a sequence of tags representing the tag for the
-            word in that position in the sentence. 
-        label_dict: dictionary of labels, where each label is mapped to an integer value. 
+        train_data_labels: list of lists. Each list is a sequence of tags.
+        label_dict: dictionary of labels where each label is mapped to an integer value. 
         epochs: int, number of epochs. 
         embeddings: bool, whether to use pretrained embeddings.
         loss: the cost function. 
@@ -225,52 +243,94 @@ class BiLSTM:
         vld_data_labels: list of lists. Validation data labels.
         batch_size: the batch size use for dividing training data into batches.
         test_data: list of sentences. The data to test the model on. 
-        test_data_labels: list of lists. Similar to train_labels.  
+        test_data_labels: list of lists. Similar to train_labels.
+        additonal_input: dictionary with following values:
+           name: name of the additional inputs.
+           list of lists: each list represents the entence sequence, where each value 
+                          in each list logs a value for each token (e.g. its postag index). 
       """
-      
+      # ---- PREPARE EMBEDDING LAYER ----
       if embeddings: 
         word2vec = nn_utils.load_embeddings()
         words_to_index, index_to_words = self.index_words(word2vec)
         embedding_dim = word2vec[index_to_words[100]].shape[0]
       
+      # ---- GET MAXLEN SEQUENCE ------
       maxlen = nn_utils.maxlen(train_data)
       logging.info(f"maxlen: {maxlen}")
       
+      # ---- PREPARE TRAINING DATA -----
+      # Index the words in the sentences based on the word2ved indices. This 
+      # returns a numpy array of (m, maxlen), which is then the main input
+      # to the model.
       train_sentences = self.index_sentences(train_data, words_to_index, maxlen)
       
+      # ---- PREPARE THE LABELS --------
       self.label_dict = label_dict
-      self.reverse_label_dict = {v:k for k,v in label_dict.items()} 
+      self.reverse_label_dict = {v:k for k,v in label_dict.items()}
       
-      self.model = self._train_model(input_shape=(maxlen,), word2vec=word2vec,
-                                     word_indices=words_to_index,
-                                     n_classes=len(label_dict), embedding_dim=embedding_dim)
-      print(self.model.summary())
-      self.model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
-      
+      # Indexes the training labels. This returns a 3-D array of (m, maxlen, n_labels)
+      # maxlen is the sequence length, and n_labels is the total number of labels.
       train_labels = self.index_labels(train_data_labels, label_dict, len(train_data), maxlen)
       logging.info(f"shape of the output {train_labels.shape}")
       
+      
+      # ----- SET UP THE MODEL -------
+      self.model = self._create_model(input_shape=(maxlen,), word2vec=word2vec,
+                                      word_indices=words_to_index,
+                                      additional_input=additional_input,
+                                      n_classes=len(label_dict), embedding_dim=embedding_dim)
+      # Print model summary.
+      print(self.model.summary())
+      
+      # TODO: install pydot and plot the model.
+      # tf.keras.utils.plot_model(model, "my_model.png", show_shapes=True)
+      
+      # Compile the model.
+      self.model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
+      
+      
+      # ------ TRAIN THE MODEL ------
       if vld_data and vld_data_labels:
         vld_sentences = self.index_sentences(vld_data, words_to_index, maxlen)
         vld_labels=self.index_labels(vld_data_labels, label_dict, len(vld_data), maxlen)
-        self.model.fit(train_sentences, train_labels,
-                       validation_data=(vld_sentences, vld_labels),
-                       epochs=epochs, batch_size=batch_size)
+        if additional_input_vld:
+          self.model.fit({"sentences": train_sentences,
+                         additional_input["name"]: np.array(additional_input).reshape(batch_size,maxlen,1)},
+                         y=train_labels, validation_data=(vld_sentences, vld_labels),
+                         epochs=epochs, batch_size=batch_size)
+        else:
+          self.model.fit(train_sentences, y=train_labels, validation_data=(vld_sentences, vld_labels),
+                         epochs=epochs, batch_size=batch_size)
       else:
-        self.model.fit(train_sentences, train_labels, epochs=epochs, batch_size=batch_size)
+        if additional_input:
+          self.model.fit({"sentences": train_sentences,
+                          additional_input["name"]: np.array(additional_input["data"]).reshape(batch_size,maxlen,1)},
+                          y=train_labels, epochs=epochs, batch_size=batch_size)
+        else:
+          self.model.fit({"sentences": train_sentences}, y=train_labels, epochs=epochs, batch_size=batch_size)
       
+      # ------ TEST THE MODEL ------
       if test_data:
-        self.predict(self.model, test_data, words_to_index, maxlen, self.reverse_label_dict)
+        if additional_input and additional_input_test:
+          self.predict(self.model, test_data, words_to_index, maxlen, self.reverse_label_dict, additional_input_test)
+        else:
+          self.predict(self.model, test_data, words_to_index, maxlen, self.reverse_label_dict)
 
-  def predict(self, model, sentences, words_to_index, maxlen, reverse_tagset):
+  def predict(self, model, sentences, words_to_index, maxlen, reverse_tagset, additional_input_test=None):
     """Predicts labels for tokens in sentences.
     Args:
       model: the trained model.
       sentences: list of lists. Each list is a sequence of tokens representing a sentence.
     """
     sentence_indices = self.index_sentences(sentences, words_to_index, maxlen)
-    # the shape of the predictions is (len(sentences), maxlen, n_labels)
-    predictions = model.predict(sentence_indices)
+    if additional_input_test:
+      predicate_info =  np.array(additional_input_test["data"]).reshape(sentence_indices.shape[0],maxlen,1).astype("float32")
+      # the shape of the predictions is (len(sentences), maxlen, n_labels)
+      predictions = model.predict({"sentences": sentence_indices, "predicate_info": predicate_info})
+    else:
+      predictions = model.predict({"sentences": sentence_indices})
+
     for i, prediction in enumerate(predictions):
       for j, token_prediction in enumerate(prediction):
         if j < len(sentences[i]):
@@ -278,12 +338,11 @@ class BiLSTM:
       print("----")
       
 
-
-
 # Sample data for a simple pos tagging model.
 # ---
 # TODO: Remove later.
 def get_data():
+  maxlen = 6
   train_sentences = [
     ["Can", "bu", "durumda", "sürekli", "kitap", "okur"],
     ["Ali", "getirdiği", "bazı", "kitapları", "bana", "verdi"],
@@ -301,7 +360,27 @@ def get_data():
     ["Ona", "verdiğim", "sözleri", "tutacağım"],
     ["Ali", "okula", "gitti"]
   ]
-  return train_sentences, test_sentences
+  
+  additional_input_train_data = [
+    [0, 0, 0, 0, 0 ,1],
+    [0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 1, 0, 0],
+    [0, 1, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0],
+  ]
+  
+  additional_input_test_data = [
+    [0, 0, 0, 0, 1, 0],
+    [0, 0, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 1, 0],
+    [0, 0, 1, 0, 0, 0],
+  ]
+  additional_input_train = {"name": "predicate_info", "data": additional_input_train_data, "shape": (maxlen, 1)}
+  additional_input_test = {"name": "predicate_info", "data": additional_input_test_data, "shape": (maxlen, 1)}
+  return train_sentences, test_sentences, additional_input_train, additional_input_test
     
 
 def get_labels():
@@ -320,10 +399,11 @@ def get_labels():
 
 if __name__ == "__main__":
   mylstm = BiLSTM()
-  train_data, test_data = get_data()
+  train_data, test_data, additional_input_train, additional_input_test = get_data()
   label_dict, _, train_labels = get_labels()
   mylstm.train(train_data=train_data, train_data_labels=train_labels, label_dict=label_dict,
                epochs=30, embeddings=True, loss="categorical_crossentropy", optimizer="adam",
-               batch_size=5, test_data=test_data, test_data_labels=None)
+               batch_size=5, test_data=test_data, test_data_labels=None,
+               additional_input=None, additional_input_test=None)
 
   
