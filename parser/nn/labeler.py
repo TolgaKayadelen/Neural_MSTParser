@@ -12,8 +12,10 @@ bazel build //parser/nn:labeler && bazel-bin/parser/nn/labeler \
 import os
 import sys
 import argparse
+import numpy as np
 
 from util import reader
+from util import common
 from data.treebank import sentence_pb2
 from tagset.fine_pos import fine_tag_enum_pb2 as fine_tags
 from tagset.coarse_pos import coarse_tag_enum_pb2 as coarse_tags
@@ -118,24 +120,40 @@ class Labeler:
     assert(tagset in ["fine_pos", "coarse_pos", "dep_labels", "semantic_roles"]), "Invalid Tagset!"
     sentences, labels = [], []
     
+    maxlen = common.GetMaxlenSentence(data)
+    print(f"maxlen: {maxlen}")
     # Reading semantic role tags from data require special treatment. 
     # We need to generate a new [sentence, labels] pair for each predicate
     # in the sentence.
     if tagset == "semantic_roles":
+      predicate_info = []
       for sentence in data:
         words = [token.word for token in sentence.token]
         # Create a new training instance for each predicate-argument structure
         # that exists in the sentence.
         for arg_str in sentence.argument_structure:
           sentences.append(words)
+          
           labels_ = ["O"] * len(words)
           labels_[arg_str.predicate_index] = "V"
+          # print(f"labels_: {labels_}")
+          
+          # we also give data about whether a token is predicate or not as
+          # additional input to the learner for semantic role labeling.
+          predicate_info_ = [0] * len(words)
+          predicate_info_[arg_str.predicate_index] = 1
+          predicate_info_.extend([0] * (maxlen-len(predicate_info_)))
+          assert(len(predicate_info_) == maxlen), "Padding error!!"
+          # print(f"predicate_info_: {predicate_info_}")
+          
           for argument in arg_str.argument:
             labels_[argument.token_index[0]] = "B-"+argument.srl
             for idx in argument.token_index[1:]:
               labels_[idx] = "I-"+argument.srl
           labels.append(labels_)
-      return sentences, labels
+          predicate_info.append(predicate_info_)
+          
+      return sentences, labels, predicate_info
     
     for sentence in data:
       words = [token.word for token in sentence.token]
@@ -161,32 +179,62 @@ class Labeler:
     print(label_dict)    
     logging.info(f"number of labels: {len(label_dict)}")
     
-    # Get the training, validation and test data.
+    # Read the training, validation and test data.
     train_data, vld_data, test_data = self._read_data()
-    train_sentences, train_labels = self._get_sentences_and_labels(train_data, tagset)
-    for i,sentence in enumerate(train_sentences):
-      print(sentence, train_labels[i])
     
-    if vld_data:
-      vld_sentences, vld_labels = self._get_sentences_and_labels(vld_data, tagset)
+    # Extract the input sentences, labels, and any other additional input from data.
+    if tagset == "semantic_roles":
+      train_sentences, train_labels, predicate_info = self._get_sentences_and_labels(train_data, tagset)
+      if vld_data:
+        vld_sentences, vld_labels, predicate_info_vld = self._get_sentences_and_labels(vld_data, tagset)
+      else:
+        vld_sentences, vld_labels, predicate_info_vld = None, None, None
+      if test_data:
+        test_sentences, test_labels, predicate_info_test = self._get_sentences_and_labels(test_data, tagset)
+      else:
+        test_sentences, test_labels, predicate_info_test = None, None, None
+        
+    else:
+      train_sentences, train_labels = self._get_sentences_and_labels(train_data, tagset)
+      if vld_data:
+        vld_sentences, vld_labels = self._get_sentences_and_labels(vld_data, tagset)
+      else:
+        vld_sentences, vld_labels = None, None
+      if test_data:
+        test_sentences, test_labels = self._get_sentences_and_labels(test_data, tagset)
+      else:
+        test_sentences = None
     
-    if test_data:
-      test_sentences, test_labels = self._get_sentences_and_labels(test_data, tagset)
-    elif vld_data:
-      test_sentences = vld_sentences
+    # for i,sentence in enumerate(train_sentences):
+    #  print(sentence, train_labels[i])
+    print(train_labels)
+    print(predicate_info)
+    # print(np.array(train_labels).reshape(2, 16, 1))
+    
+    
     
     # Start training
     input("Press to start training ..")
-    learner.train(train_data=train_sentences, train_data_labels=train_labels, label_dict=label_dict,
-                  epochs=epochs, embeddings=True, batch_size=batch_size, 
-                  vld_data=vld_sentences, vld_data_labels=vld_labels, test_data=test_sentences)
+    additional_input={"name": "predicate_info", "data": predicate_info, "shape": (16, 1)} 
+    additional_input_test={"name": "predicate_info", "data": predicate_info_test, "shape": (16, 1)}
+    learner.train(train_data=train_sentences,
+                  train_data_labels=train_labels,
+                  label_dict=label_dict,
+                  epochs=epochs, 
+                  embeddings=True, 
+                  batch_size=batch_size, 
+                  vld_data=vld_sentences, 
+                  vld_data_labels=vld_labels, 
+                  test_data=test_sentences,
+                  additional_input=additional_input,
+                  additional_input_test=additional_input_test)
 
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   
-  parser.add_argument("--epochs", type=int, default=20, help="number of epochs.")
-  parser.add_argument("--learning_rate", type=float, default=0.2, help="learning rate")
+  parser.add_argument("--epochs", type=int, default=200, help="number of epochs.")
+  parser.add_argument("--learning_rate", type=float, default=0.01, help="learning rate")
   parser.add_argument("--train_data", type=str, help="train data path")
   parser.add_argument("--vld_data", type=str, help="validation data path.")
   parser.add_argument("--test_data", type=str, help="test data path.")

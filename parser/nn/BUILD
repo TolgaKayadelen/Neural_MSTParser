@@ -16,6 +16,7 @@ py_library(
 	deps = [
 		"//learner/nn:bilstm",
 		"//util:reader",
+    "//util:common",
     "//tagset/fine_pos:fine_tag_enum_py_pb2",
     "//tagset/coarse_pos:coarse_tag_enum_py_pb2",
     "//tagset/dep_labels:dep_label_enum_py_pb2",

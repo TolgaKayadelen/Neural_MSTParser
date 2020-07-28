@@ -88,6 +88,20 @@ def GetBetweenTokens(sentence, head, child, dummy=0):
     return btw_tokens if btw_tokens else [None]
 
 
+#type: sentence util
+def GetMaxlenSentence(sentences):
+  """Returns the maxlen value from a set of sentences.
+  Args:
+    sentences: list of sentence_pb2.Sentence objects.
+  Returns:  
+    maxlen: int, value of maximum length sentence.
+    """
+  maxlen = 0
+  for sentence in sentences:
+    if len(sentence.token) > maxlen:
+      maxlen = len(sentence.token)
+  return maxlen
+
 # type: sentence util
 def ConnectSentenceNodes(sentence):
     """Connect the tokens (nodes) of a sentence to every other token.
