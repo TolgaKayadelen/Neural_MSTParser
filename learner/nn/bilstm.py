@@ -194,33 +194,31 @@ class BiLSTM:
     
     # Propagate sentences through the embedding layer.
     embeddings = embedding_layer(sentence_indices)
-
-    # Propagate the embeddings through an LSTM layer with 128 hidden units.
-    emb_out = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
-      units=128, return_sequences=True))(embeddings)
-    
-    # Add dropout.
-    emb_out = tf.keras.layers.Dropout(rate=0.5)(emb_out)
-    
-    # Propagate through another LSTM layer.
-    emb_out = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
-      units=128, return_sequences=True))(emb_out)
-    
-    # Add dropout.
-    emb_out = tf.keras.layers.Dropout(rate=0.5)(emb_out)
     
     # If there's additional input, concatenate it with word embedding output.
     if additional_input:
-      X = tf.keras.layers.Concatenate()([emb_out, additional])
-      # Add the Dense Layer.
-      X = tf.keras.layers.Dense(units=n_classes)(X)
-      # Add activation
-      X = tf.keras.layers.Activation("softmax")(X)
+      X = tf.keras.layers.Concatenate()([embeddings, additional])      
     else:
-      # Add the Dense Layer.
-      X = tf.keras.layers.Dense(units=n_classes)(emb_out)
-      # Add activation
-      X = tf.keras.layers.Activation("softmax")(X)
+      X = embeddings
+
+    # Propagate the embeddings through an LSTM layer with 128 hidden units.
+    X = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
+      units=128, return_sequences=True))(X)
+    
+    # Add dropout.
+    X = tf.keras.layers.Dropout(rate=0.5)(X)
+    
+    # Propagate through another LSTM layer.
+    X = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
+      units=128, return_sequences=True))(X)
+    
+    # Add dropout.
+    X = tf.keras.layers.Dropout(rate=0.5)(X)
+    
+    # Add the Dense Layer.
+    X = tf.keras.layers.Dense(units=n_classes)(X)
+    # Add activation
+    X = tf.keras.layers.Activation("softmax")(X)
     
     # Create the model.
     if additional_input:

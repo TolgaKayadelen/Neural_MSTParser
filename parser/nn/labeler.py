@@ -13,6 +13,7 @@ import os
 import sys
 import argparse
 import numpy as np
+import random
 
 from util import reader
 from util import common
@@ -131,27 +132,28 @@ class Labeler:
         words = [token.word for token in sentence.token]
         # Create a new training instance for each predicate-argument structure
         # that exists in the sentence.
-        for arg_str in sentence.argument_structure:
-          sentences.append(words)
+        arg_str = random.choice(sentence.argument_structure)
+        # for arg_str in sentence.argument_structure:
+        sentences.append(words)
           
-          labels_ = ["O"] * len(words)
-          labels_[arg_str.predicate_index] = "V"
-          # print(f"labels_: {labels_}")
+        labels_ = ["O"] * len(words)
+        labels_[arg_str.predicate_index] = "V"
+        # print(f"labels_: {labels_}")
           
-          # we also give data about whether a token is predicate or not as
-          # additional input to the learner for semantic role labeling.
-          predicate_info_ = [0] * len(words)
-          predicate_info_[arg_str.predicate_index] = 1
-          predicate_info_.extend([0] * (maxlen-len(predicate_info_)))
-          assert(len(predicate_info_) == maxlen), "Padding error!!"
-          # print(f"predicate_info_: {predicate_info_}")
+        # we also give data about whether a token is predicate or not as
+        # additional input to the learner for semantic role labeling.
+        predicate_info_ = [0] * len(words)
+        predicate_info_[arg_str.predicate_index] = 1
+        predicate_info_.extend([0] * (maxlen-len(predicate_info_)))
+        assert(len(predicate_info_) == maxlen), "Padding error!!"
+        # print(f"predicate_info_: {predicate_info_}")
           
-          for argument in arg_str.argument:
-            labels_[argument.token_index[0]] = "B-"+argument.srl
-            for idx in argument.token_index[1:]:
-              labels_[idx] = "I-"+argument.srl
-          labels.append(labels_)
-          predicate_info.append(predicate_info_)
+        for argument in arg_str.argument:
+          labels_[argument.token_index[0]] = "B-"+argument.srl
+          for idx in argument.token_index[1:]:
+            labels_[idx] = "I-"+argument.srl
+        labels.append(labels_)
+        predicate_info.append(predicate_info_)
           
       return sentences, labels, predicate_info
     
@@ -205,8 +207,8 @@ class Labeler:
       else:
         test_sentences = None
     
-    # for i,sentence in enumerate(train_sentences):
-    #  print(sentence, train_labels[i])
+    for i,sentence in enumerate(train_sentences):
+      print(sentence, train_labels[i])
     print(train_labels)
     print(predicate_info)
     # print(np.array(train_labels).reshape(2, 16, 1))
@@ -222,7 +224,7 @@ class Labeler:
                   label_dict=label_dict,
                   epochs=epochs, 
                   embeddings=True, 
-                  batch_size=batch_size, 
+                  batch_size=len(train_sentences), 
                   vld_data=vld_sentences, 
                   vld_data_labels=vld_labels, 
                   test_data=test_sentences,
