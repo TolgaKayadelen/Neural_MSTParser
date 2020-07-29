@@ -87,7 +87,7 @@ class Labeler:
       for key in tags.Tag.DESCRIPTOR.values_by_name.keys():
         if key in ["UNKNOWN_SRL", "V"]:
           continue
-        if key.startswith(("A_", "AM_", "C_", "R_")):
+        if key.startswith(("A_", "AM_", "A4_", "C_", "R_", "notset")):
           key = key.replace("_", "-")
         labels_list.extend(["B-"+key, "I-"+key])
       labels_list.extend(["O", "V"])
@@ -121,6 +121,7 @@ class Labeler:
     assert(tagset in ["fine_pos", "coarse_pos", "dep_labels", "semantic_roles"]), "Invalid Tagset!"
     sentences, labels = [], []
     
+    # TODO: need a consistent handling of maxlen and padding of datasets.
     maxlen = common.GetMaxlenSentence(data)
     print(f"maxlen: {maxlen}")
     # Reading semantic role tags from data require special treatment. 
@@ -129,6 +130,8 @@ class Labeler:
     if tagset == "semantic_roles":
       predicate_info = []
       for sentence in data:
+        if not sentence.argument_structure:
+          continue
         words = [token.word for token in sentence.token]
         # Create a new training instance for each predicate-argument structure
         # that exists in the sentence.
@@ -155,7 +158,7 @@ class Labeler:
         labels.append(labels_)
         predicate_info.append(predicate_info_)
           
-      return sentences, labels, predicate_info
+      return sentences, labels, predicate_info, maxlen
     
     for sentence in data:
       words = [token.word for token in sentence.token]
@@ -180,13 +183,15 @@ class Labeler:
     label_dict = self._read_labels(tagset)
     print(label_dict)    
     logging.info(f"number of labels: {len(label_dict)}")
+    logging.info(f"Reading data..")
     
     # Read the training, validation and test data.
     train_data, vld_data, test_data = self._read_data()
     
     # Extract the input sentences, labels, and any other additional input from data.
+    # TODO: these data set ups should be handled by the train_test_split() method.
     if tagset == "semantic_roles":
-      train_sentences, train_labels, predicate_info = self._get_sentences_and_labels(train_data, tagset)
+      train_sentences, train_labels, predicate_info, maxlen = self._get_sentences_and_labels(train_data, tagset)
       if vld_data:
         vld_sentences, vld_labels, predicate_info_vld = self._get_sentences_and_labels(vld_data, tagset)
       else:
@@ -207,18 +212,18 @@ class Labeler:
       else:
         test_sentences = None
     
-    for i,sentence in enumerate(train_sentences):
-      print(sentence, train_labels[i])
-    print(train_labels)
-    print(predicate_info)
-    # print(np.array(train_labels).reshape(2, 16, 1))
+    #for i,sentence in enumerate(train_sentences):
+    # print(sentence, train_labels[i])
+    #print(train_labels)
+    #print(predicate_info)
+    #print(np.array(train_labels).reshape(2, 16, 1))
     
     
     
     # Start training
     input("Press to start training ..")
-    additional_input={"name": "predicate_info", "data": predicate_info, "shape": (16, 1)} 
-    additional_input_test={"name": "predicate_info", "data": predicate_info_test, "shape": (16, 1)}
+    additional_input={"name": "predicate_info", "data": predicate_info, "shape": (maxlen, 1)} 
+    additional_input_test={"name": "predicate_info", "data": predicate_info_test, "shape": (maxlen, 1)}
     learner.train(train_data=train_sentences,
                   train_data_labels=train_labels,
                   label_dict=label_dict,
@@ -235,7 +240,7 @@ class Labeler:
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   
-  parser.add_argument("--epochs", type=int, default=200, help="number of epochs.")
+  parser.add_argument("--epochs", type=int, default=20, help="number of epochs.")
   parser.add_argument("--learning_rate", type=float, default=0.01, help="learning rate")
   parser.add_argument("--train_data", type=str, help="train data path")
   parser.add_argument("--vld_data", type=str, help="validation data path.")

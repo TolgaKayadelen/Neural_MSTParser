@@ -42,4 +42,9 @@ enum Tag {
   R_A3 = 29;
   R_A4 = 30;
   V = 31;       // Verb
+  AM_MOD = 32;
+  R_A0 = 33;
+  AM_REC = 34;
+  notset = 35;
+  A4_DIR = 36;
 }
