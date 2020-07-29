@@ -4,7 +4,7 @@ import os
 import tensorflow as tf
 import numpy as np
 import gensim
-
+import argparse
 
 from util import writer
 from util.nn import nn_utils
@@ -377,6 +377,41 @@ class BiLSTM:
         if j < len(sentences[i]):
           print(sentences[i][j], " : ", reverse_tagset[np.argmax(token_prediction)])
       print("----")
+  
+  def save(self, filename):
+    """Serializes the trained model as a json file.
+    
+    Args:
+      filename: str, name to give to the saved model file.
+    """
+    if not filename.endswith("json"):
+      filename += ".json"
+    model_dir = "model/nn"
+    model_json = self.model.to_json()
+    output = os.path.join(model_dir, filename)
+    with open(output, "w") as json_file:
+      json_file.write(model_json)
+    self.model.save_weights(os.path.join(model_dir, 
+                                        "{}.h5".format(filename.strip(".json"))))
+    logging.info(f"Saved model weights to {model_dir}/{filename.strip('.json')}.h5")
+  
+  def load(self, filename):
+    """Load a pretrained lstm model.
+    
+    Args:
+      filaname: str, name of the model to load.
+    """
+    model_dir = "model/nn"
+    if not filename.endswith(".json"):
+      filename += ".json"
+    with open(os.path.join(model_dir, filename), "r") as json_file:
+      loaded_model = tf.keras.models.model_from_json(json_file.read())
+      loaded_model.load_weights(os.path.join(model_dir,
+                                             "{}.h5".format(filename.strip(".json"))))
+    print(f"Loaded model from {model_dir}/{filename}")
+    loaded_model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+    self.model = loaded_model
+    print(self.model.summary())
       
 
 # Sample data for a simple pos tagging model.
@@ -444,22 +479,60 @@ def get_labels():
 
 # ---
 
-if __name__ == "__main__":
-  mylstm = BiLSTM()
-  train_data, test_data, additional_input_train, additional_input_test = get_data()
-  label_dict, _, train_labels = get_labels()
-  mylstm.train(train_data=train_data,
-               train_data_labels=train_labels, 
-               label_dict=label_dict,
-               epochs=30, 
-               embeddings=True, 
-               loss="categorical_crossentropy", 
-               optimizer="adam",
-               batch_size=5, 
-               test_data=test_data, 
-               test_data_labels=None,
-               additional_input=additional_input_train, 
-               additional_input_test=additional_input_test
-              )
 
+def main(args):
+  mylstm = BiLSTM()
+  if args.train:
+    train_data, test_data, additional_input_train, additional_input_test = get_data()
+    label_dict, _, train_labels = get_labels()
+    mylstm.train(train_data=train_data,
+                 train_data_labels=train_labels, 
+                 label_dict=label_dict,
+                 epochs=10, 
+                 embeddings=True, 
+                 loss="categorical_crossentropy", 
+                 optimizer="adam",
+                 batch_size=5, 
+                 test_data=test_data, 
+                 test_data_labels=None,
+                 additional_input=additional_input_train, 
+                 additional_input_test=additional_input_test
+                )
+    if args.save:
+      mylstm.save(args.save_model_name)
+  elif args.load:
+    mylstm.load(args.load_model_name)
+    train_data, test_data, additional_input_train, additional_input_test = get_data()
+    label_dict, _, train_data_labels = get_labels()
+    word2vec = nn_utils.load_embeddings()
+    words_to_index, index_to_words = mylstm.index_words(word2vec)
+    maxlen = nn_utils.maxlen(train_data)
+    logging.info(f"maxlen: {maxlen}")
+    train_sentences = mylstm.index_sentences(train_data, words_to_index, maxlen)
+  
+    mylstm.label_dict = label_dict
+    mylstm.reverse_label_dict = {v:k for k,v in label_dict.items()}
+  
+    train_labels = mylstm.index_labels(train_data_labels, label_dict, len(train_data), maxlen)
+    predicate_info =  np.array(
+      additional_input_train["data"]
+      ).reshape(train_sentences.shape[0],maxlen,1).astype("float32")
+    score = mylstm.model.evaluate({"sentences": train_sentences, "predicate_info": predicate_info}, train_labels, verbose=0)
+    print("%s: %.2f%%" % (mylstm.model.metrics_names[1], score[1]*100))
+
+
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser()
+  parser.add_argument("--train", type=bool, default=False,
+                      help="Trains a new model.")
+  parser.add_argument("--save", type=bool, default=False,
+                      help="Saves the trained model.")
+  parser.add_argument("--save_model_name", type=str,
+                      help="Saved model name", default="my_model")
+  parser.add_argument("--load", type=bool,
+                      help="Loads a model from disk.", default=False)
+  parser.add_argument("--load_model_name", type=str,
+                      help="Name of the model to load.")
+  args = parser.parse_args()
+  main(args)
   
