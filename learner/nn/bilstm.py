@@ -325,13 +325,15 @@ class BiLSTM:
             },
             y=train_labels,
             epochs=epochs,
-            batch_size=batch_size)
+            batch_size=batch_size,
+            validation_split=0.1)
         else:
           self.model.fit(
             {"sentences": train_sentences},
             y=train_labels,
             epochs=epochs,
-            batch_size=batch_size)
+            batch_size=batch_size,
+            validation_split=0.1)
       
       # ------ TEST THE MODEL ------
       if test_data:
