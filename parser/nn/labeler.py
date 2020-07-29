@@ -238,6 +238,7 @@ class Labeler:
                   test_data=test_sentences,
                   additional_input=additional_input,
                   additional_input_test=additional_input_test)
+    learner.save("srl_01")
 
 
 if __name__ == "__main__":
