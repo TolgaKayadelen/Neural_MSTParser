@@ -109,11 +109,14 @@ class Labeler:
     logging.info(f"number of labels: {len(label_dict)}")
     return label_dict
   
-  def _get_sentences_and_labels(self, data, tagset):
+  def _get_sentences_and_labels(self, data, tagset, maxlen=None):
     """Returns sentences and labels from training data.
     
     Args:
       data: list, a list of sentence_pb2.Sentence() objects. 
+      tagset: str, one of [dep_labels, fine_pos, coarse_pos, semantic_roles]
+      maxlen: maximum sequence length, this is used for padding data. If not given
+            computed on the fly.
     Returns:
       sentences: a list of lists where each list is a list of words.
       labels: a list of lists where each list is a list of labels. 
@@ -122,7 +125,8 @@ class Labeler:
     sentences, labels = [], []
     
     # TODO: need a consistent handling of maxlen and padding of datasets.
-    maxlen = common.GetMaxlenSentence(data)
+    if not maxlen:
+      maxlen = common.GetMaxlenSentence(data)
     print(f"maxlen: {maxlen}")
     # Reading semantic role tags from data require special treatment. 
     # We need to generate a new [sentence, labels] pair for each predicate
@@ -193,7 +197,7 @@ class Labeler:
     if tagset == "semantic_roles":
       train_sentences, train_labels, predicate_info, maxlen = self._get_sentences_and_labels(train_data, tagset)
       if vld_data:
-        vld_sentences, vld_labels, predicate_info_vld = self._get_sentences_and_labels(vld_data, tagset)
+        vld_sentences, vld_labels, predicate_info_vld, _ = self._get_sentences_and_labels(vld_data, tagset, maxlen)
       else:
         vld_sentences, vld_labels, predicate_info_vld = None, None, None
       if test_data:

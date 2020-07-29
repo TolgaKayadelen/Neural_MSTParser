@@ -137,14 +137,6 @@ class BiLSTM:
 
   def index_labels(self, labels, label_dict, n_sentences, maxlen=None, pad=True):
     """Gets a sequence of labels and converts them into a sequence of indices."""
-    counter = 0
-    for labelset in labels:
-      counter += 1
-      if "B-var.01" in labelset:
-        print(counter)
-        print(labelset)
-        input("....")
-    input("...")
     
     def _labels_to_index(labels):
       labels_to_index = []
