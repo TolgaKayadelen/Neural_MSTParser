@@ -178,7 +178,7 @@ class Labeler:
     return sentences, labels
     
     
-  def train(self, epochs=20, learning_rate=0.2, batch_size=50, tagset=None):
+  def train(self, epochs=20, learning_rate=0.2, batch_size=50, tagset=None, save_as=None):
     
     # Initialize the learner.
     learner = bilstm.BiLSTM()
@@ -238,7 +238,9 @@ class Labeler:
                   test_data=test_sentences,
                   additional_input=additional_input,
                   additional_input_test=additional_input_test)
-    learner.save("srl_01")
+    # learner.save("srl_01")
+    if save_as:
+      print(f"Saving model to {save_as}")
 
 
 if __name__ == "__main__":
@@ -253,8 +255,10 @@ if __name__ == "__main__":
   parser.add_argument("--tagset", type=str,
                       choices=["fine_pos", "coarse_pos", "dep_labels", "semantic_roles"],
                       help="path to tagset proto file.")
+  parser.add_argument("--save_model_as", type=str, default=None,
+                      help="location to save the model to, just give the filename.")
   
   args = parser.parse_args()
   labeler = Labeler(train_data=args.train_data, vld_data=args.vld_data,
                     test_data=args.test_data)
-  labeler.train(args.epochs, args.learning_rate, args.batch_size, args.tagset)
+  labeler.train(args.epochs, args.learning_rate, args.batch_size, args.tagset, args.save_model_as)

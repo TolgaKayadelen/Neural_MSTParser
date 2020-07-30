@@ -290,8 +290,9 @@ class BiLSTM:
       # Print model summary.
       print(self.model.summary())
       
-      # TODO: install pydot and plot the model.
-      # tf.keras.utils.plot_model(model, "my_model.png", show_shapes=True)
+      # Plot the model.
+      tf.keras.utils.plot_model(self.model, "my_model.png", show_shapes=True)
+      # input("Saved model info to my_model.png, do you want to continue?")
       
       # Compile the model.
       self.model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
