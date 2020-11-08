@@ -289,6 +289,7 @@ class BiLSTM:
                                       )
       # Print model summary.
       print(self.model.summary())
+      # input("Press any key to continue...")
       
       # Plot the model.
       tf.keras.utils.plot_model(self.model, "my_model.png", show_shapes=True)

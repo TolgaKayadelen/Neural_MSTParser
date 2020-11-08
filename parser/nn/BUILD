@@ -26,3 +26,12 @@ py_library(
 		"//data/testdata:parser",
 	],
 )
+
+# Tests.
+py_test(
+  name = "labeler_test",
+  srcs = ["labeler_test.py"],
+  deps = [
+    ":labeler",
+  ],
+)

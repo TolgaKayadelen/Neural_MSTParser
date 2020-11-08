@@ -30,10 +30,14 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 _DATA_DIR = "data/UDv23"
 
 class Labeler:
-  def __init__(self, train_data, vld_data=None, test_data=None):
+  """A sequence labeler class."""
+  
+  def __init__(self, train_data, vld_data=None, test_data=None, data_dir=_DATA_DIR):
     self.train_data = train_data
     self.vld_data = vld_data
     self.test_data = test_data
+    self.data_dir = data_dir
+    
     
   def _read_data(self):
     """Returns a list of sentences for training, validation, and test.
@@ -41,20 +45,20 @@ class Labeler:
     Returns:
       list, a list of sentence_pb2.Sentence objects.
     """
-    train_path = os.path.join(_DATA_DIR, "Turkish", "training", "{}.pbtxt".format(self.train_data))
+    train_path = os.path.join(self.data_dir, "Turkish", "training", "{}.pbtxt".format(self.train_data))
     train_treebank = reader.ReadTreebankTextProto(train_path)
     training_data = list(train_treebank.sentence)
     logging.info("Total sentences in train data {}".format(len(training_data)))
     
     validation_data, testing_data = None, None
     if self.vld_data:
-      vld_path = os.path.join(_DATA_DIR, "Turkish", "test", "{}.pbtxt".format(self.vld_data))
+      vld_path = os.path.join(self.data_dir, "Turkish", "test", "{}.pbtxt".format(self.vld_data))
       vld_treebank = reader.ReadTreebankTextProto(vld_path)
       validation_data = list(vld_treebank.sentence)
       logging.info("Total sentences in validation data {}".format(len(validation_data)))
     
     if self.test_data:
-      test_path = os.path.join(_DATA_DIR, "Turkish", "test", "{}.pbtxt".format(self.test_data))
+      test_path = os.path.join(self.data_dir, "Turkish", "test", "{}.pbtxt".format(self.test_data))
       test_treebank = reader.ReadTreebankTextProto(test_path)
       testing_data = list(test_treebank.sentence)
       logging.info("Total sentences in test data {}".format(len(testing_data)))
@@ -65,7 +69,7 @@ class Labeler:
     """Returns a dict of labels.
     
     Args:
-      tagset: the label set to use. 
+      tagset: string, the label set to use. 
     Returns:
       label_dict: A dict of [label:index] pairs.
     """
@@ -127,7 +131,7 @@ class Labeler:
     # TODO: need a consistent handling of maxlen and padding of datasets.
     if not maxlen:
       maxlen = common.GetMaxlenSentence(data)
-    print(f"maxlen: {maxlen}")
+    # print(f"maxlen: {maxlen}")
     # Reading semantic role tags from data require special treatment. 
     # We need to generate a new [sentence, labels] pair for each predicate
     # in the sentence.
@@ -139,28 +143,30 @@ class Labeler:
         words = [token.word for token in sentence.token]
         # Create a new training instance for each predicate-argument structure
         # that exists in the sentence.
-        arg_str = random.choice(sentence.argument_structure)
-        # for arg_str in sentence.argument_structure:
-        sentences.append(words)
+        # arg_str = random.choice(sentence.argument_structure)
+        for arg_str in sentence.argument_structure:
+          sentences.append(words)
           
-        labels_ = ["O"] * len(words)
-        labels_[arg_str.predicate_index] = "V"
-        # print(f"labels_: {labels_}")
+          labels_ = ["O"] * len(words)
+          # Index the word position of the predicate with V.
+          labels_[arg_str.predicate_index] = "V"
+          # print(f"labels_: {labels_}")
           
-        # we also give data about whether a token is predicate or not as
-        # additional input to the learner for semantic role labeling.
-        predicate_info_ = [0] * len(words)
-        predicate_info_[arg_str.predicate_index] = 1
-        predicate_info_.extend([0] * (maxlen-len(predicate_info_)))
-        assert(len(predicate_info_) == maxlen), "Padding error!!"
-        # print(f"predicate_info_: {predicate_info_}")
+          # we also give data about whether a token is predicate or not as
+          # additional input to the learner for semantic role labeling.
+          predicate_info_ = [0] * len(words)
+          predicate_info_[arg_str.predicate_index] = 1
+          # pad the rest of the predicate_info_ array with 0s.
+          predicate_info_.extend([0] * (maxlen-len(predicate_info_)))
+          assert(len(predicate_info_) == maxlen), "Padding error!!"
+          # print(f"predicate_info_: {predicate_info_}")
           
-        for argument in arg_str.argument:
-          labels_[argument.token_index[0]] = "B-"+argument.srl
-          for idx in argument.token_index[1:]:
-            labels_[idx] = "I-"+argument.srl
-        labels.append(labels_)
-        predicate_info.append(predicate_info_)
+          for argument in arg_str.argument:
+            labels_[argument.token_index[0]] = "B-"+argument.srl
+            for idx in argument.token_index[1:]:
+              labels_[idx] = "I-"+argument.srl
+          labels.append(labels_)
+          predicate_info.append(predicate_info_)
           
       return sentences, labels, predicate_info, maxlen
     
@@ -183,11 +189,11 @@ class Labeler:
     # Initialize the learner.
     learner = bilstm.BiLSTM()
     
+    # Read data and labels.
+    logging.info(f"Getting data and labels..")
+    
     # Get the labels
     label_dict = self._read_labels(tagset)
-    print(label_dict)    
-    logging.info(f"number of labels: {len(label_dict)}")
-    logging.info(f"Reading data..")
     
     # Read the training, validation and test data.
     train_data, vld_data, test_data = self._read_data()
@@ -217,7 +223,7 @@ class Labeler:
       else:
         test_sentences = None
     
-    #for i,sentence in enumerate(train_sentences):
+    # for i,sentence in enumerate(train_sentences):
     # print(sentence, train_labels[i])
     #print(train_labels)
     #print(predicate_info)
@@ -232,15 +238,15 @@ class Labeler:
                   label_dict=label_dict,
                   epochs=epochs, 
                   embeddings=True, 
-                  batch_size=len(train_sentences), 
+                  batch_size=len(train_sentences), # TODO: need to make this stochastic.
                   vld_data=vld_sentences, 
                   vld_data_labels=vld_labels, 
                   test_data=test_sentences,
                   additional_input=additional_input,
                   additional_input_test=additional_input_test)
-    # learner.save("srl_01")
     if save_as:
       print(f"Saving model to {save_as}")
+      learner.save(save_as)
 
 
 if __name__ == "__main__":
