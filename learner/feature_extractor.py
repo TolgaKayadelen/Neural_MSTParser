@@ -82,7 +82,6 @@ class FeatureExtractor:
             featureset: featureset_pb2.FeatureSet(), a proto of feature names and values.
             Note that this doesn't return any weight for the features.
         """
-        #print("head is: {}, child is: {}".format(head.word.encode("utf-8"), child.word.encode("utf-8")))
         featureset = self.InitializeFeatureNames()
         for feature in featureset.feature:
             #feature = [t.strip() for t in re.split(r'[\.\s\[\]\(\)]+', key.strip()) if t.strip()]

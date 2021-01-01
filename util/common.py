@@ -241,20 +241,20 @@ def GetValue(token, feat):
         return "ROOT"
     else:
         if feat == "word":
-            return token.word.encode("utf-8")
+            return token.word
         if feat == "category":
-            return token.category.encode("utf-8")
+            return token.category
         if feat == "pos":
-            return token.pos.encode("utf-8")
+            return token.pos
         if feat == "lemma":
-            return token.lemma.encode("utf-8")
+            return token.lemma
         if feat in morph_features: # check whether the request is valid.
             if not len(token.morphology):
                 return morph_value
             morphology = token.morphology
             for morph_feat in morphology:
                 if morph_feat.name == feat:
-                    morph_value = morph_feat.value.encode("utf-8")
+                    morph_value = morph_feat.value
                     break
             return morph_value
         else:
