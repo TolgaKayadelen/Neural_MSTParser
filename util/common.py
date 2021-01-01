@@ -2,6 +2,7 @@
 
 """Common utility functions."""
 
+import sys
 import os
 from copy import deepcopy
 from data.treebank import sentence_pb2
@@ -352,8 +353,15 @@ def GetFeatureWeights(weights, features):
     return [weights[f.name][f.value] for f in features.feature]
 
 # type: featureset proto util
-def SortFeatures(featureset, sort_key=lambda f: f.weight):
-    #print("Sorting FeatureSet proto..")
+def SortFeatures(featureset, key="weight"):
+    if key == "weight":
+      sort_key = lambda f : f.weight
+    elif key == "name":
+      sort_key = lambda f : f.name
+    elif key == "value":
+      sort_key = lambda f : f.value
+    else:
+      sys.exit("Invalid sort key!!")
     unsorted_list = []
     for feature in featureset.feature:
         unsorted_list.append(feature)

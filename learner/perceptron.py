@@ -78,8 +78,8 @@ class AveragedPerceptron(object):
         """
         assert not hasattr(self, "featureset"), "Weights already converted to proto in self.featureset"
         self.featureset = featureset_pb2.FeatureSet()
-        for name, v in self.weights.iteritems():
-            for value, weight in v.iteritems():
+        for name, v in iter(self.weights.items()):
+            for value, weight in iter(v.items()):
                 feature = self.featureset.feature.add(
                     name=name,
                     value=value,
@@ -175,9 +175,10 @@ class ArcPerceptron(AveragedPerceptron):
             if head.word in ['START_TOK', 'END_TOK']:
                 continue
             if head.index == token.index:
-                # we don't make features for case where head = token
-                # as no token can be its own head. So there's nothing to score.
-                scores.append(None)
+                # we don't want to score the case where head = token.
+                # therefore we just add a very large negative number to scores,
+                # and None to features.
+                scores.append(-1e7)
                 features.append(None)
                 continue
             #print("head: {}, child: {}".format(head.word, token.word))

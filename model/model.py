@@ -137,14 +137,23 @@ class Model(object):
         )
   
   def __str__(self):
-    return (
+    output = ""
+    output += (
       "model_name {}\n".format(self.name) + 
       "train_data: {}\n".format(self.model["train_data_path"]) +
       "test_data: {}\n".format(self.model["test_data_path"]) + 
       "test_accuracy: {}\n".format(self.model["test_accuracy"]) +
       "nr_epochs: {}\n".format(self.model["epochs_trained"]))
-      #"feature_count: {}".format(len(self.get_value("featureset").feature)))
-      #"feature_count: {}\n".format(self.model["feature_count"]))
+    if "feature_file" in self.model.keys():
+      output += "feature_file: {}\n".format(self.model["feature_file"])
+    # uncomment the below if you want to get the number of total features.
+    # Note that this is resource heavy.
+    # featureset = json_format.Parse(
+    #  self.model["featureset"],
+    #  featureset_pb2.FeatureSet())
+    # if featureset:
+    #  output += "total_features: {}\n".format(len(featureset.feature))
+    return output
 
   def _load_model(self, name):
     """Loads a model from memory.

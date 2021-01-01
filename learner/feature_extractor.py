@@ -57,7 +57,8 @@ class FeatureExtractor:
             featureset: featureset_pb2.FeatureSet(), only has feature_names.
         """
         featureset = featureset_pb2.FeatureSet()
-        for i, l in enumerate(open(self._feature_file, "r")):
+        with open(self._feature_file, "r") as feature_file:
+          for i, l in enumerate(feature_file):
             l = l.split('#')[0].split('//')[0].strip()
             #print("l is: {}".format(l))
             if not l:

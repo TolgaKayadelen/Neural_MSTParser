@@ -1,17 +1,47 @@
 # all features from sentence john saw mary for arc perceptron (sorted)
 feature {
-  name: "head_0_pos+head_0_morph_case"
-  value: "ROOT_ROOT"
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_ROOT_John_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos+head_0_morph_case"
-  value: "Verb_None"
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "saw_Verb_John_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos+head_0_morph_case"
-  value: "Noun_None"
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "Mary_Noun_John_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_ROOT_saw_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "John_Noun_saw_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "Mary_Noun_saw_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_ROOT_Mary_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "John_Noun_Mary_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
+  value: "saw_Verb_Mary_Noun"
   weight: 0.0
 }
 feature {
@@ -60,28 +90,168 @@ feature {
   weight: 0.0
 }
 feature {
-  name: "child_0_pos+child_0_morph_case"
-  value: "Noun_None"
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ROOT_ROOT_Noun"
   weight: 0.0
 }
 feature {
-  name: "child_0_pos+child_0_morph_case"
-  value: "Verb_None"
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "saw_Verb_Noun"
   weight: 0.0
 }
 feature {
-  name: "child_0_word+child_0_pos"
-  value: "John_Noun"
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "Mary_Noun_Noun"
   weight: 0.0
 }
 feature {
-  name: "child_0_word+child_0_pos"
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "ROOT_ROOT_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "John_Noun_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "Mary_Noun_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos+child_0_pos"
+  value: "John_Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "ROOT_ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos"
   value: "saw_Verb"
   weight: 0.0
 }
 feature {
-  name: "child_0_word+child_0_pos"
+  name: "head_0_word+head_0_pos"
   value: "Mary_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_pos"
+  value: "John_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "ROOT_ROOT"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "saw_see"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "Mary_Mary"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+head_0_lemma"
+  value: "John_John"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ROOT_John_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "saw_John_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "Mary_John_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ROOT_saw_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "John_saw_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "Mary_saw_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "ROOT_Mary_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "John_Mary_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word+child_0_pos"
+  value: "saw_Mary_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ROOT_John"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "saw_John"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "Mary_John"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ROOT_saw"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "John_saw"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "Mary_saw"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "ROOT_Mary"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "John_Mary"
+  weight: 0.0
+}
+feature {
+  name: "head_0_word+child_0_word"
+  value: "saw_Mary"
   weight: 0.0
 }
 feature {
@@ -102,101 +272,6 @@ feature {
 feature {
   name: "head_0_word"
   value: "John"
-  weight: 0.0
-}
-feature {
-  name: "child_0_word"
-  value: "John"
-  weight: 0.0
-}
-feature {
-  name: "child_0_word"
-  value: "saw"
-  weight: 0.0
-}
-feature {
-  name: "child_0_word"
-  value: "Mary"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+child_0_word+child_0_pos"
-  value: "ROOT_John_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+child_0_word+child_0_pos"
-  value: "Verb_John_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+child_0_word+child_0_pos"
-  value: "Noun_John_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+child_0_word+child_0_pos"
-  value: "ROOT_saw_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+child_0_word+child_0_pos"
-  value: "Noun_saw_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+child_0_word+child_0_pos"
-  value: "ROOT_Mary_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+child_0_word+child_0_pos"
-  value: "Noun_Mary_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+child_0_word+child_0_pos"
-  value: "Verb_Mary_Noun"
-  weight: 0.0
-}
-feature {
-  name: "child_0_morph_case"
-  value: "None"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+child_0_pos"
-  value: "ROOT_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+child_0_pos"
-  value: "Verb_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+child_0_pos"
-  value: "Noun_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+child_0_pos"
-  value: "ROOT_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+child_0_pos"
-  value: "Noun_Verb"
-  weight: 0.0
-}
-feature {
-  name: "child_0_pos"
-  value: "Noun"
-  weight: 0.0
-}
-feature {
-  name: "child_0_pos"
-  value: "Verb"
   weight: 0.0
 }
 feature {
@@ -245,88 +320,153 @@ feature {
   weight: 0.0
 }
 feature {
-  name: "head_0_lemma"
-  value: "ROOT"
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Noun_ROOT_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_lemma"
-  value: "see"
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Noun_ROOT_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_lemma"
-  value: "Mary"
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_END_POS_ROOT_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_lemma"
-  value: "John"
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Noun_Noun_Verb"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_lemma"
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Noun_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_END_POS_Noun_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "ROOT_Noun_Verb_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Noun_Verb_Verb_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
+  value: "Verb_Noun_Verb_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "ROOT_ROOT_Noun_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Verb_None_Noun_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_None_Noun_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "ROOT_ROOT_Verb_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
+  value: "Noun_None_Verb_None"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+head_0_morph_case"
   value: "ROOT_ROOT"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_lemma"
-  value: "saw_see"
+  name: "head_0_pos+head_0_morph_case"
+  value: "Verb_None"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_lemma"
-  value: "Mary_Mary"
+  name: "head_0_pos+head_0_morph_case"
+  value: "Noun_None"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_lemma"
-  value: "John_John"
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_John_Noun"
   weight: 0.0
 }
 feature {
-  name: "child_0_word+child_0_lemma"
-  value: "John_John"
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Verb_John_Noun"
   weight: 0.0
 }
 feature {
-  name: "child_0_word+child_0_lemma"
-  value: "saw_see"
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Noun_John_Noun"
   weight: 0.0
 }
 feature {
-  name: "child_0_word+child_0_lemma"
-  value: "Mary_Mary"
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_saw_Verb"
   weight: 0.0
 }
 feature {
-  name: "child_0_lemma"
-  value: "John"
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Noun_saw_Verb"
   weight: 0.0
 }
 feature {
-  name: "child_0_lemma"
-  value: "see"
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "ROOT_Mary_Noun"
   weight: 0.0
 }
 feature {
-  name: "child_0_lemma"
-  value: "Mary"
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Noun_Mary_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos"
-  value: "ROOT"
+  name: "head_0_pos+child_0_word+child_0_pos"
+  value: "Verb_Mary_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos"
-  value: "Verb"
+  name: "head_0_pos+child_0_pos"
+  value: "ROOT_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos"
-  value: "Noun"
+  name: "head_0_pos+child_0_pos"
+  value: "Verb_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Noun_Noun"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "ROOT_Verb"
+  weight: 0.0
+}
+feature {
+  name: "head_0_pos+child_0_pos"
+  value: "Noun_Verb"
   weight: 0.0
 }
 feature {
@@ -365,48 +505,48 @@ feature {
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
-  value: "ROOT_ROOT_John_Noun"
+  name: "head_0_pos"
+  value: "ROOT"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
-  value: "saw_Verb_John_Noun"
+  name: "head_0_pos"
+  value: "Verb"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
-  value: "Mary_Noun_John_Noun"
+  name: "head_0_pos"
+  value: "Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
-  value: "ROOT_ROOT_saw_Verb"
+  name: "head_0_morph_case"
+  value: "ROOT"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
-  value: "John_Noun_saw_Verb"
+  name: "head_0_morph_case"
+  value: "None"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
-  value: "Mary_Noun_saw_Verb"
+  name: "head_0_lemma"
+  value: "ROOT"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
-  value: "ROOT_ROOT_Mary_Noun"
+  name: "head_0_lemma"
+  value: "see"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
-  value: "John_Noun_Mary_Noun"
+  name: "head_0_lemma"
+  value: "Mary"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_word+child_0_pos"
-  value: "saw_Verb_Mary_Noun"
+  name: "head_0_lemma"
+  value: "John"
   weight: 0.0
 }
 feature {
@@ -500,227 +640,87 @@ feature {
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos"
-  value: "ROOT_ROOT"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+head_0_pos"
-  value: "saw_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+head_0_pos"
-  value: "Mary_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+head_0_pos"
+  name: "child_0_word+child_0_pos"
   value: "John_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+child_0_word"
-  value: "ROOT_John"
+  name: "child_0_word+child_0_pos"
+  value: "saw_Verb"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+child_0_word"
-  value: "saw_John"
+  name: "child_0_word+child_0_pos"
+  value: "Mary_Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+child_0_word"
-  value: "Mary_John"
+  name: "child_0_word+child_0_lemma"
+  value: "John_John"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+child_0_word"
-  value: "ROOT_saw"
+  name: "child_0_word+child_0_lemma"
+  value: "saw_see"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+child_0_word"
-  value: "John_saw"
+  name: "child_0_word+child_0_lemma"
+  value: "Mary_Mary"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+child_0_word"
-  value: "Mary_saw"
+  name: "child_0_word"
+  value: "John"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+child_0_word"
-  value: "ROOT_Mary"
+  name: "child_0_word"
+  value: "saw"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+child_0_word"
-  value: "John_Mary"
+  name: "child_0_word"
+  value: "Mary"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+child_0_word"
-  value: "saw_Mary"
+  name: "child_0_pos+child_0_morph_case"
+  value: "Noun_None"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
-  value: "ROOT_Noun_ROOT_Noun"
+  name: "child_0_pos+child_0_morph_case"
+  value: "Verb_None"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
-  value: "Verb_Noun_ROOT_Noun"
+  name: "child_0_pos"
+  value: "Noun"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
-  value: "Noun_END_POS_ROOT_Noun"
+  name: "child_0_pos"
+  value: "Verb"
   weight: 0.0
 }
 feature {
-  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
-  value: "ROOT_Noun_Noun_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
-  value: "Noun_Verb_Noun_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
-  value: "Noun_END_POS_Noun_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
-  value: "ROOT_Noun_Verb_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
-  value: "Noun_Verb_Verb_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+head_1_pos+child_-1_pos+child_0_pos"
-  value: "Verb_Noun_Verb_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+child_0_word+child_0_pos"
-  value: "ROOT_John_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+child_0_word+child_0_pos"
-  value: "saw_John_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+child_0_word+child_0_pos"
-  value: "Mary_John_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+child_0_word+child_0_pos"
-  value: "ROOT_saw_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+child_0_word+child_0_pos"
-  value: "John_saw_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+child_0_word+child_0_pos"
-  value: "Mary_saw_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+child_0_word+child_0_pos"
-  value: "ROOT_Mary_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+child_0_word+child_0_pos"
-  value: "John_Mary_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+child_0_word+child_0_pos"
-  value: "saw_Mary_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_morph_case"
-  value: "ROOT"
-  weight: 0.0
-}
-feature {
-  name: "head_0_morph_case"
+  name: "child_0_morph_case"
   value: "None"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_pos"
-  value: "ROOT_ROOT_Noun"
+  name: "child_0_lemma"
+  value: "John"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_pos"
-  value: "saw_Verb_Noun"
+  name: "child_0_lemma"
+  value: "see"
   weight: 0.0
 }
 feature {
-  name: "head_0_word+head_0_pos+child_0_pos"
-  value: "Mary_Noun_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+head_0_pos+child_0_pos"
-  value: "ROOT_ROOT_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+head_0_pos+child_0_pos"
-  value: "John_Noun_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+head_0_pos+child_0_pos"
-  value: "Mary_Noun_Verb"
-  weight: 0.0
-}
-feature {
-  name: "head_0_word+head_0_pos+child_0_pos"
-  value: "John_Noun_Noun"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
-  value: "ROOT_ROOT_Noun_None"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
-  value: "Verb_None_Noun_None"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
-  value: "Noun_None_Noun_None"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
-  value: "ROOT_ROOT_Verb_None"
-  weight: 0.0
-}
-feature {
-  name: "head_0_pos+head_0_morph_case+child_0_pos+child_0_morph_case"
-  value: "Noun_None_Verb_None"
+  name: "child_0_lemma"
+  value: "Mary"
   weight: 0.0
 }
