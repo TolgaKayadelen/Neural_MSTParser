@@ -1,8 +1,11 @@
 // Protocol buffer specification for evaluation of a model.
+// WIP: DO NOT USE.
 
 syntax = "proto2";
 
-import "model/tags_and_labels_enum.proto";
+import "tagset/coarse_pos/coarse_tag_enum.proto";
+import "tagset/dep_labels/dep_label_enum.proto";
+import "tagset/fine_pos/fine_tag_enum.proto";
 
 package model;
 
@@ -40,14 +43,14 @@ message TypedLasF1 {
 }
 
 message Analysis {
-  optional Label.Value label = 1;   /*actually required*/
-  optional float score = 2;         /*actually required*/
+  optional tagset.dep_labels.Tag label = 1;     /*actually required*/
+  optional float score = 2;                     /*actually required*/
 }
 
 message LasF1 {
-  optional Label.Value label = 1;   /*actually required*/
-  optional int32 count = 2;         /*actually required*/
-  optional float prec = 3;          /*actually required*/
-  optional float recall = 4;        /*actually required*/
-  optional float f1  = 5;           /*actually required*/
+  optional tagset.dep_labels.Tag label = 1;   /*actually required*/
+  optional int32 count = 2;                   /*actually required*/
+  optional float prec = 3;                    /*actually required*/
+  optional float recall = 4;                  /*actually required*/
+  optional float f1  = 5;                     /*actually required*/
 }

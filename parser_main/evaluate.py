@@ -17,14 +17,13 @@ bazel-bin/parser_main/evaluate \
 --test_data= ./data/testdata/parser_main/eval_data_test.pbtxt \
 --metrics all \
 --print_results=True
-
 """
 
 import pandas as pd
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
 from model import evaluation_pb2
-from model import tags_and_labels_enum_pb2 as tle
+# from model import tags_and_labels_enum_pb2 as tle
 from util import common
 from util import reader
 
@@ -73,7 +72,7 @@ class Evaluator:
         assert isinstance(test, treebank_pb2.Treebank)
         self.gold = list(gold.sentence)
         self.test = list(test.sentence)
-        self.gold_and_test = zip(self.gold, self.test)
+        self.gold_and_test = list(zip(self.gold, self.test))
         self.uas_total = 0.0
         self.las_total = 0.0
         self.typed_las_prec = {}
@@ -87,79 +86,70 @@ class Evaluator:
 
     def _GetLabelCounts(self):
         """Return number of occurences for each label in the data."""
-        labels = list(set().union(*map(get_labels, self.gold)))
+        labels = sorted(list(set().union(*map(get_labels, self.gold))))
         assert labels, "Tokens don't have any labels!!!"
         label_counts = {}
         for label in labels:
-            label_count = 0
-            for sent in self.gold:
-                for token in sent.token:
-                    if not token.label == label:
-                        continue
-                    label_count += 1
-            label_counts[label] = label_count
+          label_count = 0
+          for sent in self.gold:
+            for token in sent.token:
+              if not token.label == label:
+                continue
+              label_count += 1
+          label_counts[label] = label_count
         self.label_counts = pd.Series(label_counts).rename("count", inplace=True)
         #print(self.label_counts)
 
     def _UasTotal(self):
         "Computes the total Unlabeled Attachement Score of the parser."
         uas = 0.0
-        for gold_sent, test_sent in self.gold_and_test:
+        gold_and_test = self.gold_and_test
+        for gold_sent, test_sent in gold_and_test:
             gold_heads = [token.selected_head.address for token in gold_sent.token[1:]]
             pred_heads = [token.selected_head.address for token in test_sent.token[1:]]
             assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
-            #for gold_head, predicted_head in zip(gold_heads, pred_heads):
-            #	print("gold: {}, predicted: {}, equal: {}".format(
-            #   gold_head, predicted_head, gold_head == predicted_head))
-            #print("---")
             uas += 100 * sum(
                 gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
         self.uas_total = uas / len(self.gold)
         self.evaluation.uas_total = self.uas_total
 
-
     def _LasTotal(self):
         "Computes the total Labeled Attachment Score of the parser."
         las = 0.0
-        labels = list(set().union(*map(get_labels, self.test)))
+        labels = sorted(list(set().union(*map(get_labels, self.test))))
         assert len(labels) > 1, "Can't compute LAS: Test data doesn't have any labels!"
-        for gold_sent, test_sent in self.gold_and_test:
-            gold_heads = [(token.selected_head.address, token.label)
-                for token in gold_sent.token[1:]]
-            pred_heads = [(token.selected_head.address, token.label)
-                for token in test_sent.token[1:]]
-            assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
-            las += 100 * sum(
-                gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
+        gold_and_test = self.gold_and_test
+        for gold_sent, test_sent in gold_and_test:
+          gold_heads = [(token.selected_head.address, token.label) for token in gold_sent.token[1:]]
+          pred_heads = [(token.selected_head.address, token.label) for token in test_sent.token[1:]]
+          assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
+          las += 100 * sum(gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
         self.las_total = las / len(self.gold)
         self.evaluation.las_total = self.las_total
 
     def _TypedUas(self):
         """Computes Unlabeled Attachment Score for all dependency types."""
-        labels = list(set().union(*map(get_labels, self.test)))
+        labels = sorted(list(set().union(*map(get_labels, self.test))))
         assert labels, "Cannot compute typed Uas without labels!!"
         typed_uas = {}
+        gold_and_test = self.gold_and_test
         for label in labels:
-            correct = 0.0
-            label_uas = 0.0
-            match = []
-            sentence_idx = 0
-            #print("label is {}".format(label))
-            for gold_sent, test_sent in self.gold_and_test:
-                sentence_idx += 1
-                for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
-                    if not gold_tok.label == label:
-                        continue
-                    correct += 1.0
-                    if test_tok.selected_head.address == gold_tok.selected_head.address:
-                        label_uas += 1.0
-                        #match.append((sentence_idx, test_tok.index, test_tok.word))
-            #logging.info("matches are {}".format(match))
-            typed_uas[label] = label_uas / correct if correct else 0.0
-            self.evaluation.typed_uas.uas.add(label=label_to_enum[label], score=round(typed_uas[label],2))
+          correct = 0.0
+          label_uas = 0.0
+          sentence_idx = 0
+          for gold_sent, test_sent in gold_and_test:
+            sentence_idx += 1
+            for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
+              if not gold_tok.label == label:
+                continue
+              correct += 1.0
+              if test_tok.selected_head.address == gold_tok.selected_head.address:
+                label_uas += 1.0
+          typed_uas[label] = label_uas / correct if correct else 0.0
+          self.evaluation.typed_uas.uas.add(label=label_to_enum[label], score=round(typed_uas[label],2))
         self.typed_uas = pd.Series(typed_uas).rename("unlabeled_attachment", inplace=True).round(2)
-        #print(text_format.MessageToString(self.evaluation, as_utf8=True))
-        #print(self.typed_uas)
+        # print(text_format.MessageToString(self.evaluation, as_utf8=True))
+        # print(self.typed_uas)
 
     def	_TypedLasPrec(self):
         """Computes Precision for all dependency types.
@@ -168,14 +158,15 @@ class Evaluator:
         in the system that are correct (correct / system). That is, it checks
         whether the X's that are found in the system also exists in the gold.
         """
-        labels = list(set().union(*map(get_labels, self.test)))
+        labels = sorted(list(set().union(*map(get_labels, self.test))))
+        gold_and_test = self.gold_and_test
         for label in labels:
             #print("Computing precision for {}".format(label))
             correct = 0.0
             system = 0.0
             match = []
             sentence_idx = 0
-            for gold_sent, test_sent in self.gold_and_test:
+            for gold_sent, test_sent in gold_and_test:
                 sentence_idx += 1
                 for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
                     if not test_tok.label == label:
@@ -185,12 +176,6 @@ class Evaluator:
                     if gold_tok.label == label and same_head(gold_tok, test_tok):
                         correct += 1
                         match.append((sentence_idx, gold_tok.index, gold_tok.word))
-            #logging.info("System has: {} \"{}\"".format(system, label))
-            #logging.info("{} of the system token(s) were also \"{}\" in gold".format(correct, label))
-            #logging.info("Precision of the model for label \"{}\" is {} / {} = {}".format(
-            #	label, correct, system, correct / system)
-            #)
-            #logging.info("matches are: {}".format(match))
             self.typed_las_prec[label] = round((correct / system), 2)
             self.evaluation.typed_las_prec.prec.add(label=label_to_enum[label], score=round(self.typed_las_prec[label],2))
         #print(text_format.MessageToString(self.evaluation, as_utf8=True))
@@ -202,14 +187,16 @@ class Evaluator:
         For each relation X, recall computes the percentage of relations that
         exists in the gold which are recovered by the system (correct / gold).
         """
-        labels = list(set().union(*map(get_labels, self.gold)))
+        labels = sorted(list(set().union(*map(get_labels, self.test))))
+        print(labels)
+        gold_and_test = self.gold_and_test
         for label in labels:
-            #print("Computing recall for {}".format(label))
+            # print("Computing recall for {}".format(label))
             correct = 0.0
             gold = 0.0
             match = []
             sentence_idx = 0
-            for gold_sent, test_sent in self.gold_and_test:
+            for gold_sent, test_sent in gold_and_test:
                 sentence_idx += 1
                 for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
                     if not gold_tok.label == label:
@@ -218,16 +205,15 @@ class Evaluator:
                     if test_tok.label == label and same_head(gold_tok, test_tok):
                         correct += 1
                         match.append((sentence_idx, test_tok.index, test_tok.word))
-            #logging.info("Gold has: {} \"{}\"".format(gold, label))
-            #logging.info("{} of the gold label(s) were recovered by system".format(correct))
-            #logging.info("Recall  of the model for label \"{}\" is  {} / {} = {}".format(
-            #    label, correct, gold, correct / gold)
-            #)
-            #logging.info("matches are: {}".format(match))
-            self.typed_las_recall[label] = round((correct / gold), 2)
-            self.evaluation.typed_las_recall.recall.add(
-              label=label_to_enum[label],
-              score=round(self.typed_las_recall[label], 2))
+            # Compute recall for this label if it exists in the gold data.
+            # Otherwise it doesn't make sense to compute recall for a label.
+            if gold:
+              self.typed_las_recall[label] = round((correct / gold), 2)
+              self.evaluation.typed_las_recall.recall.add(
+                label=label_to_enum[label],
+                score=round(self.typed_las_recall[label], 2))
+            else:
+              pass
 
     def _TypedLasF1(self):
         """Computes F1 score for all dependency types"""
