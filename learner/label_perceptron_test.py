@@ -46,7 +46,7 @@ class LabelPerceptronTest(unittest.TestCase):
         percept.MakeAllFeatures([self.en_test])
         random_class = random.choice(list(percept.label_weights))
         sorted_features = common.SortFeatures(percept._ConvertWeightsToProto(
-            random_class), sort_key=lambda f: f.name)
+            random_class), key="name")
         #print(sorted_features)
         expected_features = _read_features_test_data("john_saw_mary_label_features")
         expected_features.feature.add(
@@ -55,8 +55,7 @@ class LabelPerceptronTest(unittest.TestCase):
             weight=0.0
         )
         expected_features = common.SortFeatures(
-            expected_features, sort_key=lambda f: f.name
-        )
+            expected_features, key="name")
         self.assertEqual(sorted_features, expected_features)
         self.assertEqual(
             len(set([feature.name for feature in sorted_features.feature])),

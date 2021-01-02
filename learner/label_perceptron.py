@@ -244,8 +244,8 @@ class LabelPerceptron(AveragedPerceptron):
         else:
             weights = self._label_timestamps
         featureset = featureset_pb2.FeatureSet()
-        for name, v in weights[class_].iteritems():
-            for value, weight in v.iteritems():
+        for name, v in iter(weights[class_].items()):
+            for value, weight in iter(v.items()):
                 feature = featureset.feature.add(
                     name=name,
                     value=value,
