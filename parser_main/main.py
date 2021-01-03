@@ -10,6 +10,9 @@ from parser_main.parse_and_label import parse_and_label
 from parser_main.train import train_parser, train_labeler
 from parser_main.evaluate import evaluate_parser
 
+import logging
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
+
 def validate_args(args):
   if not args.mode:
     sys.exit("Need to define a mode!!")
@@ -65,8 +68,9 @@ if __name__ == "__main__":
     parser.add_argument('--labelfeatures', type=str,
                         help="name of the file that contain the label features to train with.",
                         default="labelfeatures_base")
-    parser.add_argument("--arcfeatures", type=str,
-                        help="name of the file that contain the arc features to train with,")
+    parser.add_argument("--arcfeatures", type=str, 
+                        help="name of the file that contain the arc features to train with",
+                        default="arcfeatures_exp2")
             
     
     # Training args

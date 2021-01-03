@@ -32,9 +32,9 @@ class Decoder:
             assert len(predicted_heads) == len(sentence.token), "Number of tokens and heads must match!"
             assert len(head_scores) == len(sentence.token), "Number of tokens and scores must match!"
             # zip the token and its predicted head for each token.
-            head_token = zip(predicted_heads, sentence.token)
+            head_token = list(zip(predicted_heads, sentence.token))
             # zip the token and its head arc score for each token.
-            score_token = zip(head_scores, sentence.token)
+            score_token = list(zip(head_scores, sentence.token))
 
             for i, token in enumerate(sentence.token):
                 if token.word == "ROOT" or token.index == 0:

@@ -30,7 +30,7 @@ from util import reader
 from google.protobuf import text_format
 
 import logging
-logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 label_to_enum = common.GetLabels()
 

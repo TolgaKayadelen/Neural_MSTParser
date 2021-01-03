@@ -8,7 +8,7 @@ from data.treebank import treebank_pb2
 from google.protobuf import text_format
 import argparse
 import logging
-logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 
 def ReadConllX(path):

@@ -12,7 +12,7 @@ from util import reader
 from util import writer
 
 import logging
-logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 
 # A dependency labeler works on the output of the dependency parser to label

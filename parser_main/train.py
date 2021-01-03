@@ -21,7 +21,7 @@ from util import writer
 from google.protobuf import text_format
 
 import logging
-logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 
 _TREEBANK_DIR = "data/UDv23"
@@ -169,12 +169,12 @@ def train_parser(args):
     Saves a trained dependency parsing model.
     """
     tr,te = _get_data(args)
-    training_data = map(common.ConnectSentenceNodes, tr)
-    training_data = map(common.ExtendSentence, training_data)
+    training_data = list(map(common.ConnectSentenceNodes, tr))
+    training_data = list(map(common.ExtendSentence, training_data))
     logging.info("Training Data Size {}".format(len(training_data)))
     if len(te) > 0:
-        test_data = map(common.ConnectSentenceNodes, te)
-        test_data = map(common.ExtendSentence, test_data)
+        test_data = list(map(common.ConnectSentenceNodes, te))
+        test_data = list(map(common.ExtendSentence, test_data))
         logging.info("Test Data Size {}".format(len(te)))
     else:
         test_data=None

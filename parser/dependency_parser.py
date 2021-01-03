@@ -5,7 +5,7 @@
 import numpy as np
 from learner.perceptron import ArcPerceptron
 from data.treebank import sentence_pb2
-from decoder import Decoder
+from parser.decoder import Decoder
 from google.protobuf import text_format
 from learner import featureset_pb2
 from learner.feature_extractor import FeatureExtractor
@@ -14,7 +14,7 @@ from util import reader
 from util import writer
 
 import logging
-logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 class DependencyParser:
     def __init__(self, feature_file=None, decoding="mst"):

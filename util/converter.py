@@ -46,7 +46,7 @@ import pandas as pd
 # sys.setdefaultencoding('utf8')
 
 import logging
-logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 
 class Converter:

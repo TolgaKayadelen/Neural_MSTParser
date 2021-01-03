@@ -16,7 +16,7 @@ from util.writer import write_proto_as_text
 from google.protobuf import text_format
 
 import logging
-logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 _TREEBANK_DIR = "data/UDv23"
 
