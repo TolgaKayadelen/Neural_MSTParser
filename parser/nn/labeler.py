@@ -65,6 +65,7 @@ class Labeler:
     
     return training_data, validation_data, testing_data
   
+  # TODO(tkayadelen): Move this to the tagset package.
   def _read_labels(self, tagset):
     """Returns a dict of labels.
     

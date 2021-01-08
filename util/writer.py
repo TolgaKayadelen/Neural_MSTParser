@@ -36,6 +36,16 @@ def write_proto_as_text(message, path):
     with open(path, "w") as output_file:
         text_format.PrintMessage(message, output_file, as_utf8=True)
 
+def write_protolist_as_text(messages, path):
+  """Writes a list of protos to the path in the pbtxt format.
+  
+  Sepearetely from the above method, this method is useful to write a 
+  list of messages of the same type to a single proto file.
+  """
+  with open(path, "w") as output_file:
+    for message in messages:
+      text_format.PrintMessage(message, output_file, as_utf8=True)
+  
 def write_proto_as_proto(message, path):
     """Serializes a protocol buffer message.
     
