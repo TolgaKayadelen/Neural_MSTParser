@@ -11,6 +11,14 @@ Array = np.ndarray
 Dataset = tf.data.Dataset
 SequenceExample = tf.train.SequenceExample
 
+# TODO: generate this dynamically.
+_POS_TAGS = {'ANum': 1, 'Abr': 2, 'Adj': 3, 'Adverb': 4, 'Conj': 5, 'Demons': 6, 'Det': 7,
+            'Dup': 8, 'Interj': 9, 'NAdj': 10, 'NNum': 11, 'Neg': 12, 'Ness': 13, 'Noun': 14, 
+            'PCAbl': 15, 'PCAcc': 16, 'PCDat': 17, 'PCGen': 18, 'PCIns': 19, 'PCNom': 20, 'Pers': 21, 
+            'PostP': 22, 'Prop': 23, 'Punc': 24, 'Quant': 25, 'Ques': 26, 'Reflex': 27, 'Rel': 28,
+            'Since': 29, 'TOP': 30, 'Verb': 31, 'With': 32, 'Without': 33, 'Zero': 34, '-pad-': 0
+            }
+
 class SanityCheck(Enum):
   UNKNOWN = 1
   PASS = 2
@@ -18,9 +26,10 @@ class SanityCheck(Enum):
 
 class SequenceFeature:
   """A sequence feature is a map from a feature name to a list of int values."""
-  def __init__(self, name: str, values: List[int]):
+  def __init__(self, name: str, values: List[int]=[], dtype=tf.int64):
     self.name = name
     self.values = values
+    self.dtype = dtype
   
   def __str__(self):
     return f"{self.name}: {self.values}"
@@ -159,38 +168,100 @@ class Preprocessor:
         feature_list.feature.add().int64_list.value.append(token)
     
     return example
-  
-  def write_tf_examples(self, *, examples: List[SequenceExample], path: str):
-    """Serializes a set of tf.train.SequenceExamples to path."""
-    for example in examples:
-      print(type(example))
-    writer.write_protolist_as_text(examples, path)
-  
-  def parse_tf_examples(self, *, path: str) -> List[SequenceExample]:
-    """Reads a set of tf.train.SequenceExample from path."""
-    import codecs
-    with codecs.open(path, encoding="utf-8") as in_file:
-      read = in_file.read().strip()
-      print(text_format.Parse(read, tf.train.SequenceExample()))
-  
+    
   def write_tf_records(self, *, examples: List[SequenceExample], path: str) -> None:
     """Serializes tf.train.SequenceExamples to tfrecord files."""
-    pass
-  
-  def parse_tf_records(self, *, path:str) -> List[SequenceExample]:
-    """Reads a set of tf.train.SequenceExamples from a tf.records file path."""
+    filename = path + ".tfrecords" if not path.endswith(".tfrecords") else path
+    writer = tf.io.TFRecordWriter(filename)
+    for example in examples:
+      writer.write(example.SerializeToString())
+    writer.close()
     
-    
-  def make_dataset_from_generator(self, *, generator: Generator) -> Dataset:
-    """Makes a tensorflow dataset that is shuffled, batched and padded."""
-    pass
-    
-  def make_dataset_from_records(self, *, records: str) -> Dataset:
+  def make_dataset_from_tfrecords(self, *,
+                                  batch_size=1,
+                                  features: List[SequenceFeature],
+                                  records: str) -> Dataset:
     """Makes a tensorflow dataset from tfrecords path."""
-    pass
+    
+    _sequence_features = {}
+    _dataset_shapes = {}
+    
+    # Create a description of the tensors to parse the features.
+    for feature in features:
+      _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature([], dtype=feature.dtype)
+      _dataset_shapes[feature.name]=tf.TensorShape([None])
+    
+    def _parse_tf_records(example):
+      _, parsed_example = tf.io.parse_single_sequence_example(
+        serialized=example,
+        sequence_features=_sequence_features
+      )
+      return {feature.name:parsed_example[feature.name] for feature in features}
+    
+    dataset = tf.data.TFRecordDataset([records])
+    dataset = dataset.map(_parse_tf_records)    
+    dataset = dataset.padded_batch(batch_size, padded_shapes=_dataset_shapes)
+    return dataset
+
+  def make_dataset_from_generator(self, *, path: str,
+                                  features=List[SequenceFeature],
+                                  generator: Generator=None) -> Dataset:
+    """Makes a tensorflow dataset that is shuffled, batched and padded.
+    Args:
+      path: path to the dataset treebank. 
+      generator: a generator function. if not specified, the class generator is used.
+    """
+    if not generator:
+      generator = lambda: self._example_generator(path, features)
+    
+    _output_types={}
+    _output_shapes={}
+    _padded_shapes={}
+    for feature in features:
+      _output_types[feature.name]=feature.dtype
+      _output_shapes[feature.name]=[None]
+      _padded_shapes[feature.name]=tf.TensorShape([None])
+      
+    dataset = tf.data.Dataset.from_generator(
+      generator,
+      output_types=_output_types,
+      output_shapes=_output_shapes
+    )
+    # dataset = dataset.shuffle(buffer_size=3)
+    dataset = dataset.padded_batch(4, padded_shapes=_padded_shapes)
+    return dataset
   
+  def _example_generator(self, path: str, features:List[SequenceFeature]):
+    _words, _morph, _pos, _category = [False] * 4
+    trb = reader.ReadTreebankTextProto(path)
+    sentences = trb.sentence
+    feature_names = [feature.name for feature in features]
+    if "words" in feature_names:
+      _words = True
+      embeddings = nn_utils.load_embeddings()
+      word_mapping = Embeddings(name="word2vec", matrix=embeddings)
+    if "morph" in feature_names:
+      _morph = True
+    if "postags" in feature_names:
+      _pos = True
+      pos_mapping = _POS_TAGS
+    if "category" in feature_names:
+      _cat = True
+    yield_dict = {}
+    for sentence in sentences:
+      if _words:
+        words = self.numericalize(values=[token.word for token in sentence.token],
+                                  mapping=word_mapping)
+        yield_dict["words"] = words
+      if _pos:
+        postags = self.numericalize(values=[token.pos for token in sentence.token],
+                                    mapping=pos_mapping)
+        yield_dict["postags"] = postags
+      
+      yield yield_dict
 
 if __name__ == "__main__":
+  preprocessor = Preprocessor()
   # embeddings = nn_utils.load_embeddings()
   # myemb = Embeddings(name="word2vec", matrix=embeddings)
   # print(myemb.name)
@@ -199,9 +270,10 @@ if __name__ == "__main__":
   # print(myemb.embedding_dim)
   # print(myemb.itos(idx=493047))
   # print(myemb.sanity_check)
+  """
   sentence1 = ["tolga", "okula", "yyllss"]
   sentence2 = ["tolga", "okula", "gitmedi"]
-  preprocessor = Preprocessor()
+  
   # print(preprocessor.numericalize(values=sentence1, mapping=myemb))
   word_indices = preprocessor.numericalize(values=sentence2, mapping={"tolga": 1, "okula": 2, "gitmedi": 3})
   pos_indices = [6,7,8]
@@ -214,4 +286,12 @@ if __name__ == "__main__":
     example = preprocessor.make_tf_example(features=[words, postags])
     examples.append(example)
   # preprocessor.write_tf_examples(examples=examples, path="./input/test.pbtxt")
-  preprocessor.parse_tf_examples(path="./input/test.pbtxt")
+  # preprocessor.write_tf_records(examples=examples, path="./input/test.tfrecords")
+  # features = [SequenceFeature(name="words"), SequenceFeature(name="postags")]
+  # dataset = preprocessor.make_dataset_from_tfrecords(features=features, records="./input/test.tfrecords")
+  """
+  dataset = preprocessor.make_dataset_from_generator(
+    path="data/UDv23/Turkish/training/treebank_0_3.pbtxt",
+    features=[SequenceFeature(name="words"), SequenceFeature(name="postags")])
+  for record in dataset:
+    print(record)
