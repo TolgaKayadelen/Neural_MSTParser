@@ -7,8 +7,8 @@ py_binary(
   name = "preprocessor",
   srcs = ["preprocessor.py"],
   deps = [
+    "//tagset:reader",
     "//util/nn:nn_utils",
     "//util:reader",
-    "//util:writer",
   ],
 )

@@ -2,22 +2,17 @@ import tensorflow as tf
 import numpy as np
 import random
 from enum import Enum
+from tagset.reader import LabelReader
 from typing import List, Dict, Generator, Union
 from util.nn import nn_utils
-from util import reader, writer
-from google.protobuf import text_format
+from util import reader
+
+import logging
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 Array = np.ndarray
 Dataset = tf.data.Dataset
 SequenceExample = tf.train.SequenceExample
-
-# TODO: generate this dynamically.
-_POS_TAGS = {'ANum': 1, 'Abr': 2, 'Adj': 3, 'Adverb': 4, 'Conj': 5, 'Demons': 6, 'Det': 7,
-            'Dup': 8, 'Interj': 9, 'NAdj': 10, 'NNum': 11, 'Neg': 12, 'Ness': 13, 'Noun': 14, 
-            'PCAbl': 15, 'PCAcc': 16, 'PCDat': 17, 'PCGen': 18, 'PCIns': 19, 'PCNom': 20, 'Pers': 21, 
-            'PostP': 22, 'Prop': 23, 'Punc': 24, 'Quant': 25, 'Ques': 26, 'Reflex': 27, 'Rel': 28,
-            'Since': 29, 'TOP': 30, 'Verb': 31, 'With': 32, 'Without': 33, 'Zero': 34, '-pad-': 0
-            }
 
 class SanityCheck(Enum):
   UNKNOWN = 1
@@ -178,10 +173,10 @@ class Preprocessor:
     writer.close()
     
   def make_dataset_from_tfrecords(self, *,
-                                  batch_size=1,
+                                  batch_size=4,
                                   features: List[SequenceFeature],
                                   records: str) -> Dataset:
-    """Makes a tensorflow dataset from tfrecords path."""
+    """Makes a tensorflow dataset from a saved tfrecords path."""
     
     _sequence_features = {}
     _dataset_shapes = {}
@@ -217,6 +212,7 @@ class Preprocessor:
     _output_types={}
     _output_shapes={}
     _padded_shapes={}
+    
     for feature in features:
       _output_types[feature.name]=feature.dtype
       _output_shapes[feature.name]=[None]
@@ -232,7 +228,7 @@ class Preprocessor:
     return dataset
   
   def _example_generator(self, path: str, features:List[SequenceFeature]):
-    _words, _morph, _pos, _category = [False] * 4
+    _words, _morph, _pos, _cat, _srl = [False] * 5
     trb = reader.ReadTreebankTextProto(path)
     sentences = trb.sentence
     feature_names = [feature.name for feature in features]
@@ -241,12 +237,15 @@ class Preprocessor:
       embeddings = nn_utils.load_embeddings()
       word_mapping = Embeddings(name="word2vec", matrix=embeddings)
     if "morph" in feature_names:
-      _morph = True
-    if "postags" in feature_names:
+      raise RuntimeError("Morphology features are not supported yet.")
+    if "pos" in feature_names:
       _pos = True
-      pos_mapping = _POS_TAGS
+      pos_mapping = LabelReader.get_labels("pos").labels
     if "category" in feature_names:
       _cat = True
+      cat_mapping = LabelReader.get_labels("category").labels
+    if "srl" in feature_names:
+      raise RuntimeError("Semantic role features are not supported yet.")
     yield_dict = {}
     for sentence in sentences:
       if _words:
@@ -256,42 +255,57 @@ class Preprocessor:
       if _pos:
         postags = self.numericalize(values=[token.pos for token in sentence.token],
                                     mapping=pos_mapping)
-        yield_dict["postags"] = postags
-      
+        yield_dict["pos"] = postags
+      if _cat:
+        categories = self.numericalize(values=[token.category for token in sentence.token],
+                                       mapping=cat_mapping)
+        yield_dict["category"] = categories
+
       yield yield_dict
 
 if __name__ == "__main__":
-  preprocessor = Preprocessor()
-  # embeddings = nn_utils.load_embeddings()
-  # myemb = Embeddings(name="word2vec", matrix=embeddings)
-  # print(myemb.name)
-  # print(myemb.vocab)
-  # print(myemb.vocab_size)
-  # print(myemb.embedding_dim)
-  # print(myemb.itos(idx=493047))
-  # print(myemb.sanity_check)
-  """
-  sentence1 = ["tolga", "okula", "yyllss"]
-  sentence2 = ["tolga", "okula", "gitmedi"]
   
-  # print(preprocessor.numericalize(values=sentence1, mapping=myemb))
-  word_indices = preprocessor.numericalize(values=sentence2, mapping={"tolga": 1, "okula": 2, "gitmedi": 3})
-  pos_indices = [6,7,8]
+  # Initialize the preprocessor.
+  prep = Preprocessor()
+  
+  # MAKING DATASET BY SAVING AND READING TFRECORDS.
+  
   examples = []
-  for i in range(5):
-    word_indices = [index+1 for index in word_indices]
+  # Making dataset from tfrecords.
+  embeddings = nn_utils.load_embeddings()
+  word_mapping = Embeddings(name="word2vec", matrix=embeddings)
+  pos_mapping = LabelReader.get_labels("pos").labels
+  print(f"pos mapping: {pos_mapping}")
+  cat_mapping = LabelReader.get_labels("category").labels
+  print(f"cat mapping: {cat_mapping}")
+  datapath = "data/UDv23/Turkish/training/treebank_0_3.pbtxt"
+  trb = reader.ReadTreebankTextProto(datapath)
+  # Make tf examples
+  for sentence in trb.sentence:
+    word_indices = prep.numericalize(values=[token.word for token in sentence.token],
+                                     mapping=word_mapping
+    )
     words = SequenceFeature(name="words", values=word_indices)
-    pos_indices = [index+1 for index in pos_indices]
-    postags = SequenceFeature(name="postags", values=pos_indices)
-    example = preprocessor.make_tf_example(features=[words, postags])
+    pos_indices = prep.numericalize(values=[token.pos for token in sentence.token],
+                                    mapping=pos_mapping)
+    postags = SequenceFeature(name="pos", values=pos_indices)
+    example = prep.make_tf_example(features=[words, postags])
     examples.append(example)
-  # preprocessor.write_tf_examples(examples=examples, path="./input/test.pbtxt")
-  # preprocessor.write_tf_records(examples=examples, path="./input/test.tfrecords")
-  # features = [SequenceFeature(name="words"), SequenceFeature(name="postags")]
-  # dataset = preprocessor.make_dataset_from_tfrecords(features=features, records="./input/test.tfrecords")
-  """
-  dataset = preprocessor.make_dataset_from_generator(
-    path="data/UDv23/Turkish/training/treebank_0_3.pbtxt",
-    features=[SequenceFeature(name="words"), SequenceFeature(name="postags")])
+  # Write examples as tf records.
+  prep.write_tf_records(examples=examples, path="./input/test1.tfrecords")
+  
+  # Make dataset from saved tfrecords
+  features = [SequenceFeature(name="words"), SequenceFeature(name="pos")]
+  dataset = prep.make_dataset_from_tfrecords(features=features,
+                                             records="./input/test1.tfrecords")
   for record in dataset:
     print(record)
+  
+  # MAKING DATASET FROM GENERATOR.
+  """
+  dataset = prep.make_dataset_from_generator(
+    path="data/UDv23/Turkish/training/treebank_0_3.pbtxt",
+    features=[SequenceFeature(name="words"), SequenceFeature(name="pos")])
+  for record in dataset:
+    print(record)
+  """

@@ -1,13 +1,23 @@
 """A BiLSTM based labeler to a sequence of tokens.
 
 Example Use:
+Train a postagger.
 bazel build //parser/nn:labeler && bazel-bin/parser/nn/labeler \
 --train_data=treebank_train_1000_1500 \
 --vld_data=treebank_train_0_50 \
---tesd_data=treebank_0_3_test \
+--test_data=treebank_0_3_test \
 --batch_size=50 \
---tagset=fine_pos
+--tagset=pos
+
+Train a semantic role labeler.
+bazel build //parser/nn:labeler && bazel-bin/parser/nn/labeler \
+--train_data=propbank_ud_fixed.pbtxt \
+--test_data=propbank_ud_test_0_10.pbtxt \
+--batch_size=50 \
+--tagset=pos
 """
+
+
 
 import os
 import sys
@@ -22,6 +32,7 @@ from tagset.fine_pos import fine_tag_enum_pb2 as fine_tags
 from tagset.coarse_pos import coarse_tag_enum_pb2 as coarse_tags
 from tagset.dep_labels import dep_label_enum_pb2 as dep_labels
 from tagset.arg_str import semantic_role_enum_pb2 as srl
+from tagset.reader import LabelReader
 from learner.nn import bilstm
 
 import logging
@@ -65,55 +76,6 @@ class Labeler:
     
     return training_data, validation_data, testing_data
   
-  # TODO(tkayadelen): Move this to the tagset package.
-  def _read_labels(self, tagset):
-    """Returns a dict of labels.
-    
-    Args:
-      tagset: string, the label set to use. 
-    Returns:
-      label_dict: A dict of [label:index] pairs.
-    """
-    # read the tagset
-    assert(tagset), "Tagset cannot be initialized!"
-    if tagset == "fine_pos":
-      tags = fine_tags
-    elif tagset == "coarse_pos":
-      tags = coarse_tags
-    elif tagset == "dep_labels":
-      tags = dep_labels
-    elif tagset == "semantic_roles":
-      tags = srl
-    else:
-      sys.exit("Couldn't determine tagset!")
-    
-    def _get_bio_tags_from_srl():
-      labels_list = ["-pad-"]
-      for key in tags.Tag.DESCRIPTOR.values_by_name.keys():
-        if key in ["UNKNOWN_SRL", "V"]:
-          continue
-        if key.startswith(("A_", "AM_", "A4_", "C_", "R_", "notset")):
-          key = key.replace("_", "-")
-        labels_list.extend(["B-"+key, "I-"+key])
-      labels_list.extend(["O", "V"])
-      return {v: k for k, v in enumerate(labels_list)}
-  
-    
-    if tags == srl:
-      label_dict = _get_bio_tags_from_srl()
-    else:
-      label_dict = {}
-      for key in tags.Tag.DESCRIPTOR.values_by_name.keys():
-        if key in ["UNKNOWN_TAG", "UNKNOWN_CATEGORY", "UNKNOWN_LABEL"]:
-          continue
-        if key in {"advmod_emph", "aux_q", "compound_lvc", "compound_redup", "nmod_poss"}:
-          label_dict[key.replace("_", ":")] = tags.Tag.Value(key)
-        else:
-          label_dict[key] = tags.Tag.Value(key)
-    label_dict["-pad-"] = 0
-    logging.info(f"number of labels: {len(label_dict)}")
-    return label_dict
-  
   def _get_sentences_and_labels(self, data, tagset, maxlen=None):
     """Returns sentences and labels from training data.
     
@@ -126,7 +88,7 @@ class Labeler:
       sentences: a list of lists where each list is a list of words.
       labels: a list of lists where each list is a list of labels. 
     """
-    assert(tagset in ["fine_pos", "coarse_pos", "dep_labels", "semantic_roles"]), "Invalid Tagset!"
+    assert(tagset in ["pos", "category", "dep_labels", "srl"]), "Invalid Tagset!"
     sentences, labels = [], []
     
     # TODO: need a consistent handling of maxlen and padding of datasets.
@@ -136,7 +98,7 @@ class Labeler:
     # Reading semantic role tags from data require special treatment. 
     # We need to generate a new [sentence, labels] pair for each predicate
     # in the sentence.
-    if tagset == "semantic_roles":
+    if tagset == "srl":
       predicate_info = []
       for sentence in data:
         if not sentence.argument_structure:
@@ -173,9 +135,9 @@ class Labeler:
     
     for sentence in data:
       words = [token.word for token in sentence.token]
-      if tagset == "fine_pos":
+      if tagset == "pos":
         labels_ = [token.pos for token in sentence.token]
-      elif tagset == "coarse_pos":
+      elif tagset == "category":
         labels_ = [token.category for token in sentence.token]
       else:
         sentence.token[0].label = "TOP"
@@ -194,14 +156,16 @@ class Labeler:
     logging.info(f"Getting data and labels..")
     
     # Get the labels
-    label_dict = self._read_labels(tagset)
+    label_dict = LabelReader.get_labels(tagset).labels
+    print(label_dict)
+    # label_dict = self._read_labels(tagset)
     
     # Read the training, validation and test data.
     train_data, vld_data, test_data = self._read_data()
     
     # Extract the input sentences, labels, and any other additional input from data.
     # TODO: these data set ups should be handled by the train_test_split() method.
-    if tagset == "semantic_roles":
+    if tagset == "srl":
       train_sentences, train_labels, predicate_info, maxlen = self._get_sentences_and_labels(train_data, tagset)
       if vld_data:
         vld_sentences, vld_labels, predicate_info_vld, _ = self._get_sentences_and_labels(vld_data, tagset, maxlen)
@@ -244,7 +208,8 @@ class Labeler:
                   vld_data_labels=vld_labels, 
                   test_data=test_sentences,
                   additional_input=additional_input,
-                  additional_input_test=additional_input_test)
+                  additional_input_test=additional_input_test
+    )
     if save_as:
       print(f"Saving model to {save_as}")
       learner.save(save_as)
@@ -260,7 +225,7 @@ if __name__ == "__main__":
   parser.add_argument("--test_data", type=str, help="test data path.")
   parser.add_argument("--batch_size", type=int, default=50, help="batch size.")
   parser.add_argument("--tagset", type=str,
-                      choices=["fine_pos", "coarse_pos", "dep_labels", "semantic_roles"],
+                      choices=["pos", "category", "dep_labels", "srl"],
                       help="path to tagset proto file.")
   parser.add_argument("--save_model_as", type=str, default=None,
                       help="location to save the model to, just give the filename.")

@@ -8,7 +8,7 @@ from util import common
 import numpy as np
 
 import logging
-logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 class Decoder:
     def __init__(self, decoding="mst"):
