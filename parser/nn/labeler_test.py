@@ -5,6 +5,7 @@ import os
 from absl.testing import parameterized
 from absl.testing import absltest
 from google.protobuf import text_format
+from tagset import reader
 from parser.nn import labeler
 from util import reader
 
@@ -52,39 +53,9 @@ class LabelerTest(parameterized.TestCase):
   @parameterized.named_parameters(
     [
       {
-        "testcase_name": "fine_pos",
-        "test_tags": "fine_pos",
-        "expected_tags": _POS_TAGS,
-      },
-      {
-        "testcase_name": "coarse_pos",
-        "test_tags": "coarse_pos",
-        "expected_tags": _POS_CATEGORIES,
-      },
-      {
-        "testcase_name": "dep_labels",
-        "test_tags": "dep_labels",
-        "expected_tags": _DEP_LABELS,
-      },
-      {
-        "testcase_name": "semantic_roles",
-        "test_tags": "semantic_roles",
-        "expected_tags": _SEMANTIC_ROLES,
-      }
-    ]
-  )
-  def test_read_labels(self, test_tags, expected_tags):
-    lbl = labeler.Labeler(train_data=None)
-    tags = lbl._read_labels(test_tags)
-    self.assertDictEqual(tags, expected_tags)
-    print("Passed!")
-
-  @parameterized.named_parameters(
-    [
-      {
         "testcase_name": "_fine_pos",
         "dataset": "propbank_ud_test_0_10",
-        "labels": "fine_pos",
+        "labels": "pos",
         "expected_labels": [
           ['TOP', 'Noun', 'Verb', 'Punc'],
           ['TOP', 'Conj', 'Noun', 'Noun', 'Verb', 'Punc'],
@@ -93,7 +64,7 @@ class LabelerTest(parameterized.TestCase):
       {
         "testcase_name": "_coarse_pos",
         "dataset": "propbank_ud_test_0_10",
-        "labels": "coarse_pos",
+        "labels": "category",
         "expected_labels": [
           ['TOP', 'NOUN', 'VERB', 'PUNCT'],
           ['TOP', 'CCONJ', 'NOUN', 'NOUN', 'VERB', 'PUNCT'],
@@ -102,7 +73,7 @@ class LabelerTest(parameterized.TestCase):
       {
         "testcase_name": "_semantic_roles",
         "dataset": "propbank_ud_test_0_10",
-        "labels": "semantic_roles",
+        "labels": "srl",
         "expected_labels": [
           ['O', 'B-A1', 'V', 'O'],
           ['O', 'O', 'B-A1', 'I-A1', 'V', 'O']
@@ -115,7 +86,7 @@ class LabelerTest(parameterized.TestCase):
     path = os.path.join(lbl.data_dir, "Turkish", "test", "{}.pbtxt".format(dataset))
     treebank = reader.ReadTreebankTextProto(path)
     data = list(treebank.sentence)[0:2]
-    if labels == "semantic_roles":
+    if labels == "srl":
       _, labels, predicate_info, _ = lbl._get_sentences_and_labels(data=data, tagset=labels)
       self.assertListEqual(predicate_info, [[0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 1, 0]])
     else: 

@@ -3,9 +3,9 @@
 import os
 import tensorflow as tf
 import numpy as np
-import gensim
 import argparse
 
+from input import preprocessor
 from util import writer
 from util.nn import nn_utils
 
@@ -17,7 +17,28 @@ class BiLSTM:
   """A BiLSTM model for sequence labeling."""
   def __init__(self):
     self.model = None
+  
+  # TODO: define an embed method
+  def embed(self, **kwargs):
+    """This method takes a dictionary of indices and creates embedding vectors from them."""
+    pass
+    # Something like:
+    # self.pos_embedding = tf.keras.layers.Embedding(input_dim=vocab_size+1, output_dim=embedding_size, input_length=batch["pos"].numpy.shape[1])
+    # To test that this works:
+    # model = tf.keras.Sequential()
+    # model.add(tf.keras.layers.Embedding(32, 32, input_length=15))
+    # pos array from preprocessor
+    # a = np.array([[30,  5, 14, 14, 31, 24,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    #   [30, 14, 31,  3, 14, 14, 14, 14, 14, 14, 28, 14, 14, 31, 24],
+    #   [30, 14, 28, 31,  4,  3, 24,  0,  0,  0,  0,  0,  0,  0,  0],
+    #   [30, 23, 24, 14, 14, 31, 20,  4, 31, 24,  0,  0,  0,  0,  0]]))
+    # model.compile("rmsprop", "mse")
+    # output_array = model.predict(a)
+    # self.word_embedding = tf.keras.layers.Embedding(batch["words"])
+    # self.cat_embedding = tf.keras.layers.Embeedding(batch["cat"])
+    # concat = tf.keras.layers.Concatenate(all_the_embeddings)
     
+  # TODO: revise (also rename to embedding_layer (drop pretrained.))
   def pretrained_embeddings_layer(self, word2vec, words_to_index, embedding_dim):
     """Creates an embedding layer for the Neural Net and feeds a pretrained word2vec model into it.
     
@@ -71,7 +92,8 @@ class BiLSTM:
     embedding_layer.set_weights([embedding_matrix])
     
     return embedding_layer
-    
+  
+  # TODO: remove
   def index_words(self, embedding_model):
     """Indexes all the vocabulary items in the embedding model.
     
@@ -100,6 +122,8 @@ class BiLSTM:
       i += 1
     return words_to_index, index_to_words
   
+  # TODO: remove -- will use preprocessor.make_dataset_from_generator
+  # which will index the sentences and the features for you.
   def index_sentences(self, sentences, word_indices, maxlen):
     """Indexes all the words in a set of sentences. 
     
@@ -134,7 +158,8 @@ class BiLSTM:
     
     return sentence_indices
     
-
+  # TODO: will need to use preprocessor.make_dataset to index the labels as well.
+  # The target indices will have to be converted to one_hot_vectors.
   def index_labels(self, labels, label_dict, n_sentences, maxlen=None, pad=True):
     """Gets a sequence of labels and converts them into a sequence of indices."""
     
@@ -160,7 +185,7 @@ class BiLSTM:
       label_indices[i, :, :] = one_hot
     return label_indices
     
-
+  # TODO: revise -- consider using model subclassing
   def _create_model(self, input_shape, word2vec, word_indices, n_classes,
                     additional_input=None, embedding_dim=None):
     """Creates a BiLSTM model.
@@ -228,7 +253,7 @@ class BiLSTM:
     
     return model
 
-
+  # TODO: revise -- use batch processing with tf.data iteration.
   def train(self, train_data, train_data_labels, label_dict, epochs, embeddings=False,
             loss="categorical_crossentropy", optimizer="adam", batch_size=None,
             vld_data=None, vld_data_labels=None, test_data=None, test_data_labels=None,
