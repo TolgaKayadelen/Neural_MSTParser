@@ -260,6 +260,8 @@ class Embeddings:
       return SanityCheck.FAIL
     return SanityCheck.PASS
 
+# TODO(you need to implement a function here that one hot encodes labels,
+# and then generates tf.records or generator based datasets accordingly.)
 class Preprocessor:
   """Prepares data as batched tfrecords."""
   def __init__(self, *, word_embeddings: Embeddings = None):
@@ -329,7 +331,8 @@ class Preprocessor:
     dataset = dataset.map(_parse_tf_records)    
     dataset = dataset.padded_batch(batch_size, padded_shapes=_dataset_shapes)
     return dataset
-
+    
+  # TODO(fix the hardcoded batch size values)
   def make_dataset_from_generator(self, *, path: str,
                                   features=List[SequenceFeature],
                                   generator: Generator=None) -> Dataset:
@@ -367,6 +370,8 @@ class Preprocessor:
     # dataset = dataset.padded_batch(2, padded_shapes=(_padded_shapes, tf.TensorShape((None,2))))
     return dataset
   
+  # TODO(abstract away from the hardcoded values in this generator.)
+  # TODO(make sure whatever labels are generated as one hot vectors)
   def _example_generator(self, path: str, features:List[SequenceFeature]):
     _words, _morph, _pos, _cat, _srl = [False] * 5
     trb = reader.ReadTreebankTextProto(path)
