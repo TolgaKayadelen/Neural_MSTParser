@@ -17,27 +17,7 @@ class BiLSTM:
   """A BiLSTM model for sequence labeling."""
   def __init__(self):
     self.model = None
-  
-  # TODO: define an embed method
-  def embed(self, **kwargs):
-    """This method takes a dictionary of indices and creates embedding vectors from them."""
-    pass
-    # Something like:
-    # self.pos_embedding = tf.keras.layers.Embedding(input_dim=vocab_size+1, output_dim=embedding_size, input_length=batch["pos"].numpy.shape[1])
-    # To test that this works:
-    # model = tf.keras.Sequential()
-    # model.add(tf.keras.layers.Embedding(32, 32, input_length=15))
-    # pos array from preprocessor
-    # a = np.array([[30,  5, 14, 14, 31, 24,  0,  0,  0,  0,  0,  0,  0,  0,  0],
-    #   [30, 14, 31,  3, 14, 14, 14, 14, 14, 14, 28, 14, 14, 31, 24],
-    #   [30, 14, 28, 31,  4,  3, 24,  0,  0,  0,  0,  0,  0,  0,  0],
-    #   [30, 23, 24, 14, 14, 31, 20,  4, 31, 24,  0,  0,  0,  0,  0]]))
-    # model.compile("rmsprop", "mse")
-    # output_array = model.predict(a)
-    # self.word_embedding = tf.keras.layers.Embedding(batch["words"])
-    # self.cat_embedding = tf.keras.layers.Embeedding(batch["cat"])
-    # concat = tf.keras.layers.Concatenate(all_the_embeddings)
-    
+   
   # TODO: revise (also rename to embedding_layer (drop pretrained.))
   def pretrained_embeddings_layer(self, word2vec, words_to_index, embedding_dim):
     """Creates an embedding layer for the Neural Net and feeds a pretrained word2vec model into it.

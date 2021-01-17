@@ -6,6 +6,7 @@ from tagset.reader import LabelReader
 from typing import List, Dict, Generator, Union
 from util.nn import nn_utils
 from util import reader
+import time
 
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
@@ -13,6 +14,136 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 Array = np.ndarray
 Dataset = tf.data.Dataset
 SequenceExample = tf.train.SequenceExample
+
+
+words = np.array([
+       [1,152339,380947,484432,340375,536702,1,0,0,0,0,0,0,0,0],
+       [1,34756, 224906, 578174, 506596,1,0,0,0,0,0,0,0,0,0],
+       [1,119951,1,562326,490947,305574,359585,453123,444258,1,0,0,0,0,0],
+       [1,570228,548366,507341,361412,220841,474903,319297,334201,258062,380947,396760,559275,508964,1]]
+       )
+
+pos = np.array([
+       [30, 14, 28, 31,  4,  3, 24,  0,  0,  0,  0,  0,  0,  0,  0],
+       [30,  5, 14, 14, 31, 24,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+       [30, 23, 24, 14, 14, 31, 20,  4, 31, 24,  0,  0,  0,  0,  0],
+       [30, 14, 31,  3, 14, 14, 14, 14, 14, 14, 28, 14, 14, 31, 24]])
+
+targets = np.array(
+[[[0, 1],
+  [1, 0],
+  [1, 0],
+  [0, 1],
+  [0, 1],
+  [0, 1],
+  [1, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0]],
+ [[0, 1],
+  [0, 1],
+  [0, 1],
+  [0, 1],
+  [1, 0],
+  [0, 1],
+  [0, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0]],
+ [[0, 1],
+  [0, 1],
+  [1, 0],
+  [0, 1],
+  [1, 0],
+  [0, 1],
+  [1, 0],
+  [1, 0],
+  [1, 0],
+  [0, 1],
+  [0, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0],
+  [0, 0]],
+ [[1, 0],
+  [1, 0],
+  [0, 1],
+  [1, 0],
+  [1, 0],
+  [1, 0],
+  [1, 0],
+  [1, 0],
+  [1, 0],
+  [0, 1],
+  [1, 0],
+  [0, 1],
+  [1, 0],
+  [0, 1],
+  [0, 1]]])
+  
+# To test training with variable shapes.
+words = np.array([
+       [1,152339,380947,484432,340375,536702,1],
+       [1,34756, 224906, 578174, 506596,1],
+       [1,119951,1,562326,490947,305574,359585,453123,444258,1],
+       [1,570228,548366,507341,361412,220841,474903,319297,334201,258062,380947,396760,559275,508964,1]]
+       )
+
+pos = np.array([
+       [30, 14, 28, 31,  4,  3, 24],
+       [30,  5, 14, 14, 31, 24],
+       [30, 23, 24, 14, 14, 31, 20,  4, 31, 24],
+       [30, 14, 31,  3, 14, 14, 14, 14, 14, 14, 28, 14, 14, 31, 24]])
+
+targets = np.array(
+[[[0, 1],
+  [1, 0],
+  [1, 0],
+  [0, 1],
+  [0, 1],
+  [0, 1],
+  [1, 0]],
+ [[0, 1],
+  [0, 1],
+  [0, 1],
+  [0, 1],
+  [1, 0],
+  [0, 1]],
+ [[0, 1],
+  [0, 1],
+  [1, 0],
+  [0, 1],
+  [1, 0],
+  [0, 1],
+  [1, 0],
+  [1, 0],
+  [1, 0],
+  [0, 1]],
+ [[1, 0],
+  [1, 0],
+  [0, 1],
+  [1, 0],
+  [1, 0],
+  [1, 0],
+  [1, 0],
+  [1, 0],
+  [1, 0],
+  [0, 1],
+  [1, 0],
+  [0, 1],
+  [1, 0],
+  [0, 1],
+  [0, 1]]])
 
 class SanityCheck(Enum):
   UNKNOWN = 1
@@ -131,8 +262,9 @@ class Embeddings:
 
 class Preprocessor:
   """Prepares data as batched tfrecords."""
-  def __init__(self):
-    pass
+  def __init__(self, *, word_embeddings: Embeddings = None):
+    if word_embeddings:
+      self.word_embeddings = word_embeddings
   
   def numericalize(self, *, values: List[str],
                    mapping: Union[Dict, Embeddings]) -> List[int]:
@@ -173,7 +305,7 @@ class Preprocessor:
     writer.close()
     
   def make_dataset_from_tfrecords(self, *,
-                                  batch_size=4,
+                                  batch_size=2,
                                   features: List[SequenceFeature],
                                   records: str) -> Dataset:
     """Makes a tensorflow dataset from a saved tfrecords path."""
@@ -215,16 +347,24 @@ class Preprocessor:
     
     for feature in features:
       _output_types[feature.name]=feature.dtype
-      _output_shapes[feature.name]=[None]
-      _padded_shapes[feature.name]=tf.TensorShape([None])
+      
+      if not feature.name == "targets":
+        _output_shapes[feature.name]=[None]
+        _padded_shapes[feature.name]=tf.TensorShape([None])
+      else:
+        _output_shapes[feature.name]=(None,2)
+        _padded_shapes[feature.name]=tf.TensorShape((None,2))
       
     dataset = tf.data.Dataset.from_generator(
       generator,
       output_types=_output_types,
       output_shapes=_output_shapes
     )
-    # dataset = dataset.shuffle(buffer_size=3)
-    dataset = dataset.padded_batch(4, padded_shapes=_padded_shapes)
+
+    dataset = dataset.shuffle(buffer_size=20)
+    # TODO(make sure whether we have variable size shapes and if it's ok for training)
+    dataset = dataset.padded_batch(2, padded_shapes=_padded_shapes)
+    # dataset = dataset.padded_batch(2, padded_shapes=(_padded_shapes, tf.TensorShape((None,2))))
     return dataset
   
   def _example_generator(self, path: str, features:List[SequenceFeature]):
@@ -232,10 +372,14 @@ class Preprocessor:
     trb = reader.ReadTreebankTextProto(path)
     sentences = trb.sentence
     feature_names = [feature.name for feature in features]
+    counter = 0
     if "words" in feature_names:
       _words = True
-      embeddings = nn_utils.load_embeddings()
-      word_mapping = Embeddings(name="word2vec", matrix=embeddings)
+      if self.word_embeddings:
+        word_mapping = self.word_embeddings
+      else:
+        embeddings = nn_utils.load_embeddings()
+        word_mapping = Embeddings(name="word2vec", matrix=embeddings)
     if "morph" in feature_names:
       raise RuntimeError("Morphology features are not supported yet.")
     if "pos" in feature_names:
@@ -249,31 +393,133 @@ class Preprocessor:
     yield_dict = {}
     for sentence in sentences:
       if _words:
-        words = self.numericalize(values=[token.word for token in sentence.token],
-                                  mapping=word_mapping)
-        yield_dict["words"] = words
+        # words = self.numericalize(values=[token.word for token in sentence.token],
+        #                           mapping=word_mapping)
+        # yield_dict["words"] = words
+        yield_dict["words"] = words[counter]
       if _pos:
-        postags = self.numericalize(values=[token.pos for token in sentence.token],
-                                    mapping=pos_mapping)
-        yield_dict["pos"] = postags
+        # postags = self.numericalize(values=[token.pos for token in sentence.token],
+        #                            mapping=pos_mapping)
+        # yield_dict["pos"] = postags
+        yield_dict["pos"] = pos[counter]
       if _cat:
         categories = self.numericalize(values=[token.category for token in sentence.token],
                                        mapping=cat_mapping)
         yield_dict["category"] = categories
-
+      
+      yield_dict["targets"] = targets[counter]
+      counter += 1
       yield yield_dict
 
+
+class BiLSTM:
+  
+  def __init__(self, *, word_embeddings: Embeddings):
+    self.word_embeddings_layer = self._set_pretrained_embeddings(word_embeddings)
+    self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
+    self.model = self._model()
+    self.optimizer = tf.keras.optimizers.Adam(0.001, amsgrad=True)
+    self.train_metrics = tf.keras.metrics.CategoricalAccuracy()
+    self.val_metrics = tf.keras.metrics.CategoricalAccuracy()
+
+  def _set_pretrained_embeddings(self, embeddings: Embeddings):
+    """Builds a pretrained keras embedding layer from an Embeddings object."""
+    embed = tf.keras.layers.Embedding(embeddings.vocab_size,
+                                      embeddings.embedding_dim,
+                                      weights=[embeddings.index_to_vector],
+                                      trainable=False,
+                                      name="word_embeddings")
+    embed.build((None,))
+    return embed
+  
+  def __str__(self):
+    return str(self.model.summary())
+  
+  def _model(self):
+    word_inputs = tf.keras.Input(shape=([None]), name="words")
+    pos_inputs = tf.keras.Input(shape=([None]), name="pos")
+    pos_features = tf.keras.layers.Embedding(32, 32, name="pos_embeddings")(pos_inputs)
+    word_features = self.word_embeddings_layer(word_inputs)
+    concat = tf.keras.layers.concatenate([pos_features, word_features])
+    encoded = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(units=150, return_sequences=True, name="encoded"))(concat)
+    X = tf.keras.layers.Dense(units=2)(encoded)
+    # NOTE: as you have from_logits=True in your loss function. You don't use the activation layer.
+    # X = tf.keras.layers.Activation("softmax", name="result")(X)
+    
+    model = tf.keras.Model(inputs=[word_inputs, pos_inputs], outputs=X)
+    tf.keras.utils.plot_model(model, "multi_input_and_output_model.png", show_shapes=True)
+    
+    # NOTE: You don't compile if you use custom low level training.
+    # model.compile(
+    #  optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001, amsgrad=True),
+    #  loss="categorical_crossentropy",
+    #  metrics=["acc"]
+    #)
+    return model
+  
+  @tf.function
+  def train_step(self, words, pos, y):
+    # print("y shape ", y.shape)
+    # input("press to cont")
+    with tf.GradientTape() as tape:
+      logits = self.model([words, pos], training=True)
+      # print("logits shape ", logits.shape)
+      # input("press to cont")
+      # Send the **LOGITS** to the loss function.
+      loss_value = self.loss_fn(y, logits)
+    grads = tape.gradient(loss_value, self.model.trainable_weights)
+    self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
+    # Update train metrics
+    self.train_metrics.update_state(y, logits)
+    return loss_value
+  
+  @tf.function
+  def test_step(self, x, y):
+    val_logits = self.model(x["words"], x["pos"], training=False)
+    self.val_metrics.update_state(y, val_logits)
+  
+  def train(self, dataset, epochs=30):
+    for epoch in range(epochs):
+      # Reset training metrics at the end of epoch
+      self.train_metrics.reset_states()
+      print("==========================================")
+      logging.info(f"Training epoch {epoch}")
+      start_time = time.time()
+      for step, batch in enumerate(dataset):
+        words = batch["words"]
+        pos = batch["pos"]
+        y = batch["targets"]
+        loss_value = self.train_step(words, pos, y)
+        # print(loss_value)
+        
+        # Log
+        # if step % 10 == 0: 
+        #  logging.info(f"Training loss for one batch at step {step} :  {float(loss_value)}")
+      
+      # Display metrics at the end of each epoch
+      train_acc = self.train_metrics.result()
+      logging.info(f"Training accuracy over epoch {train_acc}")
+      
+      
+      # Log the time it takes for one epoch
+      logging.info(f"Time for epoch: {time.time() - start_time}")
+  
+
+      
+    
 if __name__ == "__main__":
   
+  # Load word embeddings
+  embeddings = nn_utils.load_embeddings()
+  word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
+  
   # Initialize the preprocessor.
-  prep = Preprocessor()
+  prep = Preprocessor(word_embeddings=word_embeddings)
   
+  """
   # MAKING DATASET BY SAVING AND READING TFRECORDS.
-  
   examples = []
   # Making dataset from tfrecords.
-  embeddings = nn_utils.load_embeddings()
-  word_mapping = Embeddings(name="word2vec", matrix=embeddings)
   pos_mapping = LabelReader.get_labels("pos").labels
   print(f"pos mapping: {pos_mapping}")
   cat_mapping = LabelReader.get_labels("category").labels
@@ -283,7 +529,7 @@ if __name__ == "__main__":
   # Make tf examples
   for sentence in trb.sentence:
     word_indices = prep.numericalize(values=[token.word for token in sentence.token],
-                                     mapping=word_mapping
+                                     mapping=prep.word_embeddings
     )
     words = SequenceFeature(name="words", values=word_indices)
     pos_indices = prep.numericalize(values=[token.pos for token in sentence.token],
@@ -298,14 +544,25 @@ if __name__ == "__main__":
   features = [SequenceFeature(name="words"), SequenceFeature(name="pos")]
   dataset = prep.make_dataset_from_tfrecords(features=features,
                                              records="./input/test1.tfrecords")
-  for record in dataset:
-    print(record)
-  
-  # MAKING DATASET FROM GENERATOR.
   """
+  # MAKING DATASET FROM GENERATOR.
+
   dataset = prep.make_dataset_from_generator(
     path="data/UDv23/Turkish/training/treebank_0_3.pbtxt",
-    features=[SequenceFeature(name="words"), SequenceFeature(name="pos")])
-  for record in dataset:
-    print(record)
-  """
+    features=[SequenceFeature(name="words"), SequenceFeature(name="pos"), SequenceFeature(name="targets")],
+  )
+  mylstm = BiLSTM(word_embeddings=prep.word_embeddings)
+  print(mylstm)
+  for batch in dataset:
+    print(batch)
+  
+  mylstm.train(dataset)
+  
+  # You can use dataset directly as np.arrays rather than dataset API.
+  # In this case you give the dataset as a dict to the custom training function.
+  # And you modify the training funtion to make sure that it accepts values as dict. 
+  # dataset={"words": words, "pos": pos, "targets": targets}
+  # mylstm.train(dataset)
+  # mylstm.model.fit([words, pos], y=targets, epochs=30)
+
+  
