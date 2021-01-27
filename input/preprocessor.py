@@ -15,136 +15,6 @@ Array = np.ndarray
 Dataset = tf.data.Dataset
 SequenceExample = tf.train.SequenceExample
 
-
-words = np.array([
-       [1,152339,380947,484432,340375,536702,1,0,0,0,0,0,0,0,0],
-       [1,34756, 224906, 578174, 506596,1,0,0,0,0,0,0,0,0,0],
-       [1,119951,1,562326,490947,305574,359585,453123,444258,1,0,0,0,0,0],
-       [1,570228,548366,507341,361412,220841,474903,319297,334201,258062,380947,396760,559275,508964,1]]
-       )
-
-pos = np.array([
-       [30, 14, 28, 31,  4,  3, 24,  0,  0,  0,  0,  0,  0,  0,  0],
-       [30,  5, 14, 14, 31, 24,  0,  0,  0,  0,  0,  0,  0,  0,  0],
-       [30, 23, 24, 14, 14, 31, 20,  4, 31, 24,  0,  0,  0,  0,  0],
-       [30, 14, 31,  3, 14, 14, 14, 14, 14, 14, 28, 14, 14, 31, 24]])
-
-targets = np.array(
-[[[0, 1],
-  [1, 0],
-  [1, 0],
-  [0, 1],
-  [0, 1],
-  [0, 1],
-  [1, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0]],
- [[0, 1],
-  [0, 1],
-  [0, 1],
-  [0, 1],
-  [1, 0],
-  [0, 1],
-  [0, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0]],
- [[0, 1],
-  [0, 1],
-  [1, 0],
-  [0, 1],
-  [1, 0],
-  [0, 1],
-  [1, 0],
-  [1, 0],
-  [1, 0],
-  [0, 1],
-  [0, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0],
-  [0, 0]],
- [[1, 0],
-  [1, 0],
-  [0, 1],
-  [1, 0],
-  [1, 0],
-  [1, 0],
-  [1, 0],
-  [1, 0],
-  [1, 0],
-  [0, 1],
-  [1, 0],
-  [0, 1],
-  [1, 0],
-  [0, 1],
-  [0, 1]]])
-  
-# To test training with variable shapes.
-words = np.array([
-       [1,152339,380947,484432,340375,536702,1],
-       [1,34756, 224906, 578174, 506596,1],
-       [1,119951,1,562326,490947,305574,359585,453123,444258,1],
-       [1,570228,548366,507341,361412,220841,474903,319297,334201,258062,380947,396760,559275,508964,1]]
-       )
-
-pos = np.array([
-       [30, 14, 28, 31,  4,  3, 24],
-       [30,  5, 14, 14, 31, 24],
-       [30, 23, 24, 14, 14, 31, 20,  4, 31, 24],
-       [30, 14, 31,  3, 14, 14, 14, 14, 14, 14, 28, 14, 14, 31, 24]])
-
-targets = np.array(
-[[[0, 1],
-  [1, 0],
-  [1, 0],
-  [0, 1],
-  [0, 1],
-  [0, 1],
-  [1, 0]],
- [[0, 1],
-  [0, 1],
-  [0, 1],
-  [0, 1],
-  [1, 0],
-  [0, 1]],
- [[0, 1],
-  [0, 1],
-  [1, 0],
-  [0, 1],
-  [1, 0],
-  [0, 1],
-  [1, 0],
-  [1, 0],
-  [1, 0],
-  [0, 1]],
- [[1, 0],
-  [1, 0],
-  [0, 1],
-  [1, 0],
-  [1, 0],
-  [1, 0],
-  [1, 0],
-  [1, 0],
-  [1, 0],
-  [0, 1],
-  [1, 0],
-  [0, 1],
-  [1, 0],
-  [0, 1],
-  [0, 1]]])
-
 class SanityCheck(Enum):
   UNKNOWN = 1
   PASS = 2
@@ -324,7 +194,7 @@ class Preprocessor:
     else:
       raise ValueError("mapping should be a dict or an Embedding instance.")
   
-  def _get_index_mappings_for_features(self, feature_names: List[str]) -> Dict:
+  def get_index_mappings_for_features(self, feature_names: List[str]) -> Dict:
     "Returns a string:index map for a feature based on predefined configs"
     mappings = {}
     if "words" in feature_names:
@@ -356,14 +226,15 @@ class Preprocessor:
       for token in feature.values:
         if not feature.is_label:
           feature_list.feature.add().int64_list.value.append(token)
+        # If the feature is a label feature, here we do a look up and 
+        # find the one hot encoding of the label value in question.
         else:
-          # If the feature is a label feature, here we do a look up and 
-          # find the one hot encoding of the label value in question.
           label = np.array(feature.one_hot[np.where(
-                             feature.one_hot[:, token] == 1)][0])
+                           feature.one_hot[:, token] == 1)][0])
           label = list([int(l) for l in label])
           feature_list.feature.add().int64_list.value.extend(label)
-    # print(example)
+    print(example)
+    input("press to cont.")
     return example
     
   def write_tf_records(self, *, examples: List[SequenceExample], path: str
@@ -374,12 +245,60 @@ class Preprocessor:
     for example in examples:
       writer.write(example.SerializeToString())
     writer.close()
-   
-  def make_dataset_from_tfrecords(self, *,
-                                  batch_size: int = 2,
+
+  
+  def make_dataset_from_treebank(self, *, features:List[str], label=str,
+                                 treebank,
+                                 save_path: str = "./input/test11.tfrecords"):
+    """Saves tfrecords dataset from a treebank based on features."""
+    tf_examples = []
+    feature_mappings = self.get_index_mappings_for_features(features)
+    label_mappings = self.get_index_mappings_for_features([label])
+    sequence_features = {}
+    for feature in features:
+      sequence_features[feature] = SequenceFeature(name=feature)
+    label_dict = LabelReader.get_labels(label).labels
+    label_feature = SequenceFeature(name=label,
+                                    values=list(label_dict.values()),
+                                    n_values=len(list(label_dict)),
+                                    is_label=True, one_hot=True)
+    print(label_feature)
+    sequence_features[label] = label_feature
+    for sentence in treebank.sentence:
+      if "words" in features:
+        word_indices = self.numericalize(
+                          values=[token.word for token in sentence.token],
+                          mapping=feature_mappings["words"]
+                        )
+        print([token.word for token in sentence.token])
+        sequence_features["words"].values = word_indices
+      if "category" in features:
+        cat_indices = prep.numericalize(
+                          values=[token.category for token in sentence.token],
+                          mapping=feature_mappings["category"])
+        sequence_features["category"].values = cat_indices
+      if "pos" in features:
+        pos_indices = prep.numericalize(
+                          values=[token.pos for token in sentence.token],
+                          mapping=feature_mappings["pos"])
+        sequence_features["pos"].values = pos_indices
+      
+      label_indices = prep.numericalize(
+                          values=[token.pos for token in sentence.token],
+                          mapping=label_mappings["pos"])
+      print(label_indices)
+      print(print([token.pos for token in sentence.token]))
+      sequence_features[label].values = label_indices
+      example = self.make_tf_example(features=list(sequence_features.values()))
+      tf_examples.append(example)
+    self.write_tf_records(examples=tf_examples, path=save_path)
+      
+
+  def read_dataset_from_tfrecords(self, *,
+                                  batch_size: int = 4,
                                   features: List[SequenceFeature],
                                   records: str) -> Dataset:
-    """Makes a tensorflow dataset from a saved tfrecords path."""
+    """Reads a tensorflow dataset from a saved tfrecords path."""
     
     _sequence_features = {}
     _dataset_shapes = {}
@@ -407,6 +326,8 @@ class Preprocessor:
     dataset = tf.data.TFRecordDataset([records])
     dataset = dataset.map(_parse_tf_records)    
     dataset = dataset.padded_batch(batch_size, padded_shapes=_dataset_shapes)
+    dataset = dataset.shuffle(buffer_size=20)
+    print(dataset)
     return dataset
     
   def make_dataset_from_generator(self, *, path: str, batch_size: int = 2,
@@ -452,7 +373,7 @@ class Preprocessor:
     trb = reader.ReadTreebankTextProto(path)
     sentences = trb.sentence
     feature_names = [feature.name for feature in features]
-    feature_mappings = self._get_index_mappings_for_features(feature_names)
+    feature_mappings = self.get_index_mappings_for_features(feature_names)
     label_feature = next((f for f in features if f.is_label), None)
     yield_dict = {}
     
@@ -480,112 +401,6 @@ class Preprocessor:
       # print(yield_dict["pos"])
       yield yield_dict
 
-
-
-class BiLSTM:
-  
-  def __init__(self, *, word_embeddings: Embeddings, n_classes):
-    self.word_embeddings_layer = self._set_pretrained_embeddings(word_embeddings)
-    self.loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
-    self.model = self._model(n_classes)
-    self.optimizer = tf.keras.optimizers.Adam(0.001)
-    self.train_metrics = tf.keras.metrics.CategoricalAccuracy()
-    self.val_metrics = tf.keras.metrics.CategoricalAccuracy()
-
-  def _set_pretrained_embeddings(self, embeddings: Embeddings):
-    """Builds a pretrained keras embedding layer from an Embeddings object."""
-    embed = tf.keras.layers.Embedding(embeddings.vocab_size,
-                                      embeddings.embedding_dim,
-                                      weights=[embeddings.index_to_vector],
-                                      trainable=False,
-                                      name="word_embeddings")
-    embed.build((None,))
-    return embed
-  
-  def __str__(self):
-    return str(self.model.summary())
-  
-  def _model(self, n_classes):
-    word_inputs = tf.keras.Input(shape=([None]), name="words")
-    cat_inputs = tf.keras.Input(shape=([None]), name="cat")
-    cat_features = tf.keras.layers.Embedding(32, 32,
-                                             name="cat_embeddings")(cat_inputs)
-    word_features = self.word_embeddings_layer(word_inputs)
-    concat = tf.keras.layers.concatenate([cat_features, word_features])
-    encoded1 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
-                                              units=150,
-                                              return_sequences=True,
-                                              name="encoded"))(concat)
-    encoded1 = tf.keras.layers.Dropout(rate=0.5)(encoded1)                                          
-    encoded2 = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
-                                              units=75,
-                                              return_sequences=True,
-                                              name="encoded"))(encoded1)                                          
-    X = tf.keras.layers.Dense(units=n_classes)(encoded2)
-    # NOTE: as you have from_logits=True in your loss function. You don't use the activation layer.
-    # X = tf.keras.layers.Activation("softmax", name="result")(X)
-    
-    model = tf.keras.Model(inputs=[word_inputs, cat_inputs], outputs=X)
-    tf.keras.utils.plot_model(model, "multi_input_and_output_model.png",
-                              show_shapes=True)
-    
-    # NOTE: You don't compile if you use custom low level training.
-    # model.compile(
-    #  optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001, amsgrad=True),
-    #  loss="categorical_crossentropy",
-    #  metrics=["acc"]
-    #)
-    return model
-  
-  @tf.function
-  def train_step(self, words, cat, y):
-    # print("y shape ", y.shape)
-    # input("press to cont")
-    with tf.GradientTape() as tape:
-      logits = self.model([words, cat], training=True)
-      # print("logits shape ", logits.shape)
-      # input("press to cont")
-      # Send the **LOGITS** to the loss function.
-      loss_value = self.loss_fn(y, logits)
-    grads = tape.gradient(loss_value, self.model.trainable_weights)
-    self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
-    # Update train metrics
-    self.train_metrics.update_state(y, logits)
-    return loss_value
-  
-  @tf.function
-  def test_step(self, x, y):
-    val_logits = self.model(x["words"], x["pos"], training=False)
-    self.val_metrics.update_state(y, val_logits)
-  
-  def train(self, dataset, epochs=40):
-    for epoch in range(epochs):
-      # Reset training metrics at the end of epoch
-      self.train_metrics.reset_states()
-      print("==========================================")
-      logging.info(f"Training epoch {epoch}")
-      start_time = time.time()
-      for step, batch in enumerate(dataset):
-        words = batch["words"]
-        cat = batch["category"]
-        y = batch["pos"]
-        loss_value = self.train_step(words, cat, y)
-        # print(loss_value)
-        
-        # Log
-        # if step % 10 == 0: 
-        #  logging.info(f"Training loss for one batch at step {step} :  {float(loss_value)}")
-      
-      # Display metrics at the end of each epoch
-      train_acc = self.train_metrics.result()
-      logging.info(f"Training accuracy over epoch {train_acc}")
-      
-      
-      # Log the time it takes for one epoch
-      logging.info(f"Time for epoch: {time.time() - start_time}")
-  
-
-      
     
 if __name__ == "__main__":
   
@@ -596,85 +411,15 @@ if __name__ == "__main__":
   # Initialize the preprocessor.
   prep = Preprocessor(word_embeddings=word_embeddings)
   
-  
-  # MAKING DATASET BY SAVING AND READING TFRECORDS.
-  examples = []
-  # Making dataset from tfrecords.
-  pos_mapping = LabelReader.get_labels("pos").labels
-  print(f"pos mapping: {pos_mapping}")
-  cat_mapping = LabelReader.get_labels("category").labels
-  print(f"cat mapping: {cat_mapping}")
+  # Make a dataset and save it
   datapath = "data/UDv23/Turkish/training/treebank_0_3.pbtxt"
   trb = reader.ReadTreebankTextProto(datapath)
+  prep.make_dataset_from_treebank(features=["words", "category"], label="pos",
+                                  treebank=trb)
   
-  # Define features
-  word_feature = SequenceFeature(name="words")
-  cat_feature = SequenceFeature(name="category")
-  pos_tag_indices = list(pos_mapping.values()) 
-  pos_feature = SequenceFeature(name="pos", values=pos_tag_indices,
-                                n_values=len(pos_tag_indices),
-                                is_label=True, one_hot=True)
-  
-  # Make tf examples
-  for sentence in trb.sentence:
-    word_indices = prep.numericalize(values=[token.word for token in sentence.token],
-                                     mapping=prep.word_embeddings
-    )
-    word_feature.values = word_indices
-    cat_indices = prep.numericalize(values=[token.category for token in sentence.token],
-                                    mapping=cat_mapping)
-    cat_feature.values = cat_indices
-    pos_indices = prep.numericalize(values=[token.pos for token in sentence.token],
-                                    mapping=pos_mapping)
-    pos_feature.values = pos_indices
-    example = prep.make_tf_example(features=[word_feature, pos_feature, cat_feature])
-    examples.append(example)
-  
-  
-  # Write examples as tf records.
-  prep.write_tf_records(examples=examples, path="./input/test1.tfrecords")
-  
-  # Make dataset from saved tfrecords
+  # Read dataset from saved tfrecords
   features = [word_feature, pos_feature, cat_feature]
-  dataset = prep.make_dataset_from_tfrecords(features=features,
+  dataset = prep.read_dataset_from_tfrecords(features=features,
                                              records="./input/test1.tfrecords")
   # for batch in dataset:
   #  print(batch)
-  
-  mylstm = BiLSTM(word_embeddings=prep.word_embeddings,
-                  n_classes=pos_feature.n_values)
-  print(mylstm)
-  mylstm.train(dataset)
-
- 
-  """
-  # MAKING DATASET FROM GENERATOR.
-  
-  pos_dict = LabelReader.get_labels("pos").labels
-  pos_tag_indices = list(pos_dict.values()) 
-  pos_feature = SequenceFeature(name="pos", values=pos_tag_indices,
-                                n_values=len(pos_tag_indices),
-                                is_label=True, one_hot=True)
-
-  dataset = prep.make_dataset_from_generator(
-    path="data/UDv23/Turkish/training/treebank_train_0_10.pbtxt",
-    features=[SequenceFeature(name="words"), SequenceFeature(name="category"),
-    pos_feature])
-  # for batch in dataset:
-  #  print(batch)
-  # input("press to cont.")
-  mylstm = BiLSTM(word_embeddings=prep.word_embeddings,
-                  n_classes=pos_feature.n_values)
-  print(mylstm)
-  mylstm.train(dataset)
-  """
-  
-  """
-  # Using model.fit
-  # You can use dataset directly as np.arrays rather than dataset API.
-  # In this case you give the dataset as a dict to the custom training function.
-  # And you modify the training funtion to make sure that it accepts values as dict. 
-  # dataset={"words": words, "pos": pos, "targets": targets}
-  # mylstm.train(dataset)
-  # mylstm.model.fit([words, pos], y=targets, epochs=30)
-  """
