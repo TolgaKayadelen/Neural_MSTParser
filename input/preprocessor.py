@@ -343,8 +343,6 @@ class Preprocessor:
       raise RuntimeError("Semantic role features are not supported yet.")
     return mappings
         
-  # TODO: this needs to be updated to read one hot labels if the 
-  # feature is a label feature.
   def make_tf_example(self, *, features: List[SequenceFeature]
                      ) -> SequenceExample:
     """Creates a tf.train.SequenceExample from a single datapoint.
@@ -356,8 +354,16 @@ class Preprocessor:
     for feature in features:
       feature_list = example.feature_lists.feature_list[feature.name]
       for token in feature.values:
-        feature_list.feature.add().int64_list.value.append(token)
-    
+        if not feature.is_label:
+          feature_list.feature.add().int64_list.value.append(token)
+        else:
+          # If the feature is a label feature, here we do a look up and 
+          # find the one hot encoding of the label value in question.
+          label = np.array(feature.one_hot[np.where(
+                             feature.one_hot[:, token] == 1)][0])
+          label = list([int(l) for l in label])
+          feature_list.feature.add().int64_list.value.extend(label)
+    # print(example)
     return example
     
   def write_tf_records(self, *, examples: List[SequenceExample], path: str
@@ -368,9 +374,7 @@ class Preprocessor:
     for example in examples:
       writer.write(example.SerializeToString())
     writer.close()
-  
-  # TODO: this needs to be udpated to read the feature shapes properly when
-  # the feature is a label   
+   
   def make_dataset_from_tfrecords(self, *,
                                   batch_size: int = 2,
                                   features: List[SequenceFeature],
@@ -382,9 +386,15 @@ class Preprocessor:
     
     # Create a dictionary description of the tensors to parse the features.
     for feature in features:
-      _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature([],
-                         dtype=feature.dtype)
-      _dataset_shapes[feature.name]=tf.TensorShape([None])
+      if not feature.is_label:
+        _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature([],
+                           dtype=feature.dtype)
+        _dataset_shapes[feature.name]=tf.TensorShape([None])
+      else:
+        _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
+                           feature.n_values,
+                           dtype=feature.dtype)
+        _dataset_shapes[feature.name]=tf.TensorShape((None, feature.n_values))
     
     def _parse_tf_records(record):
       """Returns a dictionary of tensors."""
@@ -432,9 +442,8 @@ class Preprocessor:
       output_shapes=_output_shapes
     )
 
-    dataset = dataset.shuffle(buffer_size=20)
     dataset = dataset.padded_batch(batch_size, padded_shapes=_padded_shapes)
-    # dataset = dataset.padded_batch(2, padded_shapes=(_padded_shapes, tf.TensorShape((None,2))))
+    dataset = dataset.shuffle(buffer_size=20)
     print(dataset)
     return dataset
   
@@ -587,7 +596,7 @@ if __name__ == "__main__":
   # Initialize the preprocessor.
   prep = Preprocessor(word_embeddings=word_embeddings)
   
-  """
+  
   # MAKING DATASET BY SAVING AND READING TFRECORDS.
   examples = []
   # Making dataset from tfrecords.
@@ -597,25 +606,47 @@ if __name__ == "__main__":
   print(f"cat mapping: {cat_mapping}")
   datapath = "data/UDv23/Turkish/training/treebank_0_3.pbtxt"
   trb = reader.ReadTreebankTextProto(datapath)
+  
+  # Define features
+  word_feature = SequenceFeature(name="words")
+  cat_feature = SequenceFeature(name="category")
+  pos_tag_indices = list(pos_mapping.values()) 
+  pos_feature = SequenceFeature(name="pos", values=pos_tag_indices,
+                                n_values=len(pos_tag_indices),
+                                is_label=True, one_hot=True)
+  
   # Make tf examples
   for sentence in trb.sentence:
     word_indices = prep.numericalize(values=[token.word for token in sentence.token],
                                      mapping=prep.word_embeddings
     )
-    words = SequenceFeature(name="words", values=word_indices)
+    word_feature.values = word_indices
+    cat_indices = prep.numericalize(values=[token.category for token in sentence.token],
+                                    mapping=cat_mapping)
+    cat_feature.values = cat_indices
     pos_indices = prep.numericalize(values=[token.pos for token in sentence.token],
                                     mapping=pos_mapping)
-    postags = SequenceFeature(name="pos", values=pos_indices)
-    example = prep.make_tf_example(features=[words, postags])
+    pos_feature.values = pos_indices
+    example = prep.make_tf_example(features=[word_feature, pos_feature, cat_feature])
     examples.append(example)
+  
   
   # Write examples as tf records.
   prep.write_tf_records(examples=examples, path="./input/test1.tfrecords")
   
   # Make dataset from saved tfrecords
-  features = [SequenceFeature(name="words"), SequenceFeature(name="pos")]
+  features = [word_feature, pos_feature, cat_feature]
   dataset = prep.make_dataset_from_tfrecords(features=features,
                                              records="./input/test1.tfrecords")
+  # for batch in dataset:
+  #  print(batch)
+  
+  mylstm = BiLSTM(word_embeddings=prep.word_embeddings,
+                  n_classes=pos_feature.n_values)
+  print(mylstm)
+  mylstm.train(dataset)
+
+ 
   """
   # MAKING DATASET FROM GENERATOR.
   
@@ -626,21 +657,24 @@ if __name__ == "__main__":
                                 is_label=True, one_hot=True)
 
   dataset = prep.make_dataset_from_generator(
-    path="data/UDv23/Turkish/training/treebank_0_3.pbtxt",
+    path="data/UDv23/Turkish/training/treebank_train_0_10.pbtxt",
     features=[SequenceFeature(name="words"), SequenceFeature(name="category"),
     pos_feature])
   # for batch in dataset:
   #  print(batch)
+  # input("press to cont.")
   mylstm = BiLSTM(word_embeddings=prep.word_embeddings,
                   n_classes=pos_feature.n_values)
   print(mylstm)
   mylstm.train(dataset)
+  """
   
+  """
+  # Using model.fit
   # You can use dataset directly as np.arrays rather than dataset API.
   # In this case you give the dataset as a dict to the custom training function.
   # And you modify the training funtion to make sure that it accepts values as dict. 
   # dataset={"words": words, "pos": pos, "targets": targets}
   # mylstm.train(dataset)
   # mylstm.model.fit([words, pos], y=targets, epochs=30)
-
-  
+  """
