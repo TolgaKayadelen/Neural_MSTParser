@@ -9,3 +9,14 @@ py_binary(
     "//util:writer",
   ],
 )
+
+# Binaries.
+py_binary(
+	name = "blstm",
+	srcs = ["blstm.py"],
+  deps = [
+    "//input:preprocessor",
+    "//util/nn:nn_utils",
+    "//util:writer",
+  ],
+)
