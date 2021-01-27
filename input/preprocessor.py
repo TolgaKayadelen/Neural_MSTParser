@@ -343,7 +343,8 @@ class Preprocessor:
       raise RuntimeError("Semantic role features are not supported yet.")
     return mappings
         
-    
+  # TODO: this needs to be updated to read one hot labels if the 
+  # feature is a label feature.
   def make_tf_example(self, *, features: List[SequenceFeature]
                      ) -> SequenceExample:
     """Creates a tf.train.SequenceExample from a single datapoint.
@@ -367,7 +368,9 @@ class Preprocessor:
     for example in examples:
       writer.write(example.SerializeToString())
     writer.close()
-    
+  
+  # TODO: this needs to be udpated to read the feature shapes properly when
+  # the feature is a label   
   def make_dataset_from_tfrecords(self, *,
                                   batch_size: int = 2,
                                   features: List[SequenceFeature],
@@ -605,6 +608,7 @@ if __name__ == "__main__":
     postags = SequenceFeature(name="pos", values=pos_indices)
     example = prep.make_tf_example(features=[words, postags])
     examples.append(example)
+  
   # Write examples as tf records.
   prep.write_tf_records(examples=examples, path="./input/test1.tfrecords")
   
