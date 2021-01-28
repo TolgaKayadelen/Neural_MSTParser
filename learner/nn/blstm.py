@@ -186,7 +186,7 @@ def main(args):
     else:
       dataset = prep.make_dataset_from_generator(
         path=os.path.join(_DATA_DIR, args.treebank),
-        batch_size=50, 
+        batch_size=10, 
         features=sequence_features
       )
 
@@ -195,8 +195,8 @@ def main(args):
                  n_output_classes=label_feature.n_values,
                  output_name=args.label)
   print(mylstm)
-  # mylstm.train_custom(dataset, 20)
-  mylstm.train_fit(dataset, 30)
+  mylstm.train_custom(dataset, 20)
+  # mylstm.train_fit(dataset, 30)
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
