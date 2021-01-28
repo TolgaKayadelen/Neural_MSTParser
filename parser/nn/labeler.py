@@ -178,7 +178,8 @@ class Labeler:
         test_sentences, test_labels, predicate_info_test = None, None, None
         
     else:
-      train_sentences, train_labels = self._get_sentences_and_labels(train_data, tagset)
+      train_sentences, train_labels = self._get_sentences_and_labels(
+                                                            train_data, tagset)
       if vld_data:
         vld_sentences, vld_labels = self._get_sentences_and_labels(vld_data, tagset)
       else:
@@ -196,8 +197,8 @@ class Labeler:
     
     # Start training
     # input("Press to start training ..")
-    additional_input={"name": "predicate_info", "data": predicate_info, "shape": (maxlen, 1)} 
-    additional_input_test={"name": "predicate_info", "data": predicate_info_test, "shape": (maxlen, 1)}
+    # additional_input={"name": "predicate_info", "data": predicate_info, "shape": (maxlen, 1)} 
+    # additional_input_test={"name": "predicate_info", "data": predicate_info_test, "shape": (maxlen, 1)}
     learner.train(train_data=train_sentences,
                   train_data_labels=train_labels,
                   label_dict=label_dict,
@@ -207,8 +208,8 @@ class Labeler:
                   vld_data=vld_sentences, 
                   vld_data_labels=vld_labels, 
                   test_data=test_sentences,
-                  additional_input=additional_input,
-                  additional_input_test=additional_input_test
+                  # additional_input=additional_input,
+                  # additional_input_test=additional_input_test
     )
     if save_as:
       print(f"Saving model to {save_as}")

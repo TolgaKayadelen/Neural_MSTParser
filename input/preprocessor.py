@@ -224,17 +224,9 @@ class Preprocessor:
     for feature in features:
       feature_list = example.feature_lists.feature_list[feature.name]
       for token in feature.values:
-        if not feature.is_label:
-          feature_list.feature.add().int64_list.value.append(token)
-        # If the feature is a label feature, here we do a look up and 
-        # find the one hot encoding of the label value in question.
-        else:
-          label = np.array(feature.one_hot[np.where(
-                           feature.one_hot[:, token] == 1)][0])
-          label = list([int(l) for l in label])
-          feature_list.feature.add().int64_list.value.extend(label)
-    print(example)
-    input("press to cont.")
+        feature_list.feature.add().int64_list.value.append(token)
+    # print(example)
+    # input("press to cont.")
     return example
     
   def write_tf_records(self, *, examples: List[SequenceExample], path: str
@@ -249,28 +241,27 @@ class Preprocessor:
   
   def make_dataset_from_treebank(self, *, features:List[str], label=str,
                                  treebank,
-                                 save_path: str = "./input/test11.tfrecords"):
+                                 save_path: str="./input/test50.tfrecords"):
     """Saves tfrecords dataset from a treebank based on features."""
     tf_examples = []
-    feature_mappings = self.get_index_mappings_for_features(features)
-    label_mappings = self.get_index_mappings_for_features([label])
     sequence_features = {}
+    feature_mappings = self.get_index_mappings_for_features(features)
+    
     for feature in features:
-      sequence_features[feature] = SequenceFeature(name=feature)
-    label_dict = LabelReader.get_labels(label).labels
-    label_feature = SequenceFeature(name=label,
-                                    values=list(label_dict.values()),
-                                    n_values=len(list(label_dict)),
-                                    is_label=True, one_hot=True)
-    print(label_feature)
-    sequence_features[label] = label_feature
+      if not feature == label:
+        sequence_features[feature] = SequenceFeature(name=feature)
+      else:
+        sequence_features[feature] = SequenceFeature(name=feature,
+                                                     is_label=True)
+  
+    counter = 0
     for sentence in treebank.sentence:
+      counter += 1
       if "words" in features:
         word_indices = self.numericalize(
                           values=[token.word for token in sentence.token],
                           mapping=feature_mappings["words"]
                         )
-        print([token.word for token in sentence.token])
         sequence_features["words"].values = word_indices
       if "category" in features:
         cat_indices = prep.numericalize(
@@ -282,20 +273,15 @@ class Preprocessor:
                           values=[token.pos for token in sentence.token],
                           mapping=feature_mappings["pos"])
         sequence_features["pos"].values = pos_indices
-      
-      label_indices = prep.numericalize(
-                          values=[token.pos for token in sentence.token],
-                          mapping=label_mappings["pos"])
-      print(label_indices)
-      print(print([token.pos for token in sentence.token]))
-      sequence_features[label].values = label_indices
+
       example = self.make_tf_example(features=list(sequence_features.values()))
       tf_examples.append(example)
+    logging.info(f"Converted {counter} sentences to tf examples.")
     self.write_tf_records(examples=tf_examples, path=save_path)
       
 
   def read_dataset_from_tfrecords(self, *,
-                                  batch_size: int = 4,
+                                  batch_size: int = 10,
                                   features: List[SequenceFeature],
                                   records: str) -> Dataset:
     """Reads a tensorflow dataset from a saved tfrecords path."""
@@ -305,15 +291,10 @@ class Preprocessor:
     
     # Create a dictionary description of the tensors to parse the features.
     for feature in features:
-      if not feature.is_label:
-        _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature([],
-                           dtype=feature.dtype)
-        _dataset_shapes[feature.name]=tf.TensorShape([None])
-      else:
-        _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
-                           feature.n_values,
-                           dtype=feature.dtype)
-        _dataset_shapes[feature.name]=tf.TensorShape((None, feature.n_values))
+      _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature([],
+                                                dtype=feature.dtype)
+      _dataset_shapes[feature.name]=tf.TensorShape([None])
+
     
     def _parse_tf_records(record):
       """Returns a dictionary of tensors."""
@@ -326,11 +307,9 @@ class Preprocessor:
     dataset = tf.data.TFRecordDataset([records])
     dataset = dataset.map(_parse_tf_records)    
     dataset = dataset.padded_batch(batch_size, padded_shapes=_dataset_shapes)
-    dataset = dataset.shuffle(buffer_size=20)
-    print(dataset)
     return dataset
     
-  def make_dataset_from_generator(self, *, path: str, batch_size: int = 2,
+  def make_dataset_from_generator(self, *, path: str, batch_size: int=50,
                                   features=List[SequenceFeature],
                                   generator: Generator=None) -> Dataset:
     """Makes a tensorflow dataset that is shuffled, batched and padded.
@@ -348,14 +327,8 @@ class Preprocessor:
     
     for feature in features:
       _output_types[feature.name]=feature.dtype
-      
-      if feature.is_label:
-        _output_shapes[feature.name]=(None, feature.n_values)
-        _padded_shapes[feature.name]=tf.TensorShape((None, feature.n_values))
-      else:
-        _output_shapes[feature.name]=[None]
-        _padded_shapes[feature.name]=tf.TensorShape([None])
-
+      _output_shapes[feature.name]=[None]
+      _padded_shapes[feature.name]=tf.TensorShape([None])
     
     dataset = tf.data.Dataset.from_generator(
       generator,
@@ -364,8 +337,8 @@ class Preprocessor:
     )
 
     dataset = dataset.padded_batch(batch_size, padded_shapes=_padded_shapes)
-    dataset = dataset.shuffle(buffer_size=20)
-    print(dataset)
+    dataset = dataset.shuffle(buffer_size=100)
+
     return dataset
   
 
@@ -374,7 +347,7 @@ class Preprocessor:
     sentences = trb.sentence
     feature_names = [feature.name for feature in features]
     feature_mappings = self.get_index_mappings_for_features(feature_names)
-    label_feature = next((f for f in features if f.is_label), None)
+    # label_feature = next((f for f in features if f.is_label), None)
     yield_dict = {}
     
     for sentence in sentences:
@@ -391,14 +364,6 @@ class Preprocessor:
           yield_dict[feature_name] = self.numericalize(
             values=[token.category for token in sentence.token],
             mapping=feature_mappings["category"])
-      # print(yield_dict["pos"])
-      for k in yield_dict:
-        if k == label_feature.name:
-          labels = np.array([label_feature.one_hot[np.where(
-            label_feature.one_hot[:, item] == 1)][0] for item in yield_dict[k]])
-          yield_dict[k] = labels
-          break
-      # print(yield_dict["pos"])
       yield yield_dict
 
     
@@ -412,14 +377,15 @@ if __name__ == "__main__":
   prep = Preprocessor(word_embeddings=word_embeddings)
   
   # Make a dataset and save it
-  datapath = "data/UDv23/Turkish/training/treebank_0_3.pbtxt"
+  datapath = "data/UDv23/Turkish/training/treebank_train_0_50.pbtxt"
   trb = reader.ReadTreebankTextProto(datapath)
-  prep.make_dataset_from_treebank(features=["words", "category"], label="pos",
-                                  treebank=trb)
+  prep.make_dataset_from_treebank(features=["words", "pos"], label="pos",
+                                  treebank=trb,
+                                  save_path="./input/test50.tfrecords")
   
   # Read dataset from saved tfrecords
-  features = [word_feature, pos_feature, cat_feature]
-  dataset = prep.read_dataset_from_tfrecords(features=features,
-                                             records="./input/test1.tfrecords")
+  # features = [word_feature, pos_feature, cat_feature]
+  # dataset = prep.read_dataset_from_tfrecords(features=features,
+  #                                           records="./input/test1.tfrecords")
   # for batch in dataset:
   #  print(batch)

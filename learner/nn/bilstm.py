@@ -5,13 +5,13 @@ import tensorflow as tf
 import numpy as np
 import argparse
 
-from input import preprocessor
 from util import writer
 from util.nn import nn_utils
 
 import logging
-logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
+logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
+np.set_printoptions(threshold=np.inf)
 
 class BiLSTM:
   """A BiLSTM model for sequence labeling."""
@@ -20,14 +20,14 @@ class BiLSTM:
    
   # TODO: revise (also rename to embedding_layer (drop pretrained.))
   def pretrained_embeddings_layer(self, word2vec, words_to_index, embedding_dim):
-    """Creates an embedding layer for the Neural Net and feeds a pretrained word2vec model into it.
+    """Creates an embedding layer feeds a pretrained word2vec model into it.
     
     Args:
       word2vec: a pretrained word embeddings model.
       word_to_index: dictionary where keys are words and values are indices.
       embedding_dim: dimension of the embedding vector.
     Returns:
-      embedding_layer: A pretrained Keras Embedding() layer with weights set as word2vec weights.
+      embedding_layer: A pretrained Keras Embedding() layer.
     """
     # word2vec_bin = 'tr-word2vec-model_v3.bin' 
     #word2vec = gensim.models.Word2Vec.load(word2vec_bin)
@@ -69,6 +69,8 @@ class BiLSTM:
                                                 trainable=False)
     
     embedding_layer.build((None,))
+    # print(embedding_matrix[493047])
+    # input("press to cont.")
     embedding_layer.set_weights([embedding_matrix])
     
     return embedding_layer
@@ -107,21 +109,23 @@ class BiLSTM:
   def index_sentences(self, sentences, word_indices, maxlen):
     """Indexes all the words in a set of sentences. 
     
-    The indexing is made based on the word_indices dictioanary that is obtained from the
-    word embedding model. 
+    The indexing is made based on the word_indices dictioanary that is obtained 
+    from the word embedding model. 
     
     The output shape should be such that it can given to an Embedding() layer. 
     
     Args:
-      sentences: list of lists, where each list is a list of words representing a sentence.
+      sentences: list of lists, each list is a list of words representing 
+        a sentence.
       word_indices: dictionary containing each word mapped to an index.
       maxlen: scalar, maximum number of words in a sentence.
     
     Returns:
-      sentence_indices: array of indices corresponding of each word in each sentence
-        of shape (m, maxlen)
+      sentence_indices: array of indices corresponding of each word in each
+         sentence of shape (m, maxlen)
     
-    Sentences which have shorter than maxlen words are padded with 0s on the right.
+    Sentences which have shorter than maxlen words are padded with 0s
+      on the right.
     """
     m = len(sentences)
     sentence_indices = np.zeros(shape=(m, maxlen))
@@ -138,8 +142,6 @@ class BiLSTM:
     
     return sentence_indices
     
-  # TODO: will need to use preprocessor.make_dataset to index the labels as well.
-  # The target indices will have to be converted to one_hot_vectors.
   def index_labels(self, labels, label_dict, n_sentences, maxlen=None, pad=True):
     """Gets a sequence of labels and converts them into a sequence of indices."""
     
@@ -151,7 +153,8 @@ class BiLSTM:
   
       if pad and maxlen:
         pad_value = maxlen - len(indexed)
-        padded = np.pad(indexed, (0, pad_value), "constant", constant_values=(label_dict["-pad-"]))
+        padded = np.pad(indexed, (0, pad_value), "constant",
+                        constant_values=(label_dict["-pad-"]))
         return padded
       return indexed
   
@@ -184,7 +187,8 @@ class BiLSTM:
     # Define sentence_indices as the Input to the graph. It has dtype=int32
     # because it contains indices for each word in the sentence, which are
     # integers. This will be of shape (batch_size, maxlen)
-    sentence_indices = tf.keras.layers.Input(shape=input_shape, dtype="int32", name="sentences")
+    sentence_indices = tf.keras.layers.Input(shape=input_shape, dtype="int32",
+                                             name="sentences")
     print(f"sentence input shape: {sentence_indices.shape}")
 
     if additional_input:
@@ -273,14 +277,15 @@ class BiLSTM:
       # returns a numpy array of (m, maxlen), which is then the main input
       # to the model.
       train_sentences = self.index_sentences(train_data, words_to_index, maxlen)
-      
+            
       # ---- PREPARE THE LABELS --------
       self.label_dict = label_dict
       self.reverse_label_dict = {v:k for k,v in label_dict.items()}
       
       # Indexes the training labels. This returns a 3-D array of (m, maxlen, n_labels)
       # maxlen is the sequence length, and n_labels is the total number of labels.
-      train_labels = self.index_labels(train_data_labels, label_dict, len(train_data), maxlen)
+      train_labels = self.index_labels(train_data_labels, label_dict,
+                                       len(train_data), maxlen)
       logging.info(f"shape of the output {train_labels.shape}")
       
       
@@ -307,11 +312,13 @@ class BiLSTM:
       # ------ TRAIN THE MODEL ------
       if vld_data and vld_data_labels:
         vld_sentences = self.index_sentences(vld_data, words_to_index, maxlen)
-        vld_labels=self.index_labels(vld_data_labels, label_dict, len(vld_data), maxlen)
+        vld_labels=self.index_labels(vld_data_labels, label_dict, len(vld_data),
+                                     maxlen)
         if additional_input_vld:
           self.model.fit(
             {"sentences": train_sentences,
-              additional_input["name"]: np.array(additional_input["data"]).reshape(batch_size,maxlen,1)
+              additional_input["name"]: np.array(
+              additional_input["data"]).reshape(batch_size,maxlen,1)
             },
             y=train_labels,
             validation_data=(vld_sentences, vld_labels),
@@ -328,7 +335,8 @@ class BiLSTM:
         if additional_input:
           self.model.fit(
             {"sentences": train_sentences,
-            additional_input["name"]: np.array(additional_input["data"]).reshape(batch_size,maxlen,1)
+            additional_input["name"]: np.array(
+            additional_input["data"]).reshape(batch_size,maxlen,1)
             },
             y=train_labels,
             epochs=epochs,
@@ -382,7 +390,8 @@ class BiLSTM:
     for i, prediction in enumerate(predictions):
       for j, token_prediction in enumerate(prediction):
         if j < len(sentences[i]):
-          print(sentences[i][j], " : ", reverse_tagset[np.argmax(token_prediction)])
+          print(sentences[i][j], " : ", reverse_tagset[np.argmax(
+                                                        token_prediction)])
       print("----")
   
   def save(self, filename):
@@ -399,8 +408,10 @@ class BiLSTM:
     with open(output, "w") as json_file:
       json_file.write(model_json)
     self.model.save_weights(os.path.join(model_dir, 
-                                        "{}.h5".format(filename.strip(".json"))))
-    logging.info(f"Saved model weights to {model_dir}/{filename.strip('.json')}.h5")
+                                        "{}.h5".format(
+                                        filename.strip(".json"))))
+    logging.info(f"""
+      Saved model weights to {model_dir}/{filename.strip('.json')}.h5""")
   
   def load(self, filename):
     """Load a pretrained lstm model.
@@ -413,10 +424,12 @@ class BiLSTM:
       filename += ".json"
     with open(os.path.join(model_dir, filename), "r") as json_file:
       loaded_model = tf.keras.models.model_from_json(json_file.read())
-      loaded_model.load_weights(os.path.join(model_dir,
-                                             "{}.h5".format(filename.strip(".json"))))
+      loaded_model.load_weights(os.path.join(
+                                  model_dir,
+                                  "{}.h5".format(filename.strip(".json"))))
     print(f"Loaded model from {model_dir}/{filename}")
-    loaded_model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+    loaded_model.compile(loss="categorical_crossentropy", optimizer="adam",
+                         metrics=["accuracy"])
     self.model = loaded_model
     print(self.model.summary())
       
