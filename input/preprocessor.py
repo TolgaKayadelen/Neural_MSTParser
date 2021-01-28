@@ -181,8 +181,8 @@ class Preprocessor:
   def numericalize(self, *, values: List[str],
                    mapping: Union[Dict, Embeddings]) -> List[int]:
     """Returns numeric values (integers) for features based on a mapping."""
+    indices = []
     if isinstance(mapping, Embeddings):
-      indices = []
       for value in values:
         try:
           indices.append(mapping.stoi(token=value))
@@ -190,7 +190,13 @@ class Preprocessor:
           indices.append(mapping.stoi(token="-oov-"))
       return indices
     elif isinstance(mapping, dict):
-      return [mapping[value] for value in values]
+      for value in values:
+        try:
+          indices.append(mapping[value])
+        except KeyError:
+          logging.warning(f"Key error for value {value}")
+          input("press to cont.")
+      return indices
     else:
       raise ValueError("mapping should be a dict or an Embedding instance.")
   
@@ -209,6 +215,10 @@ class Preprocessor:
       mappings["pos"] = LabelReader.get_labels("pos").labels
     if "category" in feature_names:
       mappings["category"] = LabelReader.get_labels("category").labels
+    if "dep_labels" in feature_names:
+      mappings["dep_labels"] = LabelReader.get_labels("dep_labels").labels
+      # print(mappings["dep_labels"])
+      # input("press to cont.")
     if "srl" in feature_names:
       raise RuntimeError("Semantic role features are not supported yet.")
     return mappings
@@ -241,7 +251,7 @@ class Preprocessor:
   
   def make_dataset_from_treebank(self, *, features:List[str], label=str,
                                  treebank,
-                                 save_path: str="./input/test50.tfrecords"):
+                                 save_path: str):
     """Saves tfrecords dataset from a treebank based on features."""
     tf_examples = []
     sequence_features = {}
@@ -273,6 +283,13 @@ class Preprocessor:
                           values=[token.pos for token in sentence.token],
                           mapping=feature_mappings["pos"])
         sequence_features["pos"].values = pos_indices
+      if "dep_labels" in features:
+        sentence.token[0].label = "TOP" # workaround key errors
+        dep_indices = prep.numericalize(
+                          values=[token.label for token in sentence.token],
+                          mapping=feature_mappings["dep_labels"]
+        )
+        sequence_features["dep_labels"].values = dep_indices
 
       example = self.make_tf_example(features=list(sequence_features.values()))
       tf_examples.append(example)
@@ -346,6 +363,8 @@ class Preprocessor:
     trb = reader.ReadTreebankTextProto(path)
     sentences = trb.sentence
     feature_names = [feature.name for feature in features]
+    # print(feature_names)
+    # input("press to cont.")
     feature_mappings = self.get_index_mappings_for_features(feature_names)
     # label_feature = next((f for f in features if f.is_label), None)
     yield_dict = {}
@@ -364,6 +383,11 @@ class Preprocessor:
           yield_dict[feature_name] = self.numericalize(
             values=[token.category for token in sentence.token],
             mapping=feature_mappings["category"])
+        if feature_name == "dep_labels":
+          sentence.token[0].label = "TOP" # workaround key errors
+          yield_dict[feature_name] = self.numericalize(
+            values=[token.label for token in sentence.token],
+            mapping=feature_mappings["dep_labels"])
       yield yield_dict
 
     
@@ -379,9 +403,10 @@ if __name__ == "__main__":
   # Make a dataset and save it
   datapath = "data/UDv23/Turkish/training/treebank_train_0_50.pbtxt"
   trb = reader.ReadTreebankTextProto(datapath)
-  prep.make_dataset_from_treebank(features=["words", "pos"], label="pos",
+  prep.make_dataset_from_treebank(features=["words", "pos", "dep_labels"],
+                                  label="dep_labels",
                                   treebank=trb,
-                                  save_path="./input/test50.tfrecords")
+                                  save_path="./input/test501.tfrecords")
   
   # Read dataset from saved tfrecords
   # features = [word_feature, pos_feature, cat_feature]

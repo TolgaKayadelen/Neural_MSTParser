@@ -50,17 +50,20 @@ class BLSTM:
     embed.set_weights([embeddings.index_to_vector])
     return embed
   
-  def _plot(self, name="multi_input_and_output_model.png"):
+  def plot(self, name="multi_input_and_output_model.png"):
     tf.keras.utils.plot_model(self.model, name, show_shapes=True)
   
   def _create_uncompiled_model(self, n_classes, output_name) -> tf.keras.Model:
     word_inputs = tf.keras.Input(shape=(None,), name="words")
-    # cat_inputs = tf.keras.Input(shape=([None]), name="cat")
-    # cat_features = layers.Embedding(32, 32, name="cat_embeddings")(cat_inputs)
     word_features = self.word_embeddings_layer(word_inputs)
-    # concat = layers.concatenate([cat_features, word_features])
+    pos_inputs = tf.keras.Input(shape=([None]), name="pos")
+    pos_features = tf.keras.layers.Embedding(input_dim=35,
+                                             output_dim=32,
+                                             name="pos_embeddings")(pos_inputs)
+    concat = tf.keras.layers.concatenate([word_features, pos_features],
+                                         name="concat")
     X = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(units=128,
-      return_sequences=True, name="encoded"))(word_features)
+      return_sequences=True, name="encoded1"))(concat)
     X = tf.keras.layers.Dropout(rate=0.5)(X)
     X = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(units=128,
                                          return_sequences=True,
@@ -70,8 +73,9 @@ class BLSTM:
                                          return_sequences=True,
                                          name="encoded3"))(X)
     X = tf.keras.layers.Dense(units=n_classes, name=output_name)(X)
-    # X = tf.keras.layers.Activation("softmax")(X)
-    model = tf.keras.Model(inputs={"words": word_inputs}, outputs=X)
+    X = tf.keras.layers.Activation("softmax")(X)
+    model = tf.keras.Model(inputs={"words": word_inputs, "pos": pos_inputs},
+                                   outputs=X)
     return model
   
   def _get_compiled_model(self, optimizer=optimizers.Adam(0.01),
@@ -84,9 +88,9 @@ class BLSTM:
                        metrics=metrics)
   
   @tf.function
-  def train_step(self, words: tf.Tensor, y:tf.Tensor):
+  def train_step(self, words: tf.Tensor, pos: tf.Tensor, y:tf.Tensor):
     with tf.GradientTape() as tape:
-      logits = self.model({"words": words}, training=True)
+      logits = self.model({"words": words, "pos": pos}, training=True)
       # Send the **LOGITS** to the loss function.
       loss_value = self.loss_fn(y, logits)
     grads = tape.gradient(loss_value, self.model.trainable_weights)
@@ -104,6 +108,7 @@ class BLSTM:
   # to the same value for this method to work.
   def train_fit(self, dataset, epochs=30):
     """Training using model.fit"""
+    logging.info("Using built in train method")
     if not self._compiled:
       self._get_compiled_model()
     self.model.compile(optimizer="adam", loss="categorical_crossentropy",
@@ -113,15 +118,17 @@ class BLSTM:
       counter += 1
       words = batch["words"]
       pos = batch["pos"]
+      dep = batch["dep_labels"]
       if counter > 1:
         raise RuntimeError(
            "Cannot have more than one batch if using model.fit")
     # print(words)
     # print(pos)
-    labels = tf.one_hot(pos, self._n_output_classes)
+    labels = tf.one_hot(dep, self._n_output_classes)
     # print(labels)
     # input("press to cont")
-    self.model.fit(x={"words":words}, y=labels, batch_size=10, epochs=epochs)
+    self.model.fit(x={"words":words, "pos": pos},
+                   y=labels, batch_size=10, validation_split=0.1, epochs=epochs)
     
     """
     words = tf.concat(words, 0)
@@ -137,6 +144,7 @@ class BLSTM:
     
   def train_custom(self, dataset: Dataset, epochs: int=10):
     """Custom training method."""
+    logging.info("Using custom training method.")
     for epoch in range(epochs):
       # Reset training metrics at the end of each epoch
       self.train_metrics.reset_states()
@@ -144,9 +152,9 @@ class BLSTM:
       start_time = time.time()
       for step, batch in enumerate(dataset):
         words = batch["words"]
-        # cat = batch["category"]
-        y = tf.one_hot(batch["pos"], self._n_output_classes)
-        loss_value = self.train_step(words, y)
+        pos = batch["pos"]
+        y = tf.one_hot(batch["dep_labels"], self._n_output_classes)
+        loss_value = self.train_step(words, pos, y)
       # Display metrics at the end of each epoch
       train_acc = self.train_metrics.result()
       logging.info(f"Training accuracy: {train_acc}")
@@ -180,23 +188,26 @@ def main(args):
     
     if args.dataset:
       dataset = prep.read_dataset_from_tfrecords(
-                                 batch_size=10,
+                                 batch_size=50,
                                  features=sequence_features,
-                                 records="./input/test50.tfrecords")
+                                 records="./input/test501.tfrecords")
     else:
       dataset = prep.make_dataset_from_generator(
         path=os.path.join(_DATA_DIR, args.treebank),
         batch_size=10, 
         features=sequence_features
       )
-
+  # for batch in dataset:
+  #   print(batch)
+  #  input("press to cont.")
   label_feature = next((f for f in sequence_features if f.is_label), None)
   mylstm = BLSTM(word_embeddings=prep.word_embeddings,
                  n_output_classes=label_feature.n_values,
                  output_name=args.label)
   print(mylstm)
-  mylstm.train_custom(dataset, 20)
-  # mylstm.train_fit(dataset, 30)
+  mylstm.plot()
+  # mylstm.train_custom(dataset, 30)
+  mylstm.train_fit(dataset, 30)
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
@@ -206,9 +217,10 @@ if __name__ == "__main__":
                       default="treebank_train_0_50.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
-  parser.add_argument("--features", type=list, default=["words", "pos"],
+  parser.add_argument("--features", type=list,
+                      default=["words", "pos", "dep_labels"],
                       help="features to use to train the model.")
-  parser.add_argument("--label", type=str, default="pos",
+  parser.add_argument("--label", type=str, default="dep_labels",
                       help="labels to predict.")
   args = parser.parse_args()
   main(args)
