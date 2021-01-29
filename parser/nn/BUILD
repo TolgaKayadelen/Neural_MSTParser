@@ -9,6 +9,17 @@ py_binary(
 	],
 )
 
+# Binaries.
+py_binary(
+	name = "biaffine_parser",
+	srcs = ["biaffine_parser.py"],
+  deps = [
+    "//input:preprocessor",
+    "//util/nn:nn_utils",
+    "//util:writer",
+  ],
+)
+
 # Libraries
 py_library(
 	name = "labeler_lib",

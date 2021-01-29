@@ -203,6 +203,8 @@ class Preprocessor:
   def get_index_mappings_for_features(self, feature_names: List[str]) -> Dict:
     "Returns a string:index map for a feature based on predefined configs"
     mappings = {}
+    if "heads" in feature_names:
+      logging.debug("No mappings for head feature.")
     if "words" in feature_names:
       if self.word_embeddings:
         mappings["words"] = self.word_embeddings
@@ -373,21 +375,25 @@ class Preprocessor:
       for feature_name in feature_names:
         if feature_name == "words":
           yield_dict[feature_name] = self.numericalize(
-            values=[token.word for token in sentence.token],
+            values=[token.word for token in sentence.token[1:]],
             mapping=feature_mappings["words"])
         if feature_name == "pos":
           yield_dict[feature_name] = self.numericalize(
-            values=[token.pos for token in sentence.token],
+            values=[token.pos for token in sentence.token[1:]],
             mapping=feature_mappings["pos"])
         if feature_name == "category":
           yield_dict[feature_name] = self.numericalize(
-            values=[token.category for token in sentence.token],
+            values=[token.category for token in sentence.token[1:]],
             mapping=feature_mappings["category"])
         if feature_name == "dep_labels":
           sentence.token[0].label = "TOP" # workaround key errors
           yield_dict[feature_name] = self.numericalize(
-            values=[token.label for token in sentence.token],
+            values=[token.label for token in sentence.token[1:]],
             mapping=feature_mappings["dep_labels"])
+        if feature_name == "heads":
+          yield_dict[feature_name] = [
+            token.selected_head.address for token in sentence.token[1:]
+          ]
       yield yield_dict
 
     
@@ -403,10 +409,11 @@ if __name__ == "__main__":
   # Make a dataset and save it
   datapath = "data/UDv23/Turkish/training/treebank_train_0_50.pbtxt"
   trb = reader.ReadTreebankTextProto(datapath)
-  prep.make_dataset_from_treebank(features=["words", "pos", "dep_labels"],
-                                  label="dep_labels",
-                                  treebank=trb,
-                                  save_path="./input/test501.tfrecords")
+  prep.make_dataset_from_treebank(
+            features=["words", "pos", "dep_labels",  "heads"],
+            label="heads",
+            treebank=trb,
+            save_path="./input/test501.tfrecords")
   
   # Read dataset from saved tfrecords
   # features = [word_feature, pos_feature, cat_feature]
