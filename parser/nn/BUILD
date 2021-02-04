@@ -20,6 +20,17 @@ py_binary(
   ],
 )
 
+# Binaries.
+py_binary(
+	name = "joint_biaffine_parser",
+	srcs = ["joint_biaffine_parser.py"],
+  deps = [
+    "//input:preprocessor",
+    "//util/nn:nn_utils",
+    "//util:writer",
+  ],
+)
+
 # Libraries
 py_library(
 	name = "labeler_lib",

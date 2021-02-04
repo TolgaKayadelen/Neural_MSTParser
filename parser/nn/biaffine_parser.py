@@ -9,6 +9,7 @@ from input import preprocessor
 from tagset.reader import LabelReader
 from util.nn import nn_utils
 import collections
+import matplotlib.pyplot as plt
 
 import logging
 
@@ -121,7 +122,7 @@ class NeuralMSTParser:
 
   def train_custom(self, dataset: Dataset, epochs: int=10):
     """Custom training method."""
-    history = collections.DefaultDict(list)
+    history = collections.defaultdict(list)
     for epoch in range(epochs):
       self.train_metrics.reset_states()
       logging.info(f"*********** Training epoch: {epoch} ***********\n")
@@ -147,6 +148,7 @@ class NeuralMSTParser:
       logging.info(f"Loss : {l}")
       # Log the time it takes for one epoch
       logging.info(f"Time for epoch: {time.time() - start_time}\n")
+    return history
 
 
 # TODO: the set up of the features should be done by the preprocessor class.
@@ -169,6 +171,16 @@ def _set_up_features(features: List[str], label=str) -> List[SequenceFeature]:
   return sequence_features
 
 
+def plot(epochs, arc_scores, model_name):
+  fig = plt.figure()
+  ax = plt.axes()
+  ax.plot(epochs,arc_scores, "-g", label="arcs", color="blue")
+  plt.title("Performance on training data")
+  plt.xlabel("epochs")
+  plt.ylabel("accuracy")
+  plt.legend()
+  plt.savefig(f"{model_name}_plot")
+
 def main(args):
   if args.train:
     embeddings = nn_utils.load_embeddings()
@@ -188,28 +200,18 @@ def main(args):
         batch_size=10, 
         features=sequence_features
       )
-  # for batch in dataset:
-  #  print(batch)
-  #  input("press to cont.")
+
   parser = NeuralMSTParser(word_embeddings=prep.word_embeddings)
   print(parser)
   parser.plot()
-  parser.train_custom(dataset, 2)
-    
-  """
-  label_feature = next((f for f in sequence_features if f.is_label), None)
-  mylstm = BLSTM(word_embeddings=prep.word_embeddings,
-                 n_output_classes=label_feature.n_values,
-                 output_name=args.label)
-  print(mylstm)
-  mylstm.plot()
-  # mylstm.train_custom(dataset, 30)
-  mylstm.train_fit(dataset, 30)
-  """
+  scores = parser.train_custom(dataset, args.epochs)
+  plot(np.arange(args.epochs), scores["uas"], "biaffine")
     
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   parser.add_argument("--train", type=bool, default=False,
+                      help="Trains a new model.")
+  parser.add_argument("--epochs", type=int, default=2,
                       help="Trains a new model.")
   parser.add_argument("--treebank", type=str,
                       default="treebank_train_0_50.pbtxt")

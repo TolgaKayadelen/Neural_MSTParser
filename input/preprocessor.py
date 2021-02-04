@@ -189,13 +189,26 @@ class Preprocessor:
         except KeyError:
           indices.append(mapping.stoi(token="-oov-"))
       return indices
+    # TODO: sort out these wrongly annotated values in the data.
     elif isinstance(mapping, dict):
       for value in values:
         try:
           indices.append(mapping[value])
-        except KeyError:
-          logging.warning(f"Key error for value {value}")
-          input("press to cont.")
+        except KeyError:   
+          if value == "Postp":
+            value = "PostP"
+            indices.append(mapping[value])
+          elif value == "Advmod":
+            try: 
+              indices.append(mapping[value])
+            except:
+              indices.append(mapping["-pad-"])
+          elif value == "A3pl":
+            value = "Zero"
+            indices.append(mapping[value])
+          else:
+            logging.warning(f"Key error for value {value}")
+            indices.append(mapping["-pad-"])
       return indices
     else:
       raise ValueError("mapping should be a dict or an Embedding instance.")
@@ -356,7 +369,7 @@ class Preprocessor:
     )
 
     dataset = dataset.padded_batch(batch_size, padded_shapes=_padded_shapes)
-    dataset = dataset.shuffle(buffer_size=100)
+    dataset = dataset.shuffle(buffer_size=500)
 
     return dataset
   
@@ -364,6 +377,7 @@ class Preprocessor:
   def _example_generator(self, path: str, features:List[SequenceFeature]):
     trb = reader.ReadTreebankTextProto(path)
     sentences = trb.sentence
+    print(f"Total sentences {len(sentences)}")
     feature_names = [feature.name for feature in features]
     # print(feature_names)
     # input("press to cont.")
