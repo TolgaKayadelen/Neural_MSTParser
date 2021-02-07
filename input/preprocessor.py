@@ -264,7 +264,7 @@ class Preprocessor:
     writer.close()
 
   
-  def make_dataset_from_treebank(self, *, features:List[str], label=str,
+  def make_dataset_from_treebank(self, *, features:List[str], label: str,
                                  treebank,
                                  save_path: str):
     """Saves tfrecords dataset from a treebank based on features."""
@@ -342,7 +342,7 @@ class Preprocessor:
     return dataset
     
   def make_dataset_from_generator(self, *, path: str, batch_size: int=50,
-                                  features=List[SequenceFeature],
+                                  features: List[SequenceFeature],
                                   generator: Generator=None) -> Dataset:
     """Makes a tensorflow dataset that is shuffled, batched and padded.
     Args:
@@ -356,11 +356,14 @@ class Preprocessor:
     _output_types={}
     _output_shapes={}
     _padded_shapes={}
+    _padding_values={}
     
     for feature in features:
       _output_types[feature.name]=feature.dtype
       _output_shapes[feature.name]=[None]
       _padded_shapes[feature.name]=tf.TensorShape([None])
+      _padding_values[feature.name] = tf.constant(0, dtype=tf.int64)
+        
     
     dataset = tf.data.Dataset.from_generator(
       generator,
@@ -368,13 +371,14 @@ class Preprocessor:
       output_shapes=_output_shapes
     )
 
-    dataset = dataset.padded_batch(batch_size, padded_shapes=_padded_shapes)
+    dataset = dataset.padded_batch(batch_size, padded_shapes=_padded_shapes,
+                                   padding_values=_padding_values)
     dataset = dataset.shuffle(buffer_size=500)
 
     return dataset
   
 
-  def _example_generator(self, path: str, features:List[SequenceFeature]):
+  def _example_generator(self, path: str, features: List[SequenceFeature]):
     trb = reader.ReadTreebankTextProto(path)
     sentences = trb.sentence
     print(f"Total sentences {len(sentences)}")

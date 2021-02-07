@@ -4,7 +4,7 @@ import argparse
 import os
 import time
 from tensorflow.keras import layers, metrics, losses, optimizers
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from input import preprocessor
 from tagset.reader import LabelReader
 from util.nn import nn_utils
@@ -29,7 +29,8 @@ class NeuralMSTParser:
   
   def __init__(self, *, word_embeddings: Embeddings):
     self.word_embeddings = self._set_pretrained_embeddings(word_embeddings)
-    self.loss_fn = losses.SparseCategoricalCrossentropy(from_logits=True)
+    self.loss_fn = losses.SparseCategoricalCrossentropy(
+      from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
     self.optimizer=tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
     self.train_metrics = metrics.SparseCategoricalAccuracy()
     self.model = self._create_uncompiled_model()
@@ -93,32 +94,44 @@ class NeuralMSTParser:
     return model
   
   @tf.function
-  def compute_loss(self, edge_scores, heads):
+  def compute_loss(self, edge_scores, heads, pad_mask):
     n_sentences, n_words, _ = edge_scores.shape
     edge_scores = tf.reshape(edge_scores, shape=(n_sentences*n_words, n_words))
     heads = tf.reshape(heads, shape=(n_sentences*n_words, 1))
+    pad_mask = tf.reshape(pad_mask, shape=(n_sentences*n_words, 1))
+    
     predictions = tf.argmax(edge_scores, 1)
-    loss_value = self.loss_fn(heads, edge_scores)
-    return loss_value, predictions, heads
+    predictions = tf.reshape(predictions, shape=(predictions.shape[0], 1))
+    
+    # Compute losses with and without pad
+    loss_with_pad = self.loss_fn(heads, edge_scores)
+    loss_with_pad = tf.reshape(loss_with_pad, shape=(loss_with_pad.shape[0], 1))
+    loss_without_pad = tf.boolean_mask(loss_with_pad, pad_mask)
+    
+    return loss_with_pad, loss_without_pad, predictions, heads, pad_mask
   
   
   @tf.function
-  def train_step(self, words: tf.Tensor, pos: tf.Tensor, heads:tf.Tensor):
+  def train_step(self, *, words: tf.Tensor, pos: tf.Tensor, heads:tf.Tensor
+                 ) -> Tuple[tf.Tensor, tf.Tensor, tf.Tensor, tf.Tensor]:
     with tf.GradientTape() as tape:
       edge_scores = self.model({"words": words, "pos": pos}, training=True)
-      loss_value, predictions, h = self.compute_loss(edge_scores, heads)
-      # n_sentences, n_words, _ = edge_scores.shape
-      # edge_scores = tf.reshape(edge_scores, shape=(n_sentences*n_words, n_words))
-      # heads = tf.reshape(heads, shape=(n_sentences*n_words, 1))
-      # print(edge_scores)
-      # print(heads)
-      # input("press to cont")
-      # loss_value = self.loss_fn(heads, edge_scores)
-    grads = tape.gradient(loss_value, self.model.trainable_weights)
+      pad_mask = (words != 0)
+      loss_with_pad, loss_without_pad, predictions, h, pad_mask = self.compute_loss(
+        edge_scores, heads, pad_mask)
+    
+    # Even though we compute the loss with and without padding, we optimize
+    # the gradient based on the loss value with padding. This makes the learning
+    # more stable. You can uncomment the below line if you want to change this
+    # (not advised.)
+    grads = tape.gradient(loss_with_pad, self.model.trainable_weights)
+    # grads = tape.gradient(loss_without_pad, self.model.trainable_weights)
     self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
+    
     # Update train metrics
     self.train_metrics.update_state(heads, edge_scores)
-    return loss_value, predictions, h
+    
+    return loss_with_pad, loss_without_pad, predictions, h, pad_mask
 
   def train_custom(self, dataset: Dataset, epochs: int=10):
     """Custom training method."""
@@ -132,22 +145,50 @@ class NeuralMSTParser:
         words = batch["words"]
         pos = batch["pos"]
         heads = batch["heads"]
-        loss_value, predictions, h = self.train_step(words, pos, heads)
-        predictions = tf.reshape(predictions, shape=(predictions.shape[0], 1))
-        n_correct = np.sum(predictions == h)
+        loss_w_pad, loss_w_o_pad, predictions, h, pad_mask = self.train_step(
+          words=words, pos=pos, heads=heads)
+        
+        # Get the total number of tokens without padding.
+        words_reshaped = tf.reshape(words, shape=(pad_mask.shape))
+        total_words = len(tf.boolean_mask(words_reshaped, pad_mask))
+        
+        # Calculate correct predictions with and without padding.
+        correct_preds_with_pad = (predictions == h)
+        correct_predictions = tf.boolean_mask(predictions == h, pad_mask)
+        n_correct_with_pad = np.sum(correct_preds_with_pad) 
+        n_correct = np.sum(correct_predictions)
+        
+        # Add to stats
+        stats["n_correct_with_pad"] += n_correct_with_pad
         stats["n_correct"] += n_correct
-        stats["n_tokens"] += len(h)
+        stats["n_tokens_with_pad"] += len(h)
+        stats["n_tokens"] += total_words
+    
       print(stats)
-      uas = stats["n_correct"] / stats["n_tokens"]
       train_acc = self.train_metrics.result()
-      l = tf.reduce_mean(loss_value)
-      history["uas"].append(uas)
-      history["loss"].append(l)
+      
+      # Compute UAS with and without padding
+      uas_with_pad = stats["n_correct_with_pad"] / stats["n_tokens_with_pad"]
+      uas_without_pad = stats["n_correct"] / stats["n_tokens"] 
+      
+      # Compute average loss with and without padding
+      loss_with_pad = tf.reduce_mean(loss_w_pad)
+      loss_without_pad = tf.reduce_mean(loss_w_o_pad)
+      
+      # Log all the stats
       logging.info(f"Training accuracy: {train_acc}")
-      logging.info(f"UAS: {uas}")
-      logging.info(f"Loss : {l}")
-      # Log the time it takes for one epoch
+      logging.info(f"UAS (with pad): {uas_with_pad}")
+      logging.info(f"UAS (without pad): {uas_without_pad}")
+      logging.info(f"Loss (with pad) : {loss_with_pad}")
+      logging.info(f"Loss (without pad) : {loss_without_pad}")
       logging.info(f"Time for epoch: {time.time() - start_time}\n")
+      
+      # Populate history
+      # Only the UAS without padding is considered.
+      history["uas"].append(uas_without_pad)
+      history["loss_with_pad"].append(loss_with_pad)
+      history["loss_without_pad"].append(loss_without_pad)
+      
     return history
 
 
@@ -171,13 +212,14 @@ def _set_up_features(features: List[str], label=str) -> List[SequenceFeature]:
   return sequence_features
 
 
-def plot(epochs, arc_scores, model_name):
+def plot(epochs, arc_scores, loss_with_pad, loss_without_pad, model_name):
   fig = plt.figure()
   ax = plt.axes()
-  ax.plot(epochs,arc_scores, "-g", label="arcs", color="blue")
+  ax.plot(epochs, arc_scores, "-g", label="uas", color="blue")
+  ax.plot(epochs, loss_with_pad, "-g", label="loss_w_pading", color="red")
+  ax.plot(epochs, loss_without_pad, "-g", label="loss_w_o_padding", color="green")
   plt.title("Performance on training data")
   plt.xlabel("epochs")
-  plt.ylabel("accuracy")
   plt.legend()
   plt.savefig(f"{model_name}_plot")
 
@@ -205,13 +247,14 @@ def main(args):
   print(parser)
   parser.plot()
   scores = parser.train_custom(dataset, args.epochs)
-  plot(np.arange(args.epochs), scores["uas"], "biaffine")
+  plot(np.arange(args.epochs), scores["uas"], scores["loss_with_pad"],
+       scores["loss_without_pad"], "training_performance")
     
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   parser.add_argument("--train", type=bool, default=False,
                       help="Trains a new model.")
-  parser.add_argument("--epochs", type=int, default=2,
+  parser.add_argument("--epochs", type=int, default=10,
                       help="Trains a new model.")
   parser.add_argument("--treebank", type=str,
                       default="treebank_train_0_50.pbtxt")
