@@ -167,7 +167,7 @@ class NeuralMSTParser:
       print(stats)
       train_acc = self.train_metrics.result()
       
-      # Compute UAS with and without padding
+      # Compute UAS with and without padding for this epoch
       uas_with_pad = stats["n_correct_with_pad"] / stats["n_tokens_with_pad"]
       uas_without_pad = stats["n_correct"] / stats["n_tokens"] 
       
@@ -239,7 +239,7 @@ def main(args):
     else:
       dataset = prep.make_dataset_from_generator(
         path=os.path.join(_DATA_DIR, args.treebank),
-        batch_size=10, 
+        batch_size=50, 
         features=sequence_features
       )
 
@@ -248,7 +248,7 @@ def main(args):
   parser.plot()
   scores = parser.train_custom(dataset, args.epochs)
   plot(np.arange(args.epochs), scores["uas"], scores["loss_with_pad"],
-       scores["loss_without_pad"], "training_performance")
+       scores["loss_without_pad"], "training_performance_500")
     
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
@@ -257,7 +257,7 @@ if __name__ == "__main__":
   parser.add_argument("--epochs", type=int, default=10,
                       help="Trains a new model.")
   parser.add_argument("--treebank", type=str,
-                      default="treebank_train_0_50.pbtxt")
+                      default="treebank_train_0_500.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features", type=list,
