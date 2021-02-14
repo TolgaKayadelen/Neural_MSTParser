@@ -135,8 +135,34 @@ class NeuralMSTParser:
     edge_loss_w_o_pad = tf.boolean_mask(edge_loss_with_pad, pad_mask)
         
     return edge_loss_with_pad, edge_loss_w_o_pad, predictions, heads, pad_mask
+
+  @tf.function
+  def label_loss(self, dep_labels, label_scores, pad_mask):
+    """Computes label loss and label predictions
+    Args:
+      dep_labels: tf.Tensor of shape (batch_size, seq_len, n_labels). Holding
+        correct labels for each token as a one hot vector.
+      label_scores: tf.Tensor of shape (batch_size, seq_len, n_labels). Holding
+        probability scores for each token's label prediction.
+      pad_mask: tf.Tensor of shape (batch_size*seq_len, 1)
+    Returns:
+      label_loss: the label loss associated with each token.
+      correct_labels: tf.Tensor of shape (batch_size*seq_len, 1). The correct
+        dependency labels.
+      label_preds: tf.Tensor of shape (batch_size*seq_len, 1). The predicted
+        dependency labels.
+    """
+    label_preds = tf.reshape(tf.argmax(label_scores,
+                                       axis=2),
+                             shape=(pad_mask.shape)
+                             )
+    correct_labels = tf.reshape(tf.argmax(dep_labels,
+                                          axis=2),
+                                shape=(pad_mask.shape))
   
-  
+    label_loss = self.label_loss_fn(dep_labels, label_scores)
+    return label_loss, correct_labels, label_preds
+
   @tf.function
   def train_step(self, *, words: tf.Tensor, pos: tf.Tensor,
                  dep_labels: tf.Tensor, heads:tf.Tensor
@@ -148,10 +174,9 @@ class NeuralMSTParser:
       pad_mask = (words != 0)
       edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask = self.edge_loss(
         edge_scores, heads, pad_mask)
-
-      # TODO: also for label loss, do we have to get rid of padding?
-      # TODO: also get and return label predictions here.
-      label_loss = self.label_loss_fn(dep_labels, label_scores)
+      
+      label_loss, correct_labels, label_preds = self.label_loss(
+          dep_labels, label_scores, pad_mask)
     
     # TODO: should you sum the losses, or just use the edge_loss?
     grads = tape.gradient([edge_loss_pad, label_loss],
@@ -162,7 +187,8 @@ class NeuralMSTParser:
     self.edge_train_metrics.update_state(heads, edge_scores)
     self.label_train_metrics.update_state(dep_labels, label_scores)
     
-    return edge_loss_pad, edge_loss_w_o_pad, label_loss, edge_pred, h, pad_mask
+    return (edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask,
+            label_loss, correct_labels, label_preds)
 
   def train_custom(self, dataset: Dataset, epochs: int=10):
     """Custom training method.
@@ -178,7 +204,7 @@ class NeuralMSTParser:
       # Reset the states before starting the new epoch.
       self.edge_train_metrics.reset_states()
       self.label_train_metrics.reset_states()
-      logging.info(f"*********** Training epoch: {epoch} ***********\n")
+      logging.info(f"*********** Training epoch: {epoch} ***********\n\n")
       start_time = time.time()
       stats = collections.Counter()
       
@@ -192,28 +218,42 @@ class NeuralMSTParser:
         heads = batch["heads"]
         
         # Get the losses and predictions
-        (edge_loss_pad, edge_loss_w_o_pad, label_loss, edge_pred, h,
-         pad_mask) = self.train_step(words=words, pos=pos,
-                                     dep_labels=dep_labels, heads=heads)
+        (edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask, label_loss,
+        correct_labels, label_preds) = self.train_step(words=words, pos=pos,
+                                                       dep_labels=dep_labels,
+                                                       heads=heads)
                                 
         # Get the total number of tokens without padding
         words_reshaped = tf.reshape(words, shape=(pad_mask.shape))
         total_words = len(tf.boolean_mask(words_reshaped, pad_mask))
         
-        # Calculate correct predictions with padding
+        # Calculate correct label predictions with padding
+        label_correct_with_pad = (label_preds == correct_labels)
+        n_label_correct_with_pad = np.sum(label_correct_with_pad)
+        
+        # Calculate correct label predictions without padding
+        label_correct = tf.boolean_mask(label_correct_with_pad, pad_mask)
+        n_label_correct= np.sum(label_correct)
+        
+        # print(f"label_correct_with_pad {label_correct_with_pad}")
+        # print(f"label_correct_w_o_pad {label_correct}")
+        # print(f"n label corr pad {n_label_correct_with_pad}")
+        # print(f"n label corr no pad {n_label_correct}")
+        # input("press to cont.")
+        
+        # Calculate correct edge predictions with padding
         edge_correct_with_pad = (edge_pred == h)
         n_edge_correct_with_pad = np.sum(edge_correct_with_pad)
 
-        
-        # Calculate correct predictions without padding
+        # Calculate correct edge predictions without padding
         edge_correct = tf.boolean_mask(edge_pred == h, pad_mask)
         n_edge_correct = np.sum(edge_correct)
-        
-        # TODO: also compute label_correct and n_label_correct.
         
         # Add to stats
         stats["n_edge_correct_with_pad"] += n_edge_correct_with_pad
         stats["n_edge_correct"] += n_edge_correct
+        stats["n_label_correct_with_pad"] += n_label_correct_with_pad
+        stats["n_label_correct"] += n_label_correct
         stats["n_tokens_with_pad"] += len(h)
         stats["n_tokens"] += total_words
 
@@ -226,12 +266,19 @@ class NeuralMSTParser:
       avg_edge_loss_pad = tf.reduce_mean(edge_loss_pad)
       avg_edge_loss_w_o_pad = tf.reduce_mean(edge_loss_w_o_pad)
       
-      # Compute average label loss
+      # Compute average label loss (only with pad)
       avg_label_loss = tf.reduce_mean(label_loss)
       
       # Compute UAS with and without padding for this epoch
       uas_with_pad = stats["n_edge_correct_with_pad"] / stats["n_tokens_with_pad"]
       uas_without_pad = stats["n_edge_correct"] / stats["n_tokens"]
+      
+      # Compute Label Score (LS) with and without padding for this epoch
+      label_score_pad = stats["n_label_correct_with_pad"] / stats["n_tokens_with_pad"]
+      label_score_without_pad = stats["n_label_correct"] / stats["n_tokens"]
+      
+      # TODO: implement method that computes labeled attachement score
+      # from UAS and LS.
       
       # Log all the stats
       logging.info(f"Training accuracy (heads): {edge_train_acc}")
@@ -240,18 +287,22 @@ class NeuralMSTParser:
       logging.info(f"UAS (with pad): {uas_with_pad}")
       logging.info(f"UAS (without pad): {uas_without_pad}\n")
       
-      logging.info(f"Edge loss with pad: {avg_edge_loss_pad}")
-      logging.info(f"Edge loss without pad: {avg_edge_loss_w_o_pad}")
-      logging.info(f"Label loss {avg_label_loss}\n")
+      logging.info(f"LS (with pad) {label_score_pad}")
+      logging.info(f"LS (without pad) {label_score_without_pad}\n")
+      
+      logging.info(f"Edge loss (with pad): {avg_edge_loss_pad}")
+      # logging.info(f"Edge loss without pad: {avg_edge_loss_w_o_pad}")
+      logging.info(f"Label loss (with pad) {avg_label_loss}\n")
       
       logging.info(f"Time for epoch: {time.time() - start_time}\n")
       
       # Populate stats history
-      history["uas"].append(uas_without_pad)
+      history["uas"].append(uas_without_pad) # Unlabeled Attachment Score
+      history["ls"].append(label_score_without_pad) # Label Score
       history["edge_loss_pad"].append(avg_edge_loss_pad)
-      history["edge_loss_without_pad"].append(avg_edge_loss_w_o_pad)
-      history["label_accuracy"].append(label_train_acc)
-      # input("press to cont..")
+      # history["edge_loss_without_pad"].append(avg_edge_loss_w_o_pad)
+      history["label_loss_pad"].append(avg_label_loss)
+      # history["label_accuracy"].append(label_train_acc)
       
     return history
 
@@ -279,16 +330,13 @@ def _set_up_features(features: List[str],
   return sequence_features
 
 
-def plot(epochs, edge_scores, edge_loss_pad, edge_loss_w_o_pad, label_scores,
-         model_name):
+def plot(epochs, edge_scores, label_scores, edge_loss, label_loss, model_name):
   fig = plt.figure()
   ax = plt.axes()
   ax.plot(epochs, edge_scores, "-g", label="uas", color="blue")
   ax.plot(epochs, label_scores, "-g", label="labels", color="green")
-  ax.plot(epochs, edge_loss_pad, "-g", label="edge_loss_pad", color="orchid")
-  ax.plot(epochs, edge_loss_w_o_pad, "-g", label="edge_loss_w_o_pad", color="sienna")
-  #if not type(x) == list:
-  #  plt.xlim(1, len(x))
+  ax.plot(epochs, edge_loss, "-g", label="edge_loss", color="orchid")
+  ax.plot(epochs, label_loss, "-g", label="label_loss", color="sienna")
   
   plt.title("Performance on training data")
   plt.xlabel("epochs")
@@ -330,10 +378,9 @@ def main(args):
   parser.plot()
   scores = parser.train_custom(dataset, args.epochs)
   # print(scores)
-  plot(np.arange(args.epochs), scores["uas"], scores["edge_loss_pad"],
-                 scores["edge_loss_without_pad"],
-                 scores["label_accuracy"],
-                "joint_test")
+  plot(np.arange(args.epochs), scores["uas"], scores["ls"],
+                 scores["edge_loss_pad"], scores["label_loss_pad"],
+                 "joint_test")
 
     
 if __name__ == "__main__":
