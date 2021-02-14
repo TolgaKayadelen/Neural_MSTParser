@@ -239,7 +239,7 @@ def main(args):
     else:
       dataset = prep.make_dataset_from_generator(
         path=os.path.join(_DATA_DIR, args.treebank),
-        batch_size=50, 
+        batch_size=10, 
         features=sequence_features
       )
 
@@ -257,7 +257,7 @@ if __name__ == "__main__":
   parser.add_argument("--epochs", type=int, default=10,
                       help="Trains a new model.")
   parser.add_argument("--treebank", type=str,
-                      default="treebank_train_0_500.pbtxt")
+                      default="treebank_train_0_50.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features", type=list,

@@ -4,11 +4,12 @@ import argparse
 import os
 import time
 from tensorflow.keras import layers, metrics, losses, optimizers
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from input import preprocessor
 from tagset.reader import LabelReader
 from util.nn import nn_utils
 import collections
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 import logging
@@ -16,7 +17,7 @@ import logging
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 np.set_printoptions(threshold=np.inf)
-
+mpl.style.use("seaborn")
 
 _DATA_DIR = "data/UDv23/Turkish/training"
 
@@ -29,10 +30,14 @@ class NeuralMSTParser:
   
   def __init__(self, *, word_embeddings: Embeddings, n_output_classes: int):
     self.word_embeddings = self._set_pretrained_embeddings(word_embeddings)
-    self.arc_loss_fn = losses.SparseCategoricalCrossentropy(from_logits=True)
-    self.label_loss_fn = losses.CategoricalCrossentropy(from_logits=True)
+    self.edge_loss_fn = losses.SparseCategoricalCrossentropy(
+      from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
+    self.label_loss_fn = losses.CategoricalCrossentropy(
+      from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
+    # self.label_loss_fn = losses.CategoricalCrossentropy(
+    #  from_logits=True)
     self.optimizer=tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
-    self.arc_train_metrics = metrics.SparseCategoricalAccuracy()
+    self.edge_train_metrics = metrics.SparseCategoricalAccuracy()
     self.label_train_metrics = metrics.CategoricalAccuracy()
     self.model = self._create_uncompiled_model(n_output_classes)
     self._n_output_classes = n_output_classes
@@ -74,8 +79,9 @@ class NeuralMSTParser:
     sentence_repr = tf.keras.layers.Dropout(rate=0.5)(sentence_repr)
     sentence_repr = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
         units=256, return_sequences=True, name="encoded3"))(sentence_repr)
+    # Get the dependency label predictions
     dep_labels = tf.keras.layers.Dense(units=n_classes,
-                                      name="dep_labels")(sentence_repr)
+                                       name="dep_labels")(sentence_repr)
     
     # the edge scoring bit with the MLPs
     # Pass the sentence representation through two MLPs, for head and dep.
@@ -98,69 +104,155 @@ class NeuralMSTParser:
     return model
   
   @tf.function
-  def compute_edge_loss(self, edge_scores, heads):
+  def edge_loss(self, edge_scores, heads, pad_mask):
+    """Computes loss for edge predictions.
+    Args:
+      edge_scores: A 3D tensor of (batch_size, seq_len, seq_len). This hold
+        the edge prediction for each token in a sentence, for the whole batch.
+        The outer dimension (second seq_len) is where the head probabilities
+        for a token are kept.
+      heads: A 2D tensor of (batch_size, seq_len)
+      pad_mask: A 2D tensor of (batch_size, seq_len)
+    Returns:
+      edge_loss_with_pad: 2D tensor of shape (batch_size*seq_len, seq_len).
+        Holds loss values for each of the predictions.
+      edge_loss_w_o_pad: Loss values where the pad tokens are not considered.
+      heads: 2D tensor of (batch_size*seq_len, 1)
+      pad_mask: 2D tensor of (bath_size*se_len, 1)
+    """
     n_sentences, n_words, _ = edge_scores.shape
     edge_scores = tf.reshape(edge_scores, shape=(n_sentences*n_words, n_words))
     heads = tf.reshape(heads, shape=(n_sentences*n_words, 1))
+    pad_mask = tf.reshape(pad_mask, shape=(n_sentences*n_words, 1))
+    
     predictions = tf.argmax(edge_scores, 1)
-    loss_value = self.arc_loss_fn(heads, edge_scores)
-    return loss_value, predictions, heads
+    predictions = tf.reshape(predictions, shape=(predictions.shape[0], 1))
+    
+    # Compute losses with and without pad
+    edge_loss_with_pad = self.edge_loss_fn(heads, edge_scores)
+    edge_loss_with_pad = tf.reshape(edge_loss_with_pad,
+                                    shape=(edge_loss_with_pad.shape[0], 1))
+    edge_loss_w_o_pad = tf.boolean_mask(edge_loss_with_pad, pad_mask)
+        
+    return edge_loss_with_pad, edge_loss_w_o_pad, predictions, heads, pad_mask
   
   
   @tf.function
-  def train_step(self,
-                words: tf.Tensor,
-                pos: tf.Tensor,
-                dep_labels: tf.Tensor,
-                heads:tf.Tensor): # TODO: add return types.
+  def train_step(self, *, words: tf.Tensor, pos: tf.Tensor,
+                 dep_labels: tf.Tensor, heads:tf.Tensor
+                 ) -> Tuple[tf.Tensor, tf.Tensor, tf.Tensor,
+                            tf.Tensor, tf.Tensor]:
     with tf.GradientTape() as tape:
       edge_scores, label_scores = self.model({"words": words, "pos": pos},
                                              training=True)
-      edge_loss, edge_pred, h = self.compute_edge_loss(edge_scores, heads)
+      pad_mask = (words != 0)
+      edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask = self.edge_loss(
+        edge_scores, heads, pad_mask)
+
+      # TODO: also for label loss, do we have to get rid of padding?
+      # TODO: also get and return label predictions here.
       label_loss = self.label_loss_fn(dep_labels, label_scores)
+    
     # TODO: should you sum the losses, or just use the edge_loss?
-    grads = tape.gradient([edge_loss, label_loss], self.model.trainable_weights)
+    grads = tape.gradient([edge_loss_pad, label_loss],
+                          self.model.trainable_weights)
     self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
+    
     # Update train metrics
-    # TODO: inspect heads and edge scores. Should you use mask to avoid
-    # scoring on the padded values?
-    self.arc_train_metrics.update_state(heads, edge_scores)
+    self.edge_train_metrics.update_state(heads, edge_scores)
     self.label_train_metrics.update_state(dep_labels, label_scores)
-    return edge_loss, label_loss, edge_pred, h
+    
+    return edge_loss_pad, edge_loss_w_o_pad, label_loss, edge_pred, h, pad_mask
 
   def train_custom(self, dataset: Dataset, epochs: int=10):
-    """Custom training method."""
+    """Custom training method.
+    
+    Args:
+      dataset: Dataset containing features and labels.
+      epochs: number of training epochs
+    Returns:
+      history: logs of scores and losses at the end of training.
+    """
     history = collections.defaultdict(list)
     for epoch in range(epochs):
-      self.arc_train_metrics.reset_states()
+      # Reset the states before starting the new epoch.
+      self.edge_train_metrics.reset_states()
       self.label_train_metrics.reset_states()
       logging.info(f"*********** Training epoch: {epoch} ***********\n")
       start_time = time.time()
       stats = collections.Counter()
+      
+      # Start the epoch
       for step, batch in enumerate(dataset):
+        
+        # Read the data and labels from the dataset.
         words = batch["words"]
         pos = batch["pos"]
         dep_labels = tf.one_hot(batch["dep_labels"], self._n_output_classes)
         heads = batch["heads"]
-        edge_loss, label_loss, edge_pred, h = self.train_step(
-                                                words, pos, dep_labels, heads)
-        edge_pred = tf.reshape(edge_pred, shape=(edge_pred.shape[0], 1))
-        n_correct = np.sum(edge_pred == h)
-        stats["n_correct"] += n_correct
-        stats["n_tokens"] += len(h)
+        
+        # Get the losses and predictions
+        (edge_loss_pad, edge_loss_w_o_pad, label_loss, edge_pred, h,
+         pad_mask) = self.train_step(words=words, pos=pos,
+                                     dep_labels=dep_labels, heads=heads)
+                                
+        # Get the total number of tokens without padding
+        words_reshaped = tf.reshape(words, shape=(pad_mask.shape))
+        total_words = len(tf.boolean_mask(words_reshaped, pad_mask))
+        
+        # Calculate correct predictions with padding
+        edge_correct_with_pad = (edge_pred == h)
+        n_edge_correct_with_pad = np.sum(edge_correct_with_pad)
+
+        
+        # Calculate correct predictions without padding
+        edge_correct = tf.boolean_mask(edge_pred == h, pad_mask)
+        n_edge_correct = np.sum(edge_correct)
+        
+        # TODO: also compute label_correct and n_label_correct.
+        
+        # Add to stats
+        stats["n_edge_correct_with_pad"] += n_edge_correct_with_pad
+        stats["n_edge_correct"] += n_edge_correct
+        stats["n_tokens_with_pad"] += len(h)
+        stats["n_tokens"] += total_words
+
+      # Get training accuracy metrics 
       print(stats)
-      uas = stats["n_correct"] / stats["n_tokens"]
-      arc_train_acc = self.arc_train_metrics.result()
+      edge_train_acc = self.edge_train_metrics.result()
       label_train_acc = self.label_train_metrics.result()
-      l = tf.reduce_mean(edge_loss) # TODO: edge_loss should be avg. in loop
-      history["uas"].append(uas)
-      history["edge_loss"].append(l)
-      logging.info(f"Arc accuracy: {arc_train_acc}")
-      logging.info(f"UAS: {uas}")
-      logging.info(f"Label accuracy : {label_train_acc}")
-      history["label"].append(label_train_acc.numpy())
-      # Log the time it takes for one epoch
+      
+      # Compute average edge losses with and without padding
+      avg_edge_loss_pad = tf.reduce_mean(edge_loss_pad)
+      avg_edge_loss_w_o_pad = tf.reduce_mean(edge_loss_w_o_pad)
+      
+      # Compute average label loss
+      avg_label_loss = tf.reduce_mean(label_loss)
+      
+      # Compute UAS with and without padding for this epoch
+      uas_with_pad = stats["n_edge_correct_with_pad"] / stats["n_tokens_with_pad"]
+      uas_without_pad = stats["n_edge_correct"] / stats["n_tokens"]
+      
+      # Log all the stats
+      logging.info(f"Training accuracy (heads): {edge_train_acc}")
+      logging.info(f"Training accuracy (labels) : {label_train_acc}\n")
+      
+      logging.info(f"UAS (with pad): {uas_with_pad}")
+      logging.info(f"UAS (without pad): {uas_without_pad}\n")
+      
+      logging.info(f"Edge loss with pad: {avg_edge_loss_pad}")
+      logging.info(f"Edge loss without pad: {avg_edge_loss_w_o_pad}")
+      logging.info(f"Label loss {avg_label_loss}\n")
+      
       logging.info(f"Time for epoch: {time.time() - start_time}\n")
+      
+      # Populate stats history
+      history["uas"].append(uas_without_pad)
+      history["edge_loss_pad"].append(avg_edge_loss_pad)
+      history["edge_loss_without_pad"].append(avg_edge_loss_w_o_pad)
+      history["label_accuracy"].append(label_train_acc)
+      # input("press to cont..")
+      
     return history
 
 
@@ -187,11 +279,14 @@ def _set_up_features(features: List[str],
   return sequence_features
 
 
-def plot(epochs, arc_scores, label_scores, model_name):
+def plot(epochs, edge_scores, edge_loss_pad, edge_loss_w_o_pad, label_scores,
+         model_name):
   fig = plt.figure()
   ax = plt.axes()
-  ax.plot(epochs,arc_scores, "-g", label="arcs", color="blue")
-  ax.plot(epochs,label_scores, "-g", label="labels", color="red")
+  ax.plot(epochs, edge_scores, "-g", label="uas", color="blue")
+  ax.plot(epochs, label_scores, "-g", label="labels", color="green")
+  ax.plot(epochs, edge_loss_pad, "-g", label="edge_loss_pad", color="orchid")
+  ax.plot(epochs, edge_loss_w_o_pad, "-g", label="edge_loss_w_o_pad", color="sienna")
   #if not type(x) == list:
   #  plt.xlim(1, len(x))
   
@@ -221,7 +316,7 @@ def main(args):
     else:
       dataset = prep.make_dataset_from_generator(
         path=os.path.join(_DATA_DIR, args.treebank),
-        batch_size=256, 
+        batch_size=10, 
         features=sequence_features
       )
   # for batch in dataset:
@@ -234,8 +329,11 @@ def main(args):
   print(parser)
   parser.plot()
   scores = parser.train_custom(dataset, args.epochs)
-  print(scores)
-  plot(np.arange(args.epochs), scores["uas"], scores["label"], "joint_test")
+  # print(scores)
+  plot(np.arange(args.epochs), scores["uas"], scores["edge_loss_pad"],
+                 scores["edge_loss_without_pad"],
+                 scores["label_accuracy"],
+                "joint_test")
 
     
 if __name__ == "__main__":
@@ -245,7 +343,7 @@ if __name__ == "__main__":
   parser.add_argument("--epochs", type=int, default=10,
                       help="Trains a new model.")
   parser.add_argument("--treebank", type=str,
-                      default="treebank_train_1000_1500.pbtxt")
+                      default="treebank_train_0_50.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features", type=list,
