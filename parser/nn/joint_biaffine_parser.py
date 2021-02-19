@@ -107,10 +107,10 @@ class NeuralMSTParser:
   def edge_loss(self, edge_scores, heads, pad_mask):
     """Computes loss for edge predictions.
     Args:
-      edge_scores: A 3D tensor of (batch_size, seq_len, seq_len). This hold
+      edge_scores: A 3D tensor of (batch_size, seq_len, seq_len). This holds
         the edge prediction for each token in a sentence, for the whole batch.
         The outer dimension (second seq_len) is where the head probabilities
-        for a token are kept.
+        for a token are represented.
       heads: A 2D tensor of (batch_size, seq_len)
       pad_mask: A 2D tensor of (batch_size, seq_len)
     Returns:
@@ -166,8 +166,23 @@ class NeuralMSTParser:
   @tf.function
   def train_step(self, *, words: tf.Tensor, pos: tf.Tensor,
                  dep_labels: tf.Tensor, heads:tf.Tensor
-                 ) -> Tuple[tf.Tensor, tf.Tensor, tf.Tensor,
-                            tf.Tensor, tf.Tensor]:
+                 ) -> Tuple[tf.Tensor, ...]:
+    """Runs one training step.
+    
+    Args:
+      words: A tf.Tensor of word indexes of shape (batch_size, seq_len) where
+          the seq_len is padded with 0s on the right.
+      pos: A tf.Tensor of pos indexes of shape (batch_size, seq_len), of the
+          same shape as words.
+      dep_labels: A tf.Tensor of one hot vectors representing dep_labels for
+          each token, of shape (batch_size, seq_len, n_classes).
+    Returns:
+      label_loss: the depdendeny label loss associated with each token.
+      correct_labels: tf.Tensor of shape (batch_size*seq_len, 1). The correct
+          dependency labels.
+      label_preds: tf.Tensor of shape (batch_size*seq_len, 1). The predicted
+          dependency labels
+    ..."""
     with tf.GradientTape() as tape:
       edge_scores, label_scores = self.model({"words": words, "pos": pos},
                                              training=True)
@@ -177,8 +192,7 @@ class NeuralMSTParser:
       
       label_loss, correct_labels, label_preds = self.label_loss(
           dep_labels, label_scores, pad_mask)
-    
-    # TODO: should you sum the losses, or just use the edge_loss?
+
     grads = tape.gradient([edge_loss_pad, label_loss],
                           self.model.trainable_weights)
     self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
@@ -234,12 +248,6 @@ class NeuralMSTParser:
         # Calculate correct label predictions without padding
         label_correct = tf.boolean_mask(label_correct_with_pad, pad_mask)
         n_label_correct= np.sum(label_correct)
-        
-        # print(f"label_correct_with_pad {label_correct_with_pad}")
-        # print(f"label_correct_w_o_pad {label_correct}")
-        # print(f"n label corr pad {n_label_correct_with_pad}")
-        # print(f"n label corr no pad {n_label_correct}")
-        # input("press to cont.")
         
         # Calculate correct edge predictions with padding
         edge_correct_with_pad = (edge_pred == h)
@@ -306,7 +314,9 @@ class NeuralMSTParser:
       
     return history
 
-
+    def predict(self, dataset: Dataset, heads: bool =True, labels: bool =True):
+      """Predicts heads and labels on a dataset of sentences."""
+      pass
 # TODO: the set up of the features should be done by the preprocessor class.
 def _set_up_features(features: List[str],
                      label: List[str]) -> List[SequenceFeature]:
@@ -314,8 +324,8 @@ def _set_up_features(features: List[str],
   for feat in features:
     if not feat in label:
       sequence_features.append(preprocessor.SequenceFeature(name=feat))
-    #  We don't need to get the label_indices for "heads" as we don't do
-    #  label prediction on them in a typical sense. 
+    # We don't need to get the label_indices for "heads" as we don't do
+    # label prediction on them in a typical sense. 
     else:
       if feat == "heads":
         sequence_features.append(preprocessor.SequenceFeature(
@@ -347,50 +357,64 @@ def plot(epochs, edge_scores, label_scores, edge_loss, label_loss, model_name):
 
 
 def main(args):
+  sequence_features = _set_up_features(args.features, args.label)
+  label_feature = next((f for f in sequence_features if f.name == "dep_labels"),
+                        None)
+  
+  
   if args.train:
     embeddings = nn_utils.load_embeddings()
     word_embeddings = Embeddings(name= "word2vec", matrix=embeddings)
     prep = preprocessor.Preprocessor(word_embeddings=word_embeddings)
     
-    sequence_features = _set_up_features(args.features, args.label)
-    # for s in sequence_features:
-    #  print(s)
-    #  print(s.is_label)
     if args.dataset:
       dataset = prep.read_dataset_from_tfrecords(
-                                 batch_size=50,
+                                 batch_size=args.batchsize,
                                  features=sequence_features,
                                  records="./input/test501.tfrecords")
     else:
       dataset = prep.make_dataset_from_generator(
         path=os.path.join(_DATA_DIR, args.treebank),
-        batch_size=10, 
+        batch_size=args.batchsize, 
         features=sequence_features
       )
-  # for batch in dataset:
-  #  print(batch)
-  #  input("press to cont.")
-  label_feature = next((f for f in sequence_features if f.name == "dep_labels"),
-                        None)
+    if args.test:
+      if not args.train:
+        sys.exit("Testing with a pretrained model is not supported yet.")
+      test_dataset = prep.make_dataset_from_generator(
+        path=os.path.join(_DATA_DIR, args.test_treebank),
+        batch_size=2,
+        features=sequence_features
+      )
+    for batch_train, batch_test in zip(dataset, test_dataset):
+      print(f"train batch {batch_train}")
+      print(f"test batch {batch_test}")
+  # TODO: take from here -- pass the test_treebank to the test method.
+  input("press to cont..")
+  
   parser = NeuralMSTParser(word_embeddings=prep.word_embeddings,
-                          n_output_classes=label_feature.n_values)
+                           n_output_classes=label_feature.n_values)
   print(parser)
   parser.plot()
   scores = parser.train_custom(dataset, args.epochs)
-  # print(scores)
   plot(np.arange(args.epochs), scores["uas"], scores["ls"],
                  scores["edge_loss_pad"], scores["label_loss_pad"],
-                 "joint_test")
+                 "joint_loss_test")
+  
 
     
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
-  parser.add_argument("--train", type=bool, default=False,
+  parser.add_argument("--train", type=bool, default=True,
                       help="Trains a new model.")
+  parser.add_argument("--test", type=bool, default=True,
+                      help="Whether to test the trained model on test data.")
   parser.add_argument("--epochs", type=int, default=10,
                       help="Trains a new model.")
   parser.add_argument("--treebank", type=str,
-                      default="treebank_train_0_500.pbtxt")
+                      default="treebank_train_0_50.pbtxt")
+  parser.add_argument("--test_treebank", type=str,
+                      default="treebank_train_50_60.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features", type=list,
@@ -398,5 +422,7 @@ if __name__ == "__main__":
                       help="features to use to train the model.")
   parser.add_argument("--label", type=list, default=["heads", "dep_labels"],
                       help="labels to predict.")
+  parser.add_argument("--batchsize", type=int, default=10,
+                      help="Size of training and test data batches")
   args = parser.parse_args()
   main(args)
