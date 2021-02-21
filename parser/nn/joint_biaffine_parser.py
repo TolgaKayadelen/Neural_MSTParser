@@ -103,6 +103,30 @@ class NeuralMSTParser:
                                     outputs=[edge_scores, dep_labels])
     return model
   
+  
+  def test(self, *, dataset: Dataset, heads: bool=True, labels: bool=True):
+    """Predicts heads and labels on a dataset of sentences."""
+    head_accuracy = tf.keras.metrics.Accuracy()
+    label_accuracy = tf.keras.metrics.Accuracy()
+    counter = collections.Counter()
+    for example in dataset:
+      words = example["words"]
+      pos = example["pos"]
+      edge_scores, label_scores = self.model({"words": words, "pos": pos},
+                                             training=False)
+      heads = example["heads"]
+      dep_labels = example["dep_labels"]
+      head_preds = tf.argmax(edge_scores, 2)
+      label_preds = tf.argmax(label_scores, 2)                               
+      counter["total_tokens"] += heads.shape[1]
+      counter["head_correct"] += np.sum(heads == head_preds)
+      counter["label_correct"] += np.sum(dep_labels == label_preds)
+      head_accuracy.update_state(heads, head_preds)
+      label_accuracy.update_state(dep_labels, label_preds)
+
+    return head_accuracy.result(), label_accuracy.result(), counter
+    
+
   @tf.function
   def edge_loss(self, edge_scores, heads, pad_mask):
     """Computes loss for edge predictions.
@@ -204,12 +228,14 @@ class NeuralMSTParser:
     return (edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask,
             label_loss, correct_labels, label_preds)
 
-  def train_custom(self, dataset: Dataset, epochs: int=10):
+  def train_custom(self, dataset: Dataset, epochs: int=10,
+                   test_data: Dataset=None):
     """Custom training method.
     
     Args:
       dataset: Dataset containing features and labels.
       epochs: number of training epochs
+      test_data: Dataset containing features and labels for test set.
     Returns:
       history: logs of scores and losses at the end of training.
     """
@@ -222,7 +248,7 @@ class NeuralMSTParser:
       start_time = time.time()
       stats = collections.Counter()
       
-      # Start the epoch
+      # Start the training loop for this epoch.
       for step, batch in enumerate(dataset):
         
         # Read the data and labels from the dataset.
@@ -264,6 +290,10 @@ class NeuralMSTParser:
         stats["n_label_correct"] += n_label_correct
         stats["n_tokens_with_pad"] += len(h)
         stats["n_tokens"] += total_words
+        
+      # Evaluate on test data at the end of epoch.
+      if test_data:
+        uas_test, label_acc_test, _ = self.test(dataset=test_data)
 
       # Get training accuracy metrics 
       print(stats)
@@ -289,14 +319,17 @@ class NeuralMSTParser:
       # from UAS and LS.
       
       # Log all the stats
-      logging.info(f"Training accuracy (heads): {edge_train_acc}")
-      logging.info(f"Training accuracy (labels) : {label_train_acc}\n")
+      # logging.info(f"Training accuracy (heads): {edge_train_acc}")
+      # logging.info(f"Training accuracy (labels) : {label_train_acc}\n")
       
-      logging.info(f"UAS (with pad): {uas_with_pad}")
-      logging.info(f"UAS (without pad): {uas_without_pad}\n")
+      # logging.info(f"UAS (with pad): {uas_with_pad}")
+      logging.info(f"UAS (without pad): {uas_without_pad}")
       
-      logging.info(f"LS (with pad) {label_score_pad}")
+      # logging.info(f"LS (with pad) {label_score_pad}")
       logging.info(f"LS (without pad) {label_score_without_pad}\n")
+      
+      logging.info(f"UAS on test data: {uas_test}")
+      logging.info(f"LS on test data: {label_acc_test}\n")
       
       logging.info(f"Edge loss (with pad): {avg_edge_loss_pad}")
       # logging.info(f"Edge loss without pad: {avg_edge_loss_w_o_pad}")
@@ -305,8 +338,10 @@ class NeuralMSTParser:
       logging.info(f"Time for epoch: {time.time() - start_time}\n")
       
       # Populate stats history
-      history["uas"].append(uas_without_pad) # Unlabeled Attachment Score
-      history["ls"].append(label_score_without_pad) # Label Score
+      history["uas_train"].append(uas_without_pad) # Unlabeled Attachment Score
+      history["ls_train"].append(label_score_without_pad) # Label Score
+      history["uas_test"].append(uas_test)
+      history["ls_test"].append(label_acc_test)
       history["edge_loss_pad"].append(avg_edge_loss_pad)
       # history["edge_loss_without_pad"].append(avg_edge_loss_w_o_pad)
       history["label_loss_pad"].append(avg_label_loss)
@@ -314,9 +349,6 @@ class NeuralMSTParser:
       
     return history
 
-    def predict(self, dataset: Dataset, heads: bool =True, labels: bool =True):
-      """Predicts heads and labels on a dataset of sentences."""
-      pass
 # TODO: the set up of the features should be done by the preprocessor class.
 def _set_up_features(features: List[str],
                      label: List[str]) -> List[SequenceFeature]:
@@ -340,13 +372,14 @@ def _set_up_features(features: List[str],
   return sequence_features
 
 
-def plot(epochs, edge_scores, label_scores, edge_loss, label_loss, model_name):
+def plot(epochs, uas_train, label_acc_train, uas_test, label_acc_test,
+         model_name):
   fig = plt.figure()
   ax = plt.axes()
-  ax.plot(epochs, edge_scores, "-g", label="uas", color="blue")
-  ax.plot(epochs, label_scores, "-g", label="labels", color="green")
-  ax.plot(epochs, edge_loss, "-g", label="edge_loss", color="orchid")
-  ax.plot(epochs, label_loss, "-g", label="label_loss", color="sienna")
+  ax.plot(epochs, uas_train, "-g", label="uas_train", color="blue")
+  ax.plot(epochs, label_acc_train, "-g", label="labels_train", color="green")
+  ax.plot(epochs, uas_test, "-g", label="uas_test", color="orchid")
+  ax.plot(epochs, label_acc_test, "-g", label="labels_test", color="sienna")
   
   plt.title("Performance on training data")
   plt.xlabel("epochs")
@@ -383,24 +416,18 @@ def main(args):
         sys.exit("Testing with a pretrained model is not supported yet.")
       test_dataset = prep.make_dataset_from_generator(
         path=os.path.join(_DATA_DIR, args.test_treebank),
-        batch_size=2,
+        batch_size=1,
         features=sequence_features
       )
-    for batch_train, batch_test in zip(dataset, test_dataset):
-      print(f"train batch {batch_train}")
-      print(f"test batch {batch_test}")
-  # TODO: take from here -- pass the test_treebank to the test method.
-  input("press to cont..")
   
   parser = NeuralMSTParser(word_embeddings=prep.word_embeddings,
                            n_output_classes=label_feature.n_values)
   print(parser)
   parser.plot()
-  scores = parser.train_custom(dataset, args.epochs)
-  plot(np.arange(args.epochs), scores["uas"], scores["ls"],
-                 scores["edge_loss_pad"], scores["label_loss_pad"],
+  scores = parser.train_custom(dataset, args.epochs, test_data=test_dataset)
+  plot(np.arange(args.epochs), scores["uas_train"], scores["ls_train"],
+                 scores["uas_test"], scores["ls_test"],
                  "joint_loss_test")
-  
 
     
 if __name__ == "__main__":
@@ -409,10 +436,10 @@ if __name__ == "__main__":
                       help="Trains a new model.")
   parser.add_argument("--test", type=bool, default=True,
                       help="Whether to test the trained model on test data.")
-  parser.add_argument("--epochs", type=int, default=10,
+  parser.add_argument("--epochs", type=int, default=60,
                       help="Trains a new model.")
   parser.add_argument("--treebank", type=str,
-                      default="treebank_train_0_50.pbtxt")
+                      default="treebank_train_1000_1500.pbtxt")
   parser.add_argument("--test_treebank", type=str,
                       default="treebank_train_50_60.pbtxt")
   parser.add_argument("--dataset",
@@ -422,7 +449,7 @@ if __name__ == "__main__":
                       help="features to use to train the model.")
   parser.add_argument("--label", type=list, default=["heads", "dep_labels"],
                       help="labels to predict.")
-  parser.add_argument("--batchsize", type=int, default=10,
+  parser.add_argument("--batchsize", type=int, default=100,
                       help="Size of training and test data batches")
   args = parser.parse_args()
   main(args)
