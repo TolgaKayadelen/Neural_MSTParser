@@ -20,6 +20,7 @@ np.set_printoptions(threshold=np.inf)
 mpl.style.use("seaborn")
 
 _DATA_DIR = "data/UDv23/Turkish/training"
+_TEST_DATA_DIR = "data/UDv23/Turkish/test"
 
 Dataset = tf.data.Dataset
 Embeddings = preprocessor.Embeddings
@@ -73,10 +74,10 @@ class NeuralMSTParser:
     # encode the sentence with LSTM
     sentence_repr = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
         units=256, return_sequences=True, name="encoded1"))(concat)
-    sentence_repr = tf.keras.layers.Dropout(rate=0.5)(sentence_repr)
+    sentence_repr = tf.keras.layers.Dropout(rate=0.3)(sentence_repr)
     sentence_repr = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
         units=256, return_sequences=True, name="encoded2"))(sentence_repr)
-    sentence_repr = tf.keras.layers.Dropout(rate=0.5)(sentence_repr)
+    sentence_repr = tf.keras.layers.Dropout(rate=0.3)(sentence_repr)
     sentence_repr = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
         units=256, return_sequences=True, name="encoded3"))(sentence_repr)
     # Get the dependency label predictions
@@ -105,10 +106,10 @@ class NeuralMSTParser:
   
   
   def test(self, *, dataset: Dataset, heads: bool=True, labels: bool=True):
-    """Predicts heads and labels on a dataset of sentences."""
+    """Tests the performance on a test dataset."""
     head_accuracy = tf.keras.metrics.Accuracy()
     label_accuracy = tf.keras.metrics.Accuracy()
-    counter = collections.Counter()
+    # counter = collections.Counter()
     for example in dataset:
       words = example["words"]
       pos = example["pos"]
@@ -118,13 +119,13 @@ class NeuralMSTParser:
       dep_labels = example["dep_labels"]
       head_preds = tf.argmax(edge_scores, 2)
       label_preds = tf.argmax(label_scores, 2)                               
-      counter["total_tokens"] += heads.shape[1]
-      counter["head_correct"] += np.sum(heads == head_preds)
-      counter["label_correct"] += np.sum(dep_labels == label_preds)
+      # counter["total_tokens"] += heads.shape[1]
+      # counter["head_correct"] += np.sum(heads == head_preds)
+      # counter["label_correct"] += np.sum(dep_labels == label_preds)
       head_accuracy.update_state(heads, head_preds)
       label_accuracy.update_state(dep_labels, label_preds)
 
-    return head_accuracy.result(), label_accuracy.result(), counter
+    return head_accuracy.result(), label_accuracy.result()
     
 
   @tf.function
@@ -225,8 +226,9 @@ class NeuralMSTParser:
     self.edge_train_metrics.update_state(heads, edge_scores)
     self.label_train_metrics.update_state(dep_labels, label_scores)
     
+    # TODO: don't return the edge scores. 
     return (edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask,
-            label_loss, correct_labels, label_preds)
+            label_loss, correct_labels, label_preds, edge_scores)
 
   def train_custom(self, dataset: Dataset, epochs: int=10,
                    test_data: Dataset=None):
@@ -253,16 +255,22 @@ class NeuralMSTParser:
         
         # Read the data and labels from the dataset.
         words = batch["words"]
+        # print(words)
         pos = batch["pos"]
+        # print(pos)
         dep_labels = tf.one_hot(batch["dep_labels"], self._n_output_classes)
         heads = batch["heads"]
+        # print(heads)
         
         # Get the losses and predictions
         (edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask, label_loss,
-        correct_labels, label_preds) = self.train_step(words=words, pos=pos,
+        correct_labels, label_preds, edge_scores) = self.train_step(words=words, pos=pos,
                                                        dep_labels=dep_labels,
                                                        heads=heads)
-                                
+        print("edge scores ", edge_scores)
+        print("edge pred ", edge_pred)
+        print("heads ", h)
+        input("press to cont..")
         # Get the total number of tokens without padding
         words_reshaped = tf.reshape(words, shape=(pad_mask.shape))
         total_words = len(tf.boolean_mask(words_reshaped, pad_mask))
@@ -293,7 +301,7 @@ class NeuralMSTParser:
         
       # Evaluate on test data at the end of epoch.
       if test_data:
-        uas_test, label_acc_test, _ = self.test(dataset=test_data)
+        uas_test, label_acc_test = self.test(dataset=test_data)
 
       # Get training accuracy metrics 
       print(stats)
@@ -415,7 +423,7 @@ def main(args):
       if not args.train:
         sys.exit("Testing with a pretrained model is not supported yet.")
       test_dataset = prep.make_dataset_from_generator(
-        path=os.path.join(_DATA_DIR, args.test_treebank),
+        path=os.path.join(_TEST_DATA_DIR, args.test_treebank),
         batch_size=1,
         features=sequence_features
       )
@@ -426,8 +434,7 @@ def main(args):
   parser.plot()
   scores = parser.train_custom(dataset, args.epochs, test_data=test_dataset)
   plot(np.arange(args.epochs), scores["uas_train"], scores["ls_train"],
-                 scores["uas_test"], scores["ls_test"],
-                 "joint_loss_test")
+                 scores["uas_test"], scores["ls_test"], args.model_name)
 
     
 if __name__ == "__main__":
@@ -436,12 +443,12 @@ if __name__ == "__main__":
                       help="Trains a new model.")
   parser.add_argument("--test", type=bool, default=True,
                       help="Whether to test the trained model on test data.")
-  parser.add_argument("--epochs", type=int, default=60,
+  parser.add_argument("--epochs", type=int, default=50,
                       help="Trains a new model.")
   parser.add_argument("--treebank", type=str,
-                      default="treebank_train_1000_1500.pbtxt")
+                      default="treebank_0_3.pbtxt")
   parser.add_argument("--test_treebank", type=str,
-                      default="treebank_train_50_60.pbtxt")
+                      default="treebank_0_3_gold.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features", type=list,
@@ -449,7 +456,9 @@ if __name__ == "__main__":
                       help="features to use to train the model.")
   parser.add_argument("--label", type=list, default=["heads", "dep_labels"],
                       help="labels to predict.")
-  parser.add_argument("--batchsize", type=int, default=100,
+  parser.add_argument("--batchsize", type=int, default=250,
                       help="Size of training and test data batches")
+  parser.add_argument("--model_name", type=str, default="test_model",
+                      help="Name of the model to save.")
   args = parser.parse_args()
   main(args)
