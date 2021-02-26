@@ -83,7 +83,8 @@ class Converter:
             root_token.word = "ROOT"
             root_token.category = "TOP"
             root_token.pos = "TOP"
-            root_token.selected_head.address = -1
+            root_token.label = "TOP"
+            root_token.selected_head.address = 0
             root_token.index = 0
             
             # main loop
@@ -318,7 +319,8 @@ class PropbankConverter(Converter):
       word="ROOT",
       category="TOP",
       pos="TOP",
-      selected_head=sentence_pb2.Head(address=-1),
+      label="TOP",
+      selected_head=sentence_pb2.Head(address=0),
       index=0
     )
     # print(df)

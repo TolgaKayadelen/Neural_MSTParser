@@ -373,7 +373,7 @@ class Preprocessor:
 
     dataset = dataset.padded_batch(batch_size, padded_shapes=_padded_shapes,
                                    padding_values=_padding_values)
-    dataset = dataset.shuffle(buffer_size=50)
+    dataset = dataset.shuffle(buffer_size=5073)
 
     return dataset
   
@@ -393,25 +393,24 @@ class Preprocessor:
       for feature_name in feature_names:
         if feature_name == "words":
           yield_dict[feature_name] = self.numericalize(
-            values=[token.word for token in sentence.token[1:]],
+            values=[token.word for token in sentence.token],
             mapping=feature_mappings["words"])
         if feature_name == "pos":
           yield_dict[feature_name] = self.numericalize(
-            values=[token.pos for token in sentence.token[1:]],
+            values=[token.pos for token in sentence.token],
             mapping=feature_mappings["pos"])
         if feature_name == "category":
           yield_dict[feature_name] = self.numericalize(
-            values=[token.category for token in sentence.token[1:]],
+            values=[token.category for token in sentence.token],
             mapping=feature_mappings["category"])
         if feature_name == "dep_labels":
           sentence.token[0].label = "TOP" # workaround key errors
           yield_dict[feature_name] = self.numericalize(
-            values=[token.label for token in sentence.token[1:]],
+            values=[token.label for token in sentence.token],
             mapping=feature_mappings["dep_labels"])
         if feature_name == "heads":
           yield_dict[feature_name] = [
-            token.selected_head.address for token in sentence.token[1:]
-          ]
+            token.selected_head.address for token in sentence.token]
       yield yield_dict
 
     

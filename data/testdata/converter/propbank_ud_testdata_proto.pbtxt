@@ -5,8 +5,9 @@ sentence {
     category: "TOP"
     pos: "TOP"
     selected_head {
-      address: -1
+      address: 0
     }
+    label: "TOP"
     index: 0
   }
   token {
@@ -401,8 +402,9 @@ sentence {
     category: "TOP"
     pos: "TOP"
     selected_head {
-      address: -1
+      address: 0
     }
+    label: "TOP"
     index: 0
   }
   token {
@@ -810,8 +812,9 @@ sentence {
     category: "TOP"
     pos: "TOP"
     selected_head {
-      address: -1
+      address: 0
     }
+    label: "TOP"
     index: 0
   }
   token {

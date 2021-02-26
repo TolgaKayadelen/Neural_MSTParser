@@ -115,6 +115,8 @@ class NeuralMSTParser:
       pos = example["pos"]
       edge_scores, label_scores = self.model({"words": words, "pos": pos},
                                              training=False)
+      # TODO: in the below computation of scores, you should leave out
+      # the 0th token, which is the dummy token.
       heads = example["heads"]
       dep_labels = example["dep_labels"]
       head_preds = tf.argmax(edge_scores, 2)
@@ -255,22 +257,23 @@ class NeuralMSTParser:
         
         # Read the data and labels from the dataset.
         words = batch["words"]
-        # print(words)
+        # print("words ", words)
         pos = batch["pos"]
-        # print(pos)
+        # print("pos ", pos)
         dep_labels = tf.one_hot(batch["dep_labels"], self._n_output_classes)
         heads = batch["heads"]
-        # print(heads)
+        # print("heads ", heads)
+        
         
         # Get the losses and predictions
         (edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask, label_loss,
         correct_labels, label_preds, edge_scores) = self.train_step(words=words, pos=pos,
                                                        dep_labels=dep_labels,
                                                        heads=heads)
-        print("edge scores ", edge_scores)
-        print("edge pred ", edge_pred)
-        print("heads ", h)
-        input("press to cont..")
+        # print("edge scores ", edge_scores)
+        # print("edge pred ", edge_pred)
+        # print("heads ", h)
+        # input("press to cont..")
         # Get the total number of tokens without padding
         words_reshaped = tf.reshape(words, shape=(pad_mask.shape))
         total_words = len(tf.boolean_mask(words_reshaped, pad_mask))
@@ -446,9 +449,9 @@ if __name__ == "__main__":
   parser.add_argument("--epochs", type=int, default=50,
                       help="Trains a new model.")
   parser.add_argument("--treebank", type=str,
-                      default="treebank_0_3.pbtxt")
+                      default="treebank_tr_imst_ud_train_dev.pbtxt")
   parser.add_argument("--test_treebank", type=str,
-                      default="treebank_0_3_gold.pbtxt")
+                      default="treebank_tr_imst_ud_test_fixed.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features", type=list,
@@ -458,7 +461,7 @@ if __name__ == "__main__":
                       help="labels to predict.")
   parser.add_argument("--batchsize", type=int, default=250,
                       help="Size of training and test data batches")
-  parser.add_argument("--model_name", type=str, default="test_model",
+  parser.add_argument("--model_name", type=str, default="fix_dummy_token_bug_0_50",
                       help="Name of the model to save.")
   args = parser.parse_args()
   main(args)
