@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import argparse
 import os
+import sys
 import time
 from tensorflow.keras import layers, metrics, losses, optimizers
 from typing import List, Dict, Tuple
@@ -104,31 +105,33 @@ class NeuralMSTParser:
                                     outputs=[edge_scores, dep_labels])
     return model
   
-  
-  def test(self, *, dataset: Dataset, heads: bool=True, labels: bool=True):
-    """Tests the performance on a test dataset."""
-    head_accuracy = tf.keras.metrics.Accuracy()
-    label_accuracy = tf.keras.metrics.Accuracy()
-    # counter = collections.Counter()
-    for example in dataset:
-      words = example["words"]
-      pos = example["pos"]
-      edge_scores, label_scores = self.model({"words": words, "pos": pos},
-                                             training=False)
-      # TODO: in the below computation of scores, you should leave out
-      # the 0th token, which is the dummy token.
-      heads = example["heads"]
-      dep_labels = example["dep_labels"]
-      head_preds = tf.argmax(edge_scores, 2)
-      label_preds = tf.argmax(label_scores, 2)                               
-      # counter["total_tokens"] += heads.shape[1]
-      # counter["head_correct"] += np.sum(heads == head_preds)
-      # counter["label_correct"] += np.sum(dep_labels == label_preds)
-      head_accuracy.update_state(heads, head_preds)
-      label_accuracy.update_state(dep_labels, label_preds)
 
-    return head_accuracy.result(), label_accuracy.result()
+  def _labeled_attachment_score(self, edges, labels, test=False):
+    """Computes the number of tokens that have correct Labeled Attachment.
     
+    Args: 
+      edges: tf.Tensor, a boolean tensor representing edge predictions for
+        tokens. Tokens whose edges are correctly predicted are represented
+        with the value True and the others with the value False.
+      labels: similar to the edges tensor, but for label predictions.
+    
+    Returns:
+      n_las: int, the number of tokens that have the correct head and
+        label assignment. That is, the number of tokens where the indexes in 
+        the edges and labels tensors are both True.
+    """
+
+    n_token = float(len(edges))
+    # if test:
+    #  lsa_tokens = zip(edges, labels)
+    #  print(list
+    #   (i for i, tok in enumerate(
+    #      list(lsa_tokens)) if tok[0] == True and tok[1] == True))
+    if not len(edges) == len(labels):
+      sys.exit("FATAL ERROR: Mismatch in the number of tokens!")
+    n_las = np.sum(
+      [1 for tok in zip(edges, labels) if tok[0] == True and tok[1] == True])
+    return n_las
 
   @tf.function
   def edge_loss(self, edge_scores, heads, pad_mask):
@@ -227,13 +230,11 @@ class NeuralMSTParser:
     # Update train metrics
     self.edge_train_metrics.update_state(heads, edge_scores)
     self.label_train_metrics.update_state(dep_labels, label_scores)
-    
-    # TODO: don't return the edge scores. 
-    return (edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask,
-            label_loss, correct_labels, label_preds, edge_scores)
 
-  def train_custom(self, dataset: Dataset, epochs: int=10,
-                   test_data: Dataset=None):
+    return (edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask,
+            label_loss, correct_labels, label_preds)
+
+  def train(self, dataset: Dataset, epochs: int=10, test_data: Dataset=None):
     """Custom training method.
     
     Args:
@@ -257,23 +258,18 @@ class NeuralMSTParser:
         
         # Read the data and labels from the dataset.
         words = batch["words"]
-        # print("words ", words)
         pos = batch["pos"]
-        # print("pos ", pos)
         dep_labels = tf.one_hot(batch["dep_labels"], self._n_output_classes)
         heads = batch["heads"]
-        # print("heads ", heads)
+       
         
         
         # Get the losses and predictions
         (edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask, label_loss,
-        correct_labels, label_preds, edge_scores) = self.train_step(words=words, pos=pos,
+        correct_labels, label_preds) = self.train_step(words=words, pos=pos,
                                                        dep_labels=dep_labels,
                                                        heads=heads)
-        # print("edge scores ", edge_scores)
-        # print("edge pred ", edge_pred)
-        # print("heads ", h)
-        # input("press to cont..")
+       
         # Get the total number of tokens without padding
         words_reshaped = tf.reshape(words, shape=(pad_mask.shape))
         total_words = len(tf.boolean_mask(words_reshaped, pad_mask))
@@ -294,17 +290,17 @@ class NeuralMSTParser:
         edge_correct = tf.boolean_mask(edge_pred == h, pad_mask)
         n_edge_correct = np.sum(edge_correct)
         
+        # Calculate the number of tokens which has correct las.
+        las_correct = self._labeled_attachment_score(edge_correct, label_correct)
+        
         # Add to stats
         stats["n_edge_correct_with_pad"] += n_edge_correct_with_pad
         stats["n_edge_correct"] += n_edge_correct
         stats["n_label_correct_with_pad"] += n_label_correct_with_pad
         stats["n_label_correct"] += n_label_correct
+        stats["n_las"] += las_correct 
         stats["n_tokens_with_pad"] += len(h)
         stats["n_tokens"] += total_words
-        
-      # Evaluate on test data at the end of epoch.
-      if test_data:
-        uas_test, label_acc_test = self.test(dataset=test_data)
 
       # Get training accuracy metrics 
       print(stats)
@@ -326,21 +322,27 @@ class NeuralMSTParser:
       label_score_pad = stats["n_label_correct_with_pad"] / stats["n_tokens_with_pad"]
       label_score_without_pad = stats["n_label_correct"] / stats["n_tokens"]
       
-      # TODO: implement method that computes labeled attachement score
-      # from UAS and LS.
+      # Compute Labeled Attachment Score
+      las_train = stats["n_las"] / stats["n_tokens"]
+      
+      # Evaluate on test data at the end of epoch.
+      if test_data:
+        uas_test, label_acc_test, las_test = self.test(dataset=test_data)
       
       # Log all the stats
       # logging.info(f"Training accuracy (heads): {edge_train_acc}")
       # logging.info(f"Training accuracy (labels) : {label_train_acc}\n")
       
       # logging.info(f"UAS (with pad): {uas_with_pad}")
-      logging.info(f"UAS (without pad): {uas_without_pad}")
+      logging.info(f"UAS train (without pad): {uas_without_pad}")
       
       # logging.info(f"LS (with pad) {label_score_pad}")
-      logging.info(f"LS (without pad) {label_score_without_pad}\n")
+      logging.info(f"LS train (without pad) {label_score_without_pad}")
+      logging.info(f"LAS train (without pad) {las_train}\n")
       
-      logging.info(f"UAS on test data: {uas_test}")
-      logging.info(f"LS on test data: {label_acc_test}\n")
+      logging.info(f"UAS test: {uas_test}")
+      logging.info(f"LS test: {label_acc_test}")
+      logging.info(f"LAS test: {las_test}\n")
       
       logging.info(f"Edge loss (with pad): {avg_edge_loss_pad}")
       # logging.info(f"Edge loss without pad: {avg_edge_loss_w_o_pad}")
@@ -351,14 +353,47 @@ class NeuralMSTParser:
       # Populate stats history
       history["uas_train"].append(uas_without_pad) # Unlabeled Attachment Score
       history["ls_train"].append(label_score_without_pad) # Label Score
+      history["las_train"].append(las_train)
       history["uas_test"].append(uas_test)
       history["ls_test"].append(label_acc_test)
+      history["las_test"].append(las_test)
       history["edge_loss_pad"].append(avg_edge_loss_pad)
       # history["edge_loss_without_pad"].append(avg_edge_loss_w_o_pad)
       history["label_loss_pad"].append(avg_label_loss)
       # history["label_accuracy"].append(label_train_acc)
       
     return history
+
+  def test(self, *, dataset: Dataset, heads: bool=True, labels: bool=True):
+    """Tests the performance on a test dataset."""
+    head_accuracy = tf.keras.metrics.Accuracy()
+    label_accuracy = tf.keras.metrics.Accuracy()
+    n_tokens = 0.0
+    n_las = 0.0
+    for example in dataset:
+      words = example["words"]
+      pos = example["pos"]
+      edge_scores, label_scores = self.model({"words": words, "pos": pos},
+                                             training=False)
+      # TODO: in the below computation of scores, you should leave out
+      # the 0th token, which is the dummy token.
+      heads = example["heads"]
+      dep_labels = example["dep_labels"]
+      head_preds = tf.argmax(edge_scores, 2)
+      label_preds = tf.argmax(label_scores, 2)
+      te = (heads == head_preds)
+      tl = (dep_labels == label_preds)
+      correct_edges = tf.reshape(te, shape=(te.shape[1],))
+      correct_labels = tf.reshape(tl, shape=(tl.shape[1],))
+      n_las += self._labeled_attachment_score(correct_edges, correct_labels,
+                                              test=True)
+      n_tokens += words.shape[1]
+      head_accuracy.update_state(heads, head_preds)
+      label_accuracy.update_state(dep_labels, label_preds)
+      
+    las_test = n_las / n_tokens
+    return head_accuracy.result(), label_accuracy.result(), las_test
+
 
 # TODO: the set up of the features should be done by the preprocessor class.
 def _set_up_features(features: List[str],
@@ -384,15 +419,17 @@ def _set_up_features(features: List[str],
 
 
 def plot(epochs, uas_train, label_acc_train, uas_test, label_acc_test,
-         model_name):
+         las_train, las_test, model_name):
   fig = plt.figure()
   ax = plt.axes()
   ax.plot(epochs, uas_train, "-g", label="uas_train", color="blue")
   ax.plot(epochs, label_acc_train, "-g", label="labels_train", color="green")
   ax.plot(epochs, uas_test, "-g", label="uas_test", color="orchid")
   ax.plot(epochs, label_acc_test, "-g", label="labels_test", color="sienna")
+  ax.plot(epochs, las_train, "-g", label="las_train", color="yellow")
+  ax.plot(epochs, las_test, "-g", label="las_test", color="brown")
   
-  plt.title("Performance on training data")
+  plt.title("Performance on train and test data")
   plt.xlabel("epochs")
   plt.ylabel("accuracy")
   plt.legend()
@@ -435,9 +472,10 @@ def main(args):
                            n_output_classes=label_feature.n_values)
   print(parser)
   parser.plot()
-  scores = parser.train_custom(dataset, args.epochs, test_data=test_dataset)
+  scores = parser.train(dataset, args.epochs, test_data=test_dataset)
   plot(np.arange(args.epochs), scores["uas_train"], scores["ls_train"],
-                 scores["uas_test"], scores["ls_test"], args.model_name)
+                 scores["uas_test"], scores["ls_test"], scores["las_train"],
+                 scores["las_test"], args.model_name)
 
     
 if __name__ == "__main__":
@@ -461,7 +499,7 @@ if __name__ == "__main__":
                       help="labels to predict.")
   parser.add_argument("--batchsize", type=int, default=250,
                       help="Size of training and test data batches")
-  parser.add_argument("--model_name", type=str, default="fix_dummy_token_bug_0_50",
+  parser.add_argument("--model_name", type=str, default="joint_baseline_with_las",
                       help="Name of the model to save.")
   args = parser.parse_args()
   main(args)

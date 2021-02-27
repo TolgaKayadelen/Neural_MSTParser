@@ -11,7 +11,7 @@ sentence {
     }
     index: 0
   }
-  0 {
+  token {
     word: "Sanal"
     lemma: "sanal"
     category: "ADJ"
