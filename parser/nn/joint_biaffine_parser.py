@@ -27,6 +27,54 @@ Dataset = tf.data.Dataset
 Embeddings = preprocessor.Embeddings
 SequenceFeature = preprocessor.SequenceFeature
 
+
+class Attention(layers.Layer):
+  """Implementation of an Attention layer."""
+  def __init__(self, return_sequences=True):
+    super(Attention, self).__init__(name="attention_layer")
+    self.return_sequences = return_sequences
+  
+  def build(self, input_shape):
+    """Builds the attention layer.
+    
+    Args:
+      Shape of a 3D tensor of (batch_size, seq_len, n_features).
+    Returns:
+      An Attention layer instance.
+    """
+    print("input shape ", input_shape)
+    '''
+    self.W = self.add_weight(name="attn_weight",
+                            shape=(input_shape[-1], 1),
+                            initializer="glorot_uniform",
+                            trainable=True)
+    self.b = self.add_weight(name="attn_bias",
+                            shape=(1,),
+                            initializer="zeros", trainable=True)
+    '''
+    self.densor1=layers.Dense(1, activation="tanh")
+    self.activator = layers.Activation("softmax", name="attention_weights")
+    self.dotor = layers.Dot(axes=1)
+  
+  def call(self, inputs):
+    """Computes the context vector for the inputs.
+    
+    Args:
+      a: A 3D Tensor of (batch_size, seq_len, n_features)
+    Returns:
+      output: A 3D tensor of same shape as a, where the input is scaled
+        according to the attention weights (i.e. context alphas)
+    """
+    '''
+    energies = tf.math.tanh(tf.matmul(inputs, self.W)+self.b)
+    alphas = tf.nn.softmax(energies, axis=1)
+    output = inputs*alphas
+    '''
+    energies = self.densor1(inputs)
+    activations = self.activator(energies)
+    output = inputs*activations
+    return output
+
 class NeuralMSTParser:
   """The neural mst parser."""
   
@@ -72,29 +120,31 @@ class NeuralMSTParser:
                                              name="pos_embeddings")(pos_inputs)
     concat = tf.keras.layers.concatenate([word_features, pos_features],
                                          name="concat")
+    
     # encode the sentence with LSTM
-    sentence_repr = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
+    sentence_repr = layers.Bidirectional(tf.keras.layers.LSTM(
         units=256, return_sequences=True, name="encoded1"))(concat)
-    sentence_repr = tf.keras.layers.Dropout(rate=0.3)(sentence_repr)
-    sentence_repr = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
+    sentence_repr = layers.Dropout(rate=0.3)(sentence_repr)
+    sentence_repr = layers.Bidirectional(tf.keras.layers.LSTM(
         units=256, return_sequences=True, name="encoded2"))(sentence_repr)
-    sentence_repr = tf.keras.layers.Dropout(rate=0.3)(sentence_repr)
-    sentence_repr = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
+    sentence_repr = layers.Dropout(rate=0.3)(sentence_repr)
+    sentence_repr = layers.Bidirectional(tf.keras.layers.LSTM(
         units=256, return_sequences=True, name="encoded3"))(sentence_repr)
+    sentence_repr = layers.Dropout(rate=0.3)(sentence_repr)
+    sentence_repr = Attention(return_sequences=True)(sentence_repr)
     # Get the dependency label predictions
-    dep_labels = tf.keras.layers.Dense(units=n_classes,
-                                       name="dep_labels")(sentence_repr)
+    dep_labels = layers.Dense(units=n_classes, name="dep_labels")(sentence_repr)
     
     # the edge scoring bit with the MLPs
     # Pass the sentence representation through two MLPs, for head and dep.
-    head_mlp = tf.keras.layers.Dense(256, activation="relu", name="head_mlp")
-    dep_mlp = tf.keras.layers.Dense(256, activation="relu", name="dep_mlp")
+    head_mlp = layers.Dense(256, activation="relu", name="head_mlp")
+    dep_mlp = layers.Dense(256, activation="relu", name="dep_mlp")
     h_arc_head = head_mlp(dep_labels)
     h_arc_dep = dep_mlp(dep_labels)
     
     # Biaffine part of the model. Computes the edge scores for all edges
-    W_arc = tf.keras.layers.Dense(256, use_bias=False, name="W_arc")
-    b_arc = tf.keras.layers.Dense(1, use_bias=False, name="b_arc")
+    W_arc = layers.Dense(256, use_bias=False, name="W_arc")
+    b_arc = layers.Dense(1, use_bias=False, name="b_arc")
     Hh_W = W_arc(h_arc_head)
     Hh_WT = tf.transpose(Hh_W, perm=[0,2,1])
     Hh_W_Ha = tf.linalg.matmul(h_arc_dep, Hh_WT)
@@ -245,7 +295,8 @@ class NeuralMSTParser:
       history: logs of scores and losses at the end of training.
     """
     history = collections.defaultdict(list)
-    for epoch in range(epochs):
+    uas_test, label_acc_test, las_test = [0] * 3
+    for epoch in range(1, epochs+1):
       # Reset the states before starting the new epoch.
       self.edge_train_metrics.reset_states()
       self.label_train_metrics.reset_states()
@@ -304,6 +355,7 @@ class NeuralMSTParser:
 
       # Get training accuracy metrics 
       print(stats)
+      # input("press to cont.")
       edge_train_acc = self.edge_train_metrics.result()
       label_train_acc = self.label_train_metrics.result()
       
@@ -325,10 +377,6 @@ class NeuralMSTParser:
       # Compute Labeled Attachment Score
       las_train = stats["n_las"] / stats["n_tokens"]
       
-      # Evaluate on test data at the end of epoch.
-      if test_data:
-        uas_test, label_acc_test, las_test = self.test(dataset=test_data)
-      
       # Log all the stats
       # logging.info(f"Training accuracy (heads): {edge_train_acc}")
       # logging.info(f"Training accuracy (labels) : {label_train_acc}\n")
@@ -340,15 +388,19 @@ class NeuralMSTParser:
       logging.info(f"LS train (without pad) {label_score_without_pad}")
       logging.info(f"LAS train (without pad) {las_train}\n")
       
-      logging.info(f"UAS test: {uas_test}")
-      logging.info(f"LS test: {label_acc_test}")
-      logging.info(f"LAS test: {las_test}\n")
       
       logging.info(f"Edge loss (with pad): {avg_edge_loss_pad}")
       # logging.info(f"Edge loss without pad: {avg_edge_loss_w_o_pad}")
       logging.info(f"Label loss (with pad) {avg_label_loss}\n")
       
       logging.info(f"Time for epoch: {time.time() - start_time}\n")
+      
+      # Update scores on test data at the end of every X epoch.
+      if epoch % 10 == 0 and test_data:
+        uas_test, label_acc_test, las_test = self.test(dataset=test_data)
+        logging.info(f"UAS test: {uas_test}")
+        logging.info(f"LS test: {label_acc_test}")
+        logging.info(f"LAS test: {las_test}\n")
       
       # Populate stats history
       history["uas_train"].append(uas_without_pad) # Unlabeled Attachment Score
@@ -442,7 +494,6 @@ def main(args):
   label_feature = next((f for f in sequence_features if f.name == "dep_labels"),
                         None)
   
-  
   if args.train:
     embeddings = nn_utils.load_embeddings()
     word_embeddings = Embeddings(name= "word2vec", matrix=embeddings)
@@ -467,7 +518,7 @@ def main(args):
         batch_size=1,
         features=sequence_features
       )
-  
+
   parser = NeuralMSTParser(word_embeddings=prep.word_embeddings,
                            n_output_classes=label_feature.n_values)
   print(parser)
@@ -487,9 +538,9 @@ if __name__ == "__main__":
   parser.add_argument("--epochs", type=int, default=50,
                       help="Trains a new model.")
   parser.add_argument("--treebank", type=str,
-                      default="treebank_tr_imst_ud_train_dev.pbtxt")
+                      default="treebank_train_0_10.pbtxt")
   parser.add_argument("--test_treebank", type=str,
-                      default="treebank_tr_imst_ud_test_fixed.pbtxt")
+                      default="treebank_0_3_gold.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features", type=list,
@@ -499,7 +550,8 @@ if __name__ == "__main__":
                       help="labels to predict.")
   parser.add_argument("--batchsize", type=int, default=250,
                       help="Size of training and test data batches")
-  parser.add_argument("--model_name", type=str, default="joint_baseline_with_las",
+  parser.add_argument("--model_name", type=str, default="quick_baseline",
                       help="Name of the model to save.")
+  parser.add_argument("--test_attn", type=str, default=True)
   args = parser.parse_args()
   main(args)
