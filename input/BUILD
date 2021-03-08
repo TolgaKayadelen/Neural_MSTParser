@@ -8,6 +8,7 @@ py_binary(
   srcs = ["preprocessor.py"],
   deps = [
     "//tagset:reader",
+    "//tagset/morphology:morph_tags",
     "//util/nn:nn_utils",
     "//util:reader",
   ],

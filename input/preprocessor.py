@@ -3,6 +3,7 @@ import numpy as np
 import random
 from enum import Enum
 from tagset.reader import LabelReader
+from tagset.morphology import morph_tags
 from typing import List, Dict, Generator, Union
 from util.nn import nn_utils
 from util import reader
@@ -31,7 +32,7 @@ class SequenceFeature:
     self.n_values = n_values
     self.one_hot = one_hot
     self.is_label = is_label
-  
+    
   def _convert_to_one_hot(self, values, n_values):
     """Converts an integer array one hot vector.
     
@@ -225,7 +226,7 @@ class Preprocessor:
         embeddings = nn_utils.load_embeddings()
         mappings["words"] = Embeddings(name="word2vec", matrix=embeddings)
     if "morph" in feature_names:
-      raise RuntimeError("Morphology features are not supported yet.")
+      mappings["morph"] = LabelReader.get_labels("morph").labels
     if "pos" in feature_names:
       mappings["pos"] = LabelReader.get_labels("pos").labels
     if "category" in feature_names:
@@ -248,8 +249,12 @@ class Preprocessor:
     
     for feature in features:
       feature_list = example.feature_lists.feature_list[feature.name]
-      for token in feature.values:
-        feature_list.feature.add().int64_list.value.append(token)
+      if not feature.name == "morph":
+        for token in feature.values:
+          feature_list.feature.add().int64_list.value.append(token)
+      else:
+        for token in feature.values:
+          feature_list.feature.add().int64_list.value.extend(token)
     # print(example)
     # input("press to cont.")
     return example
@@ -272,6 +277,7 @@ class Preprocessor:
     sequence_features = {}
     feature_mappings = self.get_index_mappings_for_features(features)
     
+    
     for feature in features:
       if not feature == label:
         sequence_features[feature] = SequenceFeature(name=feature)
@@ -289,22 +295,39 @@ class Preprocessor:
                         )
         sequence_features["words"].values = word_indices
       if "category" in features:
-        cat_indices = prep.numericalize(
+        cat_indices = self.numericalize(
                           values=[token.category for token in sentence.token],
                           mapping=feature_mappings["category"])
         sequence_features["category"].values = cat_indices
       if "pos" in features:
-        pos_indices = prep.numericalize(
+        pos_indices = self.numericalize(
                           values=[token.pos for token in sentence.token],
                           mapping=feature_mappings["pos"])
+        print(pos_indices)
         sequence_features["pos"].values = pos_indices
+      if "morph" in features:
+        morph_features = []
+        for token in sentence.token:
+          morph_vector = np.zeros(len(feature_mappings["morph"]), dtype=int)
+          tags = morph_tags.from_token(token=token)
+          morph_indices = self.numericalize(
+                          values=tags,
+                          mapping=feature_mappings["morph"]
+          )
+          print(list(zip(tags, morph_indices)))
+          np.put(morph_vector, morph_indices, [1])
+          morph_features.append(morph_vector)
+        sequence_features["morph"].values = morph_features
       if "dep_labels" in features:
         sentence.token[0].label = "TOP" # workaround key errors
-        dep_indices = prep.numericalize(
+        dep_indices = self.numericalize(
                           values=[token.label for token in sentence.token],
                           mapping=feature_mappings["dep_labels"]
         )
         sequence_features["dep_labels"].values = dep_indices
+      if "heads" in features:
+        sequence_features["heads"].values = [
+          token.selected_head.address for token in sentence.token]
 
       example = self.make_tf_example(features=list(sequence_features.values()))
       tf_examples.append(example)
@@ -427,7 +450,7 @@ if __name__ == "__main__":
   datapath = "data/UDv23/Turkish/training/treebank_train_0_50.pbtxt"
   trb = reader.ReadTreebankTextProto(datapath)
   prep.make_dataset_from_treebank(
-            features=["words", "pos", "dep_labels",  "heads"],
+            features=["words", "pos", "morph", "dep_labels",  "heads"],
             label="heads",
             treebank=trb,
             save_path="./input/test501.tfrecords")

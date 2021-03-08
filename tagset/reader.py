@@ -2,6 +2,7 @@ from tagset.fine_pos import fine_tag_enum_pb2 as fine_tags
 from tagset.coarse_pos import coarse_tag_enum_pb2 as coarse_tags
 from tagset.dep_labels import dep_label_enum_pb2 as dep_labels
 from tagset.arg_str import semantic_role_enum_pb2 as srl
+from tagset.morphology import morph_tag_enum_pb2 as morph_tags
 
 class LabelReader:
   """The label reader returns a dict of label:index pairs."""
@@ -30,6 +31,8 @@ class LabelReader:
       tags = dep_labels
     elif self._tagset == "srl":
       tags = srl
+    elif self._tagset == "morph":
+      tags = morph_tags
     else:
       raise ValueError("Invalid tagset requested.")
     
