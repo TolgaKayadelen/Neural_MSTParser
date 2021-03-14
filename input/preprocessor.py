@@ -303,7 +303,7 @@ class Preprocessor:
         pos_indices = self.numericalize(
                           values=[token.pos for token in sentence.token],
                           mapping=feature_mappings["pos"])
-        print(pos_indices)
+        # print(pos_indices)
         sequence_features["pos"].values = pos_indices
       if "morph" in features:
         morph_features = []
@@ -314,7 +314,8 @@ class Preprocessor:
                           values=tags,
                           mapping=feature_mappings["morph"]
           )
-          print(list(zip(tags, morph_indices)))
+          # print(list(zip(tags, morph_indices)))
+          # We put 1 to the indices for the active morphology features.
           np.put(morph_vector, morph_indices, [1])
           morph_features.append(morph_vector)
         sequence_features["morph"].values = morph_features
@@ -383,10 +384,13 @@ class Preprocessor:
     
     for feature in features:
       _output_types[feature.name]=feature.dtype
-      _output_shapes[feature.name]=[None]
-      _padded_shapes[feature.name]=tf.TensorShape([None])
       _padding_values[feature.name] = tf.constant(0, dtype=tf.int64)
-        
+      if feature.name == "morph":
+        _output_shapes[feature.name]=tf.TensorShape([None, 66]) # (, 66)
+        _padded_shapes[feature.name]=tf.TensorShape([None, 66])
+      else:
+        _output_shapes[feature.name]=[None]
+        _padded_shapes[feature.name]=tf.TensorShape([None])
     
     dataset = tf.data.Dataset.from_generator(
       generator,
@@ -426,6 +430,19 @@ class Preprocessor:
           yield_dict[feature_name] = self.numericalize(
             values=[token.category for token in sentence.token],
             mapping=feature_mappings["category"])
+        if feature_name == "morph":
+          morph_features = []
+          for token in sentence.token:
+            morph_vector = np.zeros(len(feature_mappings["morph"]), dtype=int)
+            tags = morph_tags.from_token(token=token)
+            morph_indices = self.numericalize(
+                            values=tags,
+                            mapping=feature_mappings["morph"]
+            )
+            # print(list(zip(tags,morph_indices)))
+            np.put(morph_vector, morph_indices, [1])
+            morph_features.append(morph_vector)
+          yield_dict[feature_name] = morph_features
         if feature_name == "dep_labels":
           sentence.token[0].label = "TOP" # workaround key errors
           yield_dict[feature_name] = self.numericalize(
@@ -434,6 +451,8 @@ class Preprocessor:
         if feature_name == "heads":
           yield_dict[feature_name] = [
             token.selected_head.address for token in sentence.token]
+      # print("yield dict ", yield_dict)
+      # input("press to continue")
       yield yield_dict
 
     

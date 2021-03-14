@@ -118,7 +118,9 @@ class NeuralMSTParser:
     pos_features = tf.keras.layers.Embedding(input_dim=35,
                                              output_dim=32,
                                              name="pos_embeddings")(pos_inputs)
-    concat = tf.keras.layers.concatenate([word_features, pos_features],
+    morph_inputs = tf.keras.Input(shape=(None, 66), name="morph")
+    concat = tf.keras.layers.concatenate([word_features, pos_features,
+                                          morph_inputs],
                                          name="concat")
     
     # encode the sentence with LSTM
@@ -151,7 +153,8 @@ class NeuralMSTParser:
     Hh_b = b_arc(h_arc_head)
     edge_scores = Hh_W_Ha + tf.transpose(Hh_b, perm=[0,2,1])
     
-    model = tf.keras.Model(inputs={"words": word_inputs, "pos": pos_inputs},
+    model = tf.keras.Model(inputs={"words": word_inputs, "pos": pos_inputs,
+                                    "morph": morph_inputs},
                                     outputs=[edge_scores, dep_labels])
     return model
   
@@ -244,7 +247,7 @@ class NeuralMSTParser:
     return label_loss, correct_labels, label_preds
 
   @tf.function
-  def train_step(self, *, words: tf.Tensor, pos: tf.Tensor,
+  def train_step(self, *, words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
                  dep_labels: tf.Tensor, heads:tf.Tensor
                  ) -> Tuple[tf.Tensor, ...]:
     """Runs one training step.
@@ -264,7 +267,7 @@ class NeuralMSTParser:
           dependency labels
     ..."""
     with tf.GradientTape() as tape:
-      edge_scores, label_scores = self.model({"words": words, "pos": pos},
+      edge_scores, label_scores = self.model({"words": words, "pos": pos, "morph": morph},
                                              training=True)
       pad_mask = (words != 0)
       edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask = self.edge_loss(
@@ -310,14 +313,20 @@ class NeuralMSTParser:
         # Read the data and labels from the dataset.
         words = batch["words"]
         pos = batch["pos"]
+        # We cast the type of this tensor to float32 because in the model
+        # pos and word features are passed through an embedding layer, which
+        # converts them into float values implicitly.
+        # TODO: maybe do this as you read in the morph values in preprocessor.
+        morph = tf.dtypes.cast(batch["morph"], tf.float32)
         dep_labels = tf.one_hot(batch["dep_labels"], self._n_output_classes)
         heads = batch["heads"]
-       
-        
+        # print(words, pos, morph)
+        # input("press to cont..")
         
         # Get the losses and predictions
         (edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask, label_loss,
         correct_labels, label_preds) = self.train_step(words=words, pos=pos,
+                                                       morph=morph,
                                                        dep_labels=dep_labels,
                                                        heads=heads)
        
@@ -425,7 +434,8 @@ class NeuralMSTParser:
     for example in dataset:
       words = example["words"]
       pos = example["pos"]
-      edge_scores, label_scores = self.model({"words": words, "pos": pos},
+      morph = tf.dtypes.cast(example["morph"], tf.float32)
+      edge_scores, label_scores = self.model({"words": words, "pos": pos, "morph": morph},
                                              training=False)
       # TODO: in the below computation of scores, you should leave out
       # the 0th token, which is the dummy token.
@@ -535,22 +545,22 @@ if __name__ == "__main__":
                       help="Trains a new model.")
   parser.add_argument("--test", type=bool, default=True,
                       help="Whether to test the trained model on test data.")
-  parser.add_argument("--epochs", type=int, default=50,
+  parser.add_argument("--epochs", type=int, default=10,
                       help="Trains a new model.")
   parser.add_argument("--treebank", type=str,
-                      default="treebank_train_0_10.pbtxt")
+                      default="treebank_train_1000_1500.pbtxt")
   parser.add_argument("--test_treebank", type=str,
-                      default="treebank_0_3_gold.pbtxt")
+                      default="treebank_train_0_50.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features", type=list,
-                      default=["words", "pos", "dep_labels", "heads"],
+                      default=["words", "pos", "morph", "dep_labels", "heads"],
                       help="features to use to train the model.")
   parser.add_argument("--label", type=list, default=["heads", "dep_labels"],
                       help="labels to predict.")
-  parser.add_argument("--batchsize", type=int, default=250,
+  parser.add_argument("--batchsize", type=int, default=2,
                       help="Size of training and test data batches")
-  parser.add_argument("--model_name", type=str, default="quick_baseline",
+  parser.add_argument("--model_name", type=str,
                       help="Name of the model to save.")
   parser.add_argument("--test_attn", type=str, default=True)
   args = parser.parse_args()
