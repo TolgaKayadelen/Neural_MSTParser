@@ -267,7 +267,8 @@ class NeuralMSTParser:
           dependency labels
     ..."""
     with tf.GradientTape() as tape:
-      edge_scores, label_scores = self.model({"words": words, "pos": pos, "morph": morph},
+      edge_scores, label_scores = self.model({"words": words, "pos": pos,
+                                              "morph": morph},
                                              training=True)
       pad_mask = (words != 0)
       edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask = self.edge_loss(
