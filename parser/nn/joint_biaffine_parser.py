@@ -435,7 +435,8 @@ class NeuralMSTParser:
       words = example["words"]
       pos = example["pos"]
       morph = tf.dtypes.cast(example["morph"], tf.float32)
-      edge_scores, label_scores = self.model({"words": words, "pos": pos, "morph": morph},
+      edge_scores, label_scores = self.model({"words": words, "pos": pos,
+                                              "morph": morph},
                                              training=False)
       # TODO: in the below computation of scores, you should leave out
       # the 0th token, which is the dummy token.
