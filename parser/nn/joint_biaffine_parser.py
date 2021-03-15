@@ -502,35 +502,34 @@ def plot(epochs, uas_train, label_acc_train, uas_test, label_acc_test,
 
 
 def main(args):
-  sequence_features = _set_up_features(args.features, args.label)
-  label_feature = next((f for f in sequence_features if f.name == "dep_labels"),
-                        None)
-  
   if args.train:
     embeddings = nn_utils.load_embeddings()
     word_embeddings = Embeddings(name= "word2vec", matrix=embeddings)
-    prep = preprocessor.Preprocessor(word_embeddings=word_embeddings)
+    prep = preprocessor.Preprocessor(
+      word_embeddings=word_embeddings, features=args.features,
+      labels=args.labels)
+    label_feature = next((f for f in prep.sequence_features if f.name == "dep_labels"),
+                          None)
+    # print("label feature ", label_feature)
+    # print("n output classes", label_feature.n_values)
+    # input("press to cont.")
     
     if args.dataset:
+      logging.info(f"Reading from tfrecords {args.dataset}")
       dataset = prep.read_dataset_from_tfrecords(
                                  batch_size=args.batchsize,
-                                 features=sequence_features,
-                                 records="./input/test501.tfrecords")
+                                 records="./input/treebank_train_0_50.tfrecords")
     else:
+      logging.info(f"Generating dataset from {args.treebank}")
       dataset = prep.make_dataset_from_generator(
         path=os.path.join(_DATA_DIR, args.treebank),
-        batch_size=args.batchsize, 
-        features=sequence_features
-      )
+        batch_size=args.batchsize)
     if args.test:
       if not args.train:
         sys.exit("Testing with a pretrained model is not supported yet.")
       test_dataset = prep.make_dataset_from_generator(
         path=os.path.join(_TEST_DATA_DIR, args.test_treebank),
-        batch_size=1,
-        features=sequence_features
-      )
-
+        batch_size=1)
   parser = NeuralMSTParser(word_embeddings=prep.word_embeddings,
                            n_output_classes=label_feature.n_values)
   print(parser)
@@ -547,18 +546,18 @@ if __name__ == "__main__":
                       help="Trains a new model.")
   parser.add_argument("--test", type=bool, default=True,
                       help="Whether to test the trained model on test data.")
-  parser.add_argument("--epochs", type=int, default=10,
+  parser.add_argument("--epochs", type=int, default=20,
                       help="Trains a new model.")
   parser.add_argument("--treebank", type=str,
-                      default="treebank_train_1000_1500.pbtxt")
-  parser.add_argument("--test_treebank", type=str,
                       default="treebank_train_0_50.pbtxt")
+  parser.add_argument("--test_treebank", type=str,
+                      default="treebank_0_3_gold.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features", type=list,
                       default=["words", "pos", "morph", "dep_labels", "heads"],
                       help="features to use to train the model.")
-  parser.add_argument("--label", type=list, default=["heads", "dep_labels"],
+  parser.add_argument("--labels", type=list, default=["heads", "dep_labels"],
                       help="labels to predict.")
   parser.add_argument("--batchsize", type=int, default=2,
                       help="Size of training and test data batches")

@@ -98,3 +98,10 @@ filegroup(
     "propbank/*.txt",
   ]),
 )
+
+filegroup(
+  name = "preprocessor",
+  srcs = glob([
+    "preprocessor/*.pbtxt",
+  ]),
+)
