@@ -74,6 +74,7 @@ class PreprocessorTest(tf.test.TestCase):
     sentences = treebank.sentence
     dataset = self.prep.make_dataset_from_generator(path=self.datapath)
     morph_mapping = LabelReader.get_labels("morph").labels
+    # TODO: do this with itertools.
     for batch in dataset:
       for sentence_repr, sentence in zip(batch["morph"], sentences):
         for i in range(sentence_repr.shape[0]):

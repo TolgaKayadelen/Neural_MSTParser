@@ -542,27 +542,44 @@ def main(args):
     
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
-  parser.add_argument("--train", type=bool, default=True,
+  parser.add_argument("--train",
+                      type=bool,
+                      default=True,
                       help="Trains a new model.")
-  parser.add_argument("--test", type=bool, default=True,
+  parser.add_argument("--test",
+                      type=bool,
+                      default=True,
                       help="Whether to test the trained model on test data.")
-  parser.add_argument("--epochs", type=int, default=20,
+  parser.add_argument("--epochs",
+                      type=int,
+                      default=100,
                       help="Trains a new model.")
-  parser.add_argument("--treebank", type=str,
-                      default="treebank_train_0_50.pbtxt")
-  parser.add_argument("--test_treebank", type=str,
+  parser.add_argument("--treebank",
+                      type=str,
+                      default="treebank_train_0_10.pbtxt")
+  parser.add_argument("--test_treebank",
+                      type=str,
                       default="treebank_0_3_gold.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
-  parser.add_argument("--features", type=list,
+  parser.add_argument("--features",
+                      type=list,
                       default=["words", "pos", "morph", "dep_labels", "heads"],
                       help="features to use to train the model.")
-  parser.add_argument("--labels", type=list, default=["heads", "dep_labels"],
+  parser.add_argument("--labels",
+                      type=list,
+                      default=["heads", "dep_labels"],
                       help="labels to predict.")
-  parser.add_argument("--batchsize", type=int, default=2,
+  parser.add_argument("--batchsize",
+                      type=int, 
+                      default=50,
                       help="Size of training and test data batches")
-  parser.add_argument("--model_name", type=str,
+  parser.add_argument("--model_name",
+                      type=str,
                       help="Name of the model to save.")
-  parser.add_argument("--test_attn", type=str, default=True)
+  parser.add_argument("--test_attn",
+                      type=str,
+                      default=True)
+
   args = parser.parse_args()
   main(args)
