@@ -46,6 +46,24 @@ _SEMANTIC_ROLES = {'-pad-': 0, 'B-A0': 1, 'I-A0': 2, 'B-A1': 3, 'I-A1': 4, 'B-A3
                   }
 
 
+_MORPH = {'UNKNOWN_MORPH': 0, 'abbr_yes': 1, 'aspect_durperf': 2, 'aspect_hab': 3,
+          'aspect_perf': 4, 'aspect_prog': 5, 'aspect_prograpid': 6, 'aspect_prosp': 7,
+          'aspect_rapid': 8, 'case_abl': 9, 'case_acc': 10, 'case_dat': 11,
+          'case_equ': 12, 'case_gen': 13, 'case_ins': 14, 'case_loc': 15,
+          'case_nom': 16, 'echo_rdp': 17, 'evident_nfh': 18, 'mood_cnd': 19,
+          'mood_cndpot': 20, 'mood_des': 21, 'mood_despot': 22, 'mood_gen': 23,
+          'mood_gennec': 24, 'mood_gennecpot': 25, 'mood_imp': 26, 'mood_ind': 27,
+          'mood_nec': 28, 'mood_necpot': 29, 'mood_opt': 30, 'mood_pot': 31,
+          'mood_prs': 32, 'number_psor_plur': 33, 'number_psor_sing': 34,
+          'number_plur': 35, 'number_sing': 36, 'numtype_card': 37, 'numtype_dist': 38,
+          'numtype_ord': 39, 'person_psor_1': 40, 'person_psor_2': 41,
+          'person_psor_3': 42, 'person_1': 43, 'person_2': 44, 'person_3': 45,
+          'polarity_neg': 46, 'polarity_pos': 47, 'polite_form': 48, 'polite_infm': 49,
+          'prontype_dem': 50, 'prontype_ind': 51, 'prontype_prs': 52, 'reflex_yes': 53,
+          'tense_fut': 54, 'tense_fut_past': 55, 'tense_past': 56, 'tense_pqp': 57,
+          'tense_pres': 58, 'verbform_conv': 59, 'verbform_part': 60, 'verbform_vnoun': 61,
+          'voice_cau': 62, 'voice_caupass': 63, 'voice_pass': 64, '-pad-': 0}
+
 class LabelReaderTest(parameterized.TestCase):
   """Tests for the label reader."""
   @parameterized.named_parameters(
@@ -67,15 +85,19 @@ class LabelReaderTest(parameterized.TestCase):
       },
       {
         "testcase_name": "semantic_roles",
-        "tagset": "semantic_roles",
+        "tagset": "srl",
         "expected_labels": _SEMANTIC_ROLES,
+      },
+      {
+        "testcase_name": "morphology",
+        "tagset": "morph",
+        "expected_labels": _MORPH,
       }
     ]
   )
   def test_read_labels(self, tagset, expected_labels):
     self.assertDictEqual(LabelReader.get_labels(tagset).labels, expected_labels)
     print("Passed!")
-  
 
 if __name__ == "__main__":
 	absltest.main()

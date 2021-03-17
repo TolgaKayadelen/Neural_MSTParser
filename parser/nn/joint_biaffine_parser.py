@@ -159,6 +159,21 @@ class NeuralMSTParser:
     return model
   
 
+  def _compute_metrics(self, *, stats: Dict):
+    """Computes UAS, LS, and LAS metrics."""
+    # Compute UAS with and without padding for this epoch
+    uas_with_pad = stats["n_edge_correct_with_pad"] / stats["n_tokens_with_pad"]
+    uas_without_pad = stats["n_edge_correct"] / stats["n_tokens"]
+    
+    # Compute Label Score (LS) with and without padding for this epoch
+    label_score_pad = stats["n_label_correct_with_pad"] / stats["n_tokens_with_pad"]
+    label_score_without_pad = stats["n_label_correct"] / stats["n_tokens"]
+    
+    # Compute Labeled Attachment Score
+    las_train = stats["n_las"] / stats["n_tokens"]
+    return (uas_with_pad, uas_without_pad, label_score_pad,
+            label_score_without_pad, las_train)
+
   def _labeled_attachment_score(self, edges, labels, test=False):
     """Computes the number of tokens that have correct Labeled Attachment.
     
@@ -312,17 +327,13 @@ class NeuralMSTParser:
       for step, batch in enumerate(dataset):
         
         # Read the data and labels from the dataset.
-        words = batch["words"]
-        pos = batch["pos"]
+        words, pos, heads = batch["words"], batch["pos"], batch["heads"]
+        dep_labels = tf.one_hot(batch["dep_labels"], self._n_output_classes)
         # We cast the type of this tensor to float32 because in the model
         # pos and word features are passed through an embedding layer, which
         # converts them into float values implicitly.
         # TODO: maybe do this as you read in the morph values in preprocessor.
         morph = tf.dtypes.cast(batch["morph"], tf.float32)
-        dep_labels = tf.one_hot(batch["dep_labels"], self._n_output_classes)
-        heads = batch["heads"]
-        # print(words, pos, morph)
-        # input("press to cont..")
         
         # Get the losses and predictions
         (edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask, label_loss,
@@ -376,37 +387,20 @@ class NeuralMSTParser:
       # Compute average label loss (only with pad)
       avg_label_loss = tf.reduce_mean(label_loss)
       
-      # Compute UAS with and without padding for this epoch
-      uas_with_pad = stats["n_edge_correct_with_pad"] / stats["n_tokens_with_pad"]
-      uas_without_pad = stats["n_edge_correct"] / stats["n_tokens"]
+      (uas_with_pad, uas_without_pad, label_score_pad, label_score_without_pad,
+      las_train) = self._compute_metrics(stats=stats)
       
-      # Compute Label Score (LS) with and without padding for this epoch
-      label_score_pad = stats["n_label_correct_with_pad"] / stats["n_tokens_with_pad"]
-      label_score_without_pad = stats["n_label_correct"] / stats["n_tokens"]
-      
-      # Compute Labeled Attachment Score
-      las_train = stats["n_las"] / stats["n_tokens"]
-      
-      # Log all the stats
-      # logging.info(f"Training accuracy (heads): {edge_train_acc}")
-      # logging.info(f"Training accuracy (labels) : {label_train_acc}\n")
-      
-      # logging.info(f"UAS (with pad): {uas_with_pad}")
-      logging.info(f"UAS train (without pad): {uas_without_pad}")
-      
-      # logging.info(f"LS (with pad) {label_score_pad}")
-      logging.info(f"LS train (without pad) {label_score_without_pad}")
-      logging.info(f"LAS train (without pad) {las_train}\n")
-      
-      
-      logging.info(f"Edge loss (with pad): {avg_edge_loss_pad}")
-      # logging.info(f"Edge loss without pad: {avg_edge_loss_w_o_pad}")
-      logging.info(f"Label loss (with pad) {avg_label_loss}\n")
-      
-      logging.info(f"Time for epoch: {time.time() - start_time}\n")
+      logging.info(f"""
+        UAS train (without pad): {uas_without_pad}
+        LS train (without pad) {label_score_without_pad}
+        LAS train (without pad) {las_train}\n
+        Edge loss (with pad): {avg_edge_loss_pad}
+        Label loss (with pad) {avg_label_loss}\n
+        Time for epoch: {time.time() - start_time}\n
+      """)
       
       # Update scores on test data at the end of every X epoch.
-      if epoch % 10 == 0 and test_data:
+      if epoch % 5 == 0 and test_data:
         uas_test, label_acc_test, las_test = self.test(dataset=test_data)
         logging.info(f"UAS test: {uas_test}")
         logging.info(f"LS test: {label_acc_test}")
@@ -459,29 +453,6 @@ class NeuralMSTParser:
     return head_accuracy.result(), label_accuracy.result(), las_test
 
 
-# TODO: the set up of the features should be done by the preprocessor class.
-def _set_up_features(features: List[str],
-                     label: List[str]) -> List[SequenceFeature]:
-  sequence_features = []
-  for feat in features:
-    if not feat in label:
-      sequence_features.append(preprocessor.SequenceFeature(name=feat))
-    # We don't need to get the label_indices for "heads" as we don't do
-    # label prediction on them in a typical sense. 
-    else:
-      if feat == "heads":
-        sequence_features.append(preprocessor.SequenceFeature(
-          name=feat, is_label=True))
-      else:
-        label_dict = LabelReader.get_labels(feat).labels
-        label_indices = list(label_dict.values())
-        label_feature = preprocessor.SequenceFeature(
-          name=feat, values=label_indices, n_values=len(label_indices),
-          is_label=True)
-        sequence_features.append(label_feature)
-  return sequence_features
-
-
 def plot(epochs, uas_train, label_acc_train, uas_test, label_acc_test,
          las_train, las_test, model_name):
   fig = plt.figure()
@@ -498,7 +469,6 @@ def plot(epochs, uas_train, label_acc_train, uas_test, label_acc_test,
   plt.ylabel("accuracy")
   plt.legend()
   plt.savefig(f"{model_name}_plot")
-
 
 
 def main(args):
@@ -552,14 +522,14 @@ if __name__ == "__main__":
                       help="Whether to test the trained model on test data.")
   parser.add_argument("--epochs",
                       type=int,
-                      default=100,
+                      default=10,
                       help="Trains a new model.")
   parser.add_argument("--treebank",
                       type=str,
-                      default="treebank_train_0_10.pbtxt")
+                      default="treebank_train_1000_1500.pbtxt")
   parser.add_argument("--test_treebank",
                       type=str,
-                      default="treebank_0_3_gold.pbtxt")
+                      default="treebank_train_0_50.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features",
@@ -576,6 +546,7 @@ if __name__ == "__main__":
                       help="Size of training and test data batches")
   parser.add_argument("--model_name",
                       type=str,
+                      default="test",
                       help="Name of the model to save.")
   parser.add_argument("--test_attn",
                       type=str,
