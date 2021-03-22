@@ -46,7 +46,7 @@ class NeuralMSTParser:
     self.optimizer=tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
     self.edge_train_metrics = metrics.SparseCategoricalAccuracy()
     self.label_train_metrics = metrics.CategoricalAccuracy()
-    self.model = self._create_uncompiled_model(n_output_classes)
+    self.model = self._parsing_model(n_output_classes)
     self._n_output_classes = n_output_classes
     
   def __str__(self):
@@ -55,7 +55,7 @@ class NeuralMSTParser:
   def plot(self, name="neural_joint_mstparser.png"):
      tf.keras.utils.plot_model(self.model, name, show_shapes=True)
   
-  def _create_uncompiled_model(self, n_classes) -> tf.keras.Model:
+  def _parsing_model(self, n_classes) -> tf.keras.Model:
     """Creates an NN model for edge factored dependency parsing."""
     
     word_inputs = tf.keras.Input(shape=(None,), name="words")
@@ -100,11 +100,6 @@ class NeuralMSTParser:
     """
 
     n_token = float(len(edges))
-    # if test:
-    #  lsa_tokens = zip(edges, labels)
-    #  print(list
-    #   (i for i, tok in enumerate(
-    #      list(lsa_tokens)) if tok[0] == True and tok[1] == True))
     if not len(edges) == len(labels):
       sys.exit("FATAL ERROR: Mismatch in the number of tokens!")
     n_las = np.sum(
@@ -190,7 +185,8 @@ class NeuralMSTParser:
           dependency labels.
       label_preds: tf.Tensor of shape (batch_size*seq_len, 1). The predicted
           dependency labels
-    ..."""
+    """
+    # TODO: handle cases where the model doesn't return dep label predictions.
     with tf.GradientTape() as tape:
       edge_scores, label_scores = self.model({"words": words, "pos": pos,
                                               "morph": morph},
@@ -436,10 +432,10 @@ if __name__ == "__main__":
                       help="Trains a new model.")
   parser.add_argument("--treebank",
                       type=str,
-                      default="treebank_train_1000_1500.pbtxt")
+                      default="treebank_train_0_50.pbtxt")
   parser.add_argument("--test_treebank",
                       type=str,
-                      default="treebank_train_0_50.pbtxt")
+                      default="treebank_0_3_gold.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features",

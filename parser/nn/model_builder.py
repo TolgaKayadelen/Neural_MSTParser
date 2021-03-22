@@ -1,4 +1,5 @@
-"""Module for different NN model architectures."""
+"""NN architectures."""
+
 import tensorflow as tf
 import numpy as np
 import logging
@@ -160,6 +161,8 @@ class ParsingModel(tf.keras.Model):
     self.edge_scorer = EdgeScorer(n_units=256, name="edge_scorer")
   
   
+  # TODO: this method should return dict.
+  # TODO: branch this to parameterize returning dep_label predictios.
   def call(self, inputs: Dict[str, tf.keras.Input]):
     word_inputs = inputs["words"]
     word_features = self.word_embeddings(word_inputs)
