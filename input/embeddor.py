@@ -33,7 +33,7 @@ class Embeddings:
   
   def __str__(self):
     return f"""
-      {self.name} embeddings, dimension: {self.dimension},
+      {self.name} embeddings, embedding dimension {self.embedding_dim},
       vocab_size: {self.vocab_size}
       """
   def _token_to_index(self) -> Dict[int, int]:

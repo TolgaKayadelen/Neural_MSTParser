@@ -1,85 +1,42 @@
-import tensorflow as tf
-import numpy as np
 import argparse
+import collections
+import logging
 import os
 import sys
 import time
-from tensorflow.keras import layers, metrics, losses, optimizers
-from typing import List, Dict, Tuple
-from input import preprocessor
-from tagset.reader import LabelReader
-from util.nn import nn_utils
-import collections
+
+from input import preprocessor, embeddor
+import tensorflow as tf
+import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-import logging
+from parser.nn import model_builder as builder
+from tagset.reader import LabelReader
+from tensorflow.keras import layers, metrics, losses, optimizers
+from typing import List, Dict, Tuple
+from util.nn import nn_utils
 
 
+# Set up basic configurations
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 np.set_printoptions(threshold=np.inf)
 mpl.style.use("seaborn")
 
-_DATA_DIR = "data/UDv23/Turkish/training"
-_TEST_DATA_DIR = "data/UDv23/Turkish/test"
-
+# Set up type aliases
 Dataset = tf.data.Dataset
-Embeddings = preprocessor.Embeddings
+Embeddings = embeddor.Embeddings
 SequenceFeature = preprocessor.SequenceFeature
 
-
-class Attention(layers.Layer):
-  """Implementation of an Attention layer."""
-  def __init__(self, return_sequences=True):
-    super(Attention, self).__init__(name="attention_layer")
-    self.return_sequences = return_sequences
-  
-  def build(self, input_shape):
-    """Builds the attention layer.
-    
-    Args:
-      Shape of a 3D tensor of (batch_size, seq_len, n_features).
-    Returns:
-      An Attention layer instance.
-    """
-    print("input shape ", input_shape)
-    '''
-    self.W = self.add_weight(name="attn_weight",
-                            shape=(input_shape[-1], 1),
-                            initializer="glorot_uniform",
-                            trainable=True)
-    self.b = self.add_weight(name="attn_bias",
-                            shape=(1,),
-                            initializer="zeros", trainable=True)
-    '''
-    self.densor1=layers.Dense(1, activation="tanh")
-    self.activator = layers.Activation("softmax", name="attention_weights")
-    self.dotor = layers.Dot(axes=1)
-  
-  def call(self, inputs):
-    """Computes the context vector for the inputs.
-    
-    Args:
-      a: A 3D Tensor of (batch_size, seq_len, n_features)
-    Returns:
-      output: A 3D tensor of same shape as a, where the input is scaled
-        according to the attention weights (i.e. context alphas)
-    """
-    '''
-    energies = tf.math.tanh(tf.matmul(inputs, self.W)+self.b)
-    alphas = tf.nn.softmax(energies, axis=1)
-    output = inputs*alphas
-    '''
-    energies = self.densor1(inputs)
-    activations = self.activator(energies)
-    output = inputs*activations
-    return output
+# Set up global constants
+_DATA_DIR = "data/UDv23/Turkish/training"
+_TEST_DATA_DIR = "data/UDv23/Turkish/test"
 
 class NeuralMSTParser:
   """The neural mst parser."""
   
   def __init__(self, *, word_embeddings: Embeddings, n_output_classes: int):
-    self.word_embeddings = self._set_pretrained_embeddings(word_embeddings)
+    self.word_embeddings = word_embeddings
     self.edge_loss_fn = losses.SparseCategoricalCrossentropy(
       from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
     self.label_loss_fn = losses.CategoricalCrossentropy(
@@ -97,65 +54,18 @@ class NeuralMSTParser:
   
   def plot(self, name="neural_joint_mstparser.png"):
      tf.keras.utils.plot_model(self.model, name, show_shapes=True)
-
-  def _set_pretrained_embeddings(self, 
-                                 embeddings: Embeddings) -> layers.Embedding:
-    """Builds a pretrained keras embedding layer from an Embeddings object."""
-    embed = tf.keras.layers.Embedding(embeddings.vocab_size,
-                             embeddings.embedding_dim,
-                             trainable=False,
-                             name="word_embeddings")
-    embed.build((None,))
-    embed.set_weights([embeddings.index_to_vector])
-    return embed
   
   def _create_uncompiled_model(self, n_classes) -> tf.keras.Model:
     """Creates an NN model for edge factored dependency parsing."""
     
     word_inputs = tf.keras.Input(shape=(None,), name="words")
-    word_features = self.word_embeddings(word_inputs)
-    pos_inputs = tf.keras.Input(shape=([None]), name="pos")
-    pos_features = tf.keras.layers.Embedding(input_dim=35,
-                                             output_dim=32,
-                                             name="pos_embeddings")(pos_inputs)
+    pos_inputs = tf.keras.Input(shape=(None,), name="pos")
     morph_inputs = tf.keras.Input(shape=(None, 66), name="morph")
-    concat = tf.keras.layers.concatenate([word_features, pos_features,
-                                          morph_inputs],
-                                         name="concat")
+    inputs = {"words": word_inputs, "pos": pos_inputs, "morph": morph_inputs}
     
-    # encode the sentence with LSTM
-    sentence_repr = layers.Bidirectional(tf.keras.layers.LSTM(
-        units=256, return_sequences=True, name="encoded1"))(concat)
-    sentence_repr = layers.Dropout(rate=0.3)(sentence_repr)
-    sentence_repr = layers.Bidirectional(tf.keras.layers.LSTM(
-        units=256, return_sequences=True, name="encoded2"))(sentence_repr)
-    sentence_repr = layers.Dropout(rate=0.3)(sentence_repr)
-    sentence_repr = layers.Bidirectional(tf.keras.layers.LSTM(
-        units=256, return_sequences=True, name="encoded3"))(sentence_repr)
-    sentence_repr = layers.Dropout(rate=0.3)(sentence_repr)
-    sentence_repr = Attention(return_sequences=True)(sentence_repr)
-    # Get the dependency label predictions
-    dep_labels = layers.Dense(units=n_classes, name="dep_labels")(sentence_repr)
-    
-    # the edge scoring bit with the MLPs
-    # Pass the sentence representation through two MLPs, for head and dep.
-    head_mlp = layers.Dense(256, activation="relu", name="head_mlp")
-    dep_mlp = layers.Dense(256, activation="relu", name="dep_mlp")
-    h_arc_head = head_mlp(dep_labels)
-    h_arc_dep = dep_mlp(dep_labels)
-    
-    # Biaffine part of the model. Computes the edge scores for all edges
-    W_arc = layers.Dense(256, use_bias=False, name="W_arc")
-    b_arc = layers.Dense(1, use_bias=False, name="b_arc")
-    Hh_W = W_arc(h_arc_head)
-    Hh_WT = tf.transpose(Hh_W, perm=[0,2,1])
-    Hh_W_Ha = tf.linalg.matmul(h_arc_dep, Hh_WT)
-    Hh_b = b_arc(h_arc_head)
-    edge_scores = Hh_W_Ha + tf.transpose(Hh_b, perm=[0,2,1])
-    
-    model = tf.keras.Model(inputs={"words": word_inputs, "pos": pos_inputs,
-                                    "morph": morph_inputs},
-                                    outputs=[edge_scores, dep_labels])
+    model = builder.ParsingModel(n_dep_labels=n_classes,
+                                 word_embeddings=self.word_embeddings)
+    model(inputs=inputs)
     return model
   
 
@@ -474,7 +384,7 @@ def plot(epochs, uas_train, label_acc_train, uas_test, label_acc_test,
 def main(args):
   if args.train:
     embeddings = nn_utils.load_embeddings()
-    word_embeddings = Embeddings(name= "word2vec", matrix=embeddings)
+    word_embeddings = embeddor.Embeddings(name= "word2vec", matrix=embeddings)
     prep = preprocessor.Preprocessor(
       word_embeddings=word_embeddings, features=args.features,
       labels=args.labels)
@@ -526,10 +436,10 @@ if __name__ == "__main__":
                       help="Trains a new model.")
   parser.add_argument("--treebank",
                       type=str,
-                      default="treebank_train_0_50.pbtxt")
+                      default="treebank_train_1000_1500.pbtxt")
   parser.add_argument("--test_treebank",
                       type=str,
-                      default="treebank_0_3_gold.pbtxt")
+                      default="treebank_train_0_50.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features",
@@ -542,7 +452,7 @@ if __name__ == "__main__":
                       help="labels to predict.")
   parser.add_argument("--batchsize",
                       type=int, 
-                      default=50,
+                      default=2,
                       help="Size of training and test data batches")
   parser.add_argument("--model_name",
                       type=str,
