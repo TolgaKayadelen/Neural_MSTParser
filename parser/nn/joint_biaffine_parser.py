@@ -542,7 +542,7 @@ if __name__ == "__main__":
                       help="labels to predict.")
   parser.add_argument("--batchsize",
                       type=int, 
-                      default=50,
+                      default=2,
                       help="Size of training and test data batches")
   parser.add_argument("--model_name",
                       type=str,

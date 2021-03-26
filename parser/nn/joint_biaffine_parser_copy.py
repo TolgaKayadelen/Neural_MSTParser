@@ -35,19 +35,22 @@ _TEST_DATA_DIR = "data/UDv23/Turkish/test"
 class NeuralMSTParser:
   """The neural mst parser."""
   
-  def __init__(self, *, word_embeddings: Embeddings, n_output_classes: int):
+  def __init__(self, *, word_embeddings: Embeddings,
+              n_output_classes: int,
+              predict: List[str] = ["edges"]):
     self.word_embeddings = word_embeddings
     self.edge_loss_fn = losses.SparseCategoricalCrossentropy(
       from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
     self.label_loss_fn = losses.CategoricalCrossentropy(
       from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
-    # self.label_loss_fn = losses.CategoricalCrossentropy(
-    #  from_logits=True)
     self.optimizer=tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
     self.edge_train_metrics = metrics.SparseCategoricalAccuracy()
     self.label_train_metrics = metrics.CategoricalAccuracy()
-    self.model = self._parsing_model(n_output_classes)
     self._n_output_classes = n_output_classes
+    self._predict = predict
+    self.model = self._parsing_model()
+    
+    
     
   def __str__(self):
     return str(self.model.summary())
@@ -55,7 +58,7 @@ class NeuralMSTParser:
   def plot(self, name="neural_joint_mstparser.png"):
      tf.keras.utils.plot_model(self.model, name, show_shapes=True)
   
-  def _parsing_model(self, n_classes) -> tf.keras.Model:
+  def _parsing_model(self) -> tf.keras.Model:
     """Creates an NN model for edge factored dependency parsing."""
     
     word_inputs = tf.keras.Input(shape=(None,), name="words")
@@ -63,26 +66,74 @@ class NeuralMSTParser:
     morph_inputs = tf.keras.Input(shape=(None, 66), name="morph")
     inputs = {"words": word_inputs, "pos": pos_inputs, "morph": morph_inputs}
     
-    model = builder.ParsingModel(n_dep_labels=n_classes,
-                                 word_embeddings=self.word_embeddings)
+    model = builder.ParsingModel(n_dep_labels=self._n_output_classes,
+                                 word_embeddings=self.word_embeddings,
+                                 predict=self._predict)
     model(inputs=inputs)
     return model
   
 
   def _compute_metrics(self, *, stats: Dict):
     """Computes UAS, LS, and LAS metrics."""
-    # Compute UAS with and without padding for this epoch
+    # Compute UAS with and without padding for this epoch.
     uas_with_pad = stats["n_edge_correct_with_pad"] / stats["n_tokens_with_pad"]
     uas_without_pad = stats["n_edge_correct"] / stats["n_tokens"]
     
+    return_dict = {"uas_with_pad": uas_with_pad,
+                   "uas_without_pad": uas_without_pad}
+    
     # Compute Label Score (LS) with and without padding for this epoch
-    label_score_pad = stats["n_label_correct_with_pad"] / stats["n_tokens_with_pad"]
-    label_score_without_pad = stats["n_label_correct"] / stats["n_tokens"]
+    if "n_label_correct_with_pad" in stats:
+      label_score_pad = stats["n_label_correct_with_pad"] / stats["n_tokens_with_pad"]
+      label_score_without_pad = stats["n_label_correct"] / stats["n_tokens"]
+      return_dict["label_score_pad"] = label_score_pad
+      return_dict["label_score_without_pad"] = label_score_without_pad
     
     # Compute Labeled Attachment Score
-    las_train = stats["n_las"] / stats["n_tokens"]
-    return (uas_with_pad, uas_without_pad, label_score_pad,
-            label_score_without_pad, las_train)
+    if "n_las" in stats:
+      las_train = stats["n_las"] / stats["n_tokens"]
+      return_dict["las_train"] = las_train
+    
+    return return_dict
+  
+  def _compute_n_correct(self, *, preds: Dict):
+    """Computes n correct edge and label predictions from system predictons."""
+    
+    # Calculate correct edge predictions
+    edge_pred = preds["edge_pred"]
+    # edge_correct_with_pad = preds["edge_correct_with_pad"]
+    correct_heads = preds["h"]
+    
+    # n_correct edge predictions with padding
+    edge_correct_with_pad = (edge_pred == correct_heads)
+    n_edge_correct_with_pad = np.sum(edge_correct_with_pad)
+
+    # n_correct edge predictions without padding
+    edge_correct = tf.boolean_mask(edge_pred == correct_heads, preds["pad_mask"])
+    n_edge_correct = np.sum(edge_correct)
+    
+    return_dict = {"edge_correct": edge_correct,
+                   "n_edge_correct_with_pad":  n_edge_correct_with_pad, 
+                   "n_edge_correct": n_edge_correct,
+                   "h": preds["h"]}
+    
+    # Calculate correct label predictions with padding
+    if "label_loss" in preds:
+      label_preds = preds["label_preds"]
+      correct_labels = preds["correct_labels"]
+      label_correct_with_pad = (label_preds == correct_labels)
+      n_label_correct_with_pad = np.sum(label_correct_with_pad)
+    
+      # Calculate correct label predictions without padding
+      label_correct = tf.boolean_mask(label_correct_with_pad, preds["pad_mask"])
+      n_label_correct = np.sum(label_correct)
+      
+      # Add to return dict
+      return_dict["label_correct"] = label_correct
+      return_dict["n_label_correct_with_pad"] = n_label_correct_with_pad
+      return_dict["n_label_correct"] = n_label_correct
+    
+    return return_dict
 
   def _labeled_attachment_score(self, edges, labels, test=False):
     """Computes the number of tokens that have correct Labeled Attachment.
@@ -126,6 +177,7 @@ class NeuralMSTParser:
     n_sentences, n_words, _ = edge_scores.shape
     edge_scores = tf.reshape(edge_scores, shape=(n_sentences*n_words, n_words))
     heads = tf.reshape(heads, shape=(n_sentences*n_words, 1))
+    # Pad mask is being reshaped here.
     pad_mask = tf.reshape(pad_mask, shape=(n_sentences*n_words, 1))
     
     predictions = tf.argmax(edge_scores, 1)
@@ -186,28 +238,46 @@ class NeuralMSTParser:
       label_preds: tf.Tensor of shape (batch_size*seq_len, 1). The predicted
           dependency labels
     """
-    # TODO: handle cases where the model doesn't return dep label predictions.
     with tf.GradientTape() as tape:
-      edge_scores, label_scores = self.model({"words": words, "pos": pos,
-                                              "morph": morph},
-                                             training=True)
+      scores = self.model({"words": words, "pos": pos, "morph": morph},
+                           training=True)
       pad_mask = (words != 0)
+      
+      # Get edge and label scores.
+      edge_scores, label_scores = scores["edges"], scores["labels"]
       edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask = self.edge_loss(
         edge_scores, heads, pad_mask)
-      
-      label_loss, correct_labels, label_preds = self.label_loss(
-          dep_labels, label_scores, pad_mask)
-
-    grads = tape.gradient([edge_loss_pad, label_loss],
-                          self.model.trainable_weights)
+      if label_scores is not None:
+        label_loss, correct_labels, label_preds = self.label_loss(dep_labels,
+                                                                  label_scores,
+                                                                  pad_mask)
+    
+    # Compute gradients.
+    if label_scores is not None:
+      grads = tape.gradient(
+        [edge_loss_pad, label_loss], self.model.trainable_weights
+      )
+    else:
+      grads = tape.gradient(edge_loss_pad, self.model.trainable_weights)
+    
+    # Update the optimizer
     self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
     
     # Update train metrics
     self.edge_train_metrics.update_state(heads, edge_scores)
-    self.label_train_metrics.update_state(dep_labels, label_scores)
+    if label_scores is not None:
+      self.label_train_metrics.update_state(dep_labels, label_scores)
+    
+    return_dict = {"edge_loss_pad": edge_loss_pad,
+                  "edge_loss_w_o_pad": edge_loss_w_o_pad,
+                  "edge_pred": edge_pred, "h": h, "pad_mask": pad_mask}
+                  
+    if label_scores is not None:
+      return_dict["label_loss"] = label_loss
+      return_dict["correct_labels"] = correct_labels
+      return_dict["label_preds"] = label_preds
 
-    return (edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask,
-            label_loss, correct_labels, label_preds)
+    return return_dict
 
   def train(self, dataset: Dataset, epochs: int=10, test_data: Dataset=None):
     """Custom training method.
@@ -225,7 +295,9 @@ class NeuralMSTParser:
       # Reset the states before starting the new epoch.
       self.edge_train_metrics.reset_states()
       self.label_train_metrics.reset_states()
-      logging.info(f"*********** Training epoch: {epoch} ***********\n\n")
+      
+      logging.info(f"{'->' * 12} Training Epoch: {epoch} {'<-' * 12}\n\n")
+      
       start_time = time.time()
       stats = collections.Counter()
       
@@ -241,69 +313,62 @@ class NeuralMSTParser:
         # TODO: maybe do this as you read in the morph values in preprocessor.
         morph = tf.dtypes.cast(batch["morph"], tf.float32)
         
-        # Get the losses and predictions
-        (edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask, label_loss,
-        correct_labels, label_preds) = self.train_step(words=words, pos=pos,
-                                                       morph=morph,
-                                                       dep_labels=dep_labels,
-                                                       heads=heads)
-       
-        # Get the total number of tokens without padding
-        words_reshaped = tf.reshape(words, shape=(pad_mask.shape))
-        total_words = len(tf.boolean_mask(words_reshaped, pad_mask))
+        # Run forward propagation to get losses and predictions for this step.
+        losses_and_preds = self.train_step(words=words, pos=pos, morph=morph,
+                                           dep_labels=dep_labels, heads=heads)
+    
+        # Get the total number of tokens without padding for this step.
+        words_reshaped = tf.reshape(words, 
+                                    shape=(losses_and_preds["pad_mask"].shape))
+        total_words = len(tf.boolean_mask(words_reshaped,
+                                          losses_and_preds["pad_mask"]))
         
-        # Calculate correct label predictions with padding
-        label_correct_with_pad = (label_preds == correct_labels)
-        n_label_correct_with_pad = np.sum(label_correct_with_pad)
+        # Get the number of correct predictions for this step.
+        n_correct = self._compute_n_correct(preds=losses_and_preds)
         
-        # Calculate correct label predictions without padding
-        label_correct = tf.boolean_mask(label_correct_with_pad, pad_mask)
-        n_label_correct= np.sum(label_correct)
-        
-        # Calculate correct edge predictions with padding
-        edge_correct_with_pad = (edge_pred == h)
-        n_edge_correct_with_pad = np.sum(edge_correct_with_pad)
-
-        # Calculate correct edge predictions without padding
-        edge_correct = tf.boolean_mask(edge_pred == h, pad_mask)
-        n_edge_correct = np.sum(edge_correct)
-        
-        # Calculate the number of tokens which has correct las.
-        las_correct = self._labeled_attachment_score(edge_correct, label_correct)
-        
-        # Add to stats
-        stats["n_edge_correct_with_pad"] += n_edge_correct_with_pad
-        stats["n_edge_correct"] += n_edge_correct
-        stats["n_label_correct_with_pad"] += n_label_correct_with_pad
-        stats["n_label_correct"] += n_label_correct
-        stats["n_las"] += las_correct 
-        stats["n_tokens_with_pad"] += len(h)
+        # Accumulate the stats for all steps in the epoch.
+        stats["n_edge_correct_with_pad"] += n_correct["n_edge_correct_with_pad"]
+        stats["n_edge_correct"] += n_correct["n_edge_correct"]
+        stats["n_label_correct_with_pad"] += n_correct["n_label_correct_with_pad"]
+        stats["n_label_correct"] += n_correct["n_label_correct"]
+        stats["n_tokens_with_pad"] += len(n_correct["h"])
         stats["n_tokens"] += total_words
+        
+        # Calculate the number of tokens which has correct las for this step
+        # and add it to the accumulator.
+        if "label_correct" in n_correct:
+          las_correct = self._labeled_attachment_score(
+            n_correct["edge_correct"], n_correct["label_correct"])
+          stats["n_las"] += las_correct     
 
-      # Get training accuracy metrics 
-      print(stats)
-      # input("press to cont.")
+      print(f"Training Stats: {stats}")
+      
+      # Get UAS, LS, and LAS after the epoch.
+      metrics = self._compute_metrics(stats=stats)
+      
+      # Average the loss scores.
       edge_train_acc = self.edge_train_metrics.result()
       label_train_acc = self.label_train_metrics.result()
       
       # Compute average edge losses with and without padding
-      avg_edge_loss_pad = tf.reduce_mean(edge_loss_pad)
-      avg_edge_loss_w_o_pad = tf.reduce_mean(edge_loss_w_o_pad)
+      avg_edge_loss_pad = tf.reduce_mean(losses_and_preds["edge_loss_pad"])
+      avg_edge_loss_w_o_pad = tf.reduce_mean(losses_and_preds["edge_loss_w_o_pad"])
       
       # Compute average label loss (only with pad)
-      avg_label_loss = tf.reduce_mean(label_loss)
-      
-      (uas_with_pad, uas_without_pad, label_score_pad, label_score_without_pad,
-      las_train) = self._compute_metrics(stats=stats)
+      if "label_loss" in losses_and_preds:
+        avg_label_loss = tf.reduce_mean(losses_and_preds["label_loss"])    
       
       logging.info(f"""
-        UAS train (without pad): {uas_without_pad}
-        LS train (without pad) {label_score_without_pad}
-        LAS train (without pad) {las_train}\n
-        Edge loss (with pad): {avg_edge_loss_pad}
-        Label loss (with pad) {avg_label_loss}\n
-        Time for epoch: {time.time() - start_time}\n
-      """)
+        UAS train (without pad): {metrics['uas_without_pad']}
+        Edge loss (with pad): {avg_edge_loss_pad}\n""")
+      
+      if "label_score_without_pad" in metrics:
+        logging.info(f"""
+          LS train (without pad) {metrics['label_score_without_pad']}
+          LAS train (without pad) {metrics['las_train']}
+          Label loss (with pad) {avg_label_loss}\n""")
+      
+      logging.info(f"Time for epoch: {time.time() - start_time}\n")
       
       # Update scores on test data at the end of every X epoch.
       if epoch % 5 == 0 and test_data:
@@ -313,9 +378,9 @@ class NeuralMSTParser:
         logging.info(f"LAS test: {las_test}\n")
       
       # Populate stats history
-      history["uas_train"].append(uas_without_pad) # Unlabeled Attachment Score
-      history["ls_train"].append(label_score_without_pad) # Label Score
-      history["las_train"].append(las_train)
+      history["uas_train"].append(metrics['uas_without_pad'])
+      history["ls_train"].append(metrics['label_score_without_pad']) 
+      history["las_train"].append(metrics['las_train'])
       history["uas_test"].append(uas_test)
       history["ls_test"].append(label_acc_test)
       history["las_test"].append(las_test)
@@ -336,9 +401,9 @@ class NeuralMSTParser:
       words = example["words"]
       pos = example["pos"]
       morph = tf.dtypes.cast(example["morph"], tf.float32)
-      edge_scores, label_scores = self.model({"words": words, "pos": pos,
-                                              "morph": morph},
-                                             training=False)
+      return_dict = self.model({"words": words, "pos": pos, "morph": morph},
+                               training=False)
+      edge_scores, label_scores = return_dict["edges"], return_dict["labels"]
       # TODO: in the below computation of scores, you should leave out
       # the 0th token, which is the dummy token.
       heads = example["heads"]
@@ -407,7 +472,8 @@ def main(args):
         path=os.path.join(_TEST_DATA_DIR, args.test_treebank),
         batch_size=1)
   parser = NeuralMSTParser(word_embeddings=prep.word_embeddings,
-                           n_output_classes=label_feature.n_values)
+                           n_output_classes=label_feature.n_values,
+                           predict=["edges", "labels"])
   print(parser)
   parser.plot()
   scores = parser.train(dataset, args.epochs, test_data=test_dataset)

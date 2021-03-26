@@ -143,8 +143,10 @@ class ParsingModel(tf.keras.Model):
                n_dep_labels: int,
                word_embeddings: Embeddings, 
                config=None,
+               predict: List[str] = ["edges"],
                name="ParsingModel"):
     super(ParsingModel, self).__init__(name=name)
+    self._predict = predict
     self.word_embeddings = EmbeddingLayer(pretrained=word_embeddings,
                                           name="word_embeddings")
     self.pos_embeddings = EmbeddingLayer(input_dim=35, output_dim=32,
@@ -159,9 +161,9 @@ class ParsingModel(tf.keras.Model):
     self.dep_perceptron = Perceptron(n_units=256, activation="relu",
                                      name="dep_mlp")
     self.edge_scorer = EdgeScorer(n_units=256, name="edge_scorer")
+    logging.info((f"Set up parser to predict {predict}"))
   
   
-  # TODO: this method should return dict.
   # TODO: branch this to parameterize returning dep_label predictios.
   def call(self, inputs: Dict[str, tf.keras.Input]):
     word_inputs = inputs["words"]
@@ -172,9 +174,16 @@ class ParsingModel(tf.keras.Model):
     concat = self.concatenate([word_features, pos_features, morph_inputs])
     sentence_repr = self.encoder(concat)
     sentence_repr = self.attention(sentence_repr)
-    dep_labels = self.dep_labels(sentence_repr)
-    h_arc_head = self.head_perceptron(dep_labels)
-    h_arc_dep = self.dep_perceptron(dep_labels)
-    edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
-    return edge_scores, dep_labels
+    if "labels" in self._predict:
+      dep_labels = self.dep_labels(sentence_repr)
+      h_arc_head = self.head_perceptron(dep_labels)
+      h_arc_dep = self.dep_perceptron(dep_labels)
+      edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
+      return {"edges": edge_scores,  "labels": dep_labels}
+    else:
+      h_arc_head = self.head_perceptron(sentence_repr)
+      h_arc_dep = self.dep_perceptron(dep_labels)
+      edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
+      return {"edges": edge_scores,  "labels": None}
+      
     
