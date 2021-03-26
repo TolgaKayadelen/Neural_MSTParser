@@ -49,9 +49,7 @@ class NeuralMSTParser:
     self._n_output_classes = n_output_classes
     self._predict = predict
     self.model = self._parsing_model()
-    
-    
-    
+
   def __str__(self):
     return str(self.model.summary())
   
