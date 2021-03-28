@@ -143,10 +143,11 @@ class ParsingModel(tf.keras.Model):
                n_dep_labels: int,
                word_embeddings: Embeddings, 
                config=None,
-               predict: List[str] = ["edges"],
-               name="ParsingModel"):
+               name="Parsing_Model",
+               predict: List[str]):
     super(ParsingModel, self).__init__(name=name)
-    self._predict = predict
+    self.predict = predict
+    self._null_label = tf.constant(0)
     self.word_embeddings = EmbeddingLayer(pretrained=word_embeddings,
                                           name="word_embeddings")
     self.pos_embeddings = EmbeddingLayer(input_dim=35, output_dim=32,
@@ -155,16 +156,15 @@ class ParsingModel(tf.keras.Model):
     self.concatenate = layers.Concatenate(name="concat")
     self.encoder = LSTMBlock(n_units=256, dropout_rate=0.3, name="lstm_encoder")
     self.attention = Attention()
-    self.dep_labels = layers.Dense(units=n_dep_labels, name="dep_labels")
+    if "labels" in self.predict:
+      self.dep_labels = layers.Dense(units=n_dep_labels, name="dep_labels")
     self.head_perceptron = Perceptron(n_units=256, activation="relu",
                                       name="head_mlp")
     self.dep_perceptron = Perceptron(n_units=256, activation="relu",
                                      name="dep_mlp")
     self.edge_scorer = EdgeScorer(n_units=256, name="edge_scorer")
-    logging.info((f"Set up parser to predict {predict}"))
-  
-  
-  # TODO: branch this to parameterize returning dep_label predictios.
+    logging.info((f"Set up {name} to predict {predict}"))
+
   def call(self, inputs: Dict[str, tf.keras.Input]):
     word_inputs = inputs["words"]
     word_features = self.word_embeddings(word_inputs)
@@ -174,7 +174,7 @@ class ParsingModel(tf.keras.Model):
     concat = self.concatenate([word_features, pos_features, morph_inputs])
     sentence_repr = self.encoder(concat)
     sentence_repr = self.attention(sentence_repr)
-    if "labels" in self._predict:
+    if "labels" in self.predict:
       dep_labels = self.dep_labels(sentence_repr)
       h_arc_head = self.head_perceptron(dep_labels)
       h_arc_dep = self.dep_perceptron(dep_labels)
@@ -182,8 +182,8 @@ class ParsingModel(tf.keras.Model):
       return {"edges": edge_scores,  "labels": dep_labels}
     else:
       h_arc_head = self.head_perceptron(sentence_repr)
-      h_arc_dep = self.dep_perceptron(dep_labels)
+      h_arc_dep = self.dep_perceptron(sentence_repr)
       edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
-      return {"edges": edge_scores,  "labels": None}
+      return {"edges": edge_scores,  "labels": self._null_label}
       
     

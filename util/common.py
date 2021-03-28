@@ -68,8 +68,6 @@ def GetRightMostChild(sentence, token):
     max_ = 0
     rightmost = None
     for child in sentence.token:
-        #print("evalutating child {}".format(child.word))
-        #print("selected head for this child {}".format(child.selected_head.address))
         if child.selected_head.address == token.index:
             if child.index > max_:
                 rightmost = child
@@ -185,7 +183,6 @@ def GetTokenByAddress(tokens, address):
         #common.PPrintTextProto(token)
         #print(list_indices)
         assert list_indices.count(token.index) == 1, "Can't have two tokens with same index."
-        #print("searching for: {}, token_index: {}".format(address, str(token.index)))
         if token.index == address:
             found = token
             break
