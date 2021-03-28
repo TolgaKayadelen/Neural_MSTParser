@@ -431,7 +431,7 @@ class NeuralMSTParser:
         n_las += self._labeled_attachment_score(correct_edges, correct_labels,
                                                 test=True)
         # las_test = n_las / n_tokens
-        print(f"n_tokens: {n_tokens}, n_las: {n_las}")
+        # print(f"n_tokens: {n_tokens}, n_las: {n_las}")
         label_accuracy.update_state(dep_labels, label_preds)
         
     las_test = n_las / n_tokens
@@ -513,10 +513,10 @@ if __name__ == "__main__":
                       help="Trains a new model.")
   parser.add_argument("--treebank",
                       type=str,
-                      default="treebank_train_0_10.pbtxt")
+                      default="treebank_train_1000_1500.pbtxt")
   parser.add_argument("--test_treebank",
                       type=str,
-                      default="treebank_0_3_gold.pbtxt")
+                      default="treebank_train_0_50.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features",
@@ -538,7 +538,7 @@ if __name__ == "__main__":
                       help="which features to predict")
   parser.add_argument("--batchsize",
                       type=int, 
-                      default=2,
+                      default=20,
                       help="Size of training and test data batches")
   parser.add_argument("--model_name",
                       type=str,
