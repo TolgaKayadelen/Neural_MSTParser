@@ -1,14 +1,42 @@
 import os
 import gensim
-
+import matplotlib.pyplot as plt
 import numpy as np
+import random
 from util import reader
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
+from proto import metrics_pb2
 from collections import defaultdict, OrderedDict, Counter
 
 _EMBEDDING_DIR = "embeddings"
 
+def plot_metrics(*, name: str, metrics: metrics_pb2.Metrics, plot_losses=False):
+  """Plots the metrics from a parser run."""
+  fig = plt.figure()
+  ax = plt.axes()
+  loss_metrics = ["edge_loss_padded", "label_loss_padded"] 
+  colors = ["b", "g", "r", "c", "m", "y", "sienna", "orchid", "k"]
+  for key in metrics.metric:
+    if key in loss_metrics and not plot_losses:
+      continue
+    if metrics.metric[key].tracked:
+      color = random.choice(colors)
+      colors.remove(color)
+      ax.plot(np.arange(len(metrics.metric[key].value_list.value)),
+              metrics.metric[key].value_list.value,
+              "-g", label=key, color=color)
+  plt.title("Neural MST Parser Performance")
+  plt.xlabel("epochs")
+  plt.ylabel("accuracy")
+  plt.legend()
+  plt.savefig(f"./model/nn/{name}_metrics_plot")
+
+def set_up_metrics(*args) -> metrics_pb2.Metrics:
+  metrics = metrics_pb2.Metrics()
+  for metric in args:
+     metrics.metric[metric].tracked = True
+  return metrics
 
 def convert_to_one_hot(indices, n_labels):
   """Converts an integer array of shape (1, m) to a one hot vector of shape (len(indices), n_labels)

@@ -33,7 +33,7 @@ py_library(
 	srcs = ["dependency_parser.py"],
 	deps = [
 		"//learner:perceptron_lib",
-		"//parser:decoder",
+		"//parser/perceptron:decoder",
 	],
 	data = [
 		"//data/testdata:parser",

@@ -1,0 +1,22 @@
+// Protocol buffer specification for Treebank. 
+
+syntax = "proto2";
+
+import "proto/sentence.proto";
+
+package proto;
+
+// A treebank is a collection of sentences in a language.
+message Treebank {
+	optional Language language = 1 [default = UNKNOWN_LANGUAGE]; 
+	repeated proto.Sentence sentence = 2; /*required*/
+  optional bool is_gold = 3;
+  optional string parser_model = 4;
+  optional string labeler_model = 5;
+}
+
+enum Language {
+	UNKNOWN_LANGUAGE = 0;
+	TURKISH = 1;
+	ENGLISH = 2;
+}

@@ -3,7 +3,7 @@
 import unittest
 import os
 
-from parser import decoder
+from parser.perceptron import decoder
 from google.protobuf import text_format
 from data.treebank import sentence_pb2
 from util import common

@@ -5,7 +5,7 @@ py_binary(
 	name = "main",
 	srcs = ["main.py"],
 	deps = [
-		"//parser:dependency_parser_lib",
+		"//parser/perceptron:dependency_parser_lib",
 		"//data/treebank:treebank_py_pb2",
 		":parse",
     ":label",
@@ -21,7 +21,7 @@ py_library(
 	name = "parse",
 	srcs = ["parse.py"],
 	deps = [
-		"//parser:dependency_parser_lib",
+		"//parser/perceptron:dependency_parser_lib",
 		"//data/treebank:treebank_py_pb2",
 	],
 )
@@ -30,8 +30,8 @@ py_library(
   name = "label",
   srcs = ["label.py"],
   deps = [
-    "//parser:dependency_parser_lib",
-    "//parser:dependency_labeler",
+    "//parser/perceptron:dependency_parser_lib",
+    "//parser/perceptron:dependency_labeler",
     "//data/treebank:treebank_py_pb2",
   ],
 )
@@ -40,8 +40,8 @@ py_library(
 	name = "train",
 	srcs = ["train.py"],
 	deps = [
-		"//parser:dependency_parser_lib",
-    "//parser:dependency_labeler",
+		"//parser/perceptron:dependency_parser_lib",
+    "//parser/perceptron:dependency_labeler",
 		"//data/treebank:treebank_py_pb2",
 	],
 )
@@ -50,7 +50,7 @@ py_library(
 	name = "evaluate",
 	srcs = ["evaluate.py"],
 	deps = [
-		"//parser:dependency_parser_lib",
+		"//parser/perceptron:dependency_parser_lib",
 		"//data/treebank:treebank_py_pb2",
     "//model:evaluation_py_pb2",
 	],

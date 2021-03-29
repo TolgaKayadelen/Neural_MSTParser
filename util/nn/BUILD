@@ -8,6 +8,7 @@ py_binary(
 		"//data/treebank:sentence_py_pb2",
 		"//data/treebank:treebank_py_pb2",
 		"//util:reader",
+    "//proto:metrics_py_pb2",
 	],
   data = [
     "//embeddings:turkish_embeddings",

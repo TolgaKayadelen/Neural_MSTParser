@@ -21,7 +21,6 @@ py_binary(
 )
 
 # Tests
-# Tests
 py_test(
 	name = "preprocessor_test",
 	srcs = ["preprocessor_test.py"],

@@ -1,0 +1,39 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
+
+
+py_proto_library(
+	name = "sentence_py_pb2",
+	srcs = ["sentence.proto"],
+	protoc = "@com_google_protobuf//:protoc",
+	default_runtime = "@com_google_protobuf//:protobuf_python",
+)
+
+py_proto_library(
+	name = "treebank_py_pb2",
+	srcs = ["treebank.proto"],
+	protoc = "@com_google_protobuf//:protoc",
+	default_runtime = "@com_google_protobuf//:protobuf_python",
+	deps = [
+		"//proto:sentence_py_pb2",
+	],
+)
+
+py_proto_library(
+  name = "metrics_py_pb2",
+  srcs = ["metrics.proto"],
+  protoc = "@com_google_protobuf//:protoc",
+  default_runtime =  "@com_google_protobuf//:protobuf_python",
+)
+
+# Binaries
+py_binary(
+  name = "proto_test",
+  srcs = ["proto_test.py"],
+  deps = [
+    ":metrics_py_pb2",
+    "//util/nn:nn_utils",
+    "//util:reader",
+  ],
+)

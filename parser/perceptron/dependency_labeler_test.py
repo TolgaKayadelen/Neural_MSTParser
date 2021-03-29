@@ -3,7 +3,7 @@
 import unittest
 import os
 import numpy as np
-from parser import dependency_labeler as deplabel
+from parser.perceptron import dependency_labeler as deplabel
 from google.protobuf import text_format
 from data.treebank import sentence_pb2
 from util import common

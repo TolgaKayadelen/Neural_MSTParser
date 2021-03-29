@@ -400,7 +400,7 @@ class NeuralMSTParser:
       """)
       
       # Update scores on test data at the end of every X epoch.
-      if epoch % 5 == 0 and test_data:
+      if epoch % 2 == 0 and test_data:
         uas_test, label_acc_test, las_test = self.test(dataset=test_data)
         logging.info(f"UAS test: {uas_test}")
         logging.info(f"LS test: {label_acc_test}")
@@ -526,7 +526,7 @@ if __name__ == "__main__":
                       help="Trains a new model.")
   parser.add_argument("--treebank",
                       type=str,
-                      default="treebank_train_0_50.pbtxt")
+                      default="treebank_train_0_10.pbtxt")
   parser.add_argument("--test_treebank",
                       type=str,
                       default="treebank_0_3_gold.pbtxt")

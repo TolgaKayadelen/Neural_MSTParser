@@ -1,0 +1,20 @@
+// Protocol buffer specification for parser metrics. 
+
+syntax = "proto2";
+
+package proto;
+
+message Metrics {
+  // Map from metric name to values.
+  // The values represent the value in each epoch during training or test.
+	map<string, Metric> metric = 1;
+}
+
+message Metric {
+  optional bool tracked = 1 [default = false];
+  optional FloatList value_list = 3; 
+}
+
+message FloatList {
+  repeated float value = 1 [packed = true];
+}

@@ -12,6 +12,7 @@ py_library(
 	deps = [
 		"//data/treebank:sentence_py_pb2",
 		"//data/treebank:treebank_py_pb2",
+    "//proto:metrics_py_pb2",
 	],
 )
 

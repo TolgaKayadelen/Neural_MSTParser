@@ -2,9 +2,9 @@
 
 """Functions to read treebank data in various formats."""
 
-from __future__ import print_function
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
+from proto import metrics_pb2
 from google.protobuf import text_format
 import argparse
 import logging
@@ -85,6 +85,15 @@ def ReadTreebankTextProto(path):
     file_content = _ReadFile(path)
     return text_format.Parse(file_content, treebank_pb2.Treebank())
     
+def ReadMetricsTextProto(path):
+  """Read proto text formatted metrics message from the path.
+  Args:
+    path: path to the pbtxt file.
+  Returns:
+    a protocol buffer object.
+  """
+  file_content = _ReadFile(path)
+  return text_format.Parse(file_content, metrics_pb2.Metrics())
 
 def _ReadFile(path):
     """Reads the file content from the path and returns it as a byte string. 
