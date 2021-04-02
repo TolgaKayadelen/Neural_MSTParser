@@ -8,8 +8,6 @@ import time
 from input import preprocessor, embeddor
 import tensorflow as tf
 import numpy as np
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 
 from parser.nn import model_builder as builder
 from proto import metrics_pb2
@@ -23,7 +21,6 @@ from util import writer
 # Set up basic configurations
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 np.set_printoptions(threshold=np.inf)
-mpl.style.use("seaborn")
 
 # Set up type aliases
 Dataset = tf.data.Dataset
@@ -407,7 +404,7 @@ class NeuralMSTParser:
       logging.info(f"Time for epoch: {time.time() - start_time}\n")
       
       # Update scores on test data at the end of every X epoch.
-      if epoch % 2 == 0 and test_data:
+      if epoch % 5 == 0 and test_data:
         uas_test, ls_test, las_test = self.test(dataset=test_data)
         logging.info(f"UAS test: {uas_test}")
         logging.info(f"LS test: {ls_test}")
@@ -554,7 +551,7 @@ if __name__ == "__main__":
                       help="Size of training and test data batches")
   parser.add_argument("--model_name",
                       type=str,
-                      default="test",
+                      default="edges_biaffine",
                       help="Name of the model to save.")
 
   args = parser.parse_args()

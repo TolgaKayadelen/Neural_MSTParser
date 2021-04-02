@@ -12,7 +12,7 @@ message Metrics {
 
 message Metric {
   optional bool tracked = 1 [default = false];
-  optional FloatList value_list = 3; 
+  optional FloatList value_list = 2; 
 }
 
 message FloatList {
