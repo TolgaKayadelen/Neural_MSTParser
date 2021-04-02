@@ -28,3 +28,12 @@ py_test(
 		":preprocessor",
 	],
 )
+
+# Tests
+py_test(
+	name = "embeddor_test",
+	srcs = ["embeddor_test.py"],
+	deps = [
+		":preprocessor",
+	],
+)
