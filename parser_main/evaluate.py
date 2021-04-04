@@ -22,7 +22,7 @@ bazel-bin/parser_main/evaluate \
 import pandas as pd
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
-from model import evaluation_pb2
+from proto import evaluation_pb2
 # from model import tags_and_labels_enum_pb2 as tle
 from util import common
 from util import reader

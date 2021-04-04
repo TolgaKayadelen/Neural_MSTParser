@@ -7,14 +7,13 @@ py_binary(
 	deps = [
 		"//parser/perceptron:dependency_parser_lib",
 		"//data/treebank:treebank_py_pb2",
+    "//parser_main:evaluate",
 		":parse",
     ":label",
 		":train",
-		":evaluate",
     ":parse_and_label",
 	],
 )
-
 
 # Libraries
 py_library(
@@ -47,19 +46,6 @@ py_library(
 )
 
 py_library(
-	name = "evaluate",
-	srcs = ["evaluate.py"],
-	deps = [
-		"//parser/perceptron:dependency_parser_lib",
-		"//data/treebank:treebank_py_pb2",
-    "//proto:evaluation_py_pb2",
-	],
-	data = [
-		"//model:label_to_enum",
-	]
-)
-
-py_library(
   name = "parse_and_label",
   srcs = ["parse_and_label.py"],
   deps = [
@@ -67,16 +53,4 @@ py_library(
     ":label",
     "//util:writer",
   ],
-)
-
-# Tests
-py_test(
-	name = "evaluate_test",
-	srcs = ["evaluate_test.py"],
-	deps = [
-		":evaluate",
-	],
-	data = [
-		"//data/testdata:parser_main",
-	],
 )

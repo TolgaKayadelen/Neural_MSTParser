@@ -2,19 +2,6 @@ package(default_visibility = ["//visibility:public"])
 
 load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
 
-# Protos.
-py_proto_library(
-	name = "evaluation_py_pb2",
-	srcs = ["evaluation.proto"],
-  deps = [
-    "//tagset/fine_pos:fine_tag_enum_py_pb2",
-    "//tagset/coarse_pos:coarse_tag_enum_py_pb2",
-    "//tagset/dep_labels:dep_label_enum_py_pb2",
-      ],
-	protoc = "@com_google_protobuf//:protoc",
-	default_runtime = "@com_google_protobuf//:protobuf_python",
-)
-
 # binaries.
 py_binary(
   name = "get_model_info",

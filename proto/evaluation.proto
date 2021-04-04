@@ -1,5 +1,4 @@
 // Protocol buffer specification for evaluation of a model.
-// WIP: DO NOT USE.
 
 syntax = "proto2";
 

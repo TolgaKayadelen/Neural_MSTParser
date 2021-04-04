@@ -8,15 +8,6 @@ py_binary(
   ],
 )
 
-py_binary(
-	name = "parser_main",
-	srcs = ["parser_main.py"],
-  deps = [
-    ":nn_parser_lib",
-    ":joint_biaffine_parser_copy",
-  ],
-)
-
 # Libraries
 py_library(
   name = "nn_parser_lib",

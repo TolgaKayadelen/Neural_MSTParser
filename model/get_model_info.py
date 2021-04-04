@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Simply script to sneak peak into a pretrained model properties."""
+"""Simply script to sneak peek into a pretrained model properties."""
 
 import argparse
 import json
