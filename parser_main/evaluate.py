@@ -26,13 +26,14 @@ from proto import evaluation_pb2
 # from model import tags_and_labels_enum_pb2 as tle
 from util import common
 from util import reader
+from tagset.reader import LabelReader
 
 from google.protobuf import text_format
 
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-label_to_enum = common.GetLabels()
+label_to_enum = LabelReader.get_labels("dep_labels").labels
 
 def evaluate_parser(args, print_results=False):
     """Function to evaluate the dependency parser output on gold data.

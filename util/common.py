@@ -384,15 +384,6 @@ def TopFeatures(featureset, n):
       # get head features.
       return featureset.feature[:n]
 
-def GetLabels():
-    """Util function to read label_to_enum.tsv and return labels as a dict."""
-    _MODEL_DIR = "model"
-    label_to_enum = {}
-    with open(os.path.join(_MODEL_DIR, "label_to_enum.tsv")) as tsvfile:
-      for row in tsvfile:
-        label_to_enum[row.split()[0]] = int(row.split()[1])
-    return label_to_enum
-
 if __name__ == "__main__":
     sentence = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
     token = sentence.token[2] # saw

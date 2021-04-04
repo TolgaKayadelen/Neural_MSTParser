@@ -40,6 +40,42 @@ py_binary(
 	],
 )
 
+py_binary(
+  name = "get_model_info",
+  srcs = ["get_model_info.py"],
+  deps = [
+    "//util:common",
+  ],
+)
+
+py_binary(
+  name = "model",
+  srcs = ["model.py"],
+  deps = [
+  "//util:common",
+  "//learner:featureset_py_pb2",
+  ],
+)
+
+py_binary(
+  name = "get_tags_and_labels",
+  srcs = ["get_tags_and_labels.py"],
+  deps = [
+    "//data/treebank:treebank_py_pb2",
+    "//data/treebank:sentence_py_pb2",
+    "//util:reader",
+  ],
+)
+
+py_binary(
+	name = "check_cooccuring_sent",
+	srcs = ["check_cooccuring_sent.py"],
+	deps = [
+		"//parser/perceptron:dependency_parser_lib",
+		"//data/treebank:treebank_py_pb2",
+	],
+)
+
 # Tests.
 py_test(
 	name = "converter_test",
