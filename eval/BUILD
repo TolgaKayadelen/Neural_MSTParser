@@ -9,9 +9,6 @@ py_library(
     "//proto:evaluation_py_pb2",
     "//tagset:reader"
 	],
-	data = [
-		"//misc:label_to_enum",
-	]
 )
 
 # Tests

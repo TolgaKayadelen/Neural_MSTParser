@@ -6,7 +6,7 @@ import pandas as pd
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
 from proto import evaluation_pb2
-from parser_main import evaluate
+from eval import evaluate
 from util import common
 
 from google.protobuf import text_format
