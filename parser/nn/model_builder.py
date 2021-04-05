@@ -165,7 +165,7 @@ class ParsingModel(tf.keras.Model):
     self.edge_scorer = EdgeScorer(n_units=256, name="edge_scorer")
     logging.info((f"Set up {name} to predict {predict}"))
 
-  def call(self, inputs: Dict[str, tf.keras.Input]):
+  def call(self, inputs): # inputs = Dict[str, tf.keras.Input]
     word_inputs = inputs["words"]
     word_features = self.word_embeddings(word_inputs)
     pos_inputs = inputs["pos"]

@@ -30,7 +30,7 @@ def plot_metrics(*, name: str, metrics: metrics_pb2.Metrics, plot_losses=False):
   plt.xlabel("epochs")
   plt.ylabel("accuracy")
   plt.legend()
-  plt.savefig(f"./model/nn/{name}_metrics_plot")
+  plt.savefig(f"./model/nn/plot/{name}_metrics_plot")
 
 def set_up_metrics(*args) -> metrics_pb2.Metrics:
   metrics = metrics_pb2.Metrics()

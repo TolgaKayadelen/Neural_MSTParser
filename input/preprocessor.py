@@ -1,18 +1,25 @@
-import tensorflow as tf
+"""The preprocessing module creates tf.data.Dataset objects for the parser."""
+
 import numpy as np
+import tensorflow as tf
+import time
+
+from data.treebank import sentence_pb2
+from data.treebank import treebank_pb2
+from input.embeddor import Embeddings
 from tagset.reader import LabelReader
 from tagset.morphology import morph_tags
-from input.embeddor import Embeddings
 from typing import List, Dict, Generator, Union
 from util.nn import nn_utils
 from util import reader
-import time
 
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 Dataset = tf.data.Dataset
+Sentence = sentence_pb2.Sentence
 SequenceExample = tf.train.SequenceExample
+Treebank = treebank_pb2.Treebank
 
 class SequenceFeature:
   """A sequence feature is a map from a feature name to a list of int values."""
@@ -182,8 +189,9 @@ class Preprocessor:
       writer.write(example.SerializeToString())
     writer.close()
   
-  def make_dataset_from_treebank(self, *, treebank, save_path: str) -> None:
-    """Saves tfrecords dataset from a treebank based on features."""
+  def make_dataset(self, *, from_treebank: Treebank=None,
+                   from_sentences: List[Sentence]=None) -> List[SequenceExample]:
+    """Saves tfrecords dataset either from a treebank or a list of Sentences."""
     tf_examples = []
     feature_mappings = self.get_index_mappings_for_features(self.features)
     
@@ -191,7 +199,15 @@ class Preprocessor:
       feature, SequenceFeature(name=feature)) for feature in self.features)
   
     counter = 0
-    for sentence in treebank.sentence:
+    if from_treebank is not None:
+      logging.info(f"Creating dataset from treebank {from_treebank}")
+      sentences = from_treebank.sentence
+    elif from_sentences is not None:
+      logging.info(f"Creating dataset from list of sentences")
+      sentences = from_sentences
+    else:
+      raise ValueError("Neither a treebank nor a list of sentences provided.")
+    for sentence in sentences:
       counter += 1
       if "words" in self.features:
         word_indices = self.numericalize(
@@ -237,7 +253,7 @@ class Preprocessor:
       # input("press to cont.")
       tf_examples.append(example)
     logging.info(f"Converted {counter} sentences to tf examples.")
-    self.write_tf_records(examples=tf_examples, path=save_path)
+    return tf_examples
 
   def read_dataset_from_tfrecords(self, *,
                                   batch_size: int = 10,
@@ -376,11 +392,11 @@ if __name__ == "__main__":
   
   
   # Make a dataset and save it 
-  datapath = "data/UDv23/Turkish/training/treebank_train_0_50.pbtxt"
+  datapath = "data/UDv23/Turkish/training/treebank_train_0_3.pbtxt"
   trb = reader.ReadTreebankTextProto(datapath)
-  prep.make_dataset_from_treebank(
-            treebank=trb,
-            save_path="./input/treebank_train_0_50.tfrecords")
+  tf_examples = prep.make_dataset(from_sentences=trb.sentence)
+  prep.write_tf_records(examples=tf_examples,
+                        path="./input/treebank_train_0_3.tfrecords")
   
   '''
   # Read dataset from saved tfrecords

@@ -1,5 +1,6 @@
 import collections
 import logging
+import os
 import sys
 import time
 
@@ -22,12 +23,16 @@ Dataset = tf.data.Dataset
 Embeddings = embeddor.Embeddings
 Metrics = metrics_pb2.Metrics
 
+# Path for saving or loading pretrained models.
+_MODEL_DIR = "./model/nn/pretrained"
+
 class NeuralMSTParser:
   """The neural mst parser."""
   
   def __init__(self, *, word_embeddings: Embeddings,
               n_output_classes: int,
-              predict: List[str] = ["edges"]):
+              predict: List[str] = ["edges"],
+              model_name: str = "neural_mst_parser"):
     self.word_embeddings = word_embeddings
     self.edge_loss_fn = losses.SparseCategoricalCrossentropy(
       from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
@@ -38,7 +43,7 @@ class NeuralMSTParser:
     self.label_train_metrics = metrics.CategoricalAccuracy()
     self._n_output_classes = n_output_classes
     self._predict = predict
-    self.model = self._parsing_model()
+    self.model = self._parsing_model(model_name=model_name)
     self.metrics = self._metrics()
     assert(self._predict == self.model.predict), "Inconsistent configuration!"
 
@@ -55,7 +60,7 @@ class NeuralMSTParser:
     metrics = nn_utils.set_up_metrics(*metric_list)
     return metrics
   
-  def _parsing_model(self) -> tf.keras.Model:
+  def _parsing_model(self, *, model_name: str) -> tf.keras.Model:
     """Creates an NN model for edge factored dependency parsing."""
     
     word_inputs = tf.keras.Input(shape=(None,), name="words")
@@ -65,7 +70,8 @@ class NeuralMSTParser:
     
     model = builder.ParsingModel(n_dep_labels=self._n_output_classes,
                                  word_embeddings=self.word_embeddings,
-                                 predict=self._predict)
+                                 predict=self._predict,
+                                 name=model_name)
     model(inputs=inputs)
     return model
   
@@ -453,7 +459,34 @@ class NeuralMSTParser:
     return (head_accuracy.result().numpy(),
             label_accuracy.result().numpy(),
             las_test)
+  
+  def parse(self, example):
+    """Parses a dataset with this parser."""
+    words, pos = example["words"], example["pos"]
+    morph = tf.dtypes.cast(example["morph"], tf.float32)
+    n_tokens = words.shape[1]
+      
+    scores = self.model({"words": words, "pos": pos, "morph": morph},
+                        training=False)
+    return scores["edges"], scores["labels"]
 
-
-
-
+  def save(self, *, suffix=0):
+    """Saves the model to path."""
+    try:
+      path = os.path.join(_MODEL_DIR, self.model.name)
+      if suffix > 0:
+        path += str(suffix)
+      os.mkdir(path)
+      self.model.save_weights(os.path.join(path, self.model.name),
+                                          save_format="tf")
+      logging.info(f"Saved model to {path}")
+    except FileExistsError:
+      logging.warning(f"A model with the same name exists, suffixing {suffix}")
+      self.save(suffix=suffix+1)
+    
+  def load(self, *, name: str, suffix=None):
+    """Loads a pretrained model."""
+    path = os.path.join(_MODEL_DIR, name)
+    self.model.load_weights(os.path.join(path, name))
+    logging.info(f"Loaded model from model named: {name} in: {_MODEL_DIR}")
+    
