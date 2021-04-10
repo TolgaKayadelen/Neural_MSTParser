@@ -84,7 +84,7 @@ class Preprocessor:
     """Sets up sequence features and labels to be used by this preprocessor."""
     logging.info("Setting up sequence features")
     sequence_features = []
-    # Add a tokens feature (to hold word strings) no matter what.
+    # Add a tokens feature (to hold word strings).
     sequence_features.append(SequenceFeature(name="tokens", dtype=tf.string))
     for feat in self.features:
       if not feat in self.labels:
@@ -181,7 +181,7 @@ class Preprocessor:
       else:
         for value in feature.values:
           feature_list.feature.add().int64_list.value.append(value)
-    print(example)
+    # print(example)
     # input("press to cont.")
     return example
     
@@ -204,6 +204,8 @@ class Preprocessor:
     
     sequence_features = dict((
       feature, SequenceFeature(name=feature)) for feature in self.features)
+    
+    # The 'tokens'feature is added to all examples by default.
     sequence_features["tokens"] = SequenceFeature(name="tokens", dtype=tf.string)
   
     counter = 0
