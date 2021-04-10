@@ -30,14 +30,20 @@ def parse(*, prep, treebank, parser) -> treebank_pb2.Treebank:
     # generate tf.examples from the sentences
     logging.info(f"Generating dataset from {treebank}")
     trb = reader.ReadTreebankTextProto(os.path.join(_DATA_DIR, treebank))
-    tf_examples = prep.make_dataset(from_sentences=trb.sentence)
-    
-    # parse sentences with the loaded model.
-    # for example in tf_examples:
-      # edges, labels = parser.parse(example)
-      # print("edges ", edges)
-      # print("labels ", labels)
-      # input("press to cont...")
+    # TODO: also add sentence ids to the dataset generator.
+    dataset = prep.make_dataset_from_generator(
+      path=os.path.join(_DATA_DIR, treebank),
+      batch_size=1)
+    #  print([word.decode("utf-8") for word in a.numpy().tolist()])
+    for example in dataset:
+      tokens = example["tokens"].numpy().tolist()
+      print([token.decode("utf-8") for token in tokens[0]])
+      edge_scores, label_scores = parser.parse(example)
+      print(f"""edge scores: {edge_scores}, {edge_scores.shape}, 
+             label_scores: {label_scores}, {label_scores.shape})""")
+      print(f"edge_preds: {tf.argmax(edge_scores, axis=2)}")
+      print(f"label preds {tf.argmax(label_scores, axis=2)}")
+      input("press to cont..")
     
     '''
     # save the parsed sentences to an output

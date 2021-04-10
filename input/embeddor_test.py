@@ -12,12 +12,19 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 class PreprocessorTest(unittest.TestCase):
   """Tests for the embeddor."""
-
+  
+  def setUp(self):
+    embeddings = nn_utils.load_embeddings()
+    self.word_embeddings = embeddor.Embeddings(name="word2vec", matrix=embeddings)
+    
   def test_sanity_check(self):
     print("Running test_sanity_check..")
-    embeddings = nn_utils.load_embeddings()
-    word_embeddings = embeddor.Embeddings(name="word2vec", matrix=embeddings)
-    self.assertTrue(word_embeddings.sanity_check == embeddor.SanityCheck.PASS)
+    self.assertTrue(self.word_embeddings.sanity_check == embeddor.SanityCheck.PASS)
+    print("Passed!")
+    
+  def test_embedding_indices(self):
+    print("Running test_embedding indices..")
+    self.assertTrue(self.word_embeddings.stoi(token="Kerem") == 119951)
     print("Passed!")
 
 if __name__ == "__main__":

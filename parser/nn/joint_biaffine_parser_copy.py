@@ -464,6 +464,9 @@ class NeuralMSTParser:
     """Parses a dataset with this parser."""
     words, pos = example["words"], example["pos"]
     morph = tf.dtypes.cast(example["morph"], tf.float32)
+    tokens = example["tokens"].numpy().tolist()
+    print([token.decode("utf-8") for token in tokens[0]])
+    input("press to cont.")
     n_tokens = words.shape[1]
       
     scores = self.model({"words": words, "pos": pos, "morph": morph},
@@ -472,16 +475,18 @@ class NeuralMSTParser:
 
   def save(self, *, suffix=0):
     """Saves the model to path."""
+    model_name = self.model.name
     try:
       path = os.path.join(_MODEL_DIR, self.model.name)
       if suffix > 0:
         path += str(suffix)
+        model_name = self.model.name+str(suffix)
       os.mkdir(path)
-      self.model.save_weights(os.path.join(path, self.model.name),
+      self.model.save_weights(os.path.join(path, model_name),
                                           save_format="tf")
       logging.info(f"Saved model to {path}")
     except FileExistsError:
-      logging.warning(f"A model with the same name exists, suffixing {suffix}")
+      logging.warning(f"A model with the same name exists, suffixing {suffix+1}")
       self.save(suffix=suffix+1)
     
   def load(self, *, name: str, suffix=None):

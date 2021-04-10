@@ -77,9 +77,6 @@ def main(args):
     nn_utils.plot_metrics(name=args.model_name, metrics=metrics)
     logging.info(f"{args.model_name} results written to ./model/nn/plot directory")
     parser.save()
-  
-  
-  
     
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
@@ -95,14 +92,14 @@ if __name__ == "__main__":
                       help="Parses --test_treebank with the --model_name")
   parser.add_argument("--epochs",
                       type=int,
-                      default=3,
+                      default=20,
                       help="Trains a new model.")
   parser.add_argument("--treebank",
                       type=str,
-                      default="treebank_train_0_10.pbtxt")
+                      default="treebank_train_1000_1500.pbtxt")
   parser.add_argument("--test_treebank",
                       type=str,
-                      default="treebank_0_3_gold.pbtxt")
+                      default="treebank_1.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features",
@@ -124,7 +121,7 @@ if __name__ == "__main__":
                       help="which features to predict")
   parser.add_argument("--batchsize",
                       type=int, 
-                      default=250,
+                      default=20,
                       help="Size of training and test data batches")
   parser.add_argument("--model_name",
                       type=str,
