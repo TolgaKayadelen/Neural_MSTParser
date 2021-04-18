@@ -6,6 +6,7 @@ import time
 
 from input import embeddor
 import tensorflow as tf
+import matplotlib as mpl
 import numpy as np
 
 from parser.nn import model_builder as builder
@@ -17,6 +18,7 @@ from util.nn import nn_utils
 # Set up basic configurations
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 np.set_printoptions(threshold=np.inf)
+mpl.style.use("seaborn")
 
 # Set up type aliases
 Dataset = tf.data.Dataset
@@ -460,13 +462,11 @@ class NeuralMSTParser:
             label_accuracy.result().numpy(),
             las_test)
   
-  def parse(self, example):
-    """Parses a dataset with this parser."""
+  def parse(self, example: Dict):
+    """Parse an example with this parser."""
+    
     words, pos = example["words"], example["pos"]
     morph = tf.dtypes.cast(example["morph"], tf.float32)
-    tokens = example["tokens"].numpy().tolist()
-    print([token.decode("utf-8") for token in tokens[0]])
-    input("press to cont.")
     n_tokens = words.shape[1]
       
     scores = self.model({"words": words, "pos": pos, "morph": morph},
@@ -489,9 +489,10 @@ class NeuralMSTParser:
       logging.warning(f"A model with the same name exists, suffixing {suffix+1}")
       self.save(suffix=suffix+1)
     
-  def load(self, *, name: str, suffix=None):
+  def load(self, *, name: str, suffix=None, path=None):
     """Loads a pretrained model."""
-    path = os.path.join(_MODEL_DIR, name)
+    if path is None:
+      path = os.path.join(_MODEL_DIR, name)
     self.model.load_weights(os.path.join(path, name))
     logging.info(f"Loaded model from model named: {name} in: {_MODEL_DIR}")
     

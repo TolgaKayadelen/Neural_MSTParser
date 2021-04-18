@@ -19,3 +19,12 @@ py_library(
     "//util:common",
   ],
 )
+
+py_test(
+  name = "parse_test",
+  srcs = ["parse_test.py"],
+  deps = [
+    ":parse",
+    "//parser/nn:joint_biaffine_parser_copy",
+  ],
+)

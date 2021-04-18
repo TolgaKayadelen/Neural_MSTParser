@@ -21,7 +21,9 @@ def parse(*, prep, treebank, parser) -> treebank_pb2.Treebank:
     """Parses a set of sentences with the a parsing model.
 
     Args:
-        args: commandline arguments from argparse
+        prep: preprocessor used to make a dataset from the treebank.
+        treebank: treebank_pb2.Treebank
+        parser: the parser object used to parse the sentences.
     Returns:
         treebank of parsed sentences.
     """
@@ -34,15 +36,16 @@ def parse(*, prep, treebank, parser) -> treebank_pb2.Treebank:
     dataset = prep.make_dataset_from_generator(
       path=os.path.join(_DATA_DIR, treebank),
       batch_size=1)
-    #  print([word.decode("utf-8") for word in a.numpy().tolist()])
+
     for example in dataset:
       tokens = example["tokens"].numpy().tolist()
       print([token.decode("utf-8") for token in tokens[0]])
       edge_scores, label_scores = parser.parse(example)
-      print(f"""edge scores: {edge_scores}, {edge_scores.shape}, 
-             label_scores: {label_scores}, {label_scores.shape})""")
-      print(f"edge_preds: {tf.argmax(edge_scores, axis=2)}")
-      print(f"label preds {tf.argmax(label_scores, axis=2)}")
+      edge_preds = tf.argmax(edge_scores, axis=2)
+      label_preds = tf.argmax(label_scores, axis=2)
+      
+      print(f"edge_preds: {edge_preds}")
+      print(f"label preds {label_preds}")
       input("press to cont..")
     
     '''
