@@ -71,32 +71,46 @@ class LabelReaderTest(parameterized.TestCase):
       {
         "testcase_name": "pos",
         "tagset": "pos",
+        "reverse": False,
         "expected_labels": _POS_TAGS,
       },
       {
         "testcase_name": "category",
         "tagset": "category",
+        "reverse": False,
         "expected_labels": _POS_CATEGORIES,
+      },
+      {
+        "testcase_name": "category_reversed",
+        "tagset": "category",
+        "reverse": True,
+        "expected_labels": {k:v for v,k in _POS_CATEGORIES.items()}
       },
       {
         "testcase_name": "dep_labels",
         "tagset": "dep_labels",
+        "reverse": False,
         "expected_labels": _DEP_LABELS,
       },
       {
         "testcase_name": "semantic_roles",
         "tagset": "srl",
+        "reverse": False,
         "expected_labels": _SEMANTIC_ROLES,
       },
       {
         "testcase_name": "morphology",
         "tagset": "morph",
+        "reverse": False,
         "expected_labels": _MORPH,
       }
     ]
   )
-  def test_read_labels(self, tagset, expected_labels):
-    self.assertDictEqual(LabelReader.get_labels(tagset).labels, expected_labels)
+  def test_read_labels(self, tagset, reverse, expected_labels):
+    self.assertDictEqual(LabelReader.get_labels(tagset, reverse).labels,
+                         expected_labels)
+    # if reverse:
+    #   print(LabelReader.get_labels(tagset, reverse).labels)
     print("Passed!")
 
 if __name__ == "__main__":

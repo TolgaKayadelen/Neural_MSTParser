@@ -1,4 +1,69 @@
 sentence {
+  sent_id: "test_2"
+	text:  "Parsing is a bitch"
+	length: 8
+	token {
+  	word: "ROOT"
+  	lemma: "ROOT"
+  	category: "TOP"
+  	pos: "TOP"
+  	selected_head {
+  		address: -1
+			arc_score: 0.0
+  	}
+  	index: 0
+	}
+	token {
+  	word: "Parsing"
+  	lemma: "Parse"
+ 		category: "NOUN"
+  	pos: "Noun"
+  	selected_head {
+  		address: 2
+  		arc_score: 0.0
+  	}
+		label: "nsubj"
+  	index: 1
+	}
+	token {
+  	word: "is"
+  	lemma: "is"
+  	category: "VERB"
+  	pos: "Verb"
+  	selected_head {
+  		address: 0
+  		arc_score: 0.0
+  	}
+		label: "root"
+  	index: 2
+	}
+	token {
+  	word: "a"
+  	lemma: "a"
+  	category: "DET"
+  	pos: "Det"
+  	selected_head {
+  		address: 4
+  		arc_score: 0.0
+  	}
+		label: "amod"
+  	index: 3
+	}
+	token {
+  	word: "bitch"
+  	lemma: "bitch"
+  	category: "NOUN"
+  	pos: "Noun"
+  	selected_head {
+  		address: 2
+  		arc_score: 0.0
+  	}
+		label: "obj"
+  	index: 4
+	}
+}
+sentence {
+  sent_id: "test_1"
 	text:  "John saw the cat in the mat"
 	length: 8
 	token {
@@ -95,68 +160,5 @@ sentence {
   	}
 		label: "pobj"
  	 	index: 7
-	}
-}
-sentence {
-	text:  "Parsing is a bitch"
-	length: 8
-	token {
-  	word: "ROOT"
-  	lemma: "ROOT"
-  	category: "TOP"
-  	pos: "TOP"
-  	selected_head {
-  		address: -1
-			arc_score: 0.0
-  	}
-  	index: 0
-	}
-	token {
-  	word: "Parsing"
-  	lemma: "Parse"
- 		category: "NOUN"
-  	pos: "Noun"
-  	selected_head {
-  		address: 2
-  		arc_score: 0.0
-  	}
-		label: "nsubj"
-  	index: 1
-	}
-	token {
-  	word: "is"
-  	lemma: "is"
-  	category: "VERB"
-  	pos: "Verb"
-  	selected_head {
-  		address: 0
-  		arc_score: 0.0
-  	}
-		label: "root"
-  	index: 2
-	}
-	token {
-  	word: "a"
-  	lemma: "a"
-  	category: "DET"
-  	pos: "Det"
-  	selected_head {
-  		address: 4
-  		arc_score: 0.0
-  	}
-		label: "amod"
-  	index: 3
-	}
-	token {
-  	word: "bitch"
-  	lemma: "bitch"
-  	category: "NOUN"
-  	pos: "Noun"
-  	selected_head {
-  		address: 2
-  		arc_score: 0.0
-  	}
-		label: "obj"
-  	index: 4
 	}
 }

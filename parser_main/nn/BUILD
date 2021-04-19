@@ -17,6 +17,8 @@ py_library(
   deps = [
     "//parser/nn:nn_parser_lib",
     "//util:common",
+    "//tagset:reader",
+    "//eval:evaluate",
   ],
 )
 

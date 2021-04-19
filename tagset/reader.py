@@ -6,12 +6,13 @@ from tagset.morphology import morph_tag_enum_pb2 as morph_tags
 
 class LabelReader:
   """The label reader returns a dict of label:index pairs."""
-  def __init__(self, tagset):
+  def __init__(self, tagset, reverse):
     self._tagset = tagset
+    self._reverse = reverse
   
   @classmethod
-  def get_labels(cls, tagset):
-    return cls(tagset)
+  def get_labels(cls, tagset, reverse=False):
+    return cls(tagset, reverse)
   
   @property
   def labels(self):
@@ -60,4 +61,7 @@ class LabelReader:
         else:
           label_dict[key] = tags.Tag.Value(key)
     label_dict["-pad-"] = 0
+    
+    if self._reverse:
+      return {k:v for v,k in label_dict.items()}
     return label_dict

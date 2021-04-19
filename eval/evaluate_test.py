@@ -27,7 +27,6 @@ def _read_parser_test_data(basename):
     path = os.path.join(_PARSERMAIN_DIR, "{}.pbtxt".format(basename))
     return text_format.Parse(_read_file(path), treebank_pb2.Treebank())
 
-
 class EvaluateTest(unittest.TestCase):
     """Tests for the Evaluator"""
 
@@ -36,9 +35,8 @@ class EvaluateTest(unittest.TestCase):
         self.test_data = _read_parser_test_data("eval_data_test")
         self.evaluator = evaluate.Evaluator(self.gold_data, self.test_data)
    
-    def test_GetLabelCounts(self):
-        print("Running testGetLabelCounts..")
-        self.evaluator._GetLabelCounts()
+    def test_label_counts(self):
+        print("Running test label_counts..")
         expected_counts = {
             "det": 3,
             "obj":2,
@@ -52,21 +50,18 @@ class EvaluateTest(unittest.TestCase):
         self.assertTrue(function_label_counts.equals(expected_label_counts))
         print("Passed!")
     
-    def test_UasTotal(self):
-        print("Running testUasTotal..")
-        self.evaluator._UasTotal()
+    def test_uas_total(self):
+        print("Running test uas_total..")
         self.assertEqual(round(self.evaluator.uas_total, 1), 85.7)
         print("Passed!")
     
-    def test_LasTotal(self):
-        print("Running testLasTotal..")
-        self.evaluator._LasTotal()
+    def test_las_total(self):
+        print("Running test las_total..")
         self.assertEqual(round(self.evaluator.las_total, 1), 73.2)
         print("Passed!")
     
-    def test_TypedUas(self):
-        print("Running test_TypedUas..")
-        self.evaluator._TypedUas()
+    def test_typed_uas(self):
+        print("Running test typed_uas..")
         expected_result = {
             "amod": 0.00,
             "det": 0.67,
@@ -76,14 +71,11 @@ class EvaluateTest(unittest.TestCase):
             "prep":0.00,
             "root":1.00
         }
-        expected_uas = pd.Series(expected_result, name="unlabeled_attachment")
-        function_uas = self.evaluator.typed_uas
-        self.assertTrue(pd.Series(expected_uas).equals(function_uas))
+        self.assertTrue(expected_result, self.evaluator.typed_uas)
         print("Passed..")
     
-    def test_TypedLasPrec(self):
-        print("Running test_TypedLasPrec..")
-        self.evaluator._TypedLasPrec()
+    def test_typed_las_prec(self):
+        print("Running test typed_las_prec..")
         expected_result = {
             'amod': 0.00,
             'nsubj': 1.0,
@@ -96,9 +88,8 @@ class EvaluateTest(unittest.TestCase):
         self.assertDictEqual(self.evaluator.typed_las_prec, expected_result)
         print("Passed!")
     
-    def test_TypedLasRecall(self):
-        print("Running test_TypedLasRecall..")
-        self.evaluator._TypedLasRecall()
+    def test_typed_las_recall(self):
+        print("Running test typed las_recall..")
         expected_result = {
             'root': 1.0,
             'det': 0.33,
@@ -110,20 +101,17 @@ class EvaluateTest(unittest.TestCase):
         self.assertDictEqual(self.evaluator.typed_las_recall, expected_result)
         print("Passed!")
    
-    def test_UasTotalLasTotal(self):
-      print("Running test_UasTotalLasTotal")
-      results = self.evaluator.Evaluate(["las_total", "uas_total"])
+    def test_uas_total_las_total(self):
+      print("Running test uas_total_las_total")
+      results = self.evaluator.evaluate(["las_total", "uas_total"])
       uas = results["uas_total"]
       las = results["las_total"]
       self.assertEqual(round(uas, 1), 85.7)
       self.assertEqual(round(las, 1), 73.2)
       print("Passed!")
     
-    def test_TypedLasF1(self):
-        print("Running test_TypedLasF1..")
-        self.evaluator._TypedLasRecall()
-        self.evaluator._TypedLasPrec()
-        self.evaluator._TypedLasF1()
+    def test_typed_las_f1(self):
+        print("Running test_typed_las_f1..")
         expected_counts = {
             u"det": 3.0,
             u"obj":2.0,
@@ -160,18 +148,17 @@ class EvaluateTest(unittest.TestCase):
             u"root":1.000,
             u"nsubj":1.000
         }
-        expected_result = pd.DataFrame([expected_counts,expected_prec, expected_recall, expected_f1],
+        expected_result = pd.DataFrame([expected_counts,
+                                        expected_prec,
+                                        expected_recall,
+                                        expected_f1],
             index=["count", "label_precision", "label_recall", "label_f1"]).T
         expected_f1 = expected_result.sort_index()
-        # print(expected_f1)
-        function_f1 = self.evaluator.typed_las_f1
-        # print(function_f1)
-        self.assertTrue(expected_f1.equals(function_f1))
+        self.assertTrue(expected_f1.equals(self.evaluator.typed_las_f1))
         print("Passed!")
     
-    def testCreateConfusionMatrix(self):
-        print("Running testCreateConfusionMatrix..")
-        self.evaluator.CreateConfusionMatrix()
+    def test_labels_confusion_matrix(self):
+        print("Running test labels_confusion_matrix..")
         index = ["det", "nsubj", "obj", "pobj", "prep", "root", "All"]
         cols = ["amod", "det", "nsubj", "obj", "pobj", "prep", "root", "All"]
         expected_matrix = pd.DataFrame(
@@ -186,19 +173,18 @@ class EvaluateTest(unittest.TestCase):
                 [0,0,0,0,0,0,2,2], #root
                 [1,1,2,3,1,1,2,11] #all
             ])
-        #print(expected_matrix)
         self.assertTrue(expected_matrix.equals(self.evaluator.labels_conf_matrix))
         print("Passed!")
     
-    def testEvaluate(self):
+    def test_evaluate(self):
         print("Running testEvaluate..")
-        results = self.evaluator.Evaluate("all")
+        results = self.evaluator.evaluate("all")
         uas = results["uas_total"]
         las = results["las_total"]
         eval_matrix = results["eval_matrix"]
         self.assertEqual(round(uas, 1), 85.7)
         self.assertEqual(round(las, 1), 73.2)
-        cols = ["count", "unlabeled_attachment", "label_prec", "label_recall", "label_f1"]
+        cols = ["count", "uas", "label_prec", "label_recall", "label_f1"]
         index = ["amod", "det", "nsubj", "obj", "pobj", "prep", "root"]
         expected_matrix = pd.DataFrame(
             columns=cols,
@@ -358,8 +344,6 @@ class EvaluateTest(unittest.TestCase):
             f1: 1.0
           }
         }""", evaluation_pb2.Evaluation())
-        # print(self.evaluator.evaluation)
-        # print(expected_proto)
         self.assertEqual(expected_proto, self.evaluator.evaluation)
         
 if __name__ == "__main__":

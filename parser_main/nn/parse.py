@@ -1,14 +1,21 @@
 """Module to parse sentences with dependency parser."""
 
 import os
+import itertools
 import tensorflow as tf
+
 from input import preprocessor
 from input import embeddor
+
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
+from tagset.reader import LabelReader
+
 from util import common
 from util import reader
 from util.writer import write_proto_as_text
+
+from eval import evaluate
 
 from google.protobuf import text_format
 
@@ -25,28 +32,50 @@ def parse(*, prep, treebank, parser) -> treebank_pb2.Treebank:
         treebank: treebank_pb2.Treebank
         parser: the parser object used to parse the sentences.
     Returns:
-        treebank of parsed sentences.
+        dict: dict of sent_id:sentence_pb2.Sentence objects.
     """
-    output_treebank = treebank_pb2.Treebank()
-    
-    # generate tf.examples from the sentences
+    output_dict = {}
+    dep_labels = LabelReader.get_labels("dep_labels", reverse=True).labels
     logging.info(f"Generating dataset from {treebank}")
     trb = reader.ReadTreebankTextProto(os.path.join(_DATA_DIR, treebank))
-    # TODO: also add sentence ids to the dataset generator.
+   
     dataset = prep.make_dataset_from_generator(
       path=os.path.join(_DATA_DIR, treebank),
       batch_size=1)
 
     for example in dataset:
-      tokens = example["tokens"].numpy().tolist()
-      print([token.decode("utf-8") for token in tokens[0]])
+      tokens = example["tokens"].numpy().tolist()[0]
+      # print([token.decode("utf-8") for token in tokens])
       edge_scores, label_scores = parser.parse(example)
-      edge_preds = tf.argmax(edge_scores, axis=2)
-      label_preds = tf.argmax(label_scores, axis=2)
+      edge_preds = tf.argmax(edge_scores, axis=2).numpy().tolist()[0]
+      label_preds = tf.argmax(label_scores, axis=2).numpy().tolist()[0]
+      sent_id = example["sent_id"][0][0]
+       
+      sentence = sentence_pb2.Sentence(
+        sent_id=sent_id.numpy().decode("utf-8"),
+        length=(len(tokens))
+      )
       
-      print(f"edge_preds: {edge_preds}")
-      print(f"label preds {label_preds}")
-      input("press to cont..")
+      for i, values in enumerate(itertools.zip_longest(
+                                          tokens, edge_preds, label_preds,
+                                          fillvalue=None)):
+        if None in values:
+          raise ValueError("Length of feature sequences don't match!!")
+     
+        token = sentence.token.add(
+          word=values[0].decode("utf-8"),
+          selected_head=sentence_pb2.Head(address=values[1]),
+          label=dep_labels[values[2]],
+          index=i
+        )
+    
+      output_dict[sent_id.numpy().decode("utf-8")] = sentence
+    
+    evaluator = evaluate.Evaluator(gold=trb, test=output_dict)
+    evaluator.evaluate("all")
+    
+    # print(output_dict)                                  
+    return output_dict
     
     '''
     # save the parsed sentences to an output

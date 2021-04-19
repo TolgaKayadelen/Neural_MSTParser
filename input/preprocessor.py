@@ -84,8 +84,9 @@ class Preprocessor:
     """Sets up sequence features and labels to be used by this preprocessor."""
     logging.info("Setting up sequence features")
     sequence_features = []
-    # Add a tokens feature (to hold word strings).
+    # Add a tokens feature (to hold word strings) and a sentence_id feature.
     sequence_features.append(SequenceFeature(name="tokens", dtype=tf.string))
+    sequence_features.append(SequenceFeature(name="sent_id", dtype=tf.string))
     for feat in self.features:
       if not feat in self.labels:
         sequence_features.append(SequenceFeature(name=feat))
@@ -172,7 +173,7 @@ class Preprocessor:
     
     for feature in features:
       feature_list = example.feature_lists.feature_list[feature.name]
-      if feature.name == "tokens":
+      if feature.name in ["tokens", "sent_id"]:
         for value in feature.values:
           feature_list.feature.add().bytes_list.value.append(value)
       elif feature.name == "morph":
@@ -205,8 +206,9 @@ class Preprocessor:
     sequence_features = dict((
       feature, SequenceFeature(name=feature)) for feature in self.features)
     
-    # The 'tokens'feature is added to all examples by default.
+    # The 'tokens' and 'sent_id' features are added to all examples by default.
     sequence_features["tokens"] = SequenceFeature(name="tokens", dtype=tf.string)
+    sequence_features["sent_id"] = SequenceFeature(name="sent_id", dtype=tf.string)
   
     counter = 0
     if from_treebank is not None:
@@ -220,7 +222,9 @@ class Preprocessor:
     for sentence in sentences:
       counter += 1
       tokens = [token.word.encode("utf-8") for token in sentence.token]
+      sent_id = [sentence.sent_id.encode("utf-8")] * len(sentence.token)
       sequence_features["tokens"].values = tokens
+      sequence_features["sent_id"].values = sent_id
       if "words" in self.features:
         word_indices = self.numericalize(
                           values=[token.word for token in sentence.token],
@@ -261,8 +265,8 @@ class Preprocessor:
           token.selected_head.address for token in sentence.token]
 
       example = self.make_tf_example(features=list(sequence_features.values()))
-      # print(example)
-      # input("press to cont.")
+      print(example)
+      input("press to cont.")
       tf_examples.append(example)
     logging.info(f"Converted {counter} sentences to tf examples.")
     return tf_examples
@@ -285,7 +289,7 @@ class Preprocessor:
         _dataset_shapes[feature.name]=tf.TensorShape([None, 66])
         _padded_shapes[feature.name]=tf.TensorShape([None, 66])
         _padding_values[feature.name] = tf.constant(0, dtype=tf.int64)
-      elif feature.name == "tokens":
+      elif feature.name in ["tokens", "sent_id"]:
         _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
           shape=[], dtype=feature.dtype)
         _dataset_shapes[feature.name]=tf.TensorShape([None])
@@ -334,7 +338,7 @@ class Preprocessor:
     for feature in self.sequence_features:
       _output_types[feature.name]=feature.dtype
       
-      if feature.name == "tokens":
+      if feature.name in ["tokens", "sent_id"]:
         _padding_values[feature.name] = tf.constant("-pad-", dtype=tf.string)
       else:
         _padding_values[feature.name] = tf.constant(0, dtype=tf.int64)
@@ -369,6 +373,8 @@ class Preprocessor:
     for sentence in sentences:
       yield_dict["tokens"] = [
         token.word.encode("utf-8") for token in sentence.token]
+      yield_dict["sent_id"] = [
+        sentence.sent_id.encode("utf-8")] * len(sentence.token)
       for feature_name in self.features:
         if feature_name == "words":
           yield_dict[feature_name] = self.numericalize(
@@ -420,11 +426,13 @@ if __name__ == "__main__":
                       labels=["dep_labels",  "heads"])
   datapath = "data/UDv23/Turkish/training/treebank_train_0_3.pbtxt"
   
+  '''
   dataset = prep.make_dataset_from_generator(path=datapath, batch_size=10)
   for batch in dataset:
     print(batch["tokens"])
     print(batch["words"])
     print(batch["pos"])
+    print(batch["sent_id"])
   
   '''
   # Make a dataset and save it 
@@ -433,13 +441,13 @@ if __name__ == "__main__":
   prep.write_tf_records(examples=tf_examples,
                        path="./input/treebank_train_0_3.tfrecords")
   
-  
+
   # Read dataset from saved tfrecords
   dataset = prep.read_dataset_from_tfrecords(
     records="./input/treebank_train_0_3.tfrecords")
   for batch in dataset:
     print(batch)
-  '''
+  
   
   
   
