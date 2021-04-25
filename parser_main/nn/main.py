@@ -92,14 +92,14 @@ if __name__ == "__main__":
                       help="Parses --test_treebank with the --model_name")
   parser.add_argument("--epochs",
                       type=int,
-                      default=20,
+                      default=70,
                       help="Trains a new model.")
   parser.add_argument("--treebank",
                       type=str,
-                      default="treebank_train_1000_1500.pbtxt")
+                      default="treebank_tr_imst_ud_train_dev.pbtxt")
   parser.add_argument("--test_treebank",
                       type=str,
-                      default="treebank_1.pbtxt")
+                      default="treebank_tr_imst_ud_test_fixed.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features",
@@ -108,11 +108,15 @@ if __name__ == "__main__":
                       default=["words", "pos", "morph", "dep_labels", "heads"],
                       help="features to use to train the model.")
   # TODO: make sure --labels and --predict follow consistent naming.
+  # --labels is used to understand what are the label features.
+  # you might leave it as is.
   parser.add_argument("--labels",
                       nargs="+",
                       type=str,
                       default=["heads", "dep_labels"],
                       help="labels to predict.")
+  # predict determines which features the parser will train to predict.
+  # you need to set this up
   parser.add_argument("--predict",
                       nargs="+",
                       type=str,
@@ -121,7 +125,7 @@ if __name__ == "__main__":
                       help="which features to predict")
   parser.add_argument("--batchsize",
                       type=int, 
-                      default=20,
+                      default=250,
                       help="Size of training and test data batches")
   parser.add_argument("--model_name",
                       type=str,

@@ -50,12 +50,14 @@ def parse(*, prep, treebank, parser) -> treebank_pb2.Treebank:
       edge_preds = tf.argmax(edge_scores, axis=2).numpy().tolist()[0]
       label_preds = tf.argmax(label_scores, axis=2).numpy().tolist()[0]
       sent_id = example["sent_id"][0][0]
-       
+      
+      # Fill in the sent_id and the length of the sentence.
       sentence = sentence_pb2.Sentence(
         sent_id=sent_id.numpy().decode("utf-8"),
         length=(len(tokens))
       )
       
+      # Fill in the tokens.
       for i, values in enumerate(itertools.zip_longest(
                                           tokens, edge_preds, label_preds,
                                           fillvalue=None)):
