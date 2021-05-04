@@ -7,7 +7,7 @@ import tensorflow as tf
 from input import embeddor
 from input import preprocessor
 
-from parser.nn import joint_biaffine_parser_copy as jbp
+from parser.nn import label_first_parser as lfp
 from parser_main.nn import parse
 
 from util import reader
@@ -28,7 +28,7 @@ class ParseTest(unittest.TestCase):
       labels=["heads", "dep_labels"])
     label_feature = next((f for f in self.prep.sequence_features if f.name == "dep_labels"),
                           None)
-    self.parser = jbp.NeuralMSTParser(
+    self.parser = lfp.LabelFirstMSTParser(
                             word_embeddings=self.prep.word_embeddings,
                             n_output_classes=label_feature.n_values,
                             predict=["edges", "labels"], 

@@ -1,18 +1,11 @@
 package(default_visibility = ["//visibility:public"])
 
-py_binary(
-	name = "biaffine_parser",
-	srcs = ["biaffine_parser.py"],
-  deps = [
-    ":nn_parser_lib",
-  ],
-)
-
 # Libraries
 py_library(
   name = "nn_parser_lib",
   deps = [
-    ":model_builder",
+    ":layer_utils",
+    ":architectures",
     "//input:preprocessor",
     "//util/nn:nn_utils",
     "//util:writer",
@@ -20,8 +13,8 @@ py_library(
 )
 
 py_library(
-  name = "model_builder",
-  srcs = ["model_builder.py"],
+  name = "layer_utils",
+  srcs = ["layer_utils.py"],
   deps = [
     "//input:embeddor",
     "//util/nn:nn_utils",
@@ -29,26 +22,27 @@ py_library(
 )
 
 py_library(
-	name = "joint_biaffine_parser",
-	srcs = ["joint_biaffine_parser.py"],
+  name = "architectures",
+  srcs = ["architectures.py"],
   deps = [
-    ":nn_parser_lib",
+    ":layer_utils",
   ],
 )
 
 py_library(
-	name = "joint_biaffine_parser_copy",
-	srcs = ["joint_biaffine_parser_copy.py"],
+	name = "label_first_parser",
+	srcs = ["label_first_parser.py"],
   deps = [
     ":nn_parser_lib",
   ],
 )
 
+
 # Tests
 py_test(
-  name = "model_builder_test",
-  srcs = ["model_builder_test.py"],
+  name = "layer_utils_test",
+  srcs = ["layer_utils_test.py"],
   deps = [
-    ":model_builder",
+    ":layer_utils",
   ],
 )

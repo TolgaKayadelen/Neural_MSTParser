@@ -1,4 +1,4 @@
-"""NN architectures."""
+"""Tensorflow Custom Layer Initializers."""
 
 import tensorflow as tf
 import numpy as np
@@ -105,7 +105,38 @@ class EdgeScorer(layers.Layer):
     Hh_b = self.b_arc(h_arc_head)
     edge_scores = Hh_W_Ha + tf.transpose(Hh_b, perm=[0,2,1])
     return edge_scores
-      
+    
+
+class DozatBiaffineScorer(layers.Layer):
+  """Dozat style Biaffine Layer for scoring edges and labels.
+  
+  BiAffine Attention layer from https://arxiv.org/abs/1611.01734
+  Expects inputs as batch_first sequences [batch_size, seq_len, seq_len].
+  
+  Returns score matrixes as [batch_size, seq_len, seq_len] for edge scrores
+  (out_channels=1), and scores as [batch_size, out_channels, seq_len, seq_]
+  
+  """
+  def __init__(self, *, out_channels: int = 1,
+               name:str, use_bias: bool = False):
+    super(DozatBiAffine, self).__init__(name=name)
+    self.out_channels = out_channels
+    self.use_bias = use_bias
+  
+  def build(self, input_shape):
+    self.W = self.add_weight(shape=(self.n_units,
+                                    input_shape[1]+self.use_bias, 
+                                    input_shape[2]+self.use_bias),
+                             initializer="random_normal",
+                             trainable=True)
+    print("weights shape is ", W.shape)  
+  def call(self, x, y):
+    if self.use_bias:
+      x = tf.concat([x, tf.ones_like(x[..., :1])], axis=-1)
+      y = tf.concat([y, tf.ones_like(y[..., :1])], axis=-1)
+    
+    s = tf.einsum('bxi,oij,byj->boxy', x, self.W, y)
+    return s
 
 class LSTMBlock(layers.Layer):
   """A bidirectional LSTM block with 3 Birectional LSTM layers"""
@@ -136,54 +167,4 @@ class LSTMBlock(layers.Layer):
       out = self.lstm1(input_tensor)
       out = self.lstm2(out)
       out = self.lstm3(out)
-    return out    
-
-class ParsingModel(tf.keras.Model):
-  def __init__(self, *,
-               n_dep_labels: int,
-               word_embeddings: Embeddings, 
-               config=None,
-               name="Parsing_Model",
-               predict: List[str]):
-    super(ParsingModel, self).__init__(name=name)
-    self.predict = predict
-    self._null_label = tf.constant(0)
-    self.word_embeddings = EmbeddingLayer(pretrained=word_embeddings,
-                                          name="word_embeddings")
-    self.pos_embeddings = EmbeddingLayer(input_dim=35, output_dim=32,
-                                         name="pos_embeddings",
-                                         trainable=True)
-    self.concatenate = layers.Concatenate(name="concat")
-    self.encoder = LSTMBlock(n_units=256, dropout_rate=0.3, name="lstm_encoder")
-    self.attention = Attention()
-    if "labels" in self.predict:
-      self.dep_labels = layers.Dense(units=n_dep_labels, name="dep_labels")
-    self.head_perceptron = Perceptron(n_units=256, activation="relu",
-                                      name="head_mlp")
-    self.dep_perceptron = Perceptron(n_units=256, activation="relu",
-                                     name="dep_mlp")
-    self.edge_scorer = EdgeScorer(n_units=256, name="edge_scorer")
-    logging.info((f"Set up {name} to predict {predict}"))
-
-  def call(self, inputs): # inputs = Dict[str, tf.keras.Input]
-    word_inputs = inputs["words"]
-    word_features = self.word_embeddings(word_inputs)
-    pos_inputs = inputs["pos"]
-    pos_features = self.pos_embeddings(pos_inputs)
-    morph_inputs = inputs["morph"]
-    concat = self.concatenate([word_features, pos_features, morph_inputs])
-    sentence_repr = self.encoder(concat)
-    sentence_repr = self.attention(sentence_repr)
-    if "labels" in self.predict:
-      dep_labels = self.dep_labels(sentence_repr)
-      h_arc_head = self.head_perceptron(dep_labels)
-      h_arc_dep = self.dep_perceptron(dep_labels)
-      edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
-      return {"edges": edge_scores,  "labels": dep_labels}
-    else:
-      h_arc_head = self.head_perceptron(sentence_repr)
-      h_arc_dep = self.dep_perceptron(sentence_repr)
-      edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
-      return {"edges": edge_scores,  "labels": self._null_label}
-      
-    
+    return out        

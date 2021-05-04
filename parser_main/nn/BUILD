@@ -6,7 +6,7 @@ py_binary(
 	srcs = ["main.py"],
   deps = [
     "//parser/nn:nn_parser_lib",
-    "//parser/nn:joint_biaffine_parser_copy",
+    "//parser/nn:label_first_parser",
     ":parse",
   ],
 )
@@ -27,6 +27,6 @@ py_test(
   srcs = ["parse_test.py"],
   deps = [
     ":parse",
-    "//parser/nn:joint_biaffine_parser_copy",
+    "//parser/nn:label_first_parser",
   ],
 )

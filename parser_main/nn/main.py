@@ -10,7 +10,7 @@ import numpy as np
 import tensorflow as tf
 
 
-from parser.nn import joint_biaffine_parser_copy as jbp
+from parser.nn import label_first_parser as lfp
 from util.nn import nn_utils
 from util import writer
 
@@ -37,9 +37,10 @@ def main(args):
   
   
   if args.load:
-    parser = jbp.NeuralMSTParser(word_embeddings=prep.word_embeddings,
-                                 n_output_classes=label_feature.n_values,
-                                 predict=args.predict, model_name=args.model_name)
+    parser = lfp.LabelFirstMSTParser(word_embeddings=prep.word_embeddings,
+                                     n_output_classes=label_feature.n_values,
+                                     predict=args.predict,
+                                     model_name=args.model_name)
     parser.load(name=args.model_name)
     print(parser)
     parser.plot()
@@ -48,9 +49,10 @@ def main(args):
     parse.parse(prep=prep, treebank=args.test_treebank, parser=parser)
 
   if args.train:
-    parser = jbp.NeuralMSTParser(word_embeddings=prep.word_embeddings,
-                                 n_output_classes=label_feature.n_values,
-                                 predict=args.predict, model_name=args.model_name)
+    parser = lfp.LabelFirstMSTParser(word_embeddings=prep.word_embeddings,
+                                     n_output_classes=label_feature.n_values,
+                                     predict=args.predict,
+                                     model_name=args.model_name)
     print(parser)
     parser.plot()
     
@@ -92,14 +94,14 @@ if __name__ == "__main__":
                       help="Parses --test_treebank with the --model_name")
   parser.add_argument("--epochs",
                       type=int,
-                      default=70,
+                      default=10,
                       help="Trains a new model.")
   parser.add_argument("--treebank",
                       type=str,
-                      default="treebank_tr_imst_ud_train_dev.pbtxt")
+                      default="treebank_train_0_10.pbtxt")
   parser.add_argument("--test_treebank",
                       type=str,
-                      default="treebank_tr_imst_ud_test_fixed.pbtxt")
+                      default="treebank_0_3_gold.pbtxt")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
   parser.add_argument("--features",

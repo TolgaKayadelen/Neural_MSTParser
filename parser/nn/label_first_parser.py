@@ -9,7 +9,7 @@ import tensorflow as tf
 import matplotlib as mpl
 import numpy as np
 
-from parser.nn import model_builder as builder
+from parser.nn import architectures
 from proto import metrics_pb2
 from tensorflow.keras import layers, metrics, losses, optimizers
 from typing import List, Dict, Tuple
@@ -28,8 +28,8 @@ Metrics = metrics_pb2.Metrics
 # Path for saving or loading pretrained models.
 _MODEL_DIR = "./model/nn/pretrained"
 
-class NeuralMSTParser:
-  """The neural mst parser."""
+class LabelFirstMSTParser:
+  """An MST Parser that parses the dependency labels before arcs."""
   
   def __init__(self, *, word_embeddings: Embeddings,
               n_output_classes: int,
@@ -70,10 +70,11 @@ class NeuralMSTParser:
     morph_inputs = tf.keras.Input(shape=(None, 66), name="morph")
     inputs = {"words": word_inputs, "pos": pos_inputs, "morph": morph_inputs}
     
-    model = builder.ParsingModel(n_dep_labels=self._n_output_classes,
-                                 word_embeddings=self.word_embeddings,
-                                 predict=self._predict,
-                                 name=model_name)
+    model = architectures.LabelFirstParsingModel(
+                                  n_dep_labels=self._n_output_classes,
+                                  word_embeddings=self.word_embeddings,
+                                  predict=self._predict,
+                                  name=model_name)
     model(inputs=inputs)
     return model
   
