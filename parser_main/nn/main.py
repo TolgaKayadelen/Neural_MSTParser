@@ -11,6 +11,7 @@ import tensorflow as tf
 
 
 from parser.nn import label_first_parser as lfp
+from parser.nn import biaffine_parser as bfp
 from util.nn import nn_utils
 from util import writer
 
@@ -49,10 +50,10 @@ def main(args):
     parse.parse(prep=prep, treebank=args.test_treebank, parser=parser)
 
   if args.train:
-    parser = lfp.LabelFirstMSTParser(word_embeddings=prep.word_embeddings,
-                                     n_output_classes=label_feature.n_values,
-                                     predict=args.predict,
-                                     model_name=args.model_name)
+    parser = bfp.BiaffineMSTParser(word_embeddings=prep.word_embeddings,
+                                   n_output_classes=label_feature.n_values,
+                                   predict=args.predict,
+                                   model_name=args.model_name)
     print(parser)
     parser.plot()
     

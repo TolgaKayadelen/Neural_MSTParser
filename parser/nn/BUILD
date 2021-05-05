@@ -37,6 +37,13 @@ py_library(
   ],
 )
 
+py_library(
+	name = "biaffine_parser",
+	srcs = ["biaffine_parser.py"],
+  deps = [
+    ":nn_parser_lib",
+  ],
+)
 
 # Tests
 py_test(

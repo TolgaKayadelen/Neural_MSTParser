@@ -34,7 +34,7 @@ class LabelFirstMSTParser:
   def __init__(self, *, word_embeddings: Embeddings,
               n_output_classes: int,
               predict: List[str] = ["edges"],
-              model_name: str = "neural_mst_parser"):
+              model_name: str = "label_first_mst_parser"):
     self.word_embeddings = word_embeddings
     self.edge_loss_fn = losses.SparseCategoricalCrossentropy(
       from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
@@ -273,6 +273,8 @@ class LabelFirstMSTParser:
       
       # Get edge and label scores.
       edge_scores, label_scores = scores["edges"], scores["labels"]
+      print("edge scores: ", edge_scores)
+      input("press to continue")
       edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask = self.edge_loss(
         edge_scores, heads, pad_mask)
       if "labels" in self._predict:

@@ -115,27 +115,34 @@ class DozatBiaffineScorer(layers.Layer):
   
   Returns score matrixes as [batch_size, seq_len, seq_len] for edge scrores
   (out_channels=1), and scores as [batch_size, out_channels, seq_len, seq_]
-  
+  (where out_channels=#labels).
   """
   def __init__(self, *, out_channels: int = 1,
                name:str, use_bias: bool = False):
-    super(DozatBiAffine, self).__init__(name=name)
+    super(DozatBiaffineScorer, self).__init__(name=name)
     self.out_channels = out_channels
     self.use_bias = use_bias
+    print("Initialized the Biaffine Scorer.")
   
   def build(self, input_shape):
-    self.W = self.add_weight(shape=(self.n_units,
-                                    input_shape[1]+self.use_bias, 
-                                    input_shape[2]+self.use_bias),
+    # print("input shape is ", input_shape)
+    self.W = self.add_weight(shape=(self.out_channels,
+                                    input_shape[2],
+                                    input_shape[2]),
                              initializer="random_normal",
-                             trainable=True)
-    print("weights shape is ", W.shape)  
+                             trainable=True,
+                             name="W")
+    # print("weights shape is ", self.W.shape)  
   def call(self, x, y):
     if self.use_bias:
       x = tf.concat([x, tf.ones_like(x[..., :1])], axis=-1)
       y = tf.concat([y, tf.ones_like(y[..., :1])], axis=-1)
     
     s = tf.einsum('bxi,oij,byj->boxy', x, self.W, y)
+    
+    # If outchannels is 1, squeeze the matrix (remove dim=1)
+    if s.shape[1] == 1:
+      return tf.squeeze(s, 1)
     return s
 
 class LSTMBlock(layers.Layer):
