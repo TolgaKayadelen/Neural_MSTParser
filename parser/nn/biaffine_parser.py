@@ -1,3 +1,20 @@
+"""
+
+See for the next step:
+https://github.com/yzhangcs/parser/blob/76f6be671b70a83c1d93f9773a9354139b2815f8/supar/models/dep.py#L168
+
+Note that the loss is a combined loss:
+https://github.com/yzhangcs/parser/blob/76f6be671b70a83c1d93f9773a9354139b2815f8/supar/models/dep.py#L189-L197
+
+Once you get the label_scores from biaffine scorer (which comes as
+[batch_len, out_channels, seq_len, seq_len], you need to permute them
+as [batch_len, seq_len, seq_len, outchannel] and then work on the loss.)
+
+https://github.com/yzhangcs/parser/blob/76f6be671b70a83c1d93f9773a9354139b2815f8/supar/models/dep.py#L164
+
+"""
+
+
 import collections
 import logging
 import os
@@ -28,13 +45,13 @@ Metrics = metrics_pb2.Metrics
 # Path for saving or loading pretrained models.
 _MODEL_DIR = "./model/nn/pretrained"
 
-class LabelFirstMSTParser:
+class BiaffineMSTParser:
   """An MST Parser that parses the dependency labels before arcs."""
   
   def __init__(self, *, word_embeddings: Embeddings,
               n_output_classes: int,
               predict: List[str] = ["edges"],
-              model_name: str = "label_first_mst_parser"):
+              model_name: str = "biaffine_mst_parser"):
     self.word_embeddings = word_embeddings
     self.edge_loss_fn = losses.SparseCategoricalCrossentropy(
       from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
@@ -70,11 +87,11 @@ class LabelFirstMSTParser:
     morph_inputs = tf.keras.Input(shape=(None, 66), name="morph")
     inputs = {"words": word_inputs, "pos": pos_inputs, "morph": morph_inputs}
     
-    model = architectures.LabelFirstParsingModel(
-                                  n_dep_labels=self._n_output_classes,
-                                  word_embeddings=self.word_embeddings,
-                                  predict=self._predict,
-                                  name=model_name)
+    model = architectures.BiaffineParsingModel(
+                              n_dep_labels=self._n_output_classes,
+                              word_embeddings=self.word_embeddings,
+                              predict=self._predict,
+                              name=model_name)
     model(inputs=inputs)
     return model
   
@@ -178,6 +195,25 @@ class LabelFirstMSTParser:
     n_las = np.sum(
       [1 for tok in zip(edges, labels) if tok[0] == True and tok[1] == True])
     return n_las
+  
+  def _arc_maps(self, heads:tf.Tensor, labels:tf.Tensor):
+    """"Returns a list of tuples mapping heads, dependents and labels. 
+    
+    For each sentence in a training batch, this function creates a list of
+    tuples with the values [batch_idx, head_idx, dep_idx, label_idx].
+    
+    Next: this will be used in scoring label loss.
+    """
+    arc_maps = []
+    for sentence_idx, batch in enumerate(heads):
+      for token_idx, head in enumerate(batch):
+        arc_map = []
+        arc_map.append(sentence_idx) # batch index
+        arc_map.append(head.numpy()) # head index
+        arc_map.append(token_idx) # dependent index
+        arc_map.append(labels[sentence_idx, token_idx].numpy()) # label index
+        arc_maps.append(arc_map)
+    return arc_maps
 
   @tf.function
   def edge_loss(self, edge_scores, heads, pad_mask):
@@ -193,10 +229,11 @@ class LabelFirstMSTParser:
       edge_loss_with_pad: 2D tensor of shape (batch_size*seq_len, seq_len).
         Holds loss values for each of the predictions.
       edge_loss_w_o_pad: Loss values where the pad tokens are not considered.
-      predictions: 2D tensor of shape, (batch_size*seq_len, seq_len)
       heads: 2D tensor of (batch_size*seq_len, 1)
-      pad_mask: 2D tensor of (bath_size*seq_len, 1)
+      pad_mask: 2D tensor of (bath_size*se_len, 1)
     """
+    # print("edge_scores shape is, ", edge_scores.shape)
+    # input("press to cont.")
     n_sentences, n_words, _ = edge_scores.shape
     edge_scores = tf.reshape(edge_scores, shape=(n_sentences*n_words, n_words))
     heads = tf.reshape(heads, shape=(n_sentences*n_words, 1))
@@ -215,13 +252,15 @@ class LabelFirstMSTParser:
     return edge_loss_with_pad, edge_loss_w_o_pad, predictions, heads, pad_mask
 
   @tf.function
-  def label_loss(self, dep_labels, label_scores, pad_mask):
+  def label_loss(self, dep_labels, label_scores, arc_maps, pad_mask):
     """Computes label loss and label predictions
     Args:
       dep_labels: tf.Tensor of shape (batch_size, seq_len, n_labels). Holding
         correct labels for each token as a one hot vector.
-      label_scores: tf.Tensor of shape (batch_size, seq_len, n_labels). Holding
-        probability scores for each token's label prediction.
+      label_scores: tf.Tensor of shape (batch_size, seq_len, seq_len, n_labels).
+        Holding probability scores for labels given a for all possible head<->dep
+        relations.
+      arc_maps: A List of lists: [batch_idx, head_idx, dep_idx, label_idx]
       pad_mask: tf.Tensor of shape (batch_size*seq_len, 1)
     Returns:
       label_loss: the label loss associated with each token. This is always
@@ -229,8 +268,24 @@ class LabelFirstMSTParser:
       correct_labels: tf.Tensor of shape (batch_size*seq_len, 1). The correct
         dependency labels.
       label_preds: tf.Tensor of shape (batch_size*seq_len, 1). The predicted
-        dependency labels. The second axis here is the label index.
+        dependency labels.
     """
+    # Transpose the label scores to [batch_size, seq_len, seq_len, n_classes]
+    label_scores = tf.transpose(label_scores, perm=[0,2,3,1])
+    print("label scores shape now ", label_scores.shape)
+    arc_maps = np.array(arc_maps)
+    print(arc_maps, arc_maps.shape)
+    # TODO: continue debugging from here.
+    input("press to cont.")
+    logits = label_scores[arc_maps[:, 0].item(),
+                          arc_maps[:, 1].item(),
+                          arc_maps[:, 2].item(), :]
+    labels = arc_maps[:, 3].item()
+    print("logits ", logits)
+    print("labels ", labels)
+    input("press to cont.")
+    
+    label_loss = self.label_loss_fn(dep_labels, label_scores)
     label_preds = tf.reshape(tf.argmax(label_scores,
                                        axis=2),
                              shape=(pad_mask.shape)
@@ -239,12 +294,11 @@ class LabelFirstMSTParser:
                                           axis=2),
                                 shape=(pad_mask.shape))
   
-    label_loss = self.label_loss_fn(dep_labels, label_scores)
     return label_loss, correct_labels, label_preds
 
   @tf.function
   def train_step(self, *, words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
-                 dep_labels: tf.Tensor, heads:tf.Tensor
+                 dep_labels: tf.Tensor, heads:tf.Tensor, arc_maps: List
                  ) -> Tuple[tf.Tensor, ...]:
     """Runs one training step.
     
@@ -256,18 +310,19 @@ class LabelFirstMSTParser:
       dep_labels: A tf.Tensor of one hot vectors representing dep_labels for
           each token, of shape (batch_size, seq_len, n_classes).
       morph: A tf.Tensor of (batch_size, seq_len, n_morph)
-      heads: Correct heads, a tf.Tensor of shape (batch_size, seq_len)
+      heads: Correct heads, a tf.Tensor of shape (batch_size, seq_len).
+      arc_maps: A List of lists: [batch_idx, head_idx, dep_idx, label_idx]
     Returns:
       edge_loss_pad: edge loss computed with padding tokens.
       edge_loss_w_o_pad: edge loss computed without padding tokens.
-      edge_pred: edge predictions, shape (batch_size*seq_len, seq_len)
-      label_preds: tf.Tensor of shape (batch_size*seq_len, 1). The predicted
-          dependency labels. The second axis here is the label index.
-      h: Correct heads, a tf.Tensor of shape (batch_size*seq_len, 1)
-      pad_mask: pad mask to identify padded tokens, shape (batch_size*seq_len, 1)
-      label_loss: the dependency label loss associated with each token.
+      edge_pred: edge predictions.
+      h: correct heads.
+      pad_mask: pad mask to identify padded tokens.
+      label_loss: the depdendeny label loss associated with each token.
       correct_labels: tf.Tensor of shape (batch_size*seq_len, 1). The correct
           dependency labels.
+      label_preds: tf.Tensor of shape (batch_size*seq_len, 1). The predicted
+          dependency labels
     """
     with tf.GradientTape() as tape:
       scores = self.model({"words": words, "pos": pos, "morph": morph},
@@ -276,12 +331,16 @@ class LabelFirstMSTParser:
       
       # Get edge and label scores.
       edge_scores, label_scores = scores["edges"], scores["labels"]
+      
+     
       edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask = self.edge_loss(
         edge_scores, heads, pad_mask)
       if "labels" in self._predict:
         label_loss, correct_labels, label_preds = self.label_loss(dep_labels,
                                                                   label_scores,
+                                                                  arc_maps,
                                                                   pad_mask)
+    
     # Compute gradients.
     if "labels" in self._predict:
       grads = tape.gradient(
@@ -336,6 +395,11 @@ class LabelFirstMSTParser:
         # Read the data and labels from the dataset.
         words, pos, heads = batch["words"], batch["pos"], batch["heads"]
         dep_labels = tf.one_hot(batch["dep_labels"], self._n_output_classes)
+        
+        
+        arc_maps = self._arc_maps(heads, batch["dep_labels"])
+        # print(arc_maps)
+     
         # We cast the type of this tensor to float32 because in the model
         # pos and word features are passed through an embedding layer, which
         # converts them into float values implicitly.
@@ -344,7 +408,8 @@ class LabelFirstMSTParser:
         
         # Run forward propagation to get losses and predictions for this step.
         losses_and_preds = self.train_step(words=words, pos=pos, morph=morph,
-                                           dep_labels=dep_labels, heads=heads)
+                                           dep_labels=dep_labels, heads=heads,
+                                           arc_maps=arc_maps)
     
         # Get the total number of tokens without padding for this step.
         words_reshaped = tf.reshape(words, 
@@ -442,7 +507,6 @@ class LabelFirstMSTParser:
                           training=False)
       
       edge_scores, label_scores = scores["edges"], scores["labels"]
-     
       # TODO: in the below computation of scores, you should leave out
       # the 0th token, which is the dummy token.
       heads, dep_labels = example["heads"], example["dep_labels"]
@@ -479,8 +543,10 @@ class LabelFirstMSTParser:
   def save(self, *, suffix=0):
     """Saves the model to path."""
     model_name = self.model.name
+    print(model_name)
     try:
       path = os.path.join(_MODEL_DIR, self.model.name)
+      print("path ", path)
       if suffix > 0:
         path += str(suffix)
         model_name = self.model.name+str(suffix)

@@ -27,6 +27,7 @@ Embeddings = embeddor.Embeddings
 _DATA_DIR = "data/UDv23/Turkish/training"
 _TEST_DATA_DIR = "data/UDv23/Turkish/test"
 
+
 def main(args):
   embeddings = nn_utils.load_embeddings()
   word_embeddings = embeddor.Embeddings(name= "word2vec", matrix=embeddings)
@@ -50,10 +51,18 @@ def main(args):
     parse.parse(prep=prep, treebank=args.test_treebank, parser=parser)
 
   if args.train:
-    parser = bfp.BiaffineMSTParser(word_embeddings=prep.word_embeddings,
-                                   n_output_classes=label_feature.n_values,
-                                   predict=args.predict,
-                                   model_name=args.model_name)
+    if args.parser == "biaffine":
+      parser = bfp.BiaffineMSTParser(word_embeddings=prep.word_embeddings,
+                                     n_output_classes=label_feature.n_values,
+                                     predict=args.predict,
+                                     model_name=args.model_name)
+    elif args.parser == "label_first":
+      parser = lfp.LabelFirstMSTParser(word_embeddings=prep.word_embeddings,
+                                       n_output_classes=label_feature.n_values,
+                                       predict=args.predict,
+                                       model_name=args.model_name)
+    else:
+      raise ValueError("Unsupported value for the parser argument.")
     print(parser)
     parser.plot()
     
@@ -83,6 +92,25 @@ def main(args):
     
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
+  # Determine which parser to use.
+  parser.add_argument("--parser", 
+                      type=str,
+                      choices=["label_first", "biaffine"],
+                      default="label_first",
+                      help="Which parser to use.")
+
+  # Determine if you want to load a pretrained parser.
+  parser.add_argument("--load",
+                      action='store_true',
+                      help="Whether to load a pretrained model.")
+  
+  # Choose a model name to load from or save to. 
+  parser.add_argument("--model_name",
+                      type=str,
+                      required=True,
+                      help="Name of the model to save or load.")
+
+  # Choose parser modes.
   parser.add_argument("--train",
                       action='store_true',
                       help="Trains a new model.")
@@ -93,18 +121,16 @@ if __name__ == "__main__":
   parser.add_argument("--parse",
                       action="store_true",
                       help="Parses --test_treebank with the --model_name")
+
+  # Set up parser config.
   parser.add_argument("--epochs",
                       type=int,
-                      default=10,
+                      default=70,
                       help="Trains a new model.")
-  parser.add_argument("--treebank",
-                      type=str,
-                      default="treebank_train_0_10.pbtxt")
-  parser.add_argument("--test_treebank",
-                      type=str,
-                      default="treebank_0_3_gold.pbtxt")
-  parser.add_argument("--dataset",
-                      help="path to a prepared tf.data.Dataset")
+  parser.add_argument("--batchsize",
+                      type=int, 
+                      default=250,
+                      help="Size of training and test data batches")
   parser.add_argument("--features",
                       nargs="+",
                       type=str,
@@ -126,17 +152,19 @@ if __name__ == "__main__":
                       default=["edges", "labels"],
             					choices=["edges", "labels"],
                       help="which features to predict")
-  parser.add_argument("--batchsize",
-                      type=int, 
-                      default=250,
-                      help="Size of training and test data batches")
-  parser.add_argument("--model_name",
+  
+  # Determine which datasets to use for train and test.
+  parser.add_argument("--treebank",
                       type=str,
-                      required=True,
-                      help="Name of the model to save or load.")
-  parser.add_argument("--load",
-                      action='store_true',
-                      help="Whether to load a pretrained model.")
+                      default="treebank_tr_imst_ud_train_dev.pbtxt")
+  parser.add_argument("--test_treebank",
+                      type=str,
+                      default="treebank_tr_imst_ud_test_fixed.pbtxt")
+  parser.add_argument("--dataset",
+                      help="path to a prepared tf.data.Dataset")
+
+  
+  
 
   args = parser.parse_args()
   main(args)

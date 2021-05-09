@@ -15,6 +15,7 @@ Embeddings = embeddor.Embeddings
 
 
 class LabelFirstParsingModel(tf.keras.Model):
+  """Label first parsing model predicts labels before edges."""
   def __init__(self, *,
                n_dep_labels: int,
                word_embeddings: Embeddings, 
@@ -49,6 +50,14 @@ class LabelFirstParsingModel(tf.keras.Model):
     logging.info((f"Set up {name} to predict {predict}"))
 
   def call(self, inputs): # inputs = Dict[str, tf.keras.Input]
+    """Forward pass.
+    Args:
+      inputs: Dict[str, tf.keras.Input]
+    Returns:
+      A dict which conteins:
+        edge_scores: [batch_size, seq_len, seq_len] head preds for all tokens.
+        label_scores: [batch_size, seq_len, n_labels] label preds for tokens.
+    """
     word_inputs = inputs["words"]
     word_features = self.word_embeddings(word_inputs)
     pos_inputs = inputs["pos"]
@@ -93,8 +102,15 @@ class BiaffineParsingModel(tf.keras.Model):
     self.attention = layer_utils.Attention()
     
     if "labels" in self.predict:
-      raise ValueError("Cannot predict labels yet!!")
-      # self.dep_labels = layers.Dense(units=n_dep_labels, name="dep_labels")
+      self.rel_perceptron_h = layer_utils.Perceptron(n_units=256,
+                                                     activation="relu",
+                                                     name="rel_mlp_h")
+      self.rel_perceptron_d = layer_utils.Perceptron(n_units=256,
+                                                     activation="relu",
+                                                     name="rel_nlp_d")
+      self.label_scorer = layer_utils.DozatBiaffineScorer(
+                                                  out_channels=n_dep_labels,
+                                                  name="biaffine_label_scorer")
     
     self.head_perceptron = layer_utils.Perceptron(n_units=256,
                                                   activation="relu",
@@ -102,7 +118,8 @@ class BiaffineParsingModel(tf.keras.Model):
     self.dep_perceptron = layer_utils.Perceptron(n_units=256,
                                                  activation="relu",
                                                  name="dep_mlp")
-    self.edge_scorer = layer_utils.DozatBiaffineScorer(name="biaffine_scorer")
+    self.edge_scorer = layer_utils.DozatBiaffineScorer(
+                                                 name="biaffine_edge_scorer")
     logging.info((f"Set up {name} to predict {predict}"))
   
   def call(self, inputs): # inputs = Dict[str, tf.keras.Input]
@@ -115,12 +132,16 @@ class BiaffineParsingModel(tf.keras.Model):
     sentence_repr = self.encoder(concat)
     sentence_repr = self.attention(sentence_repr)
     if "labels" in self.predict:
-      raise ValueError("Cannot predict labels yet!!")
-      # dep_labels = self.dep_labels(sentence_repr)
-      # h_arc_head = self.head_perceptron(dep_labels)
-      # h_arc_dep = self.dep_perceptron(dep_labels)
-      # edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
-      # return {"edges": edge_scores,  "labels": dep_labels}
+      h_arc_head = self.head_perceptron(sentence_repr)
+      h_arc_dep = self.dep_perceptron(sentence_repr)
+      edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
+      
+      h_rel_head = self.rel_perceptron_h(sentence_repr)
+      h_rel_dep = self.rel_perceptron_d(sentence_repr)
+      label_scores = self.label_scorer(h_rel_head, h_rel_dep)
+      print("edge scores shape: ", edge_scores.shape)
+      print("label scores shape: ", label_scores.shape)
+      return {"edges": edge_scores,  "labels": label_scores}
     else:
       h_arc_head = self.head_perceptron(sentence_repr)
       h_arc_dep = self.dep_perceptron(sentence_repr)
