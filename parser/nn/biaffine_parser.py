@@ -1,20 +1,3 @@
-"""
-
-See for the next step:
-https://github.com/yzhangcs/parser/blob/76f6be671b70a83c1d93f9773a9354139b2815f8/supar/models/dep.py#L168
-
-Note that the loss is a combined loss:
-https://github.com/yzhangcs/parser/blob/76f6be671b70a83c1d93f9773a9354139b2815f8/supar/models/dep.py#L189-L197
-
-Once you get the label_scores from biaffine scorer (which comes as
-[batch_len, out_channels, seq_len, seq_len], you need to permute them
-as [batch_len, seq_len, seq_len, outchannel] and then work on the loss.)
-
-https://github.com/yzhangcs/parser/blob/76f6be671b70a83c1d93f9773a9354139b2815f8/supar/models/dep.py#L164
-
-"""
-
-
 import collections
 import logging
 import os
