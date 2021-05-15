@@ -1,3 +1,12 @@
+"""
+
+NEXT: 
+https://github.com/EelcovdW/Biaffine-Parser/blob/e372f5731bf00ff8cd013fdcd1e243d223c19117/train.py#L157
+
+See the notebook playground to understand how to apply biaffine scoring that is impleemted
+in here.
+"""
+
 import collections
 import logging
 import os
