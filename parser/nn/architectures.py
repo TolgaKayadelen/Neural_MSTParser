@@ -123,6 +123,16 @@ class BiaffineParsingModel(tf.keras.Model):
     logging.info((f"Set up {name} to predict {predict}"))
   
   def call(self, inputs): # inputs = Dict[str, tf.keras.Input]
+    """Forward pass.
+    Args:
+      inputs: Dict[str, tf.keras.Input]
+    Returns:
+      A dict which conteins:
+        edge_scores: [batch_size, seq_len, seq_len] head preds for all tokens.
+        label_scores: [batch_size, n_labels, seq_len, n_labels]. This tensor
+          hold the probability score of seeing each label in n_labels when each
+          token x is a dependent for each token y in the sentence.
+    """
     word_inputs = inputs["words"]
     word_features = self.word_embeddings(word_inputs)
     pos_inputs = inputs["pos"]

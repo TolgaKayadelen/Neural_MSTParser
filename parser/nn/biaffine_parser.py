@@ -47,8 +47,7 @@ class BiaffineMSTParser:
     self.word_embeddings = word_embeddings
     self.edge_loss_fn = losses.SparseCategoricalCrossentropy(
       from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
-    self.label_loss_fn = losses.CategoricalCrossentropy(
-      from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
+    self.label_loss_fn = losses.SparseCategoricalCrossentropy(from_logits=True)
     self.optimizer=tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
     self.edge_train_metrics = metrics.SparseCategoricalAccuracy()
     self.label_train_metrics = metrics.CategoricalAccuracy()
@@ -250,9 +249,10 @@ class BiaffineMSTParser:
       dep_labels: tf.Tensor of shape (batch_size, seq_len, n_labels). Holding
         correct labels for each token as a one hot vector.
       label_scores: tf.Tensor of shape (batch_size, seq_len, seq_len, n_labels).
-        Holding probability scores for labels given a for all possible head<->dep
+        Holding probability scores for for each label for all possible head<->dep
         relations.
-      arc_maps: A List of lists: [batch_idx, head_idx, dep_idx, label_idx]
+      arc_maps: A List of lists, each list holds info as 
+        [batch_idx, head_idx, dep_idx, label_idx] for each sentence/token.
       pad_mask: tf.Tensor of shape (batch_size*seq_len, 1)
     Returns:
       label_loss: the label loss associated with each token. This is always
@@ -267,17 +267,21 @@ class BiaffineMSTParser:
     print("label scores shape now ", label_scores.shape)
     arc_maps = np.array(arc_maps)
     print(arc_maps, arc_maps.shape)
-    # TODO: continue debugging from here.
+   
     input("press to cont.")
-    logits = label_scores[arc_maps[:, 0].item(),
-                          arc_maps[:, 1].item(),
-                          arc_maps[:, 2].item(), :]
-    labels = arc_maps[:, 3].item()
+    logits = tf.gather_nd(label_scores, indices=arc_maps[:, :3])
+    labels = arc_maps[:, 3]
     print("logits ", logits)
     print("labels ", labels)
     input("press to cont.")
     
-    label_loss = self.label_loss_fn(dep_labels, label_scores)
+    label_loss = self.label_loss_fn(labels, logits)
+    print("label loss: ", label_loss)
+    input("press to cont.")
+    
+    # TODO: continue debugging from here. Check whteher the label loss function
+    # should return mean reduced label loss or not (compare with label first
+    # parser.)
     label_preds = tf.reshape(tf.argmax(label_scores,
                                        axis=2),
                              shape=(pad_mask.shape)
