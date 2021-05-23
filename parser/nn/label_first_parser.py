@@ -35,18 +35,37 @@ class LabelFirstMSTParser:
               n_output_classes: int,
               predict: List[str] = ["edges"],
               model_name: str = "label_first_mst_parser"):
+    # Embeddings
     self.word_embeddings = word_embeddings
+    
+    # Loss functions
     self.edge_loss_fn = losses.SparseCategoricalCrossentropy(
-      from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
+      from_logits=True, 
+      reduction=tf.keras.losses.Reduction.NONE)
     self.label_loss_fn = losses.CategoricalCrossentropy(
-      from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
+      from_logits=True, 
+      reduction=tf.keras.losses.Reduction.NONE)
+    
+    # Optimizer
     self.optimizer=tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
+    
+    # Training metrics.
     self.edge_train_metrics = metrics.SparseCategoricalAccuracy()
     self.label_train_metrics = metrics.CategoricalAccuracy()
+    
+    # Number of output labels. Used for dependency label prediction only.
     self._n_output_classes = n_output_classes
+    
+    # What to predict (either edges + labels or edges only)
     self._predict = predict
+    
+    # Which parsing model to use.
     self.model = self._parsing_model(model_name=model_name)
+    
+    # Which metrics to report.
     self.metrics = self._metrics()
+    
+    # Some sanity checking.
     assert(self._predict == self.model.predict), "Inconsistent configuration!"
 
   def __str__(self):
@@ -227,7 +246,7 @@ class LabelFirstMSTParser:
       label_loss: the label loss associated with each token. This is always
         computed with padding.
       correct_labels: tf.Tensor of shape (batch_size*seq_len, 1). The correct
-        dependency labels.
+        dependency label indexes.
       label_preds: tf.Tensor of shape (batch_size*seq_len, 1). The predicted
         dependency labels. The second axis here is the label index.
     """
@@ -240,6 +259,7 @@ class LabelFirstMSTParser:
                                 shape=(pad_mask.shape))
   
     label_loss = self.label_loss_fn(dep_labels, label_scores)
+
     return label_loss, correct_labels, label_preds
 
   @tf.function

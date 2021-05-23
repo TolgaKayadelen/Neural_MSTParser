@@ -1,10 +1,7 @@
 """
 
 NEXT: 
-https://github.com/EelcovdW/Biaffine-Parser/blob/e372f5731bf00ff8cd013fdcd1e243d223c19117/train.py#L157
-
-See the notebook playground to understand how to apply biaffine scoring that is impleemted
-in here.
+Continue debugging the test method.
 """
 
 import collections
@@ -44,17 +41,35 @@ class BiaffineMSTParser:
               n_output_classes: int,
               predict: List[str] = ["edges"],
               model_name: str = "biaffine_mst_parser"):
+    # Embeddings
     self.word_embeddings = word_embeddings
+    
+    # Loss Functions
     self.edge_loss_fn = losses.SparseCategoricalCrossentropy(
-      from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
-    self.label_loss_fn = losses.SparseCategoricalCrossentropy(from_logits=True)
-    self.optimizer=tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
+      from_logits=True)
+    self.label_loss_fn = losses.SparseCategoricalCrossentropy(
+      from_logits=True)
+    
+    # Train metrics
     self.edge_train_metrics = metrics.SparseCategoricalAccuracy()
     self.label_train_metrics = metrics.CategoricalAccuracy()
+    
+    # Optimizer
+    self.optimizer=tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
+    
+    # Number of output labels. Used for dependency label prediction only.
     self._n_output_classes = n_output_classes
+    
+    # What to predict (either edges + labels or edges only)
     self._predict = predict
+    
+    # Which parsing model to use.
     self.model = self._parsing_model(model_name=model_name)
+    
+    # Which metrics to report. 
     self.metrics = self._metrics()
+    
+    # Some sanit checking
     assert(self._predict == self.model.predict), "Inconsistent configuration!"
 
   def __str__(self):
@@ -153,11 +168,12 @@ class BiaffineMSTParser:
       correct_labels = preds["correct_labels"]
       label_correct_padded = (label_preds == correct_labels)
       n_label_correct_padded = np.sum(label_correct_padded)
-    
       # Calculate correct label predictions without padding
-      label_correct = tf.boolean_mask(label_correct_padded, preds["pad_mask"])
+      label_correct = tf.boolean_mask(
+        tf.expand_dims(label_correct_padded, 1),
+        preds["pad_mask"]
+      )
       n_label_correct = np.sum(label_correct)
-      
       # Add to return dict
       return_dict["label_correct"] = label_correct
       return_dict["n_label_correct"] = n_label_correct
@@ -223,24 +239,20 @@ class BiaffineMSTParser:
       heads: 2D tensor of (batch_size*seq_len, 1)
       pad_mask: 2D tensor of (bath_size*se_len, 1)
     """
-    # print("edge_scores shape is, ", edge_scores.shape)
-    # input("press to cont.")
     n_sentences, n_words, _ = edge_scores.shape
     edge_scores = tf.reshape(edge_scores, shape=(n_sentences*n_words, n_words))
     heads = tf.reshape(heads, shape=(n_sentences*n_words, 1))
+    
     # Pad mask is being reshaped here.
     pad_mask = tf.reshape(pad_mask, shape=(n_sentences*n_words, 1))
     
     predictions = tf.argmax(edge_scores, 1)
     predictions = tf.reshape(predictions, shape=(predictions.shape[0], 1))
     
-    # Compute losses with and without pad
+    # Compute losses
     edge_loss_with_pad = self.edge_loss_fn(heads, edge_scores)
-    edge_loss_with_pad = tf.reshape(edge_loss_with_pad,
-                                    shape=(edge_loss_with_pad.shape[0], 1))
-    edge_loss_w_o_pad = tf.boolean_mask(edge_loss_with_pad, pad_mask)
         
-    return edge_loss_with_pad, edge_loss_w_o_pad, predictions, heads, pad_mask
+    return edge_loss_with_pad, predictions, heads, pad_mask
 
   @tf.function
   def label_loss(self, dep_labels, label_scores, arc_maps, pad_mask):
@@ -258,39 +270,25 @@ class BiaffineMSTParser:
       label_loss: the label loss associated with each token. This is always
         computed with padding.
       correct_labels: tf.Tensor of shape (batch_size*seq_len, 1). The correct
-        dependency labels.
+        dependency labels indexes.
       label_preds: tf.Tensor of shape (batch_size*seq_len, 1). The predicted
-        dependency labels.
+        dependency labels indexes.
     """
     # Transpose the label scores to [batch_size, seq_len, seq_len, n_classes]
     label_scores = tf.transpose(label_scores, perm=[0,2,3,1])
-    print("label scores shape now ", label_scores.shape)
+    
     arc_maps = np.array(arc_maps)
-    print(arc_maps, arc_maps.shape)
-   
-    input("press to cont.")
+    
     logits = tf.gather_nd(label_scores, indices=arc_maps[:, :3])
-    labels = arc_maps[:, 3]
-    print("logits ", logits)
-    print("labels ", labels)
-    input("press to cont.")
     
-    label_loss = self.label_loss_fn(labels, logits)
-    print("label loss: ", label_loss)
-    input("press to cont.")
+    correct_labels = arc_maps[:, 3]
     
-    # TODO: continue debugging from here. Check whteher the label loss function
-    # should return mean reduced label loss or not (compare with label first
-    # parser.)
-    label_preds = tf.reshape(tf.argmax(label_scores,
-                                       axis=2),
-                             shape=(pad_mask.shape)
-                             )
-    correct_labels = tf.reshape(tf.argmax(dep_labels,
-                                          axis=2),
-                                shape=(pad_mask.shape))
-  
+    label_loss = self.label_loss_fn(correct_labels, logits)
+    
+    label_preds = tf.argmax(logits, axis=1)
+    
     return label_loss, correct_labels, label_preds
+  
 
   @tf.function
   def train_step(self, *, words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
@@ -314,12 +312,13 @@ class BiaffineMSTParser:
       edge_pred: edge predictions.
       h: correct heads.
       pad_mask: pad mask to identify padded tokens.
-      label_loss: the depdendeny label loss associated with each token.
+      label_loss: mean of dependency label loss associated with each token.
       correct_labels: tf.Tensor of shape (batch_size*seq_len, 1). The correct
           dependency labels.
       label_preds: tf.Tensor of shape (batch_size*seq_len, 1). The predicted
           dependency labels
     """
+    
     with tf.GradientTape() as tape:
       scores = self.model({"words": words, "pos": pos, "morph": morph},
                            training=True)
@@ -329,21 +328,19 @@ class BiaffineMSTParser:
       edge_scores, label_scores = scores["edges"], scores["labels"]
       
      
-      edge_loss_pad, edge_loss_w_o_pad, edge_pred, h, pad_mask = self.edge_loss(
-        edge_scores, heads, pad_mask)
+      edge_loss_pad, edge_pred, h, pad_mask = self.edge_loss(edge_scores,
+                                                             heads,
+                                                             pad_mask)
+      train_loss = edge_loss_pad
       if "labels" in self._predict:
         label_loss, correct_labels, label_preds = self.label_loss(dep_labels,
                                                                   label_scores,
                                                                   arc_maps,
                                                                   pad_mask)
+        train_loss += label_loss
     
     # Compute gradients.
-    if "labels" in self._predict:
-      grads = tape.gradient(
-        [edge_loss_pad, label_loss], self.model.trainable_weights
-      )
-    else:
-      grads = tape.gradient(edge_loss_pad, self.model.trainable_weights)
+    grads = tape.gradient(train_loss, self.model.trainable_weights)
     
     # Update the optimizer
     self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
@@ -351,11 +348,14 @@ class BiaffineMSTParser:
     # Update train metrics and populate return dict.
     self.edge_train_metrics.update_state(heads, edge_scores)
     return_dict = {"edge_loss_pad": edge_loss_pad,
-                  "edge_loss_w_o_pad": edge_loss_w_o_pad,
                   "edge_pred": edge_pred, "h": h, "pad_mask": pad_mask}
                   
     if "labels" in self._predict:
-      self.label_train_metrics.update_state(dep_labels, label_scores)
+      self.label_train_metrics.update_state(
+        tf.one_hot(correct_labels, depth=self._n_output_classes),
+        tf.one_hot(label_preds, depth=self._n_output_classes)
+        )
+      # self.label_train_metrics.update_state(dep_labels, label_scores)
       return_dict["label_loss"] = label_loss
       return_dict["correct_labels"] = correct_labels
       return_dict["label_preds"] = label_preds
@@ -406,6 +406,8 @@ class BiaffineMSTParser:
         losses_and_preds = self.train_step(words=words, pos=pos, morph=morph,
                                            dep_labels=dep_labels, heads=heads,
                                            arc_maps=arc_maps)
+        # print(losses_and_preds["edge_loss_pad"],
+        #       losses_and_preds["label_loss"])
     
         # Get the total number of tokens without padding for this step.
         words_reshaped = tf.reshape(words, 
@@ -444,8 +446,6 @@ class BiaffineMSTParser:
       # Compute average edge losses with and without padding
       avg_edge_loss_padded = tf.reduce_mean(
         losses_and_preds["edge_loss_pad"]).numpy()
-      avg_edge_loss_unpadded = tf.reduce_mean(
-        losses_and_preds["edge_loss_w_o_pad"]).numpy()
       
       # Compute average label loss (only with pad)
       if "labels" in self._predict:
@@ -515,6 +515,7 @@ class BiaffineMSTParser:
       if "labels" in self._predict:
         label_preds = tf.argmax(label_scores, 2)
         tl = (dep_labels == label_preds)
+        # TODO: continue debugging from here.
         correct_labels = tf.reshape(tl, shape=(tl.shape[1],))
         n_las += self._labeled_attachment_score(correct_edges, correct_labels,
                                                 test=True)
