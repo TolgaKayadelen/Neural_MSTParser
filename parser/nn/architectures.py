@@ -149,8 +149,8 @@ class BiaffineParsingModel(tf.keras.Model):
       h_rel_head = self.rel_perceptron_h(sentence_repr)
       h_rel_dep = self.rel_perceptron_d(sentence_repr)
       label_scores = self.label_scorer(h_rel_head, h_rel_dep)
-      print("edge scores shape: ", edge_scores.shape)
-      print("label scores shape: ", label_scores.shape)
+      # print("edge scores shape: ", edge_scores.shape)
+      # print("label scores shape: ", label_scores.shape)
       return {"edges": edge_scores,  "labels": label_scores}
     else:
       h_arc_head = self.head_perceptron(sentence_repr)

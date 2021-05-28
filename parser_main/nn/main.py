@@ -39,16 +39,25 @@ def main(args):
   
   
   if args.load:
-    parser = lfp.LabelFirstMSTParser(word_embeddings=prep.word_embeddings,
+    if args.parser == "label_first":
+      parser = lfp.LabelFirstMSTParser(word_embeddings=prep.word_embeddings,
+                                       n_output_classes=label_feature.n_values,
+                                       predict=args.predict,
+                                       model_name=args.model_name)
+      parser.load(name=args.model_name)
+      print(parser)
+      parser.plot()
+    elif args.parser == "biaffine":
+      parser = bfp.BiaffineMSTParser(word_embeddings=prep.word_embeddings,
                                      n_output_classes=label_feature.n_values,
                                      predict=args.predict,
                                      model_name=args.model_name)
-    parser.load(name=args.model_name)
-    print(parser)
-    parser.plot()
+      parser.load(name=args.model_name)
+      print(parser)
+      parser.plot()
   
-  if args.parse:
-    parse.parse(prep=prep, treebank=args.test_treebank, parser=parser)
+    if args.parse:
+      parse.parse(prep=prep, treebank=args.test_treebank, parser=parser)
 
   if args.train:
     if args.parser == "biaffine":

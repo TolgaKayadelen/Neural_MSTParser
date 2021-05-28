@@ -209,7 +209,7 @@ class BiaffineMSTParser:
     For each sentence in a training batch, this function creates a list of
     tuples with the values [batch_idx, head_idx, dep_idx, label_idx].
     
-    Next: this will be used in scoring label loss.
+    This is used in scoring label loss.
     """
     arc_maps = []
     for sentence_idx, batch in enumerate(heads):
@@ -260,7 +260,7 @@ class BiaffineMSTParser:
     Args:
       dep_labels: tf.Tensor of shape (batch_size, seq_len, n_labels). Holding
         correct labels for each token as a one hot vector.
-      label_scores: tf.Tensor of shape (batch_size, seq_len, seq_len, n_labels).
+      label_scores: tf.Tensor of shape (batch_size, n_labels, seq_len, seq_len).
         Holding probability scores for for each label for all possible head<->dep
         relations.
       arc_maps: A List of lists, each list holds info as 
@@ -279,12 +279,17 @@ class BiaffineMSTParser:
     
     arc_maps = np.array(arc_maps)
     
+    # get the logits (label prediction scores) from label_scores
     logits = tf.gather_nd(label_scores, indices=arc_maps[:, :3])
     
+    # get the arc label indexes from arc maps
     correct_labels = arc_maps[:, 3]
     
+    # compute label loss. Label loss is SparseCategoricalCrossEntropy with
+    # mean reduction.
     label_loss = self.label_loss_fn(correct_labels, logits)
     
+    # get the label predictions from label logits
     label_preds = tf.argmax(logits, axis=1)
     
     return label_loss, correct_labels, label_preds
@@ -355,7 +360,7 @@ class BiaffineMSTParser:
         tf.one_hot(correct_labels, depth=self._n_output_classes),
         tf.one_hot(label_preds, depth=self._n_output_classes)
         )
-      # self.label_train_metrics.update_state(dep_labels, label_scores)
+
       return_dict["label_loss"] = label_loss
       return_dict["correct_labels"] = correct_labels
       return_dict["label_preds"] = label_preds
@@ -465,7 +470,7 @@ class BiaffineMSTParser:
       logging.info(f"Time for epoch: {time.time() - start_time}\n")
       
       # Update scores on test data at the end of every X epoch.
-      if epoch % 5 == 0 and test_data:
+      if epoch % 2 == 0 and test_data:
         uas_test, ls_test, las_test = self.test(dataset=test_data)
         logging.info(f"UAS test: {uas_test}")
         logging.info(f"LS test: {ls_test}")
@@ -506,21 +511,21 @@ class BiaffineMSTParser:
       # TODO: in the below computation of scores, you should leave out
       # the 0th token, which is the dummy token.
       heads, dep_labels = example["heads"], example["dep_labels"]
-      
       head_preds = tf.argmax(edge_scores, 2)
       te = (heads == head_preds)
       correct_edges = tf.reshape(te, shape=(te.shape[1],))
       head_accuracy.update_state(heads, head_preds)
       
       if "labels" in self._predict:
-        label_preds = tf.argmax(label_scores, 2)
-        tl = (dep_labels == label_preds)
-        # TODO: continue debugging from here.
-        correct_labels = tf.reshape(tl, shape=(tl.shape[1],))
+        arc_maps = np.array(self._arc_maps(heads, dep_labels))
+        label_scores = tf.transpose(label_scores, perm=[0,2,3,1])  
+        logits = tf.gather_nd(label_scores, indices=arc_maps[:, :3])
+        labels = arc_maps[:, 3]
+        label_preds = tf.argmax(logits, axis=1)
+        correct_labels = (labels == label_preds)
         n_las += self._labeled_attachment_score(correct_edges, correct_labels,
                                                 test=True)
-        label_accuracy.update_state(dep_labels, label_preds)
-        
+        label_accuracy.update_state(labels, label_preds)
     las_test = n_las / n_tokens
     return (head_accuracy.result().numpy(),
             label_accuracy.result().numpy(),

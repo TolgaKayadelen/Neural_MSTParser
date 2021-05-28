@@ -29,7 +29,7 @@ def parse(*, prep, treebank, parser) -> treebank_pb2.Treebank:
 
     Args:
         prep: preprocessor used to make a dataset from the treebank.
-        treebank: treebank_pb2.Treebank
+        treebank: path to a treebank_pb2.Treebank
         parser: the parser object used to parse the sentences.
     Returns:
         dict: dict of sent_id:sentence_pb2.Sentence objects.
@@ -42,7 +42,8 @@ def parse(*, prep, treebank, parser) -> treebank_pb2.Treebank:
     dataset = prep.make_dataset_from_generator(
       path=os.path.join(_DATA_DIR, treebank),
       batch_size=1)
-
+    
+    # TODO: start debugging from here for the case where --parser=biaffine
     for example in dataset:
       tokens = example["tokens"].numpy().tolist()[0]
       # print([token.decode("utf-8") for token in tokens])
@@ -73,6 +74,8 @@ def parse(*, prep, treebank, parser) -> treebank_pb2.Treebank:
     
       output_dict[sent_id.numpy().decode("utf-8")] = sentence
     
+    # TODO: but this is creating a problem, normally you don't have access 
+    # to a gold treebank when you want to parse data.
     evaluator = evaluate.Evaluator(gold=trb, test=output_dict)
     evaluator.evaluate("all")
     
