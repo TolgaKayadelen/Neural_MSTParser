@@ -470,7 +470,7 @@ class BiaffineMSTParser:
       logging.info(f"Time for epoch: {time.time() - start_time}\n")
       
       # Update scores on test data at the end of every X epoch.
-      if epoch % 2 == 0 and test_data:
+      if epoch % 5 == 0 and test_data:
         uas_test, ls_test, las_test = self.test(dataset=test_data)
         logging.info(f"UAS test: {uas_test}")
         logging.info(f"LS test: {ls_test}")
