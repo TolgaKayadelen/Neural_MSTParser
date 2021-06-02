@@ -29,5 +29,6 @@ py_test(
   deps = [
     ":parse",
     "//parser/nn:label_first_parser",
+    "//parser/nn:biaffine_parser",
   ],
 )

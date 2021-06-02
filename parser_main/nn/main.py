@@ -39,7 +39,7 @@ def main(args):
   
   
   if args.load:
-    if args.parser == "label_first":
+    if args.parser_type == "label_first":
       parser = lfp.LabelFirstMSTParser(word_embeddings=prep.word_embeddings,
                                        n_output_classes=label_feature.n_values,
                                        predict=args.predict,
@@ -47,7 +47,7 @@ def main(args):
       parser.load(name=args.model_name)
       print(parser)
       parser.plot()
-    elif args.parser == "biaffine":
+    elif args.parser_type == "biaffine":
       parser = bfp.BiaffineMSTParser(word_embeddings=prep.word_embeddings,
                                      n_output_classes=label_feature.n_values,
                                      predict=args.predict,
@@ -57,15 +57,16 @@ def main(args):
       parser.plot()
   
     if args.parse:
-      parse.parse(prep=prep, treebank=args.test_treebank, parser=parser)
+      parse.parse(prep=prep, treebank=args.test_treebank, parser=parser,
+                  parser_type=args.parser_type)
 
   if args.train:
-    if args.parser == "biaffine":
+    if args.parser_type == "biaffine":
       parser = bfp.BiaffineMSTParser(word_embeddings=prep.word_embeddings,
                                      n_output_classes=label_feature.n_values,
                                      predict=args.predict,
                                      model_name=args.model_name)
-    elif args.parser == "label_first":
+    elif args.parser_type == "label_first":
       parser = lfp.LabelFirstMSTParser(word_embeddings=prep.word_embeddings,
                                        n_output_classes=label_feature.n_values,
                                        predict=args.predict,
@@ -81,9 +82,9 @@ def main(args):
                                  batch_size=args.batchsize,
                                  records="./input/treebank_train_0_50.tfrecords")
     else:
-      logging.info(f"Generating dataset from {args.treebank}")
+      logging.info(f"Generating dataset from {args.train_treebank}")
       dataset = prep.make_dataset_from_generator(
-        path=os.path.join(_DATA_DIR, args.treebank),
+        path=os.path.join(_DATA_DIR, args.train_treebank),
         batch_size=args.batchsize)
     if args.test:
       if not args.train:
@@ -102,7 +103,7 @@ def main(args):
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   # Determine which parser to use.
-  parser.add_argument("--parser", 
+  parser.add_argument("--parser_type", 
                       type=str,
                       choices=["label_first", "biaffine"],
                       default="label_first",
@@ -163,12 +164,15 @@ if __name__ == "__main__":
                       help="which features to predict")
   
   # Determine which datasets to use for train and test.
-  parser.add_argument("--treebank",
+  parser.add_argument("--train_treebank",
                       type=str,
                       default="treebank_tr_imst_ud_train_dev.pbtxt")
   parser.add_argument("--test_treebank",
                       type=str,
                       default="treebank_tr_imst_ud_test_fixed.pbtxt")
+  parser.add_argument("--gold_treebank",
+                      type=str,
+                      help="treebank to compare model parses against")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
 

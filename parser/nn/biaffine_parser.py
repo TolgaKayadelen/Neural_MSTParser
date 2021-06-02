@@ -1,9 +1,3 @@
-"""
-
-NEXT: 
-Continue debugging the test method.
-"""
-
 import collections
 import logging
 import os
@@ -411,8 +405,6 @@ class BiaffineMSTParser:
         losses_and_preds = self.train_step(words=words, pos=pos, morph=morph,
                                            dep_labels=dep_labels, heads=heads,
                                            arc_maps=arc_maps)
-        # print(losses_and_preds["edge_loss_pad"],
-        #       losses_and_preds["label_loss"])
     
         # Get the total number of tokens without padding for this step.
         words_reshaped = tf.reshape(words, 
