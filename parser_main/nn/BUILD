@@ -7,6 +7,7 @@ py_binary(
   deps = [
     "//parser/nn:nn_parser_lib",
     "//parser/nn:label_first_parser",
+    "//parser/nn:label_first_parser_joint_loss",
     "//parser/nn:biaffine_parser",
     ":parse",
   ],

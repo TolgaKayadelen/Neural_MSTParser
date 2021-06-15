@@ -441,23 +441,21 @@ class BiaffineMSTParser:
       label_train_acc = self.label_train_metrics.result()
       
       # Compute average edge losses with and without padding
-      avg_edge_loss_padded = tf.reduce_mean(
-        losses_and_preds["edge_loss_pad"]).numpy()
+      edge_loss_padded = losses_and_preds["edge_loss_pad"].numpy()
       
       # Compute average label loss (only with pad)
       if "labels" in self._predict:
-        avg_label_loss_padded = tf.reduce_mean(
-          losses_and_preds["label_loss"]).numpy()
+        label_loss_padded = losses_and_preds["label_loss"].numpy()
       
       logging.info(f"""
         UAS train: {training_metrics['uas']}
-        Edge loss (padded): {avg_edge_loss_padded}\n""")
+        Edge loss (padded): {edge_loss_padded}\n""")
       
       if "labels" in self._predict:
         logging.info(f"""
           LS train: {training_metrics['ls']}
           LAS train: {training_metrics['las']}
-          Label loss (padded) {avg_label_loss_padded}\n""")
+          Label loss (padded) {label_loss_padded}\n""")
       
       logging.info(f"Time for epoch: {time.time() - start_time}\n")
       
@@ -475,8 +473,8 @@ class BiaffineMSTParser:
         test_metrics={"uas_test": uas_test,
                       "ls_test": ls_test,
                       "las_test": las_test},
-        loss_metrics={"edge_loss_padded": avg_edge_loss_padded,
-                      "label_loss_padded": avg_label_loss_padded})
+        loss_metrics={"edge_loss_padded": edge_loss_padded,
+                      "label_loss_padded": label_loss_padded})
 
     return self.metrics
     

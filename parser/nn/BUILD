@@ -45,6 +45,15 @@ py_library(
   ],
 )
 
+# Experimental
+py_library(
+	name = "label_first_parser_joint_loss",
+	srcs = ["label_first_parser_joint_loss.py"],
+  deps = [
+    ":nn_parser_lib",
+  ],
+)
+
 # Tests
 py_test(
   name = "layer_utils_test",

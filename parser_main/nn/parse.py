@@ -87,9 +87,6 @@ def parse(*, prep, treebank, parser, parser_type) -> treebank_pb2.Treebank:
         arc_maps = np.array(_arc_maps(example["heads"]))
         logits = tf.gather_nd(label_scores, indices=arc_maps)
         label_preds = tf.argmax(logits, axis=1).numpy().tolist()
-        print(edge_preds, label_preds)
-        input("press to cont.")
-      
       
       # Fill in the tokens.
       for i, values in enumerate(itertools.zip_longest(

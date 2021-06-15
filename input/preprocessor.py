@@ -265,8 +265,8 @@ class Preprocessor:
           token.selected_head.address for token in sentence.token]
 
       example = self.make_tf_example(features=list(sequence_features.values()))
-      print(example)
-      input("press to cont.")
+      # print(example)
+      # input("press to cont.")
       tf_examples.append(example)
     logging.info(f"Converted {counter} sentences to tf examples.")
     return tf_examples

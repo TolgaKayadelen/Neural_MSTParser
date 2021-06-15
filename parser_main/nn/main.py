@@ -11,6 +11,7 @@ import tensorflow as tf
 
 
 from parser.nn import label_first_parser as lfp
+from parser.nn import label_first_parser_joint_loss as lfp_joint_loss
 from parser.nn import biaffine_parser as bfp
 from util.nn import nn_utils
 from util import writer
@@ -71,6 +72,12 @@ def main(args):
                                        n_output_classes=label_feature.n_values,
                                        predict=args.predict,
                                        model_name=args.model_name)
+    elif args.parser_type == "label_first_joint_loss":
+      parser = lfp_joint_loss.LabelFirstMSTParser(
+                                       word_embeddings=prep.word_embeddings,
+                                       n_output_classes=label_feature.n_values,
+                                       predict=args.predict,
+                                       model_name=args.model_name)
     else:
       raise ValueError("Unsupported value for the parser argument.")
     print(parser)
@@ -105,7 +112,7 @@ if __name__ == "__main__":
   # Determine which parser to use.
   parser.add_argument("--parser_type", 
                       type=str,
-                      choices=["label_first", "biaffine"],
+                      choices=["label_first", "biaffine", "label_first_joint_loss"],
                       default="label_first",
                       help="Which parser to use.")
 
