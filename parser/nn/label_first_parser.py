@@ -87,7 +87,12 @@ class LabelFirstMSTParser:
     word_inputs = tf.keras.Input(shape=(None,), name="words")
     pos_inputs = tf.keras.Input(shape=(None,), name="pos")
     morph_inputs = tf.keras.Input(shape=(None, 66), name="morph")
-    inputs = {"words": word_inputs, "pos": pos_inputs, "morph": morph_inputs}
+    # label_inputs = tf.keras.Input(shape=(None,), name="labels")
+    inputs = {"words": word_inputs,
+              "pos": pos_inputs,
+              "morph": morph_inputs
+              # "labels": label_inputs
+             }
     
     model = architectures.LabelFirstParsingModel(
                                   n_dep_labels=self._n_output_classes,
@@ -263,8 +268,11 @@ class LabelFirstMSTParser:
     return label_loss, correct_labels, label_preds
 
   @tf.function
-  def train_step(self, *, words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
-                 dep_labels: tf.Tensor, heads:tf.Tensor
+  def train_step(self, *, words: tf.Tensor,
+                          pos: tf.Tensor, 
+                          morph: tf.Tensor, 
+                          dep_labels: tf.Tensor,
+                          heads: tf.Tensor
                  ) -> Tuple[tf.Tensor, ...]:
     """Runs one training step.
     
@@ -290,7 +298,11 @@ class LabelFirstMSTParser:
           dependency labels.
     """
     with tf.GradientTape() as tape:
-      scores = self.model({"words": words, "pos": pos, "morph": morph},
+      scores = self.model({"words": words,
+                           "pos": pos,
+                           "morph": morph,
+                           # "labels": dep_labels
+                           },
                            training=True)
       pad_mask = (words != 0)
       
@@ -345,7 +357,7 @@ class LabelFirstMSTParser:
       self.edge_train_metrics.reset_states()
       self.label_train_metrics.reset_states()
       
-      logging.info(f"{'->' * 12} Training Epoch: {epoch} {'<-' * 12}\n\n")
+      logging.info(f"\n\n{'->' * 12} Training Epoch: {epoch} {'<-' * 12}\n\n")
       
       start_time = time.time()
       stats = collections.Counter()
@@ -356,6 +368,8 @@ class LabelFirstMSTParser:
         # Read the data and labels from the dataset.
         words, pos, heads = batch["words"], batch["pos"], batch["heads"]
         dep_labels = tf.one_hot(batch["dep_labels"], self._n_output_classes)
+        # dep_labels = batch["dep_labels"]  
+        
         # We cast the type of this tensor to float32 because in the model
         # pos and word features are passed through an embedding layer, which
         # converts them into float values implicitly.
@@ -363,8 +377,11 @@ class LabelFirstMSTParser:
         morph = tf.dtypes.cast(batch["morph"], tf.float32)
         
         # Run forward propagation to get losses and predictions for this step.
-        losses_and_preds = self.train_step(words=words, pos=pos, morph=morph,
-                                           dep_labels=dep_labels, heads=heads)
+        losses_and_preds = self.train_step(words=words,
+                                           pos=pos,
+                                           morph=morph, 
+                                           dep_labels=dep_labels,
+                                           heads=heads)
     
         # Get the total number of tokens without padding for this step.
         words_reshaped = tf.reshape(words, 
@@ -456,16 +473,20 @@ class LabelFirstMSTParser:
     for example in dataset:
       words, pos = example["words"], example["pos"]
       morph = tf.dtypes.cast(example["morph"], tf.float32)
+      heads, dep_labels = example["heads"], example["dep_labels"]
       n_tokens += words.shape[1]
       
-      scores = self.model({"words": words, "pos": pos, "morph": morph},
-                          training=False)
+      scores = self.model({"words": words,
+                           "pos": pos,
+                           "morph": morph,
+                           # "labels":dep_labels
+                           },
+                           training=False)
       
       edge_scores, label_scores = scores["edges"], scores["labels"]
      
       # TODO: in the below computation of scores, you should leave out
       # the 0th token, which is the dummy token.
-      heads, dep_labels = example["heads"], example["dep_labels"]
       
       head_preds = tf.argmax(edge_scores, 2)
       te = (heads == head_preds)

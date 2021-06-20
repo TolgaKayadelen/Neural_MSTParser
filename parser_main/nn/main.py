@@ -32,6 +32,8 @@ _TEST_DATA_DIR = "data/UDv23/Turkish/test"
 def main(args):
   embeddings = nn_utils.load_embeddings()
   word_embeddings = embeddor.Embeddings(name= "word2vec", matrix=embeddings)
+  print("labels ", args.labels)
+  print("features ", args.features)
   prep = preprocessor.Preprocessor(
     word_embeddings=word_embeddings, features=args.features,
     labels=args.labels)
@@ -170,7 +172,7 @@ if __name__ == "__main__":
             					choices=["edges", "labels"],
                       help="which features to predict")
   
-  # Determine which datasets to use for train and test.
+  # Determine which datasets to use for train, test or evaluate.
   parser.add_argument("--train_treebank",
                       type=str,
                       default="treebank_tr_imst_ud_train_dev.pbtxt")

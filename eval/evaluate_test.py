@@ -74,8 +74,8 @@ class EvaluateTest(unittest.TestCase):
         self.assertTrue(expected_result, self.evaluator.typed_uas)
         print("Passed..")
     
-    def test_typed_las_prec(self):
-        print("Running test typed_las_prec..")
+    def test_labeled_attachment_precision(self):
+        print("Running test labeled_attachment_precision..")
         expected_result = {
             'amod': 0.00,
             'nsubj': 1.0,
@@ -85,11 +85,11 @@ class EvaluateTest(unittest.TestCase):
             'root': 1.0,
             'prep': 0.0
         }
-        self.assertDictEqual(self.evaluator.typed_las_prec, expected_result)
+        self.assertDictEqual(self.evaluator.labeled_attachment_prec, expected_result)
         print("Passed!")
     
-    def test_typed_las_recall(self):
-        print("Running test typed las_recall..")
+    def test_labeled_attachment_recall(self):
+        print("Running test labeled_attachment_recall..")
         expected_result = {
             'root': 1.0,
             'det': 0.33,
@@ -98,7 +98,7 @@ class EvaluateTest(unittest.TestCase):
             'nsubj': 1.0,
             'prep': 0.0
         }
-        self.assertDictEqual(self.evaluator.typed_las_recall, expected_result)
+        self.assertDictEqual(self.evaluator.labeled_attachment_recall, expected_result)
         print("Passed!")
    
     def test_uas_total_las_total(self):
@@ -110,8 +110,8 @@ class EvaluateTest(unittest.TestCase):
       self.assertEqual(round(las, 1), 73.2)
       print("Passed!")
     
-    def test_typed_las_f1(self):
-        print("Running test_typed_las_f1..")
+    def test_labeled_attachment_metrics(self):
+        print("Running test_labeled_attachment_metrics..")
         expected_counts = {
             u"det": 3.0,
             u"obj":2.0,
@@ -152,9 +152,10 @@ class EvaluateTest(unittest.TestCase):
                                         expected_prec,
                                         expected_recall,
                                         expected_f1],
-            index=["count", "label_precision", "label_recall", "label_f1"]).T
-        expected_f1 = expected_result.sort_index()
-        self.assertTrue(expected_f1.equals(self.evaluator.typed_las_f1))
+            index=["count", "labeled_attachment_precision",
+                  "labeled_attachment_recall", "labeled_attachment_f1"]).T
+        expected_metrics = expected_result.sort_index()
+        self.assertTrue(expected_metrics.equals(self.evaluator.labeled_attachment_metrics))
         print("Passed!")
     
     def test_labels_confusion_matrix(self):
@@ -184,7 +185,7 @@ class EvaluateTest(unittest.TestCase):
         eval_matrix = results["eval_matrix"]
         self.assertEqual(round(uas, 1), 85.7)
         self.assertEqual(round(las, 1), 73.2)
-        cols = ["count", "uas", "label_prec", "label_recall", "label_f1"]
+        cols = ["count", "uas", "l_a_prec", "l_a_recall", "l_a_f1"]
         index = ["amod", "det", "nsubj", "obj", "pobj", "prep", "root"]
         expected_matrix = pd.DataFrame(
             columns=cols,
@@ -237,7 +238,7 @@ class EvaluateTest(unittest.TestCase):
             score: 1.0
           }
         }
-        typed_las_prec {
+        labeled_attachment_prec {
           prec {
             label: amod
             score: 0.0
@@ -267,7 +268,7 @@ class EvaluateTest(unittest.TestCase):
             score: 1.0
           }
         }
-        typed_las_recall {
+        labeled_attachment_recall {
           recall {
             label: det
             score: 0.33
@@ -293,50 +294,50 @@ class EvaluateTest(unittest.TestCase):
             score: 1.0
           }
         }
-        typed_las_f1 {
-          f1 {
+        labeled_attachment_metrics {
+          labeled_attachment_metric {
             label: amod
             count: 0
             prec: 0.0
             recall: 0.0
             f1: 0.0
           }
-          f1 {
+          labeled_attachment_metric {
             label: det
             count: 3
             prec: 1.0
             recall: 0.33
             f1: 0.496
           }
-          f1 {
+          labeled_attachment_metric {
             label: nsubj
             count: 2
             prec: 1.0
             recall: 1.0
             f1: 1.0
           }
-          f1 {
+          labeled_attachment_metric {
             label: obj
             count: 2
             prec: 0.67
             recall: 1.0
             f1: 0.802
           }
-          f1 {
+          labeled_attachment_metric {
             label: pobj
             count: 1
             prec: 1.0
             recall: 1.0
             f1: 1.0
           }
-          f1 {
+          labeled_attachment_metric {
             label: prep
             count: 1
             prec: 0.0
             recall: 0.0
             f1: 0.0
           }
-          f1 {
+          labeled_attachment_metric {
             label: root
             count: 2
             prec: 1.0

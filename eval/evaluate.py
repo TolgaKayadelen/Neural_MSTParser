@@ -83,8 +83,10 @@ class Evaluator:
       self.test = test
     else:
       raise ValueError("Invalid value for self.test!!")
-    self.metrics = ["uas_total", "las_total", "typed_uas", "typed_las_prec",
-				            "typed_las_recall", "typed_las_f1", "all"]
+    self.metrics = ["uas_total", "las_total", "typed_uas",
+                    "labeled_attachment_precision",
+				            "labeled_attachment_recall",
+                    "labeled_attachment_metrics", "all"]
   
   @property
   def gold_and_test(self):
@@ -124,24 +126,26 @@ class Evaluator:
                               label=label_to_enum[label],
                               score=round(self.typed_uas[label],2)
                               )
-    for label in self.typed_las_prec.keys():
-      evaluation.typed_las_prec.prec.add(
+    for label in self.labeled_attachment_prec.keys():
+      evaluation.labeled_attachment_prec.prec.add(
                               label=label_to_enum[label],
-                              score=round(self.typed_las_prec[label],2)
+                              score=round(self.labeled_attachment_prec[label],2)
                               )
-    for label in self.typed_las_recall.keys():
-      evaluation.typed_las_recall.recall.add(
+    for label in self.labeled_attachment_recall.keys():
+      evaluation.labeled_attachment_recall.recall.add(
                               label=label_to_enum[label],
-                              score=round(self.typed_las_recall[label], 2)
+                              score=round(self.labeled_attachment_recall[label], 2)
                               )
         
-    for _, row in self.typed_las_f1.reset_index().iterrows():
-      evaluation.typed_las_f1.f1.add(
-        label=label_to_enum[row["index"]], count=int(row["count"]),
-        prec=row["label_precision"],
-        recall=row["label_recall"], f1=row["label_f1"]
-        )
-        
+    for _, row in self.labeled_attachment_metrics.reset_index().iterrows():
+      evaluation.labeled_attachment_metrics.labeled_attachment_metric.add(
+                              label=label_to_enum[row["index"]],
+                              count=int(row["count"]),
+                              prec=row["labeled_attachment_precision"],
+                              recall=row["labeled_attachment_recall"],
+                              f1=row["labeled_attachment_f1"]
+                              )
+    
     return evaluation
     
   @property
@@ -158,6 +162,76 @@ class Evaluator:
           label_count += 1
       label_counts[label] = label_count
     return pd.Series(label_counts).rename("count", inplace=True)
+  
+  @property
+  def label_prediction_metrics(self):
+    """Returns label recall, precision and f1 metrics.
+    
+    Differently from labeled_attachment_metrics, these metrics do not take into
+    account the head accuracy. They only consider whether the two tokens in the
+    gold and test have the same label, whether or not they have the same head.
+    """
+    label_recall, label_precision, label_f1 = {}, {}, {}
+    
+    # Compute label recall
+    for label in self.gold_labels:
+      correct = 0.0
+      gold = 0.0
+      match = []
+      sentence_idx = 0
+      for gold_sent, test_sent in self.gold_and_test:
+        sentence_idx += 1
+        for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
+          if not gold_tok.label == label:
+            continue
+          gold += 1
+          if test_tok.label == label:
+            correct += 1
+            match.append((sentence_idx, test_tok.index, test_tok.word))
+      # Compute recall for this label if it exists in the gold data.
+      # Otherwise it doesn't make sense to compute recall for a label.
+      if gold:
+        label_recall[label] = round((correct / gold), 2)
+      else:
+        pass
+    
+    # Compute label precision
+    for label in self.test_labels:
+      correct = 0.0
+      system = 0.0
+      match = []
+      sentence_idx = 0
+      for gold_sent, test_sent in self.gold_and_test:
+        sentence_idx += 1
+        for gold_tok, test_tok in zip(gold_sent.token, test_sent.token):
+          if not test_tok.label == label:
+            continue
+          system += 1
+          if gold_tok.label == label:
+            correct += 1
+            match.append((sentence_idx, gold_tok.index, gold_tok.word))
+      label_precision[label] = round((correct / system), 2)
+      
+    cols = ["count",
+            "label_precision",
+            "label_recall",
+            "label_f1"]
+        
+    label_prediction_metrics = pd.DataFrame(
+      [label_precision, label_recall],
+			index=["label_precision", "label_recall"]).fillna(0).T
+
+    label_prediction_metrics["label_f1"] = f1(
+      label_prediction_metrics["label_recall"],
+      label_prediction_metrics["label_precision"]
+      ).fillna(0).round(3)
+
+    label_prediction_metrics["count"] = self.label_counts
+    label_prediction_metrics = label_prediction_metrics[cols]
+    label_prediction_metrics.fillna(0, inplace=True)
+
+    return label_prediction_metrics
+        
 
   @property
   def uas_total(self) -> float:
@@ -218,12 +292,12 @@ class Evaluator:
     return typed_uas
 
   @property
-  def	typed_las_prec(self):
+  def	labeled_attachment_prec(self):
     """Computes attachment precision for all dependency labels.
         
     For each relation X, precision computes the percentage of relations X
     in the system that are correct (correct / system). That is, it checks
-    whether the X's that are found in the system also exists in the gold.
+    whether the X's that are found in the predictions also exist in the gold.
     """
     typed_las_prec = {}
     for label in self.test_labels:
@@ -246,11 +320,13 @@ class Evaluator:
     return typed_las_prec
     
   @property
-  def typed_las_recall(self) -> Dict:
-    """Computes Recall for all dependency types.
+  def labeled_attachment_recall(self) -> Dict:
+    """Computes attachment recall for all dependency labels.
 
     For each relation X, recall computes the percentage of relations that
     exists in the gold which are recovered by the system (correct / gold).
+    
+    This computation based on the both having the same labels and same heads.
     """
     typed_las_recall = {}
     for label in self.gold_labels:
@@ -277,26 +353,31 @@ class Evaluator:
     return typed_las_recall
     
   @property 
-  def typed_las_f1(self):
-    """Computes F1 score for all dependency types"""
-    cols = ["count", "label_precision", "label_recall", "label_f1"]
+  def labeled_attachment_metrics(self):
+    """Computes attachment F1 score for all dependency labels"""
+    cols = ["count",
+            "labeled_attachment_precision",
+            "labeled_attachment_recall",
+            "labeled_attachment_f1"]
         
-    typed_las_f1 = pd.DataFrame(
-      [self.typed_las_prec, self.typed_las_recall],
-			index=["label_precision", "label_recall"]).fillna(0).T
+    labeled_attachment_metrics = pd.DataFrame(
+      [self.labeled_attachment_prec, self.labeled_attachment_recall],
+			index=["labeled_attachment_precision", "labeled_attachment_recall"]).fillna(0).T
 
-    typed_las_f1["label_f1"] = f1(
-      typed_las_f1["label_recall"], typed_las_f1["label_precision"]
+    labeled_attachment_metrics["labeled_attachment_f1"] = f1(
+      labeled_attachment_metrics["labeled_attachment_recall"],
+      labeled_attachment_metrics["labeled_attachment_precision"]
       ).fillna(0).round(3)
 
-    typed_las_f1["count"] = self.label_counts
-    typed_las_f1 = typed_las_f1[cols]
-    typed_las_f1.fillna(0, inplace=True)
-    return typed_las_f1
+    labeled_attachment_metrics["count"] = self.label_counts
+    labeled_attachment_metrics = labeled_attachment_metrics[cols]
+    labeled_attachment_metrics.fillna(0, inplace=True)
+    return labeled_attachment_metrics
   
   @property
   def labels_conf_matrix(self):
-    """Creates a labels confusion matrix."""
+    """Creates a labels confusion matrix. The labels confusion matrix is based
+    on the labels for the gold and the test tokens (without heads)."""
     def get_token_labels(sentence_list):
       labels = []
       for sent in sentence_list:
@@ -309,17 +390,20 @@ class Evaluator:
                                              name="test_labels")
     return pd.crosstab(gold_labels, test_labels, rownames=['Gold Labels'],
                        colnames=['Test Labels'], margins=True)
-    print(self.labels_conf_matrix)
+    
   
   @property
   def evaluation_matrix(self):
     evaluation_matrix = pd.DataFrame()
-    evaluation_matrix["count"] = self.typed_las_f1["count"]
+    evaluation_matrix["count"] = self.labeled_attachment_metrics["count"]
     evaluation_matrix["uas"] = pd.Series(self.typed_uas).rename("uas",
                                          inplace=True).round(2)
-    evaluation_matrix["label_prec"] = self.typed_las_f1["label_precision"]
-    evaluation_matrix["label_recall"] = self.typed_las_f1["label_recall"]
-    evaluation_matrix["label_f1"] = self.typed_las_f1["label_f1"]
+    evaluation_matrix["l_a_prec"] = self.labeled_attachment_metrics[
+                                                "labeled_attachment_precision"]
+    evaluation_matrix["l_a_recall"] = self.labeled_attachment_metrics[
+                                                "labeled_attachment_recall"]
+    evaluation_matrix["l_a_f1"] = self.labeled_attachment_metrics[
+                                                "labeled_attachment_f1"]
     return evaluation_matrix.fillna(0)
 
   def evaluate(self, *args):
@@ -331,13 +415,15 @@ class Evaluator:
       results["uas_total"] = self.uas_total
       results["las_total"] = self.las_total
       results["eval_matrix"] = self.evaluation_matrix
-      results["confusion_matrix"] = self.labels_conf_matrix
+      results["label_confusion_matrix"] = self.labels_conf_matrix
       results["eval_proto"] = self.evaluation
-      logging.info("Eval Matrix:")
-      print(self.evaluation_matrix)
-      logging.info(f"Confusion Matrix:")
+      logging.info("Label Prediction Metrics")
+      print(self.label_prediction_metrics)
+      logging.info(f"Label Prediction Confusion Matrix:")
       print(self.labels_conf_matrix)
-      logging.info(f"Eval Proto:")
+      logging.info("Labeled Attachment Evaluation Matrix:")
+      print(self.evaluation_matrix)
+      logging.info(f"Evaluation:")
       print(self.evaluation)
     else:
       if "uas_total" in requested_metrics:
@@ -347,12 +433,12 @@ class Evaluator:
       if "typed_uas" in requested_metrics:
         results["typed_uas"] = pd.Series(self.typed_uas).rename("uas",
                                          inplace=True).round(2)
-      if  "typed_las_prec" in requested_metrics:
-        results["typed_las_prec"] = self.typed_las_prec
-      if	"typed_las_recall" in requested_metrics:
-        results["typed_las_recall"] = self.typed_las_recall
-      if "typed_las_f1" in requested_metrics:
+      if  "labeled_attachment_precision" in requested_metrics:
+        results["labeled_attachment_precision"] = self.labeled_attachment_prec
+      if	"labeled_attachment_recall" in requested_metrics:
+        results["labeled_attachment_recall"] = self.labeled_attachment_recall
+      if "labeled_attachment_metrics" in requested_metrics:
         # this returns precision and recall as well
-        results["typed_las_f1"] = self.typed_las_f1
+        results["labeled_attachment_metrics"] = self.labeled_attachment_metrics
         results["eval_proto"] = self.evaluation
     return results

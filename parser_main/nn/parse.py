@@ -1,4 +1,11 @@
-"""Module to parse sentences with dependency parser."""
+"""Module to parse sentences with dependency parser.
+
+Usage:
+bazel build parser_main/nn:main && 
+bazel-bin/parser_main/nn/main --load --parse --model_name=<name_of_the_model>
+--test_treebank=<name_of_the_treebank> # the treebank should have gold annotations.
+
+"""
 
 import os
 import itertools

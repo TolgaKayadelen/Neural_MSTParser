@@ -13,7 +13,6 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 Embeddings = embeddor.Embeddings
 
-
 class LabelFirstParsingModel(tf.keras.Model):
   """Label first parsing model predicts labels before edges."""
   def __init__(self, *,
@@ -29,9 +28,13 @@ class LabelFirstParsingModel(tf.keras.Model):
                                           pretrained=word_embeddings,
                                           name="word_embeddings")
     self.pos_embeddings = layer_utils.EmbeddingLayer(
-                                         input_dim=35, output_dim=32,
-                                         name="pos_embeddings",
-                                         trainable=True)
+                                          input_dim=35, output_dim=32,
+                                          name="pos_embeddings",
+                                          trainable=True)
+    # self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=36,
+    #                                                   output_dim=50,
+    #                                                   name="label_embeddings",
+    #                                                   trainable=True)
     self.concatenate = layers.Concatenate(name="concat")
     self.encoder = layer_utils.LSTMBlock(n_units=256, dropout_rate=0.3,
                                          name="lstm_encoder")
@@ -58,12 +61,20 @@ class LabelFirstParsingModel(tf.keras.Model):
         edge_scores: [batch_size, seq_len, seq_len] head preds for all tokens.
         label_scores: [batch_size, seq_len, n_labels] label preds for tokens.
     """
+    # print("inputs ", inputs)
     word_inputs = inputs["words"]
     word_features = self.word_embeddings(word_inputs)
     pos_inputs = inputs["pos"]
     pos_features = self.pos_embeddings(pos_inputs)
     morph_inputs = inputs["morph"]
-    concat = self.concatenate([word_features, pos_features, morph_inputs])
+    # label_inputs = inputs["labels"]
+    # label_features = self.label_embeddings(label_inputs)
+    concat = self.concatenate([word_features,
+                               pos_features,
+                               morph_inputs,
+                               # label_features
+                              ])
+    # concat = self.concatenate([word_features, label_features])
     sentence_repr = self.encoder(concat)
     sentence_repr = self.attention(sentence_repr)
     if "labels" in self.predict:

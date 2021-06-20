@@ -18,35 +18,43 @@ message Evaluation {
   // typed unlabeled attachment score with this model.
   optional TypedUas typed_uas = 4;
   // typed labeled attachment precision with this model.
-  optional TypedLasPrec typed_las_prec = 5;
+  optional LabeledAttachmentPrec labeled_attachment_prec = 5;
   // typed labeled attachment recall with this model.
-  optional TypedLasRecall typed_las_recall = 6;
+  optional LabeledAttachmentRecall labeled_attachment_recall = 6;
   // typed labeled attachment f1 with this model.
-  optional TypedLasF1 typed_las_f1 = 7;
+  optional LabeledAttachmentMetrics labeled_attachment_metrics = 7;
 }
 
 message TypedUas {
-  repeated Analysis uas = 1;
+  repeated Score uas = 1;
 }
 
-message TypedLasPrec {
-  repeated Analysis prec = 1;
+// this sould be attachment_precision
+message LabeledAttachmentPrec {
+  repeated Score prec = 1;
 }
 
-message TypedLasRecall {
-  repeated Analysis recall = 1;
+// this should be attachment_recall
+message LabeledAttachmentRecall {
+  repeated Score recall = 1;
 }
 
-message TypedLasF1 {
-  repeated LasF1 f1 = 1;
-}
-
-message Analysis {
+message Score {
   optional tagset.dep_labels.Tag label = 1;     /*actually required*/
   optional float score = 2;                     /*actually required*/
 }
 
-message LasF1 {
+message LabeledAttachmentMetrics {
+  repeated Metric labeled_attachment_metric = 1;
+}
+
+// in progress
+message LabelPredictionMetrics {
+  repeated Metric label_prediction_metric = 2;
+}
+
+
+message Metric {
   optional tagset.dep_labels.Tag label = 1;   /*actually required*/
   optional int32 count = 2;                   /*actually required*/
   optional float prec = 3;                    /*actually required*/
