@@ -40,6 +40,7 @@ def _make_sentence(sent_id: tf.Tensor, length=int):
     length=length
   )
 
+# TODO: shouldn't this be done over the predicted heads.
 def _arc_maps(heads: tf.Tensor):
   """Returns a list of tuples mapping heads to their dependents."""
   arc_maps = []
