@@ -45,6 +45,14 @@ py_library(
   ],
 )
 
+py_library(
+	name = "seq2seq_labeler",
+	srcs = ["seq2seq_labeler.py"],
+  deps = [
+    ":nn_parser_lib",
+  ],
+)
+
 # Experimental
 py_library(
 	name = "label_first_parser_joint_loss",

@@ -34,8 +34,8 @@ enum Tag {
   obj = 27;             // direct object
   obl = 28;             // oblique object
   parataxis = 29;       // parataxis
-  pobj = 30;            // object of prep, don't exist in Turkish dataset.
-  prep = 31;            // PP modifier, don't exist in Turkish dataset.
+  pobj = 30;            // object of prep, doesn't exist in Turkish dataset.
+  prep = 31;            // PP modifier, doesn't exist in Turkish dataset.
   punct = 32;           // punctuation
   root = 33;            // root
   TOP = 34;             // dummy dep label for the top token.

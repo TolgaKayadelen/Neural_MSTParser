@@ -1,4 +1,8 @@
-"""Tensorflow Custom Layer Initializers."""
+"""Custom layer configs go here.
+
+All classes in this module inherit from keras.layers.Layer
+
+"""
 
 import tensorflow as tf
 import numpy as np
@@ -174,4 +178,4 @@ class LSTMBlock(layers.Layer):
       out = self.lstm1(input_tensor)
       out = self.lstm2(out)
       out = self.lstm3(out)
-    return out        
+    return out

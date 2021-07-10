@@ -112,6 +112,16 @@ class LabelReaderTest(parameterized.TestCase):
     # if reverse:
     #   print(LabelReader.get_labels(tagset, reverse).labels)
     print("Passed!")
+  
+  def test_itov(self):
+    label_reader = LabelReader.get_labels("dep_labels")
+    self.assertEqual(label_reader.itov(10), "ccomp")
+    print("Passed!")
+  
+  def test_vtoi(self):
+    label_reader = LabelReader.get_labels("pos")
+    self.assertEqual(label_reader.vtoi("Adj"), 3)
+    print("Passed!")
 
 if __name__ == "__main__":
 	absltest.main()

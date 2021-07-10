@@ -358,6 +358,7 @@ class Preprocessor:
     dataset = dataset.padded_batch(batch_size, padded_shapes=_padded_shapes,
                                    padding_values=_padding_values)
     dataset = dataset.shuffle(buffer_size=5073)
+    # TODO dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE,drop_remainder=True)
 
     return dataset
 

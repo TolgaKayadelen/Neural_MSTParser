@@ -25,6 +25,7 @@ class PreprocessorTest(unittest.TestCase):
   def test_embedding_indices(self):
     print("Running test_embedding indices..")
     self.assertTrue(self.word_embeddings.stoi(token="Kerem") == 119951)
+    print(self.word_embeddings.itos(idx=1))
     print("Passed!")
 
 if __name__ == "__main__":

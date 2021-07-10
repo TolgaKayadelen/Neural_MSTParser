@@ -9,6 +9,7 @@ py_binary(
     "//parser/nn:label_first_parser",
     "//parser/nn:label_first_parser_joint_loss",
     "//parser/nn:biaffine_parser",
+    "//parser/nn:seq2seq_labeler",
     ":parse",
   ],
 )

@@ -1,7 +1,11 @@
-"""Library of Dependency Parsing Architectures."""
+"""Model architechtures go here.
+
+All classes in this module inherit from keras.Model
+"""
 
 import logging
 import tensorflow as tf
+import tensorflow_addons as tfa
 
 from tensorflow.keras import layers
 from input import embeddor
@@ -169,4 +173,65 @@ class BiaffineParsingModel(tf.keras.Model):
       edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
       return {"edges": edge_scores,  "labels": self._null_label}
     
+
+class GruEncoder(tf.keras.Model):
+  def __init__(self, *,
+               word_embeddings: Embeddings,
+               encoder_dim: int,
+               batch_size: int,
+              name="GruEncoder"):
+      super(GruEncoder, self).__init__(name=name)
+      self.encoder_dim = encoder_dim
+      self.word_embeddings = layer_utils.EmbeddingLayer(
+                                      pretrained=word_embeddings,
+                                      name="word_embeddings"
+                                      )
+      self.pos_embeddings = layer_utils.EmbeddingLayer(
+                                      input_dim=35, output_dim=32,
+                                      name="pos_embeddings",
+                                      trainable=True
+                                      )
+      self.concatenate = layers.Concatenate(name="concat")
+      self.rnn=layers.GRU(encoder_dim,
+                          return_sequences=False,
+                          return_state=True)
+      # TODO: self.encoder_rnn_cell = tf.keras.layers.LSTMCell(self.dec_units)
+    
+  def call(self, inputs, state):
+      word_inputs = inputs["words"]
+      word_features = self.word_embeddings(word_inputs)
+      pos_inputs = inputs["pos"]
+      pos_features = self.pos_embeddings(pos_inputs)
+      morph_inputs = inputs["morph"]
+        
+      concat = self.concatenate([word_features, pos_features, morph_inputs])
+      
+      thought, state = self.rnn(concat, initial_state=state)
+      return thought, state
+    
+  def init_state(self, batch_size):
+      return tf.zeros((batch_size, self.encoder_dim))
+
+class GruDecoder(tf.keras.Model):
+  def __init__(self, *,
+               n_labels: int,
+               decoder_dim: int,
+               embedding_dim: int,
+               name="GruDecoder"):
+  
+      super(GruDecoder, self).__init__(name=name)
+      self.decoder_dim = decoder_dim
+      self.embedding = tf.keras.layers.Embedding(n_labels, embedding_dim, trainable=True) 
+      self.concatenate = layers.Concatenate(name="concat")
+      self.rnn=layers.GRU(decoder_dim, return_sequences=True, return_state=True)
+      # TODO: self.decoder_rnn_cell = tf.keras.layers.LSTMCell(self.dec_units)
+      self.dense = layers.Dense(n_labels)
+    
+  def call(self, x, state):
+    x = self.embedding(x)
+    x, state = self.rnn (x, initial_state=state)
+    label = self.dense(x)
+    return label, state       
+ 
+ 
       

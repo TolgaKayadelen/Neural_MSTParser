@@ -14,6 +14,17 @@ class LabelReader:
   def get_labels(cls, tagset, reverse=False):
     return cls(tagset, reverse)
   
+    
+  def itov(self, idx: int):
+    """Returns the label value given an integer index."""
+    reverse_dict = {k:v for v,k in self.labels.items()}
+    return reverse_dict[idx]
+      
+  def vtoi(self, value: str):
+    """Returns index given label value."""
+    return self.labels[value]
+  
+  
   @property
   def labels(self):
     """Returns a dict of labels.
@@ -36,7 +47,7 @@ class LabelReader:
       tags = morph_tags
     else:
       raise ValueError("Invalid tagset requested.")
-    
+      
     def _get_bio_tags_from_srl():
       labels_list = ["-pad-"]
       for key in tags.Tag.DESCRIPTOR.values_by_name.keys():
