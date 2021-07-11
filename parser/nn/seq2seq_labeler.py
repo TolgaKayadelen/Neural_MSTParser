@@ -61,11 +61,11 @@ class Seq2SeqLabeler:
                                             batch_size=batch_size)
     
     # The decoder 
-    self.decoder = architectures.LSTMDecoder(n_labels=n_output_classes,
-                                             decoder_dim=self.decoder_dim,
-                                             batch_size=self.batch_size,
-                                             embedding_dim=256
-                                             )
+    self.decoder = architectures.LSTMSeqDecoder(n_labels=n_output_classes,
+                                               decoder_dim=self.decoder_dim,
+                                               batch_size=self.batch_size,
+                                               embedding_dim=256
+                                               )
     self.scce = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)    
     
   
@@ -90,10 +90,10 @@ class Seq2SeqLabeler:
     
   
   def test_decoder_fn(self, sample_output, sample_h, sample_c):
-    decoder = architectures.LSTMDecoder(n_labels=2,
-                                        decoder_dim=self.decoder_dim,
-                                        embedding_dim=32,
-                                        batch_size=self.batch_size)
+    decoder = architectures.LSTMSeqDecoder(n_labels=2,
+                                          decoder_dim=self.decoder_dim,
+                                          embedding_dim=32,
+                                          batch_size=self.batch_size)
     # some random decoder input.
     sample_x = tf.random.uniform(shape=(4, 15)) # (batch_size, max_length_output)
     decoder.attention_mechanism.setup_memory(sample_output)
@@ -175,7 +175,7 @@ class Seq2SeqLabeler:
       # print("decoder initial state ", decoder_initial_state)
       # input("press to cont.")
       
-      
+      # Dynamic decoding
       pred = self.decoder(decoder_in, decoder_initial_state,
                           sequence_length=decoder_out.shape[1])
       
@@ -183,8 +183,8 @@ class Seq2SeqLabeler:
       # print("pred ", pred)
       # print("logits ", logits)
       # input("press to cont.")
-      print(f"target ", decoder_out)
-      print(f"predictions ", pred.sample_id)
+      # print(f"target ", decoder_out)
+      # print(f"predictions ", pred.sample_id)
       # input("press to cont.")
       
       loss, n_correct_labels, n_tokens = self.label_loss(decoder_out, logits)
@@ -258,13 +258,12 @@ class Seq2SeqLabeler:
       print("total correct ", total_correct)
       print("total tokens ", total_tokens)
       accuracy = total_correct / total_tokens
-      logging.info(f"accuracy: {accuracy}")
-      logging.info(f"metric: {self.metric.result().numpy()}")
+      logging.info(f"Training accuracy: {accuracy}")
+      logging.info(f"Training metric: {self.metric.result().numpy()}")
       
-      # if epoch % 1 == 0 and test_data:
-      #  accuracy = self.predict(dataset=test_data)
-      #  logging.info(f"Test accuracy after epoch {epoch}: {accuracy}")
-        
+      if epoch % 1 == 0 and test_data:
+        self.predict(dataset=test_data)
+                
       logging.info(f"Time for epoch: {time.time() - start_time}\n")
    
     
@@ -282,8 +281,8 @@ class Seq2SeqLabeler:
     for example in dataset:
       # accuracy.reset_states()
       n_tokens = example["words"].shape[1]
-      # logging.info(f"Number of words: {n_tokens}")
-      # logging.info(f"Correct labels: {example['dep_labels']}")
+      logging.info(f"Number of words: {n_tokens}")
+      logging.info(f"Correct labels: {example['dep_labels']}")
       
       
       encoder_in = {
@@ -292,69 +291,59 @@ class Seq2SeqLabeler:
         "morph": tf.dtypes.cast(example["morph"], tf.float32)
       }
       
-      encoder_state = self.encoder.init_state(batch_size=1)
-      encoder_out, encoder_state = self.encoder(encoder_in, encoder_state)
-      decoder_state = encoder_state
+      encoder_start_state = self.encoder.init_state(batch_size=1)
+      encoder_out, enc_h, enc_c = self.encoder(encoder_in, encoder_start_state)
+      
+      dec_h = enc_h
+      dec_c = enc_c
+      # print("encoder outputs ", encoder_out, enc_h, enc_c)
+      # input("press to cont.")
       
       # start the decoder with the start character
-      decoder_in = tf.expand_dims(tf.constant([label_dict["TOP"]]), axis=0)
-   
-      # Add the corresponding token to the predictions.
-      predicted_label_seq = [label_reader.itov(decoder_in.numpy()[0][0])]
-      predicted_label_idx = [decoder_in.numpy()[0][0]]
-      # print("predicted_label_idx ", predicted_label_idx)
+      start_tokens = tf.fill([1], label_dict["TOP"])
+      # print(start_tokens)
+      # input("press to cont.")
       
-      # Sequence generation loop
-      for i in range(1, int(n_tokens)):
-        decoder_pred, decoder_state = self.decoder(decoder_in, decoder_state)
-        # print("decoder pred ", decoder_pred)
-        predicted_label_index = tf.argmax(decoder_pred, axis=-1)
-        # print(predicted_label_index.numpy()[0][0])
-        predicted_label = label_reader.itov(predicted_label_index.numpy()[0][0])
-        # print("predicted label ", predicted_label)
-        predicted_label_seq.append(predicted_label)
-        predicted_label_idx.append(predicted_label_index.numpy()[0][0])
-        # print("labels so far ", predicted_label_seq)
-        decoder_in = predicted_label_index
+      greedy_sampler = tfa.seq2seq.GreedyEmbeddingSampler()
       
-      # print(example["dep_labels"])
-      original_labels = [label_reader.itov(label) for label
-                         in example["dep_labels"][0, :].numpy()]
-      print("original labels ", original_labels)
-      print("predicted labels ", predicted_label_seq)
-      # print(example["dep_labels"])
-      # print(predicted_label_idx)
-      if not len(original_labels) == len(predicted_label_seq):
-        raise RuntimeError("Fatal: Original and Predicted Label lengths should match!")
+      # Instantiate BasicDecoderObject
+      decoder_instance = tfa.seq2seq.BasicDecoder(
+                                  cell=self.decoder.lstm_cell,
+                                  sampler=greedy_sampler,
+                                  output_layer=self.decoder.dense,
+                                  maximum_iterations=n_tokens-1
+                                  )
       
-      accuracy.update_state(example["dep_labels"], 
-                            tf.convert_to_tensor([predicted_label_idx])
-                            )
-      logging.info(f"Accuracy on test example: {accuracy.result().numpy()}")
-    
-    
-    return accuracy.result().numpy()
+      # Set up Memory in decoder stack to be encoder_output.
+      self.decoder.attention_mechanism.setup_memory(encoder_out)
+      # print("decoder memory ", self.decoder.attention_mechanism)
+      # input("press to cont.")
       
-  def save(self, *, suffix=0):
-    """Saves the model to path."""
-    model_name = self.model.name
-    try:
-      path = os.path.join(_MODEL_DIR, self.model.name)
-      if suffix > 0:
-        path += str(suffix)
-        model_name = self.model.name+str(suffix)
-      os.mkdir(path)
-      self.model.save_weights(os.path.join(path, model_name),
-                                          save_format="tf")
-      logging.info(f"Saved model to {path}")
-    except FileExistsError:
-      logging.warning(f"A model with the same name exists, suffixing {suffix+1}")
-      self.save(suffix=suffix+1)
-    
-  def load(self, *, name: str, suffix=None, path=None):
-    """Loads a pretrained model."""
-    if path is None:
-      path = os.path.join(_MODEL_DIR, name)
-    self.model.load_weights(os.path.join(path, name))
-    logging.info(f"Loaded model from model named: {name} in: {_MODEL_DIR}")
+      # set decoder initial state
+      decoder_initial_state = self.decoder.build_initial_state(
+        batch_size=1, encoder_state=[enc_h, enc_c], dtype=tf.float32
+      )
+      # print("decoder initial state ", decoder_initial_state)
+      # input("press to cont.")
+      
+      # Since the BasicDecoder wraps around Decoder's rnn cell only, you have
+      # ensure that the inputs to BasicDecoder decoding step is output of
+      # embedding layer. tfa.seq2seq.GreedyEmbeddingSampler() takes care of it.
+      # You only need to get the weights of embedding layer, which can be done
+      # by decoder.embedding.variables[0] and pass this callabble to
+      # BasicDecoder's call() function.
+      decoder_embedding_matrix = self.decoder.embedding.variables[0]
+      # print("decoder embedding matrix ", decoder_embedding_matrix)
+            
+      outputs, _, _ = decoder_instance(decoder_embedding_matrix,
+                                       start_tokens=start_tokens,
+                                       end_token=0,
+                                       initial_state=decoder_initial_state)
+      
+      print("decoder output ", outputs.sample_id.numpy())
+      # input("press to cont.")
+      # TODO: compute accuracy on test examples here. 
+
+    # return accuracy.result().numpy()
+
     

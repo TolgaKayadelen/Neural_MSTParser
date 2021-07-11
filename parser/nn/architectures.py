@@ -220,7 +220,7 @@ class LSTMEncoder(tf.keras.Model):
               tf.zeros((batch_size, self.encoder_dim))
              ]
 
-class LSTMDecoder(tf.keras.Model):
+class LSTMSeqDecoder(tf.keras.Model):
   def __init__(self, *,
                n_labels: int,
                decoder_dim: int,
@@ -228,9 +228,9 @@ class LSTMDecoder(tf.keras.Model):
                batch_size: int,
                attention_type='luong',
                max_length_input=15, #TODO remove this later.
-               name="LSTMDecoder"):
+               name="LSTMSeqDecoder"):
   
-      super(LSTMDecoder, self).__init__(name=name)
+      super(LSTMSeqDecoder, self).__init__(name=name)
       self.batch_size = batch_size
       self.decoder_dim = decoder_dim
       self.attention_type = attention_type
