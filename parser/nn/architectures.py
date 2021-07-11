@@ -174,13 +174,14 @@ class BiaffineParsingModel(tf.keras.Model):
       return {"edges": edge_scores,  "labels": self._null_label}
     
 
-class GruEncoder(tf.keras.Model):
+class LSTMEncoder(tf.keras.Model):
   def __init__(self, *,
                word_embeddings: Embeddings,
                encoder_dim: int,
                batch_size: int,
-              name="GruEncoder"):
-      super(GruEncoder, self).__init__(name=name)
+              name="LSTMEncoder"):
+      super(LSTMEncoder, self).__init__(name=name)
+      self.batch_size = batch_size
       self.encoder_dim = encoder_dim
       self.word_embeddings = layer_utils.EmbeddingLayer(
                                       pretrained=word_embeddings,
@@ -192,10 +193,13 @@ class GruEncoder(tf.keras.Model):
                                       trainable=True
                                       )
       self.concatenate = layers.Concatenate(name="concat")
-      self.rnn=layers.GRU(encoder_dim,
-                          return_sequences=False,
-                          return_state=True)
-      # TODO: self.encoder_rnn_cell = tf.keras.layers.LSTMCell(self.dec_units)
+      
+      # LSTM layer
+      self.lstm=layers.LSTM(self.encoder_dim,
+                            return_sequences=True,
+                            return_state=True,
+                            recurrent_initializer='glorot_uniform')
+
     
   def call(self, inputs, state):
       word_inputs = inputs["words"]
@@ -206,32 +210,120 @@ class GruEncoder(tf.keras.Model):
         
       concat = self.concatenate([word_features, pos_features, morph_inputs])
       
-      thought, state = self.rnn(concat, initial_state=state)
-      return thought, state
+      output, h, c = self.lstm(concat, initial_state=state)
+      return output, h, c
     
   def init_state(self, batch_size):
-      return tf.zeros((batch_size, self.encoder_dim))
+      # The reason to have two tensors here is that one is for the 
+      # h (hidden state) and one is for c (cell state).
+      return [tf.zeros((batch_size, self.encoder_dim)), 
+              tf.zeros((batch_size, self.encoder_dim))
+             ]
 
-class GruDecoder(tf.keras.Model):
+class LSTMDecoder(tf.keras.Model):
   def __init__(self, *,
                n_labels: int,
                decoder_dim: int,
-               embedding_dim: int,
-               name="GruDecoder"):
+               embedding_dim: int = 32,
+               batch_size: int,
+               attention_type='luong',
+               max_length_input=15, #TODO remove this later.
+               name="LSTMDecoder"):
   
-      super(GruDecoder, self).__init__(name=name)
+      super(LSTMDecoder, self).__init__(name=name)
+      self.batch_size = batch_size
       self.decoder_dim = decoder_dim
-      self.embedding = tf.keras.layers.Embedding(n_labels, embedding_dim, trainable=True) 
-      self.concatenate = layers.Concatenate(name="concat")
-      self.rnn=layers.GRU(decoder_dim, return_sequences=True, return_state=True)
-      # TODO: self.decoder_rnn_cell = tf.keras.layers.LSTMCell(self.dec_units)
+      self.attention_type = attention_type
+      self.max_length_input = max_length_input
+      
+      # Embedding layer.
+      self.embedding = tf.keras.layers.Embedding(n_labels, embedding_dim,
+                                                 trainable=True) 
+      
+      # The fundamental cell for decoder recurrent structure.
+      self.decoder_lstm_cell=layers.LSTMCell(self.decoder_dim)
+      
+     
+      
+      # Create attention mechanism with memory = None
+      self.attention_mechanism = self.build_attention_mechanism(
+                                            decoder_dim=self.decoder_dim,
+                                            memory=None,
+                                            # batch_size=batch_size,
+                                            # sequence_length=sequence_length,
+                                            attention_type=self.attention_type
+                                            )
+      
+      # Wrap the attention mechanism with the fundamental lstm cell of decoder.
+      self.lstm_cell = self.build_lstm_with_attention(self.batch_size)
+      
+      # Dense layer
       self.dense = layers.Dense(n_labels)
+      
+      # Sampler
+      self.sampler = tfa.seq2seq.sampler.TrainingSampler()
+      
+      # Define the decoder
+      # The sampler is responsible for sampling from the output distribution
+      # and producing the input for th next decoding step. The decoding loop
+      # is implemented in its call method.
+      self.decoder = tfa.seq2seq.BasicDecoder(cell=self.lstm_cell,
+                                              sampler=self.sampler,
+                                              output_layer=self.dense)
+      
+     
     
-  def call(self, x, state):
-    x = self.embedding(x)
-    x, state = self.rnn (x, initial_state=state)
-    label = self.dense(x)
-    return label, state       
+    
+  def build_lstm_with_attention(self, batch_size):
+      lstm_cell = tfa.seq2seq.AttentionWrapper(
+        cell=self.decoder_lstm_cell,
+        attention_mechanism=self.attention_mechanism,
+        attention_layer_size=self.decoder_dim,
+      )
+      return lstm_cell
+  
+  def build_attention_mechanism(self, *, 
+                                decoder_dim,
+                                memory,
+                                # batch_size,
+                                # sequence_length, 
+                                attention_type='luong'):
+      """Builds attention mechanism. 
+      Args:
+        memory: encoder hidden states of shape 
+                                [batch_size, max_length_input, encoder_dim]
+        memory_sequence_length: 1d array of shape (batch_size) with every 
+                                element set to max_length input
+      """
+      # memory_sequence_length = batch_size * [sequence_length]
+      if (attention_type == 'bahdanau'):
+        return tfa.seq2seq.BahdanauAttention(
+                units=decoder_dim,
+                memory=memory,
+                # memory_sequence_length=memory_sequence_length
+                )
+      else:
+        return tfa.seq2seq.LuongAttention(
+                  units=decoder_dim,
+                  memory=memory, 
+                  # memory_sequence_length=memory_sequence_length
+                  )
+  
+  
+  def build_initial_state(self, batch_size, encoder_state, dtype):
+    decoder_initial_state = self.lstm_cell.get_initial_state(
+              batch_size=batch_size,
+              dtype=dtype)
+    decoder_initial_state = decoder_initial_state.clone(cell_state=encoder_state)
+    return decoder_initial_state
+    
+    
+  def call(self, inputs, initial_state, sequence_length):
+    x = self.embedding(inputs)
+    outputs, _, _ = self.decoder(x,
+                                initial_state=initial_state,
+                                sequence_length=self.batch_size*[sequence_length])
+    return outputs
  
  
       

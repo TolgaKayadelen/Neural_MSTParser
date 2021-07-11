@@ -72,12 +72,14 @@ def main(args):
                                      predict=args.predict,
                                      model_name=args.model_name)
       parser.plot()
+      print(parser)
     elif args.parser_type == "label_first":
       parser = lfp.LabelFirstMSTParser(word_embeddings=prep.word_embeddings,
                                        n_output_classes=label_feature.n_values,
                                        predict=args.predict,
                                        model_name=args.model_name)
       parser.plot()
+      print(parser)
     elif args.parser_type == "label_first_joint_loss":
       parser = lfp_joint_loss.LabelFirstMSTParser(
                                        word_embeddings=prep.word_embeddings,
@@ -85,16 +87,17 @@ def main(args):
                                        predict=args.predict,
                                        model_name=args.model_name)
       parser.plot()
+      print(parser)
     elif args.parser_type == "seq2seq_labeler":
       parser = seq.Seq2SeqLabeler(word_embeddings=prep.word_embeddings,
                                   n_output_classes=label_feature.n_values,
-                                  encoder_dim=1024,
-                                  decoder_dim=1024,
+                                  encoder_dim=512,
+                                  decoder_dim=512,
                                   batch_size=args.batchsize,
-                                  model_name=args.model_name)    
+                                  model_name=args.model_name)
     else:
       raise ValueError("Unsupported value for the parser argument.")
-    print(parser)
+    
     
     
     if args.dataset:
@@ -114,7 +117,13 @@ def main(args):
         path=os.path.join(_TEST_DATA_DIR, args.test_treebank),
         batch_size=1)
     
+    # Start training
+    # TODO: uncomment the next line
     metrics = parser.train(dataset, args.epochs, test_data=test_dataset)
+    # TODO remove the following two lines later
+    # sample_output, sample_h, sample_c = parser.test_encoder_fn(dataset) 
+    # parser.test_decoder_fn(sample_output, sample_h, sample_c)
+    
     writer.write_proto_as_text(metrics,
                                f"./model/nn/plot/{args.model_name}_metrics.pbtxt")
     nn_utils.plot_metrics(name=args.model_name, metrics=metrics)

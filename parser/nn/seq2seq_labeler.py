@@ -42,6 +42,10 @@ class Seq2SeqLabeler:
     self.word_embeddings = word_embeddings
     
     self.batch_size = batch_size
+    
+    self.encoder_dim = encoder_dim
+    
+    self.decoder_dim = decoder_dim
         
     # Optimizer
     self.optimizer=tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
@@ -52,26 +56,64 @@ class Seq2SeqLabeler:
     self._n_output_classes = n_output_classes
     
     # The encoder 
-    self.encoder = architectures.GruEncoder(word_embeddings=word_embeddings,
+    self.encoder = architectures.LSTMEncoder(word_embeddings=word_embeddings,
                                             encoder_dim=encoder_dim,
                                             batch_size=batch_size)
     
     # The decoder 
-    self.decoder = architectures.GruDecoder(n_labels=n_output_classes,
-                                            decoder_dim=decoder_dim,
-                                            embedding_dim=256
-                                            )
-    self.scce = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-
+    self.decoder = architectures.LSTMDecoder(n_labels=n_output_classes,
+                                             decoder_dim=self.decoder_dim,
+                                             batch_size=self.batch_size,
+                                             embedding_dim=256
+                                             )
+    self.scce = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)    
+    
+  
+  def test_encoder_fn(self, dataset):
+    encoder = architectures.LSTMEncoder(word_embeddings=self.word_embeddings,
+                                        encoder_dim=self.encoder_dim,
+                                        batch_size=self.batch_size,
+                                        )
+    sample_hidden = encoder.init_state(self.batch_size)
+    for step, batch in enumerate(dataset):
+      example_input_batch = {
+        "words": batch["words"],
+        "pos": batch["pos"],
+        "morph": tf.dtypes.cast(batch["morph"], tf.float32)
+      }
+    sample_output, sample_h, sample_c = encoder(example_input_batch, sample_hidden)
+    print ('Encoder output shape: (batch size, sequence length, units) {}'.format(sample_output.shape))
+    print ('Encoder h vector shape: (batch size, units) {}'.format(sample_h.shape))
+    print ('Encoder c vector shape: (batch size, units) {}'.format(sample_c.shape))
+    input("press to cont.")
+    return sample_output, sample_h, sample_c
+    
+  
+  def test_decoder_fn(self, sample_output, sample_h, sample_c):
+    decoder = architectures.LSTMDecoder(n_labels=2,
+                                        decoder_dim=self.decoder_dim,
+                                        embedding_dim=32,
+                                        batch_size=self.batch_size)
+    # some random decoder input.
+    sample_x = tf.random.uniform(shape=(4, 15)) # (batch_size, max_length_output)
+    decoder.attention_mechanism.setup_memory(sample_output)
+    initial_state = decoder.build_initial_state(4, [sample_h, sample_c], tf.float32)
+    print("initial state ", initial_state)
+    input("press to cont.")
+    
+    sample_decoder_outputs=decoder(sample_x, initial_state, sequence_length=15)
+    # print(tf.argmax(sample_decoder_outputs, axis=-1))
+    print("Decoder outputs shape ", sample_decoder_outputs.rnn_output.shape)
+    print(sample_decoder_outputs)
+    input("press to cont.")
   
   def label_loss(self, dep_labels, label_preds):
     """Computes label loss and label predictions
     Args:
       dep_labels: tf.Tensor of shape (batch_size, seq_len, n_labels). Holding
         correct labels for each token as a one hot vector.
-      label_scores: tf.Tensor of shape (batch_size, seq_len, n_labels). Holding
+      label_preds: tf.Tensor of shape (batch_size, seq_len, n_labels). Holding
         probability scores for each token's label prediction.
-      pad_mask: tf.Tensor of shape (batch_size*seq_len, 1)
     Returns:
       loss: cross entropy loss.
       n_correct_labels: number of correct labels in the batch.
@@ -97,7 +139,7 @@ class Seq2SeqLabeler:
                  encoder_in:  Dict[str, tf.Tensor],
                  decoder_in: tf.Tensor,
                  decoder_out: tf.Tensor,
-                 encoder_state: tf.Tensor
+                 encoder_hidden: tf.Tensor
                  ):
     """Runs one training step.
     
@@ -113,23 +155,45 @@ class Seq2SeqLabeler:
       decoder_out: A tf.Tensor of dependency label indexes, offset from decoder
                 in by one timestep. These are the true labels
     Returns:
-      TODO.
+      loss.
     """
     with tf.GradientTape() as tape:
-      encoder_out, encoder_state = self.encoder(encoder_in, encoder_state,
-                                                training=True)
-      decoder_state = encoder_state
-      decoder_pred, decoder_state = self.decoder(decoder_in, decoder_state,
-                                                training=True)
+      encoder_out, enc_h, enc_c = self.encoder(encoder_in, encoder_hidden,
+                                               training=True)
+      # print("encoder out ", encoder_out)
+      # input("press to cont.")
       
-      loss, n_correct_labels, n_tokens = self.label_loss(decoder_out, decoder_pred)
+      # Set the AttentionMechanism object with encoder_outputs.
+      self.decoder.attention_mechanism.setup_memory(encoder_out)
+      
+      
+      # Create AttentionWrapperState as initial state for the decoder
+      decoder_initial_state = self.decoder.build_initial_state(
+        batch_size=self.batch_size, encoder_state=[enc_h, enc_c],
+        dtype=tf.float32 
+      )
+      # print("decoder initial state ", decoder_initial_state)
+      # input("press to cont.")
+      
+      
+      pred = self.decoder(decoder_in, decoder_initial_state,
+                          sequence_length=decoder_out.shape[1])
+      
+      logits = pred.rnn_output
+      # print("pred ", pred)
+      # print("logits ", logits)
+      # input("press to cont.")
+      print(f"target ", decoder_out)
+      print(f"predictions ", pred.sample_id)
+      # input("press to cont.")
+      
+      loss, n_correct_labels, n_tokens = self.label_loss(decoder_out, logits)
     
     variables = self.encoder.trainable_variables + self.decoder.trainable_variables
     gradients = tape.gradient(loss, variables)
     self.optimizer.apply_gradients(zip(gradients, variables))
-    accuracy = n_correct_labels / n_tokens
     
-    return loss, n_correct_labels, accuracy
+    return loss, n_correct_labels, n_tokens
   
 
   def train(self, dataset: Dataset, epochs: int=10, test_data: Dataset=None):
@@ -146,8 +210,13 @@ class Seq2SeqLabeler:
     for epoch in range(1, epochs+1):
       # Reset the states before starting the new epoch.
       self.metric.reset_states()
+      total_loss = 0
+      total_correct = 0
+      total_tokens = 0
       
-      encoder_state = self.encoder.init_state(self.batch_size)
+      encoder_hidden = self.encoder.init_state(self.batch_size)
+      # print("encoder hidden ", encoder_hidden)
+      # input("press to cont.")
       
       logging.info(f"\n\n{'->' * 12} Training Epoch: {epoch} {'<-' * 12}\n\n")
       
@@ -173,27 +242,31 @@ class Seq2SeqLabeler:
         # print("decoder out ", decoder_out)
         
         # Run forward propagation to get losses and predictions for this step.
-        loss, n_correct_labels, accuracy = self.train_step(
+        loss, n_correct_labels, n_tokens = self.train_step(
                                               encoder_in=encoder_in,
                                               decoder_in=decoder_in,
                                               decoder_out=decoder_out,
-                                              encoder_state=encoder_state
+                                              encoder_hidden=encoder_hidden
                                             )
-        
+        total_correct += n_correct_labels
+        total_tokens += n_tokens
         # logging.info(f"loss: {loss}")
         # logging.info(f"n_correct labels: {n_correct_labels}")
        
           
       # print accuracy at the end of epoch
+      print("total correct ", total_correct)
+      print("total tokens ", total_tokens)
+      accuracy = total_correct / total_tokens
       logging.info(f"accuracy: {accuracy}")
       logging.info(f"metric: {self.metric.result().numpy()}")
       
-      if epoch % 1 == 0 and test_data:
-        accuracy = self.predict(dataset=test_data)
-        logging.info(f"Test accuracy after epoch {epoch}: {accuracy}")
+      # if epoch % 1 == 0 and test_data:
+      #  accuracy = self.predict(dataset=test_data)
+      #  logging.info(f"Test accuracy after epoch {epoch}: {accuracy}")
         
       logging.info(f"Time for epoch: {time.time() - start_time}\n")
-      input("press to cont.")
+   
     
 
   def predict(self, *, dataset: Dataset, heads: bool=True, labels: bool=True):
