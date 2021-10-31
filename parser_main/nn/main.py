@@ -11,9 +11,12 @@ import tensorflow as tf
 
 
 from parser.nn import label_first_parser as lfp
+from parser.nn import label_first_parser2 as lfp2
 from parser.nn import label_first_parser_joint_loss as lfp_joint_loss
 from parser.nn import biaffine_parser as bfp
 from parser.nn import seq2seq_labeler as seq
+from parser.nn import seq2lstm_labeler as seqlstm
+from parser.nn import bilstm_labeler
 from util.nn import nn_utils
 from util import writer
 
@@ -80,6 +83,15 @@ def main(args):
                                        model_name=args.model_name)
       parser.plot()
       print(parser)
+    
+    elif args.parser_type == "label_first2":
+      parser = lfp2.LabelFirstMSTParser2(word_embeddings=prep.word_embeddings,
+                                         n_output_classes=label_feature.n_values,
+                                         predict=args.predict,
+                                         model_name=args.model_name)
+      parser.plot()
+      print(parser)
+      input("press to cont.")
     elif args.parser_type == "label_first_joint_loss":
       parser = lfp_joint_loss.LabelFirstMSTParser(
                                        word_embeddings=prep.word_embeddings,
@@ -88,13 +100,29 @@ def main(args):
                                        model_name=args.model_name)
       parser.plot()
       print(parser)
+    elif args.parser_type == "seq2lstm_labeler":
+      parser = seqlstm.Seq2LSTMLabeler(word_embeddings=prep.word_embeddings,
+                                       n_output_classes=label_feature.n_values,
+                                       encoder_dim=512,
+                                       decoder_dim=512,
+                                       batch_size=args.batchsize,
+                                       model_name=args.model_name)
+      print(parser)
+    
+    elif args.parser_type == "bilstm_labeler":
+      parser = bilstm_labeler.BiLSTMLabeler(
+                                        word_embeddings=prep.word_embeddings,
+                                        n_output_classes=label_feature.n_values,
+                                        n_units=256,
+                                        model_name=args.model_name)
+      print(parser)
     elif args.parser_type == "seq2seq_labeler":
       parser = seq.Seq2SeqLabeler(word_embeddings=prep.word_embeddings,
                                   n_output_classes=label_feature.n_values,
                                   encoder_dim=512,
                                   decoder_dim=512,
-                                  batch_size=args.batchsize,
-                                  model_name=args.model_name)
+                                  batch_size=args.batchsize
+                                  )
     else:
       raise ValueError("Unsupported value for the parser argument.")
     
@@ -118,11 +146,8 @@ def main(args):
         batch_size=1)
     
     # Start training
-    # TODO: uncomment the next line
     metrics = parser.train(dataset, args.epochs, test_data=test_dataset)
-    # TODO remove the following two lines later
-    # sample_output, sample_h, sample_c = parser.test_encoder_fn(dataset) 
-    # parser.test_decoder_fn(sample_output, sample_h, sample_c)
+
     
     writer.write_proto_as_text(metrics,
                                f"./model/nn/plot/{args.model_name}_metrics.pbtxt")
@@ -136,9 +161,12 @@ if __name__ == "__main__":
   parser.add_argument("--parser_type", 
                       type=str,
                       choices=["label_first",
+                              "label_first2",
                               "biaffine",
                               "label_first_joint_loss",
-                              "seq2seq_labeler"],
+                              "seq2seq_labeler",
+                              "seq2lstm_labeler",
+                              "bilstm_labeler"],
                       default="label_first",
                       help="Which parser to use.")
 

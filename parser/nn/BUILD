@@ -38,6 +38,14 @@ py_library(
 )
 
 py_library(
+	name = "label_first_parser2",
+	srcs = ["label_first_parser2.py"],
+  deps = [
+    ":nn_parser_lib",
+  ],
+)
+
+py_library(
 	name = "biaffine_parser",
 	srcs = ["biaffine_parser.py"],
   deps = [
@@ -52,6 +60,23 @@ py_library(
     ":nn_parser_lib",
   ],
 )
+
+py_library(
+	name = "seq2lstm_labeler",
+	srcs = ["seq2lstm_labeler.py"],
+  deps = [
+    ":nn_parser_lib",
+  ],
+)
+
+py_library(
+	name = "bilstm_labeler",
+	srcs = ["bilstm_labeler.py"],
+  deps = [
+    ":nn_parser_lib",
+  ],
+)
+
 
 # Experimental
 py_library(

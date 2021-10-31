@@ -10,7 +10,7 @@ from util.nn import nn_utils
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-class PreprocessorTest(unittest.TestCase):
+class EmbeddorTest(unittest.TestCase):
   """Tests for the embeddor."""
   
   def setUp(self):

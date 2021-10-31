@@ -56,9 +56,9 @@ class Seq2SeqLabeler:
     self._n_output_classes = n_output_classes
     
     # The encoder 
-    self.encoder = architectures.LSTMEncoder(word_embeddings=word_embeddings,
-                                            encoder_dim=encoder_dim,
-                                            batch_size=batch_size)
+    self.encoder = architectures.LSTMSeqEncoder(word_embeddings=word_embeddings,
+                                                encoder_dim=encoder_dim,
+                                                batch_size=batch_size)
     
     # The decoder 
     self.decoder = architectures.LSTMSeqDecoder(n_labels=n_output_classes,
@@ -261,8 +261,8 @@ class Seq2SeqLabeler:
       logging.info(f"Training accuracy: {accuracy}")
       logging.info(f"Training metric: {self.metric.result().numpy()}")
       
-      if epoch % 1 == 0 and test_data:
-        self.predict(dataset=test_data)
+      if epoch % 10 == 0 and test_data:
+        accuracy_test = self.predict(dataset=test_data)
                 
       logging.info(f"Time for epoch: {time.time() - start_time}\n")
    
@@ -275,16 +275,17 @@ class Seq2SeqLabeler:
     label_dict = label_reader.labels
     # print("label dict ", label_dict)
     
-    accuracy = metrics.Accuracy()
+    accuracy = metrics.SparseCategoricalAccuracy()
     accuracy.reset_states()
     
     for example in dataset:
       # accuracy.reset_states()
       n_tokens = example["words"].shape[1]
-      logging.info(f"Number of words: {n_tokens}")
-      logging.info(f"Correct labels: {example['dep_labels']}")
-      
-      
+      # logging.info(f"Number of words: {n_tokens}")
+
+      correct_labels = example["dep_labels"][0][1:]
+      # logging.info(f"Correct labels: {correct_labels}")
+
       encoder_in = {
         "words": example["words"],
         "pos": example["pos"],
@@ -339,11 +340,11 @@ class Seq2SeqLabeler:
                                        start_tokens=start_tokens,
                                        end_token=0,
                                        initial_state=decoder_initial_state)
-      
-      print("decoder output ", outputs.sample_id.numpy())
-      # input("press to cont.")
-      # TODO: compute accuracy on test examples here. 
-
-    # return accuracy.result().numpy()
+      logits = outputs.rnn_output
+      # print("logits ", logits)
+      accuracy.update_state(correct_labels, logits)
+    
+    logging.info(f"Accuracy on test {accuracy.result().numpy()}")
+    return accuracy.result().numpy()
 
     

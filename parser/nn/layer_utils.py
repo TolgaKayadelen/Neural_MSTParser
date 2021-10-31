@@ -151,8 +151,11 @@ class DozatBiaffineScorer(layers.Layer):
 
 class LSTMBlock(layers.Layer):
   """A bidirectional LSTM block with 3 Birectional LSTM layers"""
-  def __init__(self, *, n_units: int, return_sequences: bool = True,
-               dropout_rate: float = 0.0, name="LSTMBlock"):
+  def __init__(self, *, n_units: int,
+              return_sequences: bool = True,
+              return_state: bool = False,
+              dropout_rate: float = 0.0,
+              name="LSTMBlock"):
     super(LSTMBlock, self).__init__(name=name)
     self.dropout_rate = dropout_rate
     self.lstm1 = layers.Bidirectional(layers.LSTM(
@@ -160,7 +163,8 @@ class LSTMBlock(layers.Layer):
     self.lstm2 = layers.Bidirectional(layers.LSTM(
       units=n_units, return_sequences=return_sequences, name="lstm2"))
     self.lstm3 = layers.Bidirectional(layers.LSTM(
-      units=n_units, return_sequences=return_sequences, name="lstm3"))
+      units=n_units, return_sequences=return_sequences,
+      return_state=return_state, name="lstm3"))
     self.dropout1 = layers.Dropout(rate=dropout_rate, name="dropout1")
     self.dropout2 = layers.Dropout(rate=dropout_rate, name="dropout2")
     self.dropout3 = layers.Dropout(rate=dropout_rate, name="dropout3")
@@ -179,3 +183,42 @@ class LSTMBlock(layers.Layer):
       out = self.lstm2(out)
       out = self.lstm3(out)
     return out
+
+class UnidirectionalLSTMBlock(layers.Layer):
+  """An LSTM block with 3 LSTM layers"""
+  def __init__(self, *, n_units: int,
+              return_sequences: bool = True,
+              return_state: bool = True,
+              dropout_rate: float = 0.0, name="UnidirectionalLSTMBlock"):
+    super(UnidirectionalLSTMBlock, self).__init__(name=name)
+    self.dropout_rate = dropout_rate
+    self.lstm1 = layers.LSTM(
+      units=n_units,
+      return_sequences=return_sequences,
+      return_state=return_state,
+      name="lstm1")
+    self.lstm2 = layers.LSTM(
+      units=n_units,
+      return_sequences=return_sequences,
+      return_state=return_state,
+      name="lstm2")
+    self.lstm3 = layers.LSTM(
+      units=n_units,
+      return_sequences=return_sequences,
+      return_state=return_state, name="lstm3")
+    self.dropout1 = layers.Dropout(rate=dropout_rate, name="dropout1")
+    self.dropout2 = layers.Dropout(rate=dropout_rate, name="dropout2")
+  
+  def call(self, input_tensor):
+    dropout = self.dropout_rate > 0
+    if dropout:
+      out, h, c = self.lstm1(input_tensor)
+      out = self.dropout1(out)
+      out, h, c = self.lstm2(out, initial_state=[h,c])
+      out = self.dropout2(out)
+      out, h, c = self.lstm3(out,initial_state=[h,c])
+    else:
+      out, h, c = self.lstm1(input_tensor, initial_state=[h,c])
+      out, h, c = self.lstm2(out, initial_state=[h,c])
+      out, h, c = self.lstm3(out, initial_state=[h,c])
+    return out, h, c

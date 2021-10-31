@@ -17,6 +17,70 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 Embeddings = embeddor.Embeddings
 
+
+
+class LSTMLabelingModel(tf.keras.Model):
+  """A standalone bidirectional LSTM labeler."""
+  def __init__(self, *,
+               word_embeddings: Embeddings,
+               n_units: int = 256,
+               n_output_classes: int,
+               use_pos=True,
+               use_morph=True,
+               name="LSTM_Labeler"):
+    super(LSTMLabelingModel, self).__init__(name=name)
+    self.use_pos = use_pos
+    self.use_morph = use_morph
+    
+    self.word_embeddings = layer_utils.EmbeddingLayer(
+      pretrained=word_embeddings, name="word_embeddings"
+    )
+    
+    if self.use_pos:
+      self.pos_embeddings = layer_utils.EmbeddingLayer(
+                                            input_dim=35, output_dim=32,
+                                            name="pos_embeddings",
+                                            trainable=True)
+    if self.use_pos or self.use_morph:
+      self.concatenate = layers.Concatenate(name="concat")
+    self.lstm_block = layer_utils.LSTMBlock(n_units=n_units,
+                                            dropout_rate=0.3,
+                                            name="lstm_block"
+                                            )
+    # self.attention = layer_utils.Attention()
+    self.labels = layers.Dense(units=n_output_classes, activation="softmax",
+                               name="labels")
+
+  def call(self, inputs):
+    """Forward pass."""
+    
+    word_inputs = inputs["words"]
+    word_features = self.word_embeddings(word_inputs)
+    concat_list = [word_features]
+    
+    if self.use_pos:
+      pos_inputs = inputs["pos"]
+      pos_features = self.pos_embeddings(pos_inputs)
+      concat_list.append(pos_features)
+    if self.use_morph:
+      morph_inputs = inputs["morph"]
+      concat_list.append(morph_inputs)
+
+    
+    if len(concat_list) > 1:
+      concat = self.concatenate(concat_list)
+      sentence_repr = self.lstm_block(concat)
+      # sentence_repr = self.attention(sentence_repr)
+      labels = self.labels(sentence_repr)
+    else:
+      sentence_repr = self.lstm_block(word_features)
+      # sentence_repr = self.attention(sentence_repr)
+      labels = self.labels(sentence_repr)
+    
+    return {"labels": labels}
+    
+    
+
 class LabelFirstParsingModel(tf.keras.Model):
   """Label first parsing model predicts labels before edges."""
   def __init__(self, *,
@@ -173,14 +237,155 @@ class BiaffineParsingModel(tf.keras.Model):
       edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
       return {"edges": edge_scores,  "labels": self._null_label}
     
+class EncoderDecoderLabelFirstParser(tf.keras.Model):
+  def __init__(self, *,
+               n_dep_labels: int,
+               word_embeddings: Embeddings,
+               pos_embedding_dim: int = 32,
+               character_embedding_dim: int = 32,
+               encoder_dim: int,
+               decoder_dim: int,
+               batch_size = None,
+               predict: List[str] = ["edges", "labels"],
+               name="EncoderDecoderLabelFirstParser",
+               config=None):
+    super(EncoderDecoderLabelFirstParser, self).__init__(name=name)
+    self.predict = predict
+    self.encoder = LSTMEncoder(word_embeddings=word_embeddings,
+                               pos_embedding_dim=pos_embedding_dim,
+                               encoder_dim=encoder_dim,
+                               batch_size=batch_size
+                               )
+    self.decoder = LSTMDecoder(n_labels=n_dep_labels,
+                               decoder_dim=decoder_dim,
+                               word_embeddings=word_embeddings,
+                               pos_embedding_dim=pos_embedding_dim,
+                               )
+    self.head_perceptron = layer_utils.Perceptron(
+       n_units=256, activation="relu", name="head_mlp")
+    self.dep_perceptron = layer_utils.Perceptron(
+        n_units=256, activation="relu", name="dep_mlp"
+      )
+    self.edge_scorer = layer_utils.EdgeScorer(n_units=256, name="edge_scorer")
+    logging.info(f"Set up {name} to predict {predict}")
+                                                   
+  def call(self, inputs):
+    encoder_out, enc_h, enc_c = self.encoder(inputs)
+    dep_labels = self.decoder(inputs, initial_state=[enc_h, enc_c])
+    h_arc_head = self.head_perceptron(dep_labels)
+    h_arc_dep = self.dep_perceptron(dep_labels)
+    edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
+    return {"edges": edge_scores,  "labels": dep_labels}
+      
 
 class LSTMEncoder(tf.keras.Model):
   def __init__(self, *,
                word_embeddings: Embeddings,
+               pos_embedding_dim: int = 32,
                encoder_dim: int,
                batch_size: int,
               name="LSTMEncoder"):
       super(LSTMEncoder, self).__init__(name=name)
+      self.batch_size = batch_size
+      self.encoder_dim = encoder_dim
+      self.word_embeddings = layer_utils.EmbeddingLayer(
+                                      pretrained=word_embeddings,
+                                      name="word_embeddings"
+                                      )
+      self.pos_embeddings = layer_utils.EmbeddingLayer(
+                                      input_dim=35,
+                                      output_dim=pos_embedding_dim,
+                                      name="pos_embeddings",
+                                      trainable=True
+                                      )
+      self.concatenate = layers.Concatenate(name="concat")
+      
+      # LSTM layer
+      self.lstm=layer_utils.UnidirectionalLSTMBlock(
+                                      n_units=self.encoder_dim,
+                                      return_sequences=True,
+                                      return_state=True,
+                                      dropout_rate=0.33)
+
+    
+  def call(self, inputs):
+      word_inputs = inputs["words"]
+      word_features = self.word_embeddings(word_inputs)
+      pos_inputs = inputs["pos"]
+      pos_features = self.pos_embeddings(pos_inputs)
+      morph_inputs = inputs["morph"]
+        
+      # concat = self.concatenate([word_features, pos_features, morph_inputs])
+      
+      output, h, c = self.lstm(word_features)
+      return output, h, c
+  
+
+class LSTMDecoder(tf.keras.Model):
+  def __init__(self, *, 
+               n_labels: int,
+               decoder_dim: int,
+               word_embeddings: Embeddings,
+               pos_embedding_dim: int = 32,
+               name="LSTMDecoder"
+               ):
+      super(LSTMDecoder, self).__init__(name=name)
+      self.decoder_dim = decoder_dim
+      super(LSTMDecoder, self).__init__(name=name)
+      
+      
+      self.word_embeddings = layer_utils.EmbeddingLayer(
+        pretrained=word_embeddings,
+        name="word_embeddings"
+      )
+      
+      self.pos_embeddings=layer_utils.EmbeddingLayer(
+        input_dim=35, output_dim=pos_embedding_dim, name="pos_embeddings",
+        trainable=True
+      )
+      
+      self.concatenate=layers.Concatenate(name="concat")
+      
+      
+      self.lstm_layer1 = layers.LSTM(self.decoder_dim,
+                                    return_sequences=True,
+                                    return_state=True,
+                                    name="lstm1")
+      self.lstm_layer2 = layers.LSTM(self.decoder_dim,
+                                    return_sequences=True,
+                                    return_state=True,
+                                    name="lstm2")
+      self.lstm_layer3 = layers.LSTM(self.decoder_dim,
+                                     return_sequences=True,
+                                     name="lstm3")
+      self.dense = layers.Dense(units=n_labels, name="dense")
+  
+  def call(self, inputs, initial_state):
+    word_inputs = inputs["words"]
+    word_features = self.word_embeddings(word_inputs)
+    pos_inputs=inputs["pos"]
+    pos_features = self.pos_embeddings(pos_inputs)
+    morph_inputs = inputs["morph"]
+    
+    concat = self.concatenate([
+      word_features, pos_features, morph_inputs
+    ])
+    
+    lstm_out1, h, c  = self.lstm_layer1(concat, initial_state=initial_state)
+    lstm_out2, h, c = self.lstm_layer2(lstm_out1, initial_state=[h, c])
+    lstm_out3 = self.lstm_layer3(lstm_out2, initial_state=[h, c])
+    outputs = self.dense(lstm_out3)
+    return outputs
+    
+    
+
+class LSTMSeqEncoder(tf.keras.Model):
+  def __init__(self, *,
+               word_embeddings: Embeddings,
+               encoder_dim: int,
+               batch_size: int,
+              name="LSTMSeqEncoder"):
+      super(LSTMSeqEncoder, self).__init__(name=name)
       self.batch_size = batch_size
       self.encoder_dim = encoder_dim
       self.word_embeddings = layer_utils.EmbeddingLayer(
@@ -220,6 +425,7 @@ class LSTMEncoder(tf.keras.Model):
               tf.zeros((batch_size, self.encoder_dim))
              ]
 
+
 class LSTMSeqDecoder(tf.keras.Model):
   def __init__(self, *,
                n_labels: int,
@@ -227,14 +433,13 @@ class LSTMSeqDecoder(tf.keras.Model):
                embedding_dim: int = 32,
                batch_size: int,
                attention_type='luong',
-               max_length_input=15, #TODO remove this later.
                name="LSTMSeqDecoder"):
   
       super(LSTMSeqDecoder, self).__init__(name=name)
       self.batch_size = batch_size
       self.decoder_dim = decoder_dim
       self.attention_type = attention_type
-      self.max_length_input = max_length_input
+ 
       
       # Embedding layer.
       self.embedding = tf.keras.layers.Embedding(n_labels, embedding_dim,
@@ -258,7 +463,7 @@ class LSTMSeqDecoder(tf.keras.Model):
       self.lstm_cell = self.build_lstm_with_attention(self.batch_size)
       
       # Dense layer
-      self.dense = layers.Dense(n_labels)
+      self.dense = layers.Dense(n_labels, activation="softmax")
       
       # Sampler
       self.sampler = tfa.seq2seq.sampler.TrainingSampler()

@@ -4,7 +4,7 @@
 
 This module implements the following evaluation metrics:
 
-UAS: Unlabeld attachment score.
+UAS: Unlabeled attachment score.
 LAS: Labeled attachment score.
 
 We provide typed based precision, recall and F1 scores for LAS and type based
@@ -30,6 +30,7 @@ from typing import Dict
 from google.protobuf import text_format
 
 import logging
+
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 label_to_enum = LabelReader.get_labels("dep_labels").labels
@@ -150,7 +151,7 @@ class Evaluator:
     
   @property
   def label_counts(self):
-    """Return a pd.Series of occurences for each label in the data."""
+    """Return a pd.Series of occurrences for each label in the data."""
     assert self.gold_labels, "Tokens don't have any labels!!!"
     label_counts = {}
     for label in self.gold_labels:
@@ -435,7 +436,7 @@ class Evaluator:
                                          inplace=True).round(2)
       if  "labeled_attachment_precision" in requested_metrics:
         results["labeled_attachment_precision"] = self.labeled_attachment_prec
-      if	"labeled_attachment_recall" in requested_metrics:
+      if "labeled_attachment_recall" in requested_metrics:
         results["labeled_attachment_recall"] = self.labeled_attachment_recall
       if "labeled_attachment_metrics" in requested_metrics:
         # this returns precision and recall as well
