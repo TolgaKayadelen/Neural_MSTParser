@@ -148,7 +148,6 @@ def main(args):
     # Start training
     metrics = parser.train(dataset, args.epochs, test_data=test_dataset)
 
-    
     writer.write_proto_as_text(metrics,
                                f"./model/nn/plot/{args.model_name}_metrics.pbtxt")
     nn_utils.plot_metrics(name=args.model_name, metrics=metrics)
