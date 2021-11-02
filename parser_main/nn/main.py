@@ -36,15 +36,16 @@ _TEST_DATA_DIR = "data/UDv23/Turkish/test"
 def main(args):
   embeddings = nn_utils.load_embeddings()
   word_embeddings = embeddor.Embeddings(name= "word2vec", matrix=embeddings)
-  print("labels ", args.labels)
-  print("features ", args.features)
+  logging.info(f"labels {args.labels}")
+  logging.info(f"features {args.features}")
   prep = preprocessor.Preprocessor(
-    word_embeddings=word_embeddings, features=args.features,
-    labels=args.labels)
-  label_feature = next((f for f in prep.sequence_features if f.name == "dep_labels"),
+      word_embeddings=word_embeddings,
+      features=args.features,
+      labels=args.labels
+  )
+  label_feature = next((f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"),
                         None)
-  
-  
+
   if args.load:
     if args.parser_type == "label_first":
       parser = lfp.LabelFirstMSTParser(word_embeddings=prep.word_embeddings,
@@ -235,9 +236,6 @@ if __name__ == "__main__":
                       help="treebank to compare model parses against")
   parser.add_argument("--dataset",
                       help="path to a prepared tf.data.Dataset")
-
-  
-  
 
   args = parser.parse_args()
   main(args)

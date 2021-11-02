@@ -23,18 +23,32 @@ Treebank = treebank_pb2.Treebank
 
 class SequenceFeature:
   """A sequence feature is a map from a feature name to a list of int values."""
-  def __init__(self, name: str, values: List[int]=[], dtype=tf.int64,
-               one_hot: bool = False, n_values: int = None,
-               is_label: bool = False):
+  def __init__(self,
+               name: str,
+               values: List[int]=[],
+               dtype=tf.int64,
+               one_hot: bool = False,
+               n_values: int = None,
+               is_label: bool = False,
+               label_indices: List[int] = []):
+    # the name of this feature.
     self.name = name
+    # the value indices of this feature. This is generated on the fly for each data point in the
+    # data during training/test based on a mapping.
     self.values = values
+    # feature's data type.
     self.dtype = dtype
+    # the number of values this feature holds. Can be useful e.g. during one-hot conversion.
     self.n_values = n_values
+    # whether this is a one hot feature.
     self.one_hot = one_hot
+    # whether this is a label feature.
     self.is_label = is_label
+    # the label indices (if the feature is a label feature).
+    self.label_indices = label_indices
     
   def _convert_to_one_hot(self, values, n_values):
-    """Converts an integer array one hot vector.
+    """Converts an integer array to a one hot vector.
     
     An integer array of shape (1, m) becomes a one hot vector of shape
     (len(indices), n_labels).
@@ -66,46 +80,64 @@ class SequenceFeature:
     return f"""name: {self.name},
             values: {self.values},
             one_hot : {self.one_hot},
-            n_values: {self.n_values}"""
+            n_values: {self.n_values},
+            label_indices: {self.label_indices}"""
 
 
 class Preprocessor:
-  """Prepares data as batched tfrecords."""
+  """Prepares data as batched tf.Examples."""
+
   def __init__(self, *, 
                word_embeddings: Embeddings = None,
-               features = List[str], labels = List[str]):
+               features = List[str],
+               labels = List[str]):
     if word_embeddings:
       self.word_embeddings = word_embeddings
+    # The features to use for training the parser.
     self.features = features
+    # The label feature; target feature to be predicted by the parser.
     self.labels = labels
-  
-  @property
-  def sequence_features(self) -> List[SequenceFeature]:
-    """Sets up sequence features and labels to be used by this preprocessor."""
-    logging.info("Setting up sequence features")
-    sequence_features = []
+    # Initial sequence features
+    self.sequence_features_dict = self._sequence_features_dict()
+
+  def _sequence_features_dict(self) -> Dict[str, SequenceFeature]:
+    """Sets up features and labels to be used by the parsers."""
+    logging.info("Setting up sequence features.")
+    sequence_features = {}
     # Add a tokens feature (to hold word strings) and a sentence_id feature.
-    sequence_features.append(SequenceFeature(name="tokens", dtype=tf.string))
-    sequence_features.append(SequenceFeature(name="sent_id", dtype=tf.string))
+    sequence_features["tokens"] = SequenceFeature(name="tokens", dtype=tf.string)
+    sequence_features["sent_id"] = SequenceFeature(name="sent_id", dtype=tf.string)
+
     for feat in self.features:
       if not feat in self.labels:
-        sequence_features.append(SequenceFeature(name=feat))
+        sequence_features[feat] = SequenceFeature(name=feat)
       else:
         if feat == "heads":
           # We don't need to get the label_indices for "heads" as we don't do
           # label prediction on them in a typical sense.
-          sequence_features.append(SequenceFeature(name=feat, is_label=True))
+          sequence_features[feat] = SequenceFeature(name=feat, is_label=True)
         else:
           label_dict = LabelReader.get_labels(feat).labels
           label_indices = list(label_dict.values())
-          label_feature = SequenceFeature(name=feat, values=label_indices,
-            n_values=len(label_indices), is_label=True)
-          sequence_features.append(label_feature)
+          label_feature = SequenceFeature(name=feat,
+                                          n_values=len(label_indices),
+                                          is_label=True,
+                                          label_indices=label_indices)
+          sequence_features[feat] = label_feature
+
     return sequence_features
 
-  def numericalize(self, *, values: List[str],
+
+  def numericalize(self, *,
+                   values: List[str],
                    mapping: Union[Dict, Embeddings]) -> List[int]:
-    """Returns numeric values (integers) for features based on a mapping."""
+    """Returns numeric values (integers) for features based on a mapping.
+    Args:
+        values: the feature values, usually strings.
+        mapping: A mapping that maps string values to integer to be used in NN.
+    Returns:
+      List of numeric values.
+    """
     indices = []
     if isinstance(mapping, Embeddings):
       for value in values:
@@ -136,10 +168,10 @@ class Preprocessor:
             indices.append(mapping["-pad-"])
       return indices
     else:
-      raise ValueError("mapping should be a dict or an Embedding instance.")
+      raise ValueError("Mapping should be a dict or an Embedding instance.")
   
   def get_index_mappings_for_features(self, feature_names: List[str]) -> Dict:
-    "Returns a string:index map for a feature based on predefined configs"
+    "Returns a map dictionary for a feature based on predefined configs"
     mappings = {}
     if "heads" in feature_names:
       logging.debug("No mappings for head feature.")
@@ -157,10 +189,10 @@ class Preprocessor:
       mappings["category"] = LabelReader.get_labels("category").labels
     if "dep_labels" in feature_names:
       mappings["dep_labels"] = LabelReader.get_labels("dep_labels").labels
-      # print(mappings["dep_labels"])
-      # input("press to cont.")
     if "srl" in feature_names:
       raise RuntimeError("Semantic role features are not supported yet.")
+    # print("mappings ", mappings)
+    # input("press to cont.")
     return mappings
         
   def make_tf_example(self, *, features: List[SequenceFeature]
@@ -170,7 +202,6 @@ class Preprocessor:
     A single datapoint is represented as a List of SequenceFeature objects.
     """
     example = tf.train.SequenceExample()
-    
     for feature in features:
       feature_list = example.feature_lists.feature_list[feature.name]
       if feature.name in ["tokens", "sent_id"]:
@@ -182,8 +213,6 @@ class Preprocessor:
       else:
         for value in feature.values:
           feature_list.feature.add().int64_list.value.append(value)
-    # print(example)
-    # input("press to cont.")
     return example
     
   def write_tf_records(self, *, examples: List[SequenceExample], path: str
@@ -202,14 +231,7 @@ class Preprocessor:
     """Returns a list of tf_examples from a treebank or a list of Sentences."""
     tf_examples = []
     feature_mappings = self.get_index_mappings_for_features(self.features)
-    
-    sequence_features = dict((
-      feature, SequenceFeature(name=feature)) for feature in self.features)
-    
-    # The 'tokens' and 'sent_id' features are added to all examples by default.
-    sequence_features["tokens"] = SequenceFeature(name="tokens", dtype=tf.string)
-    sequence_features["sent_id"] = SequenceFeature(name="sent_id", dtype=tf.string)
-  
+
     counter = 0
     if from_treebank is not None:
       logging.info(f"Creating dataset from treebank {from_treebank}")
@@ -223,24 +245,23 @@ class Preprocessor:
       counter += 1
       tokens = [token.word.encode("utf-8") for token in sentence.token]
       sent_id = [sentence.sent_id.encode("utf-8")] * len(sentence.token)
-      sequence_features["tokens"].values = tokens
-      sequence_features["sent_id"].values = sent_id
+      self.sequence_features_dict["tokens"].values = tokens
+      self.sequence_features_dict["sent_id"].values = sent_id
       if "words" in self.features:
         word_indices = self.numericalize(
                           values=[token.word for token in sentence.token],
                           mapping=feature_mappings["words"])
-        sequence_features["words"].values = word_indices
+        self.sequence_features_dict["words"].values = word_indices
       if "category" in self.features:
         cat_indices = self.numericalize(
                           values=[token.category for token in sentence.token],
                           mapping=feature_mappings["category"])
-        sequence_features["category"].values = cat_indices
+        self.sequence_features_dict["category"].values = cat_indices
       if "pos" in self.features:
         pos_indices = self.numericalize(
                           values=[token.pos for token in sentence.token],
                           mapping=feature_mappings["pos"])
-        # print(pos_indices)
-        sequence_features["pos"].values = pos_indices
+        self.sequence_features_dict["pos"].values = pos_indices
       if "morph" in self.features:
         morph_features = []
         for token in sentence.token:
@@ -253,19 +274,19 @@ class Preprocessor:
           # We put 1 to the indices for the active morphology features.
           np.put(morph_vector, morph_indices, [1])
           morph_features.append(morph_vector)
-        sequence_features["morph"].values = morph_features
+        self.sequence_features_dict["morph"].values = morph_features
       if "dep_labels" in self.features:
         sentence.token[0].label = "TOP" # workaround key errors
         dep_indices = self.numericalize(
                           values=[token.label for token in sentence.token],
                           mapping=feature_mappings["dep_labels"])
-        sequence_features["dep_labels"].values = dep_indices
+        self.sequence_features_dict["dep_labels"].values = dep_indices
       if "heads" in self.features:
-        sequence_features["heads"].values = [
+        self.sequence_features_dict["heads"].values = [
           token.selected_head.address for token in sentence.token]
 
-      example = self.make_tf_example(features=list(sequence_features.values()))
-      # print(example)
+      example = self.make_tf_example(features=self.sequence_features_dict.values())
+      # print("example ", example)
       # input("press to cont.")
       tf_examples.append(example)
     logging.info(f"Converted {counter} sentences to tf examples.")
@@ -281,8 +302,9 @@ class Preprocessor:
     _padded_shapes = {}
     _padding_values={}
     
-    # Create a dictionary description of the tensors to parse the features.
-    for feature in self.sequence_features:
+    # Create a dictionary description of the tensors to parse the features from the
+    # tf.records.
+    for feature in self.sequence_features_dict.values():
       if feature.name == "morph":
         _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
             shape=[66], dtype=feature.dtype)
@@ -309,12 +331,13 @@ class Preprocessor:
         sequence_features=_sequence_features
       )
       return {
-        feature.name:parsed_example[feature.name] for feature in self.sequence_features
+        feature.name:parsed_example[feature.name] for feature in self.sequence_features_dict.values()
       }
     
     dataset = tf.data.TFRecordDataset([records])
     dataset = dataset.map(_parse_tf_records)    
-    dataset = dataset.padded_batch(batch_size, padded_shapes=_padded_shapes,
+    dataset = dataset.padded_batch(batch_size,
+                                   padded_shapes=_padded_shapes,
                                    padding_values=_padding_values)
     return dataset
     
@@ -335,7 +358,7 @@ class Preprocessor:
     _padded_shapes={}
     _padding_values={}
     
-    for feature in self.sequence_features:
+    for feature in self.sequence_features_dict.values():
       _output_types[feature.name]=feature.dtype
       
       if feature.name in ["tokens", "sent_id"]:
@@ -355,7 +378,8 @@ class Preprocessor:
       output_types=_output_types,
       output_shapes=_output_shapes
     )
-    dataset = dataset.padded_batch(batch_size, padded_shapes=_padded_shapes,
+    dataset = dataset.padded_batch(batch_size,
+                                   padded_shapes=_padded_shapes,
                                    padding_values=_padding_values)
     dataset = dataset.shuffle(buffer_size=5073)
     # TODO dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE,drop_remainder=True)
@@ -368,7 +392,6 @@ class Preprocessor:
     print(f"Total sentences {len(sentences)}")
     # input("press to cont.")
     feature_mappings = self.get_index_mappings_for_features(self.features)
-    # label_feature = next((f for f in features if f.is_label), None)
     yield_dict = {}
     
     for sentence in sentences:
@@ -398,7 +421,6 @@ class Preprocessor:
                             values=tags,
                             mapping=feature_mappings["morph"]
             )
-            # print(list(zip(tags,morph_indices)))
             np.put(morph_vector, morph_indices, [1])
             morph_features.append(morph_vector)
           yield_dict[feature_name] = morph_features
@@ -410,8 +432,6 @@ class Preprocessor:
         if feature_name == "heads":
           yield_dict[feature_name] = [
             token.selected_head.address for token in sentence.token]
-      # print("yield dict ", yield_dict)
-      # input("press to continue")
       yield yield_dict
 
     
@@ -426,21 +446,24 @@ if __name__ == "__main__":
                       features=["words", "pos", "morph", "dep_labels",  "heads"],
                       labels=["dep_labels",  "heads"])
   datapath = "data/UDv23/Turkish/training/treebank_train_0_3.pbtxt"
-  
-  '''
+
   dataset = prep.make_dataset_from_generator(path=datapath, batch_size=10)
+  
   for batch in dataset:
     print(batch["tokens"])
     print(batch["words"])
     print(batch["pos"])
     print(batch["sent_id"])
+    print(batch["morph"])
+    print(batch["dep_labels"])
+    print(batch["heads"])
   
   '''
   # Make a dataset and save it 
   trb = reader.ReadTreebankTextProto(datapath)
   tf_examples = prep.make_tf_examples(from_sentences=trb.sentence)
   prep.write_tf_records(examples=tf_examples,
-                       path="./input/treebank_train_0_3.tfrecords")
+                        path="./input/treebank_train_0_3.tfrecords")
   
 
   # Read dataset from saved tfrecords
@@ -448,8 +471,4 @@ if __name__ == "__main__":
     records="./input/treebank_train_0_3.tfrecords")
   for batch in dataset:
     print(batch)
-  
-  
-  
-  
-  
+  '''
