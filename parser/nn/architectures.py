@@ -85,10 +85,11 @@ class LabelFirstParsingModel(tf.keras.Model):
   """Label first parsing model predicts labels before edges."""
   def __init__(self, *,
                n_dep_labels: int,
-               word_embeddings: Embeddings, 
-               config=None,
+               word_embeddings: Embeddings,
                name="Label_First_Parsing_Model",
-               predict: List[str]):
+               predict: List[str],
+               use_pos:bool = True,
+               use_morph:bool=True):
     super(LabelFirstParsingModel, self).__init__(name=name)
     self.predict = predict
     self._null_label = tf.constant(0)
@@ -126,8 +127,8 @@ class LabelFirstParsingModel(tf.keras.Model):
       inputs: Dict[str, tf.keras.Input]
     Returns:
       A dict which conteins:
-        edge_scores: [batch_size, seq_len, seq_len] head preds for all tokens.
-        label_scores: [batch_size, seq_len, n_labels] label preds for tokens.
+        edge_scores: [batch_size, seq_len, seq_len] head preds for all tokens (i.e. 10, 34, 34)
+        label_scores: [batch_size, seq_len, n_labels] label preds for tokens (i.e. 10, 34, 36)
     """
     # print("inputs ", inputs)
     word_inputs = inputs["words"]

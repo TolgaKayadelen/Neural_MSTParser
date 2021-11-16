@@ -21,7 +21,7 @@ class Input:
   """Defines properties of a keras input layer."""
   def __init__(self, name:str, shape=(None,), embed: bool = False,
                embed_in: int = None, embed_out: int = None,
-              pretrained_embeddings: Embeddings = None):
+               pretrained_embeddings: Embeddings = None):
     pass
               
 

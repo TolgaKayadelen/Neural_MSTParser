@@ -1,3 +1,10 @@
+"""Usage example
+bazel-bin/parser_main/nn/main --train --parser_type=label_first \
+--train_treebank=treebank_train_0_50.pbtxt \
+--test_treebank=treebank_0_3_gold.pbtxt \
+--epochs=5 --model_name=stupid --predict edges labels
+"""
+
 import argparse
 import logging
 import os
@@ -10,7 +17,7 @@ import numpy as np
 import tensorflow as tf
 
 
-from parser.nn import label_first_parser as lfp
+from parser.nn import label_first_parser_deprecated as lfp
 from parser.nn import label_first_parser2 as lfp2
 from parser.nn import label_first_parser_joint_loss as lfp_joint_loss
 from parser.nn import biaffine_parser as bfp
@@ -216,11 +223,11 @@ if __name__ == "__main__":
                       default=["heads", "dep_labels"],
                       help="labels to predict.")
   # predict determines which features the parser will train to predict.
-  # you need to set this up
+  # you need to set this up. Pass this as --predict edges labels
   parser.add_argument("--predict",
                       nargs="+",
                       type=str,
-                      default=["edges", "labels"],
+                      # default=["edges", "labels"],
             					choices=["edges", "labels"],
                       help="which features to predict")
   

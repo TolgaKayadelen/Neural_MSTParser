@@ -1,5 +1,15 @@
 package(default_visibility = ["//visibility:public"])
 
+# Binaries
+py_binary(
+  name = "label_first_parser",
+  srcs = ["label_first_parser.py"],
+  deps = [
+    ":base_parser",
+    ":nn_parser_lib",
+  ],
+)
+
 # Libraries
 py_library(
   name = "nn_parser_lib",
@@ -30,8 +40,16 @@ py_library(
 )
 
 py_library(
-	name = "label_first_parser",
-	srcs = ["label_first_parser.py"],
+    name = "base_parser",
+    srcs = ["base_parser.py"],
+    deps = [
+        ":nn_parser_lib",
+    ],
+)
+
+py_library(
+	name = "label_first_parser_deprecated",
+	srcs = ["label_first_parser_deprecated.py"],
   deps = [
     ":nn_parser_lib",
   ],
