@@ -104,26 +104,28 @@ class Preprocessor:
     """Sets up features and labels to be used by the parsers."""
     logging.info("Setting up sequence features.")
     sequence_features = {}
-    # Add a tokens feature (to hold word strings) and a sentence_id feature.
-    sequence_features["tokens"] = SequenceFeature(name="tokens", dtype=tf.string)
-    sequence_features["sent_id"] = SequenceFeature(name="sent_id", dtype=tf.string)
 
+    # Add a tokens feature (to hold word strings) and a sentence_id feature.
+    self.features.extend(["tokens", "sent_id"])
     for feat in self.features:
-      if not feat in self.labels:
-        sequence_features[feat] = SequenceFeature(name=feat)
+      if feat == "heads":
+        sequence_features[feat] = SequenceFeature(name=feat, is_label=feat in self.labels)
+      elif feat == "dep_labels":
+        label_dict = LabelReader.get_labels(feat).labels
+        label_indices = list(label_dict.values())
+        label_feature = SequenceFeature(name=feat,
+                                        n_values=len(label_indices),
+                                        is_label=feat in self.labels,
+                                        label_indices=label_indices if feat in self.labels else [])
+        sequence_features[feat] = label_feature
+      elif feat in ["tokens" , "sent_id"]:
+        sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.string)
+      elif feat == "morph":
+        sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.float32)
+      elif feat in ["words", "pos"]:
+        sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.int64)
       else:
-        if feat == "heads":
-          # We don't need to get the label_indices for "heads" as we don't do
-          # label prediction on them in a typical sense.
-          sequence_features[feat] = SequenceFeature(name=feat, is_label=True)
-        else:
-          label_dict = LabelReader.get_labels(feat).labels
-          label_indices = list(label_dict.values())
-          label_feature = SequenceFeature(name=feat,
-                                          n_values=len(label_indices),
-                                          is_label=True,
-                                          label_indices=label_indices)
-          sequence_features[feat] = label_feature
+        raise ValueError(f"{feat} is not a valid feature.")
 
     return sequence_features
 
@@ -209,7 +211,8 @@ class Preprocessor:
           feature_list.feature.add().bytes_list.value.append(value)
       elif feature.name == "morph":
         for value in feature.values:
-          feature_list.feature.add().int64_list.value.extend(value)
+          feature_list.feature.add().float_list.value.extend(value)
+          # feature_list.feature.add().int64_list.value.extend(value)
       else:
         for value in feature.values:
           feature_list.feature.add().int64_list.value.append(value)
@@ -265,7 +268,7 @@ class Preprocessor:
       if "morph" in self.features:
         morph_features = []
         for token in sentence.token:
-          morph_vector = np.zeros(len(feature_mappings["morph"]), dtype=int)
+          morph_vector = np.zeros(len(feature_mappings["morph"]), dtype=float)
           tags = morph_tags.from_token(token=token)
           morph_indices = self.numericalize(
                           values=tags,
@@ -310,19 +313,19 @@ class Preprocessor:
             shape=[66], dtype=feature.dtype)
         _dataset_shapes[feature.name]=tf.TensorShape([None, 66])
         _padded_shapes[feature.name]=tf.TensorShape([None, 66])
-        _padding_values[feature.name] = tf.constant(0, dtype=tf.int64)
+        _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
       elif feature.name in ["tokens", "sent_id"]:
         _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
           shape=[], dtype=feature.dtype)
         _dataset_shapes[feature.name]=tf.TensorShape([None])
         _padded_shapes[feature.name]=tf.TensorShape([None])
-        _padding_values[feature.name] = tf.constant("-pad-", dtype=tf.string)
+        _padding_values[feature.name] = tf.constant("-pad-", dtype=feature.dtype)
       else:
         _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
             shape=[], dtype=feature.dtype)
         _dataset_shapes[feature.name]=tf.TensorShape([None])
         _padded_shapes[feature.name]=tf.TensorShape([None])
-        _padding_values[feature.name] = tf.constant(0, dtype=tf.int64)
+        _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
 
     def _parse_tf_records(record):
       """Returns a dictionary of tensors."""
@@ -360,11 +363,13 @@ class Preprocessor:
     
     for feature in self.sequence_features_dict.values():
       _output_types[feature.name]=feature.dtype
-      
+
       if feature.name in ["tokens", "sent_id"]:
-        _padding_values[feature.name] = tf.constant("-pad-", dtype=tf.string)
+        _padding_values[feature.name] = tf.constant("-pad-", dtype=feature.dtype)
+      elif feature.name == "morph":
+        _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
       else:
-        _padding_values[feature.name] = tf.constant(0, dtype=tf.int64)
+        _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
       
       if feature.name == "morph":
         _output_shapes[feature.name]=tf.TensorShape([None, 66]) # (, 66)
@@ -382,7 +387,6 @@ class Preprocessor:
                                    padded_shapes=_padded_shapes,
                                    padding_values=_padding_values)
     dataset = dataset.shuffle(buffer_size=5073)
-    # TODO dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE,drop_remainder=True)
 
     return dataset
 
@@ -415,7 +419,7 @@ class Preprocessor:
         if feature_name == "morph":
           morph_features = []
           for token in sentence.token:
-            morph_vector = np.zeros(len(feature_mappings["morph"]), dtype=int)
+            morph_vector = np.zeros(len(feature_mappings["morph"]), dtype=float)
             tags = morph_tags.from_token(token=token)
             morph_indices = self.numericalize(
                             values=tags,
@@ -443,10 +447,10 @@ if __name__ == "__main__":
   
   # Initialize the preprocessor.
   prep = Preprocessor(word_embeddings=word_embeddings,
-                      features=["words", "pos", "morph", "dep_labels",  "heads"],
-                      labels=["dep_labels",  "heads"])
+                      features=["words", "pos", "morph", "dep_labels", "heads"],
+                      labels=["dep_labels", "heads"])
   datapath = "data/UDv23/Turkish/training/treebank_train_0_3.pbtxt"
-
+  '''
   dataset = prep.make_dataset_from_generator(path=datapath, batch_size=10)
   
   for batch in dataset:
@@ -471,4 +475,4 @@ if __name__ == "__main__":
     records="./input/treebank_train_0_3.tfrecords")
   for batch in dataset:
     print(batch)
-  '''
+

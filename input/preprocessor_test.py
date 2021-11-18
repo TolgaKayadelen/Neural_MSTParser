@@ -34,8 +34,8 @@ class PreprocessorTest(tf.test.TestCase):
   def test_sequence_features(self):
     print("Running test_sequence_features..")
     self.assertEqual(
-      [feature.name for feature in self.prep.sequence_features],
-      ["tokens", "sent_id", "words", "pos", "morph", "heads", "dep_labels"]
+      [feature.name for _, feature in self.prep.sequence_features_dict.items()],
+      ["words", "pos", "morph", "heads", "dep_labels", "tokens", "sent_id"]
     )
     print("Passed!")
   

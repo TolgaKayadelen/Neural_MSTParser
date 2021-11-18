@@ -140,8 +140,8 @@ class BaseParser(ABC):
   def _get_predicted_labels(scores):
     """Returns predicted labels for model scores.
 
-    The scores should be a tf.Tensor of shape (batch_size, seq_len, label_probs) where the
-    second axis hold target label predictions for each token in the sequence.
+    The scores should be a tf.Tensor of shape (batch_size, seq_len, label_probs) where
+    the second axis hold target label predictions for each token in the sequence.
     """
     return tf.argmax(scores, 2)
 
@@ -165,8 +165,10 @@ class BaseParser(ABC):
     """Computes correctly predicted edges and labels.
 
     Args:
-      head_predictions: tensor of shape (n, 1) heads predicted by the system for each token in the batch.
-      correct_heads: tensor of shape (n, 1) the correct heads for this batch for each token in the batch.
+      head_predictions: tensor of shape (n, 1) heads predicted by the system for
+        each token in the batch.
+      correct_heads: tensor of shape (n, 1) the correct heads for this batch for
+        each token in the batch.
       label_predictions: tensor of shape (n, 1), similar to head_predictions.
       correct_labels: tensor of shape (n, 1), similar to correct_heads.
       pad_mask: mask of padded tokens for this batch.
@@ -266,7 +268,7 @@ class BaseParser(ABC):
     """Computes loss for label predictions for the parser."""
     return self._label_loss_function(correct_labels, label_scores)
 
-  # TODO: turn this tf.function
+  # TODO: understand why turning this to tf.function gives ValueError.
   def train_step(self, *,
                  words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
                  dep_labels: tf.Tensor, heads: tf.Tensor) -> Tuple[tf.Tensor, ...]:
@@ -373,13 +375,8 @@ class BaseParser(ABC):
 
       for step, batch in enumerate(dataset):
 
-        words, pos, heads = batch["words"], batch["pos"], batch["heads"]
-        dep_labels = batch["dep_labels"]
-
-        # We cast the type of this tensor to float32 because in the model pos and word features are
-        # passed through an embedding layer, which converts them into float values implicitly.
-        # TODO: do this as you read in the morph values in preprocessor.
-        morph = tf.dtypes.cast(batch["morph"], tf.float32)
+        words, pos, morph = batch["words"], batch["pos"], batch["morph"]
+        dep_labels, heads = batch["dep_labels"], batch["heads"]
 
         # Get loss values, predictions, and correct heads/labels for this training step.
         predictions, losses, correct, pad_mask = self.train_step(words=words,
@@ -489,9 +486,7 @@ class BaseParser(ABC):
         edges: Tensor of shape (1, seq_len, seq_len)
         labels: Tensor of shape (1, seq_len, n_labels)
     """
-    words, pos = example["words"], example["pos"]
-    morph = tf.dtypes.cast(example["morph"], tf.float32)
-    n_tokens = words.shape[1]
+    words, pos, morph = example["words"], example["pos"], example["morph"]
     scores = self.model({"words": words, "pos": pos, "morph": morph}, training=False)
     return scores
 

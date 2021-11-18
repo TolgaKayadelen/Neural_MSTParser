@@ -85,11 +85,11 @@ if __name__ == "__main__":
   )
   label_feature = next((f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"),
                        None)
-  parser = LabelFirstBaseParser(word_embeddings=prep.word_embeddings,
-                                n_output_classes=label_feature.n_values,
-                                predict=["edges", "labels"],
-                                features=["words", "pos"],
-                                model_name="tests_base_parser")
+  parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
+                            n_output_classes=label_feature.n_values,
+                            predict=["edges", "labels"],
+                            features=["words", "pos"],
+                            model_name="tests_base_parser")
 
   _DATA_DIR="data/UDv23/Turkish/training"
   _TEST_DATA_DIR="data/UDv23/Turkish/test"
