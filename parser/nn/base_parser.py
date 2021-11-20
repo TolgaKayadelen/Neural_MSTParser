@@ -36,7 +36,7 @@ class BaseParser(ABC):
                word_embeddings: Embeddings,
                n_output_classes: int,
                predict: List[str],
-               features: List[str],
+               features: List[str] = ["words"],
                model_name: str):
     # Embeddings
     self.word_embeddings = word_embeddings
@@ -89,7 +89,16 @@ class BaseParser(ABC):
     """Defines the parsing/labeling model. Subclasses should call the model they want
     from architectures.
     """
-    self._use_pos, self._use_morph = [feat in self.features for feat in ["pos", "morph"]]
+    self._use_pos = "pos" in self.features
+    self._use_morph = "morph" in self.features
+    self._use_dep_labels = False
+    if "dep_labels" in self.features:
+      if "labels" in self._predict:
+        logging.warning(
+          """Dep labels are requested as features but setting labels as prediction target.
+          Ignoring the dep_labels as feature.""")
+      else:
+        self._use_dep_labels = True
 
   @abstractmethod
   def _n_words_in_batch(self, words, pad_mask=None):
@@ -126,16 +135,6 @@ class BaseParser(ABC):
     self.model.load_weights(os.path.join(path, name))
     logging.info(f"Loaded model from model named: {name} in {_MODEL_DIR}")
 
-  def __str__(self):
-    return str(self.model.summary())
-
-  def eval_metrics(self) -> Metrics:
-    """Sets up metrics to track for this parser."""
-    metrics_list = ("uas", "uas_test", "head_loss")
-    if "labels" in self._predict:
-      metrics_list += ("ls", "ls_test", "las", "las_test", "label_loss")
-    return nn_utils.set_up_metrics(*metrics_list)
-
   @staticmethod
   def _get_predicted_labels(scores):
     """Returns predicted labels for model scores.
@@ -154,6 +153,17 @@ class BaseParser(ABC):
     """
     batch_size, seq_len = _tensor.shape[0], _tensor.shape[1]
     return tf.reshape(_tensor, shape=(batch_size*seq_len, outer_dim))
+
+  def __str__(self):
+    return str(self.model.summary())
+
+  def eval_metrics(self) -> Metrics:
+    """Sets up metrics to track for this parser."""
+    metrics_list = ("uas", "uas_test", "head_loss")
+    if "labels" in self._predict:
+      metrics_list += ("ls", "ls_test", "las", "las_test", "label_loss")
+    return nn_utils.set_up_metrics(*metrics_list)
+
 
   def  _compute_correct_predictions_in_step(self, *,
                                             head_predictions,
@@ -291,7 +301,8 @@ class BaseParser(ABC):
     with tf.GradientTape() as tape:
 
       # Head scores = (batch_size, seq_len, seq_len), Label scores = (batch_size, seq_len, n_labels)
-      scores = self.model({"words": words, "pos": pos, "morph": morph}, training=True)
+      scores = self.model({"words": words, "pos": pos, "morph": morph,
+                           "labels": dep_labels}, training=True)
       head_scores, label_scores = scores["edges"], scores["labels"]
 
       # Get the predicted head indices from the head scores, tensor of shape (batch_size*seq_len, 1)
@@ -332,15 +343,20 @@ class BaseParser(ABC):
     self._optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
 
     # Update training metrics.
-    self._update_training_metrics(correct_heads, head_scores, correct_labels, label_scores)
+    self._update_training_metrics(
+      heads=correct_heads, head_scores=head_scores,
+      labels=correct_labels if "labels" in self._predict else None,
+      label_scores=label_scores if "labels" in self._predict else None)
 
     # Fill in the return values
     losses["heads"] = head_loss
-    losses["labels"] = label_loss
     correct["heads"] = correct_heads
-    correct["labels"] = correct_labels
     predictions["heads"] = head_preds
-    predictions["labels"] = label_preds
+
+    if "labels" in self._predict:
+      losses["labels"] = label_loss
+      correct["labels"] = correct_labels
+      predictions["labels"] = label_preds
 
     return predictions, losses, correct, pad_mask
 
@@ -414,7 +430,7 @@ class BaseParser(ABC):
 
       loss_results_for_epoch = {
         "head_loss": tf.reduce_mean(losses["heads"]).numpy(),
-        "label_loss": tf.reduce_mean(losses["labels"]).numpy()
+        "label_loss": tf.reduce_mean(losses["labels"]).numpy() if "labels" in self._predict else None
       }
       if epoch % 5 == 0 and test_data:
         test_results_for_epoch = self.test(dataset=test_data)
@@ -434,7 +450,7 @@ class BaseParser(ABC):
 
   def test(self, *, dataset: Dataset):
     """Tests the performance of this parser on some dataset."""
-    print("In the test function")
+    print("Testing on the test set..")
     head_accuracy = tf.keras.metrics.Accuracy()
     label_accuracy = tf.keras.metrics.Accuracy()
 
@@ -458,8 +474,8 @@ class BaseParser(ABC):
       correct_predictions_dict = self._compute_correct_predictions_in_step(
         head_predictions=head_preds,
         correct_heads=correct_heads,
-        label_predictions=label_preds,
-        correct_labels=correct_labels,
+        label_predictions=label_preds  if "labels" in self._predict else None,
+        correct_labels=correct_labels  if "labels" in self._predict else None,
       )
       self._update_stats(correct_predictions_dict,
                          example["words"].shape[1], stats="test")
@@ -486,8 +502,10 @@ class BaseParser(ABC):
         edges: Tensor of shape (1, seq_len, seq_len)
         labels: Tensor of shape (1, seq_len, n_labels)
     """
-    words, pos, morph = example["words"], example["pos"], example["morph"]
-    scores = self.model({"words": words, "pos": pos, "morph": morph}, training=False)
+    words, pos, morph, dep_labels = (example["words"], example["pos"],
+                                     example["morph"], example["dep_labels"])
+    scores = self.model({"words": words, "pos": pos,
+                         "morph": morph, "labels": dep_labels}, training=False)
     return scores
 
   def save(self, suffix: int=0):

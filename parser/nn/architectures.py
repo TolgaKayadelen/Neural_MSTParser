@@ -17,8 +17,6 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 Embeddings = embeddor.Embeddings
 
-
-
 class LSTMLabelingModel(tf.keras.Model):
   """A standalone bidirectional LSTM labeler."""
   def __init__(self, *,
@@ -41,8 +39,7 @@ class LSTMLabelingModel(tf.keras.Model):
                                             input_dim=35, output_dim=32,
                                             name="pos_embeddings",
                                             trainable=True)
-    if self.use_pos or self.use_morph:
-      self.concatenate = layers.Concatenate(name="concat")
+    self.concatenate = layers.Concatenate(name="concat")
     self.lstm_block = layer_utils.LSTMBlock(n_units=n_units,
                                             dropout_rate=0.3,
                                             name="lstm_block"
@@ -57,7 +54,6 @@ class LSTMLabelingModel(tf.keras.Model):
     word_inputs = inputs["words"]
     word_features = self.word_embeddings(word_inputs)
     concat_list = [word_features]
-    
     if self.use_pos:
       pos_inputs = inputs["pos"]
       pos_features = self.pos_embeddings(pos_inputs)
@@ -65,7 +61,6 @@ class LSTMLabelingModel(tf.keras.Model):
     if self.use_morph:
       morph_inputs = inputs["morph"]
       concat_list.append(morph_inputs)
-
     
     if len(concat_list) > 1:
       concat = self.concatenate(concat_list)
@@ -76,9 +71,7 @@ class LSTMLabelingModel(tf.keras.Model):
       sentence_repr = self.lstm_block(word_features)
       # sentence_repr = self.attention(sentence_repr)
       labels = self.labels(sentence_repr)
-    
     return {"labels": labels}
-    
     
 
 class LabelFirstParsingModel(tf.keras.Model):
@@ -89,21 +82,28 @@ class LabelFirstParsingModel(tf.keras.Model):
                name="Label_First_Parsing_Model",
                predict: List[str],
                use_pos:bool = True,
-               use_morph:bool=True):
+               use_morph:bool=True,
+               use_dep_labels:bool=False # for cases where we predict only edges using dep labels as gold.
+               ):
     super(LabelFirstParsingModel, self).__init__(name=name)
     self.predict = predict
+    self.use_pos = use_pos
+    self.use_morph = use_morph
+    self.use_dep_labels = use_dep_labels
     self._null_label = tf.constant(0)
+
+    assert(not("labels" in self.predict and self.use_dep_labels)), "Can't use dep_labels both as feature and label!"
+
     self.word_embeddings = layer_utils.EmbeddingLayer(
                                           pretrained=word_embeddings,
                                           name="word_embeddings")
-    self.pos_embeddings = layer_utils.EmbeddingLayer(
-                                          input_dim=35, output_dim=32,
-                                          name="pos_embeddings",
-                                          trainable=True)
-    # self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=36,
-    #                                                   output_dim=50,
-    #                                                   name="label_embeddings",
-    #                                                   trainable=True)
+
+    if self.use_pos:
+      self.pos_embeddings = layer_utils.EmbeddingLayer(
+                                            input_dim=35, output_dim=32,
+                                            name="pos_embeddings",
+                                            trainable=True)
+
     self.concatenate = layers.Concatenate(name="concat")
     self.encoder = layer_utils.LSTMBlock(n_units=256, dropout_rate=0.3,
                                          name="lstm_encoder")
@@ -111,6 +111,12 @@ class LabelFirstParsingModel(tf.keras.Model):
     
     if "labels" in self.predict:
       self.dep_labels = layers.Dense(units=n_dep_labels, name="dep_labels")
+    else:
+      if self.use_dep_labels: # using dep labels as gold features.
+        self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=36,
+                                                           output_dim=50,
+                                                           name="label_embeddings",
+                                                           trainable=True)
     
     self.head_perceptron = layer_utils.Perceptron(n_units=256,
                                                   activation="relu",
@@ -121,30 +127,41 @@ class LabelFirstParsingModel(tf.keras.Model):
     self.edge_scorer = layer_utils.EdgeScorer(n_units=256, name="edge_scorer")
     logging.info((f"Set up {name} to predict {predict}"))
 
+
   def call(self, inputs): # inputs = Dict[str, tf.keras.Input]
     """Forward pass.
     Args:
-      inputs: Dict[str, tf.keras.Input]
+      inputs: Dict[str, tf.keras.Input]. This consist of
+        words: Tensor of shape (batch_size, seq_len)
+        pos: Tensor of shape (batch_size, seq_len)
+        morph: Tensor of shape (batch_size, seq_len, 66)
+        dep_labels: Tensor of shape (batch_size, seq_len)
+      The boolean values set up during the initiation of the model determines
+      which one of these features to use or not.
     Returns:
       A dict which conteins:
         edge_scores: [batch_size, seq_len, seq_len] head preds for all tokens (i.e. 10, 34, 34)
         label_scores: [batch_size, seq_len, n_labels] label preds for tokens (i.e. 10, 34, 36)
     """
-    # print("inputs ", inputs)
     word_inputs = inputs["words"]
     word_features = self.word_embeddings(word_inputs)
-    pos_inputs = inputs["pos"]
-    pos_features = self.pos_embeddings(pos_inputs)
-    morph_inputs = inputs["morph"]
-    # label_inputs = inputs["labels"]
-    # label_features = self.label_embeddings(label_inputs)
-    concat = self.concatenate([word_features,
-                               pos_features,
-                               morph_inputs,
-                               # label_features
-                              ])
-    # concat = self.concatenate([word_features, label_features])
-    sentence_repr = self.encoder(concat)
+    concat_list = [word_features]
+    if self.use_pos:
+      pos_inputs = inputs["pos"]
+      pos_features = self.pos_embeddings(pos_inputs)
+      concat_list.append(pos_features)
+    if self.use_morph:
+      morph_inputs = inputs["morph"]
+      concat_list.append(morph_inputs)
+    if self.use_dep_labels:
+      label_inputs = inputs["labels"]
+      label_features = self.label_embeddings(label_inputs)
+      concat_list.append(label_features)
+    if len(concat_list) > 1:
+      sentence_repr = self.concatenate(concat_list)
+    else:
+      sentence_repr = word_features
+    sentence_repr = self.encoder(sentence_repr)
     sentence_repr = self.attention(sentence_repr)
     if "labels" in self.predict:
       dep_labels = self.dep_labels(sentence_repr)
@@ -476,9 +493,6 @@ class LSTMSeqDecoder(tf.keras.Model):
       self.decoder = tfa.seq2seq.BasicDecoder(cell=self.lstm_cell,
                                               sampler=self.sampler,
                                               output_layer=self.dense)
-      
-     
-    
     
   def build_lstm_with_attention(self, batch_size):
       lstm_cell = tfa.seq2seq.AttentionWrapper(

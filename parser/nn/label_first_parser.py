@@ -11,6 +11,7 @@ from tensorflow.keras import layers, metrics, losses, optimizers
 
 
 class LabelFirstParser(base_parser.BaseParser):
+  """A label first parser predicts labels before predicting heads."""
   @property
   def _optimizer(self):
     return tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
@@ -51,11 +52,15 @@ class LabelFirstParser(base_parser.BaseParser):
     word_inputs = tf.keras.Input(shape=(None, ), name="words")
     pos_inputs = tf.keras.Input(shape=(None, ), name="pos")
     morph_inputs = tf.keras.Input(shape=(None, 66), name="morph")
-    return {
-      "words": word_inputs,
-      "pos": pos_inputs,
-      "morph": morph_inputs
-    }
+    label_inputs = tf.keras.Input(shape=(None, ), name="labels")
+    input_dict = {"words": word_inputs}
+    if self._use_pos:
+      input_dict["pos"] = pos_inputs
+    if self._use_morph:
+      input_dict["morph"] = morph_inputs
+    if self._use_dep_labels:
+      input_dict["labels"] = label_inputs
+    return input_dict
 
   def _n_words_in_batch(self, words, pad_mask=None):
     words_reshaped = tf.reshape(words, shape=pad_mask.shape)
@@ -63,7 +68,8 @@ class LabelFirstParser(base_parser.BaseParser):
 
   def _parsing_model(self, model_name):
     super()._parsing_model(model_name)
-    # TODO: need to add use_pos and use_morph boolean features to the parsing models.
+    logging.info(f"""Using featurures pos: {self._use_pos}, morph: {self._use_morph},"
+                 dep_labels: {self._use_dep_labels}""")
     model = architectures.LabelFirstParsingModel(
       n_dep_labels=self._n_output_classes,
       word_embeddings=self.word_embeddings,
@@ -71,6 +77,7 @@ class LabelFirstParser(base_parser.BaseParser):
       name=model_name,
       use_pos=self._use_pos,
       use_morph=self._use_morph,
+      use_dep_labels=self._use_dep_labels
     )
     model(inputs=self.inputs)
     return model
@@ -81,14 +88,15 @@ if __name__ == "__main__":
   prep = preprocessor.Preprocessor(
     word_embeddings=word_embeddings,
     features=["words", "pos", "morph", "heads", "dep_labels"],
-    labels=["heads", "dep_labels"]
+    labels=["heads"]
   )
-  label_feature = next((f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"),
-                       None)
+  label_feature = next(
+    (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
+
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
                             n_output_classes=label_feature.n_values,
                             predict=["edges", "labels"],
-                            features=["words", "pos"],
+                            features=["words", "pos", "morph"],
                             model_name="tests_base_parser")
 
   _DATA_DIR="data/UDv23/Turkish/training"
