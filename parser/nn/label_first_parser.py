@@ -5,6 +5,7 @@ import tensorflow as tf
 
 from parser.nn import base_parser, architectures
 from util.nn import nn_utils
+from util import converter
 from input import embeddor, preprocessor
 from proto import metrics_pb2
 from tensorflow.keras import layers, metrics, losses, optimizers
@@ -68,8 +69,7 @@ class LabelFirstParser(base_parser.BaseParser):
 
   def _parsing_model(self, model_name):
     super()._parsing_model(model_name)
-    logging.info(f"""Using featurures pos: {self._use_pos}, morph: {self._use_morph},"
-                 dep_labels: {self._use_dep_labels}""")
+    print(f"""Using features pos: {self._use_pos}, morph: {self._use_morph}, dep_labels: {self._use_dep_labels}""")
     model = architectures.LabelFirstParsingModel(
       n_dep_labels=self._n_output_classes,
       word_embeddings=self.word_embeddings,
@@ -102,15 +102,19 @@ if __name__ == "__main__":
   _DATA_DIR="data/UDv23/Turkish/training"
   _TEST_DATA_DIR="data/UDv23/Turkish/test"
   train_treebank="treebank_train_0_50.pbtxt"
-  test_treebank="treebank_0_3_gold.pbtxt"
+  test_treebank = "treebank_test_0_10.conllu"
+  train_sentences = prep.prepare_sentence_protos(path=os.path.join(_DATA_DIR, train_treebank))
   dataset = prep.make_dataset_from_generator(
-    path=os.path.join(_DATA_DIR, train_treebank),
+    sentences=train_sentences,
     batch_size=10
   )
-
-  test_dataset = prep.make_dataset_from_generator(
-    path=os.path.join(_TEST_DATA_DIR, test_treebank),
-    batch_size=1
-  )
+  if test_treebank is not None:
+    test_sentences = prep.prepare_sentence_protos(path=os.path.join(_TEST_DATA_DIR, test_treebank))
+    test_dataset = prep.make_dataset_from_generator(
+      sentences=test_sentences,
+      batch_size=1
+    )
+  else:
+    test_dataset=None
   metrics = parser.train(dataset=dataset, epochs=10, test_data=test_dataset)
   print(metrics)

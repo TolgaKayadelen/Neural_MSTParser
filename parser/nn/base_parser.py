@@ -268,17 +268,14 @@ class BaseParser(ABC):
         [1 for tok in zip(h, l) if tok[0] == True and tok[1] == True]
       )
 
-  @tf.function
   def _head_loss(self, head_scores, correct_heads):
     """Computes loss for head predictions of the parser."""
     return self._head_loss_function(correct_heads, head_scores)
 
-  @tf.function
   def _label_loss(self, label_scores, correct_labels):
     """Computes loss for label predictions for the parser."""
     return self._label_loss_function(correct_labels, label_scores)
 
-  # TODO: understand why turning this to tf.function gives ValueError.
   def train_step(self, *,
                  words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
                  dep_labels: tf.Tensor, heads: tf.Tensor) -> Tuple[tf.Tensor, ...]:

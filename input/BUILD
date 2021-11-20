@@ -11,6 +11,7 @@ py_binary(
     "//tagset:reader",
     "//util/nn:nn_utils",
     "//util:reader",
+    "//util:converter",
     "//input:embeddor",
   ],
 )

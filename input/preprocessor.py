@@ -12,6 +12,7 @@ from tagset.morphology import morph_tags
 from typing import List, Dict, Generator, Union
 from util.nn import nn_utils
 from util import reader
+from util import converter
 
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
@@ -99,6 +100,25 @@ class Preprocessor:
     self.labels = labels
     # Initial sequence features
     self.sequence_features_dict = self._sequence_features_dict()
+
+  def prepare_sentence_protos(self, path: str):
+    """Returns a list of sentence_pb2 formatted protocol buffer objects.
+
+    This function can be used to either read a pbtxt file from disk or
+    convert a conllu formatted data to protobuf on the fly.
+    """
+    if path.endswith("pbtxt"):
+      logging.info(f"Reading pbtxt file from {path}")
+      trb = reader.ReadTreebankTextProto(path)
+      sentences = trb.sentence
+    elif path.endswith("conllu"):
+      logging.info(f"Converting conll formatted data in {path} to proto")
+      conv = converter.Converter(path)
+      sentences = conv.ConvertConllToProto(conll_sentences=conv.sentence_list)
+    else:
+      raise ValueError(
+        "Invalid data format, input data should be either pbtxt or conllu!")
+    return sentences
 
   def _sequence_features_dict(self) -> Dict[str, SequenceFeature]:
     """Sets up features and labels to be used by the parsers."""
@@ -228,22 +248,13 @@ class Preprocessor:
     writer.close()
   
   def make_tf_examples(self, *,
-                      from_treebank: Treebank=None,
-                      from_sentences: List[Sentence]=None
+                      sentences: List[Sentence]=None
                       ) -> List[SequenceExample]:
     """Returns a list of tf_examples from a treebank or a list of Sentences."""
     tf_examples = []
     feature_mappings = self.get_index_mappings_for_features(self.features)
 
     counter = 0
-    if from_treebank is not None:
-      logging.info(f"Creating dataset from treebank {from_treebank}")
-      sentences = from_treebank.sentence
-    elif from_sentences is not None:
-      logging.info(f"Creating dataset from list of sentences")
-      sentences = from_sentences
-    else:
-      raise ValueError("Neither a treebank nor a list of sentences provided.")
     for sentence in sentences:
       counter += 1
       tokens = [token.word.encode("utf-8") for token in sentence.token]
@@ -344,17 +355,19 @@ class Preprocessor:
                                    padding_values=_padding_values)
     return dataset
     
-  def make_dataset_from_generator(self, *, path: str, batch_size: int=50,
+  def make_dataset_from_generator(self, *,
+                                  sentences: List[Sentence],
+                                  batch_size: int=50,
                                   generator: Generator=None) -> Dataset:
     """Makes a tensorflow dataset that is shuffled, batched and padded.
     Args:
-      path: path to the dataset treebank.
+      sentences: a list of sentence_pb2.Sentence objects.
       batch_size: the size of the dataset batches.
       generator: a generator function.
                  If not specified, the class generator is used.
     """
     if not generator:
-      generator = lambda: self._example_generator(path)
+      generator = lambda: self._example_generator(sentences)
     
     _output_types={}
     _output_shapes={}
@@ -390,9 +403,7 @@ class Preprocessor:
 
     return dataset
 
-  def _example_generator(self, path: str):
-    trb = reader.ReadTreebankTextProto(path)
-    sentences = trb.sentence
+  def _example_generator(self, sentences: List[Sentence]):
     print(f"Total sentences {len(sentences)}")
     # input("press to cont.")
     feature_mappings = self.get_index_mappings_for_features(self.features)
@@ -450,8 +461,9 @@ if __name__ == "__main__":
                       features=["words", "pos", "morph", "dep_labels", "heads"],
                       labels=["dep_labels", "heads"])
   datapath = "data/UDv23/Turkish/training/treebank_train_0_3.pbtxt"
-  '''
-  dataset = prep.make_dataset_from_generator(path=datapath, batch_size=10)
+  sentences = prep.prepare_sentence_protos(path=datapath)
+
+  dataset = prep.make_dataset_from_generator(sentences=sentences, batch_size=10)
   
   for batch in dataset:
     print(batch["tokens"])
@@ -463,9 +475,8 @@ if __name__ == "__main__":
     print(batch["heads"])
   
   '''
-  # Make a dataset and save it 
-  trb = reader.ReadTreebankTextProto(datapath)
-  tf_examples = prep.make_tf_examples(from_sentences=trb.sentence)
+  # Make a dataset and save it
+  tf_examples = prep.make_tf_examples(sentences=sentences)
   prep.write_tf_records(examples=tf_examples,
                         path="./input/treebank_train_0_3.tfrecords")
   
@@ -475,4 +486,5 @@ if __name__ == "__main__":
     records="./input/treebank_train_0_3.tfrecords")
   for batch in dataset:
     print(batch)
+  '''
 

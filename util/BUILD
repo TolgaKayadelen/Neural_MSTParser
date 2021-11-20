@@ -10,9 +10,9 @@ py_library(
     name = "reader",
     srcs = ["reader.py"],
 	deps = [
-		"//data/treebank:sentence_py_pb2",
-		"//data/treebank:treebank_py_pb2",
-    "//proto:metrics_py_pb2",
+	  "//data/treebank:sentence_py_pb2",
+	  "//data/treebank:treebank_py_pb2",
+      "//proto:metrics_py_pb2",
 	],
 )
 
@@ -21,9 +21,9 @@ py_binary(
 	name = "common",
 	srcs = ["common.py"],
 	deps = [
-		"//data/treebank:sentence_py_pb2",
-		"//learner:featureset_py_pb2",
-		":reader"
+	  "//data/treebank:sentence_py_pb2",
+	  "//learner:featureset_py_pb2",
+	  ":reader"
 	],
 )
 
@@ -31,12 +31,12 @@ py_binary(
 	name = "converter",
 	srcs = ["converter.py"],
 	deps = [
-		"//data/treebank:sentence_py_pb2",
-		"//data/treebank:treebank_py_pb2",
-    "//util:common",
-		"//util:reader",
-		"//util:writer",
-    "//util/nn:nn_utils",
+	  "//data/treebank:sentence_py_pb2",
+	  "//data/treebank:treebank_py_pb2",
+      "//util:common",
+	  "//util:reader",
+	  "//util:writer",
+      "//util/nn:nn_utils",
 	],
 )
 
@@ -52,8 +52,8 @@ py_binary(
   name = "model",
   srcs = ["model.py"],
   deps = [
-  "//util:common",
-  "//learner:featureset_py_pb2",
+    "//util:common",
+    "//learner:featureset_py_pb2",
   ],
 )
 
@@ -71,8 +71,8 @@ py_binary(
 	name = "check_cooccuring_sent",
 	srcs = ["check_cooccuring_sent.py"],
 	deps = [
-		"//parser/perceptron:dependency_parser_lib",
-		"//data/treebank:treebank_py_pb2",
+	  "//parser/perceptron:dependency_parser_lib",
+	  "//data/treebank:treebank_py_pb2",
 	],
 )
 
@@ -82,10 +82,10 @@ py_test(
 	size = "small",
 	srcs = ["converter_test.py"],
 	data = [
-	"//data/testdata:converter",
+	  "//data/testdata:converter",
 	],
 	deps = [
-		":converter"
+	  ":converter"
 	],
 )
 
@@ -94,9 +94,9 @@ py_test(
 	size = "small",
 	srcs = ["common_test.py"],
 	data = [
-	"//data/testdata:common",
+	  "//data/testdata:common",
 	],
 	deps = [
-		":common"
+	  ":common"
 	],
 )

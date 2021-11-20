@@ -19,6 +19,7 @@ py_library(
     "//input:preprocessor",
     "//util/nn:nn_utils",
     "//util:writer",
+    "//util:converter",
   ]
 )
 

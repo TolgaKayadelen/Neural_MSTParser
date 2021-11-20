@@ -41,7 +41,8 @@ class PreprocessorTest(tf.test.TestCase):
   
   def test_make_dataset_from_generator(self):
     print("Running test make_dataset_from_generator..")
-    dataset = self.prep.make_dataset_from_generator(path=self.datapath)
+    sentences = self.prep.prepare_sentence_protos(path=self.datapath)
+    dataset = self.prep.make_dataset_from_generator(sentences=sentences)
     expected_words = tf.constant([
        [1, 34756, 224906, 578174, 506596, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
        [1, 570228, 548366, 507341, 361412, 220841, 474903, 319297, 334201,
@@ -72,7 +73,7 @@ class PreprocessorTest(tf.test.TestCase):
     print("Running test morph_features..")
     treebank = reader.ReadTreebankTextProto(self.datapath)
     sentences = treebank.sentence
-    dataset = self.prep.make_dataset_from_generator(path=self.datapath)
+    dataset = self.prep.make_dataset_from_generator(sentences=sentences)
     morph_mapping = LabelReader.get_labels("morph").labels
     # TODO: do this with itertools.
     for batch in dataset:

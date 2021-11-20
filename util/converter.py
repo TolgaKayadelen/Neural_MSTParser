@@ -111,7 +111,7 @@ class Converter:
             sentence_protos.append(sentence)
     
         assert len(conll_sentences) == len(sentence_protos)
-        logging.debug("%d sentences converted to protocol buffer." % len(conll_sentences))
+        logging.info("%d sentences converted to protocol buffer." % len(conll_sentences))
         
         return sentence_protos
         
@@ -200,7 +200,7 @@ class Converter:
                 metadata["text"] = line.split("=")[1].strip()
                 continue
             if re.match("([0-9]|[1-9][0-9])-([0-9]|[1-9][0-9])", line):
-                print("skipping {}".format(line))
+                # print("skipping {}".format(line))
                 continue
             values = [item.strip() for item in line.split("\t")]
             sentence_dict[token]["idx"] = int(values[0])
