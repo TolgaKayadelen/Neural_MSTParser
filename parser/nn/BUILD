@@ -10,6 +10,15 @@ py_binary(
   ],
 )
 
+py_binary(
+    name = "biaffine_parser",
+    srcs = ["biaffine_parser.py"],
+    deps = [
+        ":base_parser",
+        ":nn_parser_lib",
+    ],
+)
+
 # Libraries
 py_library(
   name = "nn_parser_lib",
@@ -48,13 +57,6 @@ py_library(
     ],
 )
 
-py_library(
-	name = "label_first_parser_deprecated",
-	srcs = ["label_first_parser_deprecated.py"],
-  deps = [
-    ":nn_parser_lib",
-  ],
-)
 
 py_library(
 	name = "label_first_parser2",
@@ -64,13 +66,7 @@ py_library(
   ],
 )
 
-py_library(
-	name = "biaffine_parser",
-	srcs = ["biaffine_parser.py"],
-  deps = [
-    ":nn_parser_lib",
-  ],
-)
+
 
 py_library(
 	name = "seq2seq_labeler",
@@ -106,11 +102,30 @@ py_library(
   ],
 )
 
+
 # Tests
 py_test(
   name = "layer_utils_test",
   srcs = ["layer_utils_test.py"],
   deps = [
     ":layer_utils",
+  ],
+)
+
+
+# Deprecated (to be deleted later)
+py_library(
+	name = "label_first_parser_deprecated",
+	srcs = ["label_first_parser_deprecated.py"],
+  deps = [
+    ":nn_parser_lib",
+  ],
+)
+
+py_library(
+	name = "biaffine_parser_deprecated",
+	srcs = ["biaffine_parser_deprecated.py"],
+  deps = [
+    ":nn_parser_lib",
   ],
 )

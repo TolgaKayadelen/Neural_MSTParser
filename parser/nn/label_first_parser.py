@@ -17,11 +17,11 @@ class LabelFirstParser(base_parser.BaseParser):
   def _optimizer(self):
     return tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
 
-  @property
+
   def _training_metrics(self):
     return {
       "heads": metrics.SparseCategoricalAccuracy(),
-      "labels": metrics.CategoricalAccuracy()
+      "labels": metrics.SparseCategoricalAccuracy()
     }
 
   @property
@@ -38,12 +38,12 @@ class LabelFirstParser(base_parser.BaseParser):
   def _label_loss_function(self):
     """Returns loss per token for label prediction.
 
-    As we use the CategoricalCrossentropy function, we expect the target labels to be
-    provided as one-hot vectors indexing the correct label for each token. The predictions
+    As we use the SparseCategoricalCrossentropy function, we expect the target labels to be
+    to be provided as integers indexing the correct labels rather than one hot vectors. The predictions
     should be keeping the probs as float values for each label per token.
 
     For details, refer to:
-    https://www.tensorflow.org/api_docs/python/tf/keras/losses/CategoricalCrossentropy"""
+    https://www.tensorflow.org/api_docs/python/tf/keras/losses/SparseCategoricalCrossentropy"""
 
     return losses.SparseCategoricalCrossentropy(from_logits=True,
                                                 reduction=tf.keras.losses.Reduction.NONE)

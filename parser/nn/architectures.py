@@ -179,10 +179,11 @@ class LabelFirstParsingModel(tf.keras.Model):
 class BiaffineParsingModel(tf.keras.Model):
   def __init__(self, *,
                n_dep_labels: int,
-               word_embeddings: Embeddings, 
-               config=None, 
+               word_embeddings: Embeddings,
                name="Biaffine_Parsing_Model",
-               predict: List[str]):
+               predict: List[str] = ["edges", "labels"],
+               use_pos:bool=True, # TODO: make use_pos and use_morph meaningful.
+               use_morph:bool=True):
     super(BiaffineParsingModel, self).__init__(name=name)
     self.predict = predict
     self._null_label = tf.constant(0)
@@ -197,7 +198,8 @@ class BiaffineParsingModel(tf.keras.Model):
     self.encoder = layer_utils.LSTMBlock(n_units=256, dropout_rate=0.3,
                                          name="lstm_encoder")
     self.attention = layer_utils.Attention()
-    
+
+    # TODO (labels is always being predicted in biaffine parser)
     if "labels" in self.predict:
       self.rel_perceptron_h = layer_utils.Perceptron(n_units=256,
                                                      activation="relu",
@@ -226,8 +228,8 @@ class BiaffineParsingModel(tf.keras.Model):
     Returns:
       A dict which conteins:
         edge_scores: [batch_size, seq_len, seq_len] head preds for all tokens.
-        label_scores: [batch_size, n_labels, seq_len, n_labels]. This tensor
-          hold the probability score of seeing each label in n_labels when each
+        label_scores: [batch_size, n_labels, seq_len, seq_len]. This tensor
+          holds the probability score of seeing each label in n_labels when each
           token x is a dependent for each token y in the sentence.
     """
     word_inputs = inputs["words"]

@@ -1,559 +1,269 @@
-import collections
-import logging
-import os
-import sys
-import time
 
-from input import embeddor
+import os
+import logging
+
 import tensorflow as tf
-import matplotlib as mpl
 import numpy as np
 
-from parser.nn import architectures
+from parser.nn import base_parser, architectures
+from util.nn import nn_utils
+from util import converter
+from input import embeddor, preprocessor
 from proto import metrics_pb2
 from tensorflow.keras import layers, metrics, losses, optimizers
-from typing import List, Dict, Tuple
-from util.nn import nn_utils
 
-# Set up basic configurations
+
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
-np.set_printoptions(threshold=np.inf)
-mpl.style.use("seaborn")
 
-# Set up type aliases
-Dataset = tf.data.Dataset
-Embeddings = embeddor.Embeddings
-Metrics = metrics_pb2.Metrics
+class BiaffineParser(base_parser.BaseParser):
+  """The Biaffine Parser implementation as presented by Dozat and Manning (2018)"""
 
-# Path for saving or loading pretrained models.
-_MODEL_DIR = "./model/nn/pretrained"
+  @property
+  def _optimizer(self):
+    return tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
 
-class BiaffineMSTParser:
-  """An MST Parser that parses the dependency labels before arcs."""
-  
-  def __init__(self, *, word_embeddings: Embeddings,
-              n_output_classes: int,
-              predict: List[str] = ["edges"],
-              model_name: str = "biaffine_mst_parser"):
-    # Embeddings
-    self.word_embeddings = word_embeddings
-    
-    # Loss Functions
-    self.edge_loss_fn = losses.SparseCategoricalCrossentropy(
-      from_logits=True)
-    self.label_loss_fn = losses.SparseCategoricalCrossentropy(
-      from_logits=True)
-    
-    # Train metrics
-    self.edge_train_metrics = metrics.SparseCategoricalAccuracy()
-    self.label_train_metrics = metrics.CategoricalAccuracy()
-    
-    # Optimizer
-    self.optimizer=tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
-    
-    # Number of output labels. Used for dependency label prediction only.
-    self._n_output_classes = n_output_classes
-    
-    # What to predict (either edges + labels or edges only)
-    self._predict = predict
-    
-    # Which parsing model to use.
-    self.model = self._parsing_model(model_name=model_name)
-    
-    # Which metrics to report. 
-    self.metrics = self._metrics()
-    
-    # Some sanit checking
-    assert(self._predict == self.model.predict), "Inconsistent configuration!"
+  def _training_metrics(self):
+    return {
+      "heads": metrics.SparseCategoricalAccuracy(),
+      "labels": metrics.SparseCategoricalAccuracy()
+    }
 
-  def __str__(self):
-    return str(self.model.summary())
-  
-  def plot(self, name="neural_joint_mstparser.png"):
-     tf.keras.utils.plot_model(self.model, name, show_shapes=True)
-  
-  def _metrics(self) -> Metrics:
-    metric_list = ("uas", "uas_test", "edge_loss_padded")
-    if "labels" in self._predict:
-      metric_list += ("ls", "ls_test", "las", "las_test", "label_loss_padded")
-    metrics = nn_utils.set_up_metrics(*metric_list)
-    return metrics
-  
-  def _parsing_model(self, *, model_name: str) -> tf.keras.Model:
-    """Creates an NN model for edge factored dependency parsing."""
-    
-    word_inputs = tf.keras.Input(shape=(None,), name="words")
-    pos_inputs = tf.keras.Input(shape=(None,), name="pos")
+  @property
+  def _head_loss_function(self):
+    return losses.SparseCategoricalCrossentropy(from_logits=True,
+                                                reduction=tf.keras.losses.Reduction.NONE)
+
+  @property
+  def _label_loss_function(self):
+    return losses.SparseCategoricalCrossentropy(from_logits=True,
+                                                reduction=tf.keras.losses.Reduction.NONE)
+
+  @property
+  def inputs(self):
+    word_inputs = tf.keras.Input(shape=(None, ), name="words")
+    pos_inputs = tf.keras.Input(shape=(None, ), name="pos")
     morph_inputs = tf.keras.Input(shape=(None, 66), name="morph")
-    inputs = {"words": word_inputs, "pos": pos_inputs, "morph": morph_inputs}
-    
-    model = architectures.BiaffineParsingModel(
-                              n_dep_labels=self._n_output_classes,
-                              word_embeddings=self.word_embeddings,
-                              predict=self._predict,
-                              name=model_name)
-    model(inputs=inputs)
-    return model
-  
+    input_dict = {"words": word_inputs}
+    if self._use_pos:
+      input_dict["pos"] = pos_inputs
+    if self._use_morph:
+      input_dict["morph"] = morph_inputs
+    return input_dict
 
-  def _compute_metrics(self, *, stats: Dict, padded=False):
-    """Computes UAS, LS, and LAS metrics.
-    
-    If padded, returns padded metrics as well as the unpadded ones.
-    """
-    # Compute UAS with and without padding for this epoch.
-    uas = stats["n_edge_correct"] / stats["n_tokens"]
-    return_dict = {"uas": uas}
-    
-    if padded:
-      uas_padded = stats["n_edge_correct_padded"] / stats["n_tokens_padded"]
-      return_dict["uas_padded"] = uas_padded
-    
-    # Compute Label Score (LS) with and without padding for this epoch
-    if "labels" in self._predict:
-      
-      label_score = stats["n_label_correct"] / stats["n_tokens"]
-      return_dict["ls"] = label_score
-      
-      if padded:
-        label_score_padded = stats["n_label_correct_padded"] / stats["n_tokens_padded"]
-        return_dict["ls_padded"] = label_score_padded
-      
-      # Compute Labeled Attachment Score
-      if "n_las" in stats:
-        las = stats["n_las"] / stats["n_tokens"]
-        return_dict["las"] = las
-
-    return return_dict
-  
-  def _update_metrics(self, train_metrics, test_metrics, loss_metrics):
-    all_metrics = {**train_metrics, **test_metrics, **loss_metrics}
-    
-    for key, value in all_metrics.items():
-      if not self.metrics.metric[key].tracked:
-        logging.info(f"Metric {key} is not tracked!")
-      else:
-        self.metrics.metric[key].value_list.value.append(value)
-
-  def _compute_n_correct(self, *, preds: Dict):
-    """Computes n correct edge and label predictions from system predictons."""
-    
-    # Calculate correct edge predictions
-    edge_pred = preds["edge_pred"]
-    # edge_correct_with_pad = preds["edge_correct_with_pad"]
-    correct_heads = preds["h"]
-    
-    # n_correct edge predictions with padding
-    edge_correct_padded = (edge_pred == correct_heads)
-    n_edge_correct_padded = np.sum(edge_correct_padded)
-
-    # n_correct edge predictions without padding
-    edge_correct = tf.boolean_mask(edge_pred == correct_heads, preds["pad_mask"])
-    n_edge_correct = np.sum(edge_correct)
-    
-    return_dict = {"edge_correct": edge_correct,
-                   "n_edge_correct_padded":  n_edge_correct_padded, 
-                   "n_edge_correct": n_edge_correct,
-                   "h": preds["h"]}
-    
-    # Calculate correct label predictions with padding
-    if "labels" in self._predict:
-      label_preds = preds["label_preds"]
-      correct_labels = preds["correct_labels"]
-      label_correct_padded = (label_preds == correct_labels)
-      n_label_correct_padded = np.sum(label_correct_padded)
-      # Calculate correct label predictions without padding
-      label_correct = tf.boolean_mask(
-        tf.expand_dims(label_correct_padded, 1),
-        preds["pad_mask"]
-      )
-      n_label_correct = np.sum(label_correct)
-      # Add to return dict
-      return_dict["label_correct"] = label_correct
-      return_dict["n_label_correct"] = n_label_correct
-      return_dict["n_label_correct_padded"] = n_label_correct_padded
-
-    return return_dict
-
-  def _labeled_attachment_score(self, edges, labels, test=False):
-    """Computes the number of tokens that have correct Labeled Attachment.
-    
-    Args: 
-      edges: tf.Tensor, a boolean tensor representing edge predictions for
-        tokens. Tokens whose edges are correctly predicted are represented
-        with the value True and the others with the value False.
-      labels: similar to the edges tensor, but for label predictions.
-    
-    Returns:
-      n_las: int, the number of tokens that have the correct head and
-        label assignment. That is, the number of tokens where the indexes in 
-        the edges and labels tensors are both True.
-    """
-
-    n_token = float(len(edges))
-    if not len(edges) == len(labels):
-      sys.exit("FATAL ERROR: Mismatch in the number of tokens!")
-    n_las = np.sum(
-      [1 for tok in zip(edges, labels) if tok[0] == True and tok[1] == True])
-    return n_las
-  
   def _arc_maps(self, heads:tf.Tensor, labels:tf.Tensor):
-    """"Returns a list of tuples mapping heads, dependents and labels. 
-    
+    """"Returns a list of tuples mapping heads, dependents and labels.
+
     For each sentence in a training batch, this function creates a list of
-    tuples with the values [batch_idx, head_idx, dep_idx, label_idx].
-    
-    This is used in scoring label loss.
+    lists with the values [batch_idx, head_idx, dep_idx, label_idx].
+
+    In the Biaffine parser configuration, the label scores is of shape
+    [batch_size, n_labels, seq_len, seq_len]. That holds the probability score
+    of seeing each label in the tagset when each token x is a dependent to every
+    other token y.
+
+    Using the correct head and label indices as input, this _arc_maps function
+    prepares a list of actual head and dependent maps together with the
+    correct label indexes. This map is then used to strip out the probability scores
+    that the model has predicted for each label for the actal heads and dependents
+    in the gold data in _train_step().
+
+    This is then used in scoring label loss.
     """
     arc_maps = []
-    for sentence_idx, batch in enumerate(heads):
-      for token_idx, head in enumerate(batch):
+    for sentence_idx, sentence in enumerate(heads):
+      for token_idx, head in enumerate(sentence):
         arc_map = []
         arc_map.append(sentence_idx) # batch index
         arc_map.append(head.numpy()) # head index
         arc_map.append(token_idx) # dependent index
         arc_map.append(labels[sentence_idx, token_idx].numpy()) # label index
         arc_maps.append(arc_map)
-    return arc_maps
+    return np.array(arc_maps)
 
-  @tf.function
-  def edge_loss(self, edge_scores, heads, pad_mask):
-    """Computes loss for edge predictions.
-    Args:
-      edge_scores: A 3D tensor of (batch_size, seq_len, seq_len). This holds
-        the edge prediction for each token in a sentence, for the whole batch.
-        The outer dimension (second seq_len) is where the head probabilities
-        for a token are represented.
-      heads: A 2D tensor of (batch_size, seq_len)
-      pad_mask: A 2D tensor of (batch_size, seq_len)
-    Returns:
-      edge_loss_with_pad: 2D tensor of shape (batch_size*seq_len, seq_len).
-        Holds loss values for each of the predictions.
-      edge_loss_w_o_pad: Loss values where the pad tokens are not considered.
-      heads: 2D tensor of (batch_size*seq_len, 1)
-      pad_mask: 2D tensor of (bath_size*se_len, 1)
-    """
-    n_sentences, n_words, _ = edge_scores.shape
-    edge_scores = tf.reshape(edge_scores, shape=(n_sentences*n_words, n_words))
-    heads = tf.reshape(heads, shape=(n_sentences*n_words, 1))
-    
-    # Pad mask is being reshaped here.
-    pad_mask = tf.reshape(pad_mask, shape=(n_sentences*n_words, 1))
-    
-    predictions = tf.argmax(edge_scores, 1)
-    predictions = tf.reshape(predictions, shape=(predictions.shape[0], 1))
-    
-    # Compute losses
-    edge_loss_with_pad = self.edge_loss_fn(heads, edge_scores)
-        
-    return edge_loss_with_pad, predictions, heads, pad_mask
+  def _n_words_in_batch(self, words, pad_mask=None):
+    words_reshaped = tf.reshape(words, shape=pad_mask.shape)
+    return len(tf.boolean_mask(words_reshaped, pad_mask))
 
-  @tf.function
-  def label_loss(self, dep_labels, label_scores, arc_maps, pad_mask):
-    """Computes label loss and label predictions
-    Args:
-      dep_labels: tf.Tensor of shape (batch_size, seq_len, n_labels). Holding
-        correct labels for each token as a one hot vector.
-      label_scores: tf.Tensor of shape (batch_size, n_labels, seq_len, seq_len).
-        Holding probability scores for for each label for all possible head<->dep
-        relations.
-      arc_maps: A List of lists, each list holds info as 
-        [batch_idx, head_idx, dep_idx, label_idx] for each sentence/token.
-      pad_mask: tf.Tensor of shape (batch_size*seq_len, 1)
-    Returns:
-      label_loss: the label loss associated with each token. This is always
-        computed with padding.
-      correct_labels: tf.Tensor of shape (batch_size*seq_len, 1). The correct
-        dependency labels indexes.
-      label_preds: tf.Tensor of shape (batch_size*seq_len, 1). The predicted
-        dependency labels indexes.
-    """
-    # Transpose the label scores to [batch_size, seq_len, seq_len, n_classes]
-    label_scores = tf.transpose(label_scores, perm=[0,2,3,1])
-    
-    arc_maps = np.array(arc_maps)
-    
-    # get the logits (label prediction scores) from label_scores
-    logits = tf.gather_nd(label_scores, indices=arc_maps[:, :3])
-    
-    # get the arc label indexes from arc maps
-    correct_labels = arc_maps[:, 3]
-    
-    # compute label loss. Label loss is SparseCategoricalCrossEntropy with
-    # mean reduction.
-    label_loss = self.label_loss_fn(correct_labels, logits)
-    
-    # get the label predictions from label logits
-    label_preds = tf.argmax(logits, axis=1)
-    
-    return label_loss, correct_labels, label_preds
-  
+  def _parsing_model(self, model_name):
+    super()._parsing_model(model_name)
+    model = architectures.BiaffineParsingModel(
+      n_dep_labels=self._n_output_classes,
+      word_embeddings=self.word_embeddings,
+      predict=self._predict,
+      use_pos=self._use_pos,
+      use_morph=self._use_morph
+    )
+    return model
 
-  @tf.function
-  def train_step(self, *, words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
-                 dep_labels: tf.Tensor, heads:tf.Tensor, arc_maps: List
-                 ) -> Tuple[tf.Tensor, ...]:
+  def train_step(self, *,
+                 words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
+                 dep_labels: tf.Tensor, heads: tf.Tensor):
     """Runs one training step.
-    
     Args:
-      words: A tf.Tensor of word indexes of shape (batch_size, seq_len) where
-          the seq_len is padded with 0s on the right.
-      pos: A tf.Tensor of pos indexes of shape (batch_size, seq_len), of the
-          same shape as words.
-      dep_labels: A tf.Tensor of one hot vectors representing dep_labels for
-          each token, of shape (batch_size, seq_len, n_classes).
-      morph: A tf.Tensor of (batch_size, seq_len, n_morph)
-      heads: Correct heads, a tf.Tensor of shape (batch_size, seq_len).
-      arc_maps: A List of lists: [batch_idx, head_idx, dep_idx, label_idx]
+        words: tf.Tensor of word indices of shape (batch_size, seq_len) where the seq_len
+          is padded with 0s on the right.
+        pos: tf.Tensor of pos indices of shape (batch_size, seq_len), of the same shape
+          as words.
+        morph: tf.Tensor of shape (batch_size, seq_len, n_morph)
+        heads: tf.Tensor of shape (batch_size, seq_len) holding correct heads.
+        dep_labels: tf.Tensor of shape (batch_size, seq_len), holding correct labels.
     Returns:
-      edge_loss_pad: edge loss computed with padding tokens.
-      edge_loss_w_o_pad: edge loss computed without padding tokens.
-      edge_pred: edge predictions.
-      h: correct heads.
-      pad_mask: pad mask to identify padded tokens.
-      label_loss: mean of dependency label loss associated with each token.
-      correct_labels: tf.Tensor of shape (batch_size*seq_len, 1). The correct
-          dependency labels.
-      label_preds: tf.Tensor of shape (batch_size*seq_len, 1). The predicted
-          dependency labels
+      losses: dictionary holding loss values for head and labels.
+        head_loss: tf.Tensor of (batch_size*seq_len, 1)
+        label_loss: tf.Tensor of (batch_size*seq_len, 1)
+      correct: dictionary holding correct values for heads and labels.
+        heads: tf.Tensor of (batch_size*seq_len, 1)
+        labels: tf.Tensor of (batch_size*seq_len, 1)
+      predictions: dictionary holding correct values for heads and labels.
+        heads: tf.Tensor of (batch_size*seq_len, 1)
+        labels: tf.Tensor of (batch_size*seq_len, 1)
+      pad_mask: tf.Tensor of shape (batch_size*seq_len, 1) where padded words are marked as 0.
     """
-    
+    predictions, correct, losses = {}, {}, {}
+    arc_maps = self._arc_maps(heads, dep_labels)
+    # print("arc maps ", arc_maps)
+    # input("press to cont.")
+
     with tf.GradientTape() as tape:
-      scores = self.model({"words": words, "pos": pos, "morph": morph},
-                           training=True)
-      pad_mask = (words != 0)
-      
-      # Get edge and label scores.
-      edge_scores, label_scores = scores["edges"], scores["labels"]
-      
-     
-      edge_loss_pad, edge_pred, h, pad_mask = self.edge_loss(edge_scores,
-                                                             heads,
-                                                             pad_mask)
-      train_loss = edge_loss_pad
-      if "labels" in self._predict:
-        label_loss, correct_labels, label_preds = self.label_loss(dep_labels,
-                                                                  label_scores,
-                                                                  arc_maps,
-                                                                  pad_mask)
-        train_loss += label_loss
-    
-    # Compute gradients.
-    grads = tape.gradient(train_loss, self.model.trainable_weights)
-    
-    # Update the optimizer
-    self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
-    
-    # Update train metrics and populate return dict.
-    self.edge_train_metrics.update_state(heads, edge_scores)
-    return_dict = {"edge_loss_pad": edge_loss_pad,
-                  "edge_pred": edge_pred, "h": h, "pad_mask": pad_mask}
-                  
-    if "labels" in self._predict:
-      self.label_train_metrics.update_state(
-        tf.one_hot(correct_labels, depth=self._n_output_classes),
-        tf.one_hot(label_preds, depth=self._n_output_classes)
-        )
+      scores = self.model({"words": words, "pos": pos, "morph": morph}, training=True)
 
-      return_dict["label_loss"] = label_loss
-      return_dict["correct_labels"] = correct_labels
-      return_dict["label_preds"] = label_preds
+      # head scores = (batch_size, seq_len, seq_len)
+      # label_scores = (batch_size, n_labels, seq_len, seq_len)
+      head_scores, label_scores = scores["edges"], scores["labels"]
 
-    return return_dict
+      # Get the predicted head indices.
+      head_preds = self._flatten(tf.argmax(head_scores, axis=2))
 
-  def train(self, dataset: Dataset, epochs: int=10, test_data: Dataset=None):
-    """Custom training method.
-    
-    Args:
-      dataset: Dataset containing features and labels.
-      epochs: number of training epochs
-      test_data: Dataset containing features and labels for test set.
-    Returns:
-      history: logs of scores and losses at the end of training.
-    """
-    uas_test, ls_test, las_test = [0] * 3
-    avg_label_loss_padded, avg_edge_loss_padded = [0] * 2
-    
-    for epoch in range(1, epochs+1):
-      # Reset the states before starting the new epoch.
-      self.edge_train_metrics.reset_states()
-      self.label_train_metrics.reset_states()
-      
-      logging.info(f"{'->' * 12} Training Epoch: {epoch} {'<-' * 12}\n\n")
-      
-      start_time = time.time()
-      stats = collections.Counter()
-      
-      # Start the training loop for this epoch.
-      for step, batch in enumerate(dataset):
-        
-        # Read the data and labels from the dataset.
-        words, pos, heads = batch["words"], batch["pos"], batch["heads"]
-        dep_labels = tf.one_hot(batch["dep_labels"], self._n_output_classes)
-        
-        
-        arc_maps = self._arc_maps(heads, batch["dep_labels"])
-        # print(arc_maps)
-     
-        # We cast the type of this tensor to float32 because in the model
-        # pos and word features are passed through an embedding layer, which
-        # converts them into float values implicitly.
-        # TODO: maybe do this as you read in the morph values in preprocessor.
-        morph = tf.dtypes.cast(batch["morph"], tf.float32)
-        
-        # Run forward propagation to get losses and predictions for this step.
-        losses_and_preds = self.train_step(words=words, pos=pos, morph=morph,
-                                           dep_labels=dep_labels, heads=heads,
-                                           arc_maps=arc_maps)
-    
-        # Get the total number of tokens without padding for this step.
-        words_reshaped = tf.reshape(words, 
-                                    shape=(losses_and_preds["pad_mask"].shape))
-        total_words = len(tf.boolean_mask(words_reshaped,
-                                          losses_and_preds["pad_mask"]))
-        
-        # Get the number of correct predictions for this step.
-        n_correct = self._compute_n_correct(preds=losses_and_preds)
-        
-        # Accumulate the stats for all steps in the epoch.
-        stats["n_edge_correct"] += n_correct["n_edge_correct"]
-        stats["n_edge_correct_padded"] += n_correct["n_edge_correct_padded"]
-        stats["n_tokens"] += total_words
-        stats["n_tokens_padded"] += len(n_correct["h"])
-       
-        
-        # Calculate the number of tokens which has correct las for this step
-        # and add it to the accumulator.
-        if "labels" in self._predict:
-          stats["n_label_correct"] += n_correct["n_label_correct"]
-          stats["n_label_correct_padded"] += n_correct["n_label_correct_padded"]
-          las_correct = self._labeled_attachment_score(
-            n_correct["edge_correct"], n_correct["label_correct"])
-          stats["n_las"] += las_correct     
+      # Flatten the head scores to (batch_size*seq_len, seq_len) (i.e. 340, 34).
+      head_scores = self._flatten(head_scores, outer_dim=head_scores.shape[2])
 
-      print(f"Training Stats: {stats}")
-      
-      # Get UAS, LS, and LAS after the epoch.
-      training_metrics = self._compute_metrics(stats=stats)
-      
-      # Get accuracy metrics.
-      edge_train_acc = self.edge_train_metrics.result()
-      label_train_acc = self.label_train_metrics.result()
-      
-      # Compute average edge losses with and without padding
-      edge_loss_padded = losses_and_preds["edge_loss_pad"].numpy()
-      
-      # Compute average label loss (only with pad)
-      if "labels" in self._predict:
-        label_loss_padded = losses_and_preds["label_loss"].numpy()
-      
-      logging.info(f"""
-        UAS train: {training_metrics['uas']}
-        Edge loss (padded): {edge_loss_padded}\n""")
-      
-      if "labels" in self._predict:
-        logging.info(f"""
-          LS train: {training_metrics['ls']}
-          LAS train: {training_metrics['las']}
-          Label loss (padded) {label_loss_padded}\n""")
-      
-      logging.info(f"Time for epoch: {time.time() - start_time}\n")
-      
-      # Update scores on test data at the end of every X epoch.
-      if epoch % 5 == 0 and test_data:
-        uas_test, ls_test, las_test = self.test(dataset=test_data)
-        logging.info(f"UAS test: {uas_test}")
-        logging.info(f"LS test: {ls_test}")
-        logging.info(f"LAS test: {las_test}\n")
-      
+      # Flatten the correct heads to (batch_size*seq_len, 1)
+      correct_heads = self._flatten(heads)
+      pad_mask = self._flatten(words != 0)
 
-      # Update metrics
-      self._update_metrics(
-        train_metrics=training_metrics,
-        test_metrics={"uas_test": uas_test,
-                      "ls_test": ls_test,
-                      "las_test": las_test},
-        loss_metrics={"edge_loss_padded": edge_loss_padded,
-                      "label_loss_padded": label_loss_padded})
+      # Compute head loss
+      head_loss = tf.expand_dims(self._head_loss(head_scores, correct_heads), axis=-1)
 
-    return self.metrics
-    
+      # Compute label loss
+      # First transpose the label scores to [batch_size, seq_len, seq_len, n_classes]
+      label_scores = tf.transpose(label_scores, perm=[0,2,3,1])
 
-  def test(self, *, dataset: Dataset, heads: bool=True, labels: bool=True):
-    """Tests the performance on a test dataset."""
-    
+      # get the logits (label prediction scores) from label scores
+      # logits is of shape: (batch_size*seq_len, n_classes), i.e. (190, 36)
+      logits = tf.gather_nd(label_scores, indices=arc_maps[:, :3])
+
+      # correct labels is of shape (batch_size*seq_len, 1), i.e. (190, 1)
+      correct_labels = tf.expand_dims(tf.convert_to_tensor(arc_maps[:, 3]), axis=-1)
+
+      # get label loss
+      label_loss = self._label_loss(label_scores=logits, correct_labels=correct_labels)
+
+      # the label preds is of shape (batch_size*seq_len, 1)
+      label_preds = tf.expand_dims(tf.argmax(logits, axis=1), axis=-1)
+
+    # Compute gradients
+    grads = tape.gradient([head_loss, label_loss], self.model.trainable_weights)
+
+    self._optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
+
+    # Update training metrics
+    self._update_training_metrics(
+      heads=correct_heads, head_scores=head_scores,
+      labels=correct_labels, label_scores=logits,
+      pad_mask=pad_mask
+    )
+
+    # Fill in return values
+    losses["heads"] = head_loss
+    correct["heads"] = correct_heads
+    predictions["heads"] = head_preds
+
+    losses["labels"] = label_loss
+    correct["labels"] = correct_labels # ??
+    predictions["labels"] = label_preds
+
+    return predictions, losses, correct, pad_mask
+
+
+  def test(self, *, dataset):
+    print("Testing on the test set")
     head_accuracy = tf.keras.metrics.Accuracy()
     label_accuracy = tf.keras.metrics.Accuracy()
-    
-    n_tokens = 0.0
-    n_las = 0.0
-    las_test = 0.0
-    
-    for example in dataset:
-      words, pos = example["words"], example["pos"]
-      morph = tf.dtypes.cast(example["morph"], tf.float32)
-      n_tokens += words.shape[1]
-      
-      scores = self.model({"words": words, "pos": pos, "morph": morph},
-                          training=False)
-      
-      edge_scores, label_scores = scores["edges"], scores["labels"]
-      # TODO: in the below computation of scores, you should leave out
-      # the 0th token, which is the dummy token.
-      heads, dep_labels = example["heads"], example["dep_labels"]
-      head_preds = tf.argmax(edge_scores, 2)
-      te = (heads == head_preds)
-      correct_edges = tf.reshape(te, shape=(te.shape[1],))
-      head_accuracy.update_state(heads, head_preds)
-      
-      if "labels" in self._predict:
-        arc_maps = np.array(self._arc_maps(heads, dep_labels))
-        label_scores = tf.transpose(label_scores, perm=[0,2,3,1])  
-        logits = tf.gather_nd(label_scores, indices=arc_maps[:, :3])
-        labels = arc_maps[:, 3]
-        label_preds = tf.argmax(logits, axis=1)
-        correct_labels = (labels == label_preds)
-        n_las += self._labeled_attachment_score(correct_edges, correct_labels,
-                                                test=True)
-        label_accuracy.update_state(labels, label_preds)
-    las_test = n_las / n_tokens
-    return (head_accuracy.result().numpy(),
-            label_accuracy.result().numpy(),
-            las_test)
-  
-  def parse(self, example: Dict):
-    """Parse an example with this parser."""
-    
-    words, pos = example["words"], example["pos"]
-    morph = tf.dtypes.cast(example["morph"], tf.float32)
-    n_tokens = words.shape[1]
-      
-    scores = self.model({"words": words, "pos": pos, "morph": morph},
-                        training=False)
-    return scores["edges"], scores["labels"]
 
-  def save(self, *, suffix=0):
-    """Saves the model to path."""
-    model_name = self.model.name
-    print(model_name)
-    try:
-      path = os.path.join(_MODEL_DIR, self.model.name)
-      print("path ", path)
-      if suffix > 0:
-        path += str(suffix)
-        model_name = self.model.name+str(suffix)
-      os.mkdir(path)
-      self.model.save_weights(os.path.join(path, model_name),
-                                          save_format="tf")
-      logging.info(f"Saved model to {path}")
-    except FileExistsError:
-      logging.warning(f"A model with the same name exists, suffixing {suffix+1}")
-      self.save(suffix=suffix+1)
-    
-  def load(self, *, name: str, suffix=None, path=None):
-    """Loads a pretrained model."""
-    if path is None:
-      path = os.path.join(_MODEL_DIR, name)
-    self.model.load_weights(os.path.join(path, name))
-    logging.info(f"Loaded model from model named: {name} in: {_MODEL_DIR}")
-    
+    # resetting test stats at the beginning.
+    for key in self.test_stats:
+      self.test_stats[key] = 0.0
+
+    for example in dataset:
+      scores = self.parse(example)
+
+      # Compute head accuracy
+      head_scores, label_scores = scores["edges"], scores["labels"]
+      head_preds = self._flatten(tf.argmax(head_scores, 2))
+      correct_heads = self._flatten(example["heads"])
+      head_accuracy.update_state(correct_heads, head_preds)
+
+
+      # Compute label accuracy
+      arc_maps = self._arc_maps(example["heads"], example["dep_labels"])
+      label_scores = tf.transpose(label_scores, perm=[0,2,3,1])
+      logits = tf.gather_nd(label_scores, indices=arc_maps[:, :3])
+      correct_labels = tf.expand_dims(tf.convert_to_tensor(arc_maps[:, 3]), axis=-1)
+      label_preds = tf.expand_dims(tf.argmax(logits, axis=1), axis=-1)
+      label_accuracy.update_state(correct_labels, label_preds)
+
+
+      correct_predictions_dict = self._compute_correct_predictions_in_step(
+        head_predictions=head_preds,
+        correct_heads=correct_heads,
+        label_predictions=label_preds,
+        correct_labels=correct_labels
+      )
+      self._update_stats(correct_predictions_dict,
+                         example["words"].shape[1], stats="test")
+
+    logging.info(f"Test stats: {self.test_stats}")
+    test_results = {
+      "uas_test": self.uas(self.test_stats["n_chp"], self.test_stats["n_tokens"]),
+      "ls_test": self.ls(self.test_stats["n_clp"], self.test_stats["n_tokens"]),
+      "las_test": self.las(self.test_stats["n_chlp"], self.test_stats["n_tokens"])
+    }
+    return test_results
+
+
+if __name__ == "__main__":
+  embeddings = nn_utils.load_embeddings()
+  word_embeddings = embeddor.Embeddings(name="word2vec", matrix=embeddings)
+  prep = preprocessor.Preprocessor(
+    word_embeddings=word_embeddings,
+    features=["words", "pos", "morph", "heads", "dep_labels"],
+    labels=["heads", "dep_labels"]
+  )
+  label_feature = next(
+    (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
+
+  parser = BiaffineParser(word_embeddings=prep.word_embeddings,
+                          n_output_classes=label_feature.n_values,
+                          predict=["edges", "labels"],
+                          features=["words", "pos", "morph"],
+                          model_name="tests_biaffine_base_parser")
+
+  _DATA_DIR="data/UDv23/Turkish/training"
+  _TEST_DATA_DIR="data/UDv23/Turkish/test"
+  train_treebank="treebank_train_0_50.pbtxt"
+  test_treebank = "treebank_test_0_10.conllu"
+  train_sentences = prep.prepare_sentence_protos(path=os.path.join(_DATA_DIR, train_treebank))
+  dataset = prep.make_dataset_from_generator(
+    sentences=train_sentences,
+    batch_size=5
+  )
+  if test_treebank is not None:
+    test_sentences = prep.prepare_sentence_protos(path=os.path.join(_TEST_DATA_DIR, test_treebank))
+    test_dataset = prep.make_dataset_from_generator(
+      sentences=test_sentences,
+      batch_size=1
+    )
+  else:
+    test_dataset=None
+  metrics = parser.train(dataset=dataset, epochs=10, test_data=test_dataset)
+  print(metrics)

@@ -117,7 +117,7 @@ class DozatBiaffineScorer(layers.Layer):
   BiAffine Attention layer from https://arxiv.org/abs/1611.01734
   Expects inputs as batch_first sequences [batch_size, seq_len, seq_len].
   
-  Returns score matrixes as [batch_size, seq_len, seq_len] for edge scrores
+  Returns score matrixes as [batch_size, seq_len, seq_len] for edge scores
   (out_channels=1), and scores as [batch_size, out_channels, seq_len, seq_]
   (where out_channels=#labels).
   """

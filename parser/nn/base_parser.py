@@ -55,7 +55,9 @@ class BaseParser(ABC):
 
     self.test_stats = collections.Counter()
 
-    self._metrics = self.eval_metrics()
+    self._eval_metrics = self.eval_metrics()
+
+    self._training_metrics = self._training_metrics()
 
     assert(self._predict == self.model.predict), "Inconsistent Configuration"
 
@@ -64,7 +66,6 @@ class BaseParser(ABC):
   def _optimizer(self):
     pass
 
-  @property
   @abstractmethod
   def _training_metrics(self):
     pass
@@ -110,7 +111,10 @@ class BaseParser(ABC):
     """Special log wrapper that logs a description message and key,values in a dictionary."""
     logging.info(description)
     for key, value in results.items():
-      logging.info(f"{key}:  {results[key]}")
+      if type(value) in [metrics.SparseCategoricalAccuracy, metrics.CategoricalAccuracy]:
+        logging.info(f"{key}:  {value.result().numpy()}")
+      else:
+        logging.info(f"{key}:  {value}")
 
   @staticmethod
   def uas(n_correct_heads, n_tokens):
@@ -210,7 +214,10 @@ class BaseParser(ABC):
       "n_clp": n_correct_label_preds,
     }
 
-  def _update_training_metrics(self, heads, head_scores, labels=None, label_scores=None):
+  def _update_training_metrics(self, *,
+                               heads, head_scores,
+                               labels=None, label_scores=None,
+                               pad_mask=None):
     """Updates the training metrics after each epoch.
 
     Args:
@@ -222,9 +229,9 @@ class BaseParser(ABC):
       label_scores: tensor of shape (n, n_labels), similar to label_scores.
     """
     # Updates training metrics.
-    self._training_metrics["heads"].update_state(heads, head_scores)
+    self._training_metrics["heads"].update_state(heads, head_scores, sample_weight=pad_mask)
     if labels is not None:
-      self._training_metrics["labels"].update_state(labels, label_scores)
+      self._training_metrics["labels"].update_state(labels, label_scores, sample_weight=pad_mask)
 
   def _update_eval_metrics(self, train_metrics, loss_metrics, test_metrics):
     """Updates eval metrics (UAS, LAS, LS) for training and test data as well as loss metrics."""
@@ -233,11 +240,11 @@ class BaseParser(ABC):
     else:
       all_metrics = {**train_metrics, **loss_metrics, **test_metrics}
     for key, value in all_metrics.items():
-      if not self._metrics.metric[key].tracked:
+      if not self._eval_metrics.metric[key].tracked:
         logging.info(f"Metric {key} is not tracked.")
       else:
         try:
-          self._metrics.metric[key].value_list.value.append(value)
+          self._eval_metrics.metric[key].value_list.value.append(value)
         except KeyError:
           logging.error(f"No such metric as {key}!!")
 
@@ -290,8 +297,14 @@ class BaseParser(ABC):
         dep_labels: tf.Tensor of shape (batch_size, seq_len), holding correct labels.
     Returns:
       losses: dictionary holding loss values for head and labels.
+        head_loss: tf.Tensor of (batch_size*seq_len, 1)
+        label_loss: tf.Tensor of (batch_size*seq_len, 1)
       correct: dictionary holding correct values for heads and labels.
+        heads: tf.Tensor of (batch_size*seq_len, 1)
+        labels: tf.Tensor of (batch_size*seq_len, 1)
       predictions: dictionary holding correct values for heads and labels.
+        heads: tf.Tensor of (batch_size*seq_len, 1)
+        labels: tf.Tensor of (batch_size*seq_len, 1)
       pad_mask: tf.Tensor of shape (batch_size*seq_len, 1) where padded words are marked as 0.
     """
     predictions, correct, losses = {}, {}, {}
@@ -322,7 +335,7 @@ class BaseParser(ABC):
         # Get the predicted label indices from the label scores, tensor of shape (batch_size*seq_len, 1)
         label_preds = self._flatten(tf.argmax(label_scores, axis=2))
 
-        # Flatten the label scores to (batch_size*seq_len, seq_len) (i.e. 340, 34).
+        # Flatten the label scores to (batch_size*seq_len, n_classes) (i.e. 340, 36).
         label_scores = self._flatten(label_scores, outer_dim=label_scores.shape[2])
 
         # Flatten the correct labels to the shape (batch_size*seq_len, 1) (i.e. 340,1)
@@ -343,7 +356,8 @@ class BaseParser(ABC):
     self._update_training_metrics(
       heads=correct_heads, head_scores=head_scores,
       labels=correct_labels if "labels" in self._predict else None,
-      label_scores=label_scores if "labels" in self._predict else None)
+      label_scores=label_scores if "labels" in self._predict else None,
+      pad_mask=pad_mask)
 
     # Fill in the return values
     losses["heads"] = head_loss
@@ -425,15 +439,20 @@ class BaseParser(ABC):
       self._log(description=f"Training results after epoch {epoch}",
            results=training_results_for_epoch)
 
+
+      self._log(description=f"Training metrics after epoch {epoch}",
+                results=self._training_metrics)
+
       loss_results_for_epoch = {
         "head_loss": tf.reduce_mean(losses["heads"]).numpy(),
         "label_loss": tf.reduce_mean(losses["labels"]).numpy() if "labels" in self._predict else None
       }
-      if epoch % 5 == 0 and test_data:
+      if epoch % 2 == 0 and test_data:
         test_results_for_epoch = self.test(dataset=test_data)
         self._log(description=f"Test results after epoch {epoch}", results=test_results_for_epoch)
 
       logging.info(f"Time for epoch {time.time() - start_time}")
+
 
       # Update the eval metrics based on training, test results and loss values.
       self._update_eval_metrics(
@@ -442,7 +461,7 @@ class BaseParser(ABC):
         test_metrics=test_results_for_epoch,
       )
 
-    return self._metrics
+    return self._eval_metrics
 
 
   def test(self, *, dataset: Dataset):
@@ -479,9 +498,9 @@ class BaseParser(ABC):
 
     logging.info(f"Test stats: {self.test_stats}")
     test_results = {
-      "uas_test": BaseParser.uas(self.test_stats["n_chp"], self.test_stats["n_tokens"]),
-      "ls_test": BaseParser.ls(self.test_stats["n_clp"], self.test_stats["n_tokens"]),
-      "las_test": BaseParser.las(self.test_stats["n_chlp"], self.test_stats["n_tokens"])
+      "uas_test": self.uas(self.test_stats["n_chp"], self.test_stats["n_tokens"]),
+      "ls_test": self.ls(self.test_stats["n_clp"], self.test_stats["n_tokens"]),
+      "las_test": self.las(self.test_stats["n_chlp"], self.test_stats["n_tokens"])
     }
     return test_results
 
