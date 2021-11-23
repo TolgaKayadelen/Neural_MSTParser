@@ -19,6 +19,15 @@ py_binary(
     ],
 )
 
+py_binary(
+	name = "bilstm_labeler",
+	srcs = ["bilstm_labeler.py"],
+  deps = [
+    ":base_parser",
+    ":nn_parser_lib",
+  ],
+)
+
 # Libraries
 py_library(
   name = "nn_parser_lib",
@@ -84,13 +93,7 @@ py_library(
   ],
 )
 
-py_library(
-	name = "bilstm_labeler",
-	srcs = ["bilstm_labeler.py"],
-  deps = [
-    ":nn_parser_lib",
-  ],
-)
+
 
 
 # Experimental
@@ -125,6 +128,14 @@ py_library(
 py_library(
 	name = "biaffine_parser_deprecated",
 	srcs = ["biaffine_parser_deprecated.py"],
+  deps = [
+    ":nn_parser_lib",
+  ],
+)
+
+py_library(
+	name = "bilstm_labeler_deprecated",
+	srcs = ["bilstm_labeler_deprecated.py"],
   deps = [
     ":nn_parser_lib",
   ],

@@ -59,7 +59,7 @@ class BaseParser(ABC):
 
     self._training_metrics = self._training_metrics()
 
-    assert(self._predict == self.model.predict), "Inconsistent Configuration"
+    assert(all(val in ["heads", "labels"] for val in self._predict)), "Invalid prediction target!"
 
   @property
   @abstractmethod
@@ -163,15 +163,17 @@ class BaseParser(ABC):
 
   def eval_metrics(self) -> Metrics:
     """Sets up metrics to track for this parser."""
-    metrics_list = ("uas", "uas_test", "head_loss")
+    metrics_list = ()
+    if "heads" in self._predict:
+      metrics_list += ("uas", "uas_test", "head_loss")
     if "labels" in self._predict:
       metrics_list += ("ls", "ls_test", "las", "las_test", "label_loss")
     return nn_utils.set_up_metrics(*metrics_list)
 
 
   def  _compute_correct_predictions_in_step(self, *,
-                                            head_predictions,
-                                            correct_heads,
+                                            head_predictions=None,
+                                            correct_heads=None,
                                             label_predictions=None,
                                             correct_labels=None,
                                             pad_mask=None
@@ -196,9 +198,19 @@ class BaseParser(ABC):
     """
 
     if pad_mask is None:
-      pad_mask = np.full(shape=head_predictions.shape, fill_value=True, dtype=bool)
-    correct_head_preds = tf.boolean_mask(head_predictions == correct_heads, pad_mask)
-    n_correct_head_preds = np.sum(correct_head_preds)
+      if head_predictions is not None:
+        pad_mask = np.full(shape=head_predictions.shape, fill_value=True, dtype=bool)
+      elif label_predictions is not None:
+        pad_mask = np.full(shape=label_predictions.shape, fill_value=True, dtype=bool)
+      else:
+        raise RuntimeError("Fatal: Either head predictions or label predictions should exist.")
+
+    if "heads" in self._predict:
+      correct_head_preds = tf.boolean_mask(head_predictions == correct_heads, pad_mask)
+      n_correct_head_preds = np.sum(correct_head_preds)
+    else:
+      correct_head_preds=None
+      n_correct_head_preds=None
 
     if "labels" in self._predict:
       correct_label_preds = tf.boolean_mask(label_predictions == correct_labels, pad_mask)
@@ -215,8 +227,10 @@ class BaseParser(ABC):
     }
 
   def _update_training_metrics(self, *,
-                               heads, head_scores,
-                               labels=None, label_scores=None,
+                               heads=None,
+                               head_scores=None,
+                               labels=None,
+                               label_scores=None,
                                pad_mask=None):
     """Updates the training metrics after each epoch.
 
@@ -229,7 +243,8 @@ class BaseParser(ABC):
       label_scores: tensor of shape (n, n_labels), similar to label_scores.
     """
     # Updates training metrics.
-    self._training_metrics["heads"].update_state(heads, head_scores, sample_weight=pad_mask)
+    if heads is not None:
+      self._training_metrics["heads"].update_state(heads, head_scores, sample_weight=pad_mask)
     if labels is not None:
       self._training_metrics["labels"].update_state(labels, label_scores, sample_weight=pad_mask)
 
@@ -253,7 +268,7 @@ class BaseParser(ABC):
 
     The stats we keep track of are the following:
       n_tokens: total number of tokens in the data.
-      n_chp: number of correctly predicted heeds.
+      n_chp: number of correctly predicted heads.
       n_clp: number of correctly predicted labels.
       n_chlp: number of tokens for which both head and label is correctly predicted.
 
@@ -263,17 +278,45 @@ class BaseParser(ABC):
       stats = self.training_stats
     else:
       stats = self.test_stats
+
     stats["n_tokens"] += n_words_in_batch
-    stats["n_chp"] += correct_predictions_dict["n_chp"]
+    h, l = None, None
+
+    # Correct head predictions.
+    if correct_predictions_dict["n_chp"] is not None:
+      stats["n_chp"] += correct_predictions_dict["n_chp"]
+      h = correct_predictions_dict["chp"]
+
+    # Correct label predictions.
     if correct_predictions_dict["n_clp"] is not None:
       stats["n_clp"] += correct_predictions_dict["n_clp"]
-      h = correct_predictions_dict["chp"]
       l = correct_predictions_dict["clp"]
+
+    # Tokens where both head and label predictions are correct.
+    if h is not None and l is not None:
       if not len(h) == len(l):
         raise RuntimeError("Fatal: Mismatch in the number of heads and labels.")
       stats["n_chlp"] += np.sum(
         [1 for tok in zip(h, l) if tok[0] == True and tok[1] == True]
       )
+
+  def _compute_stats(self, stats="training"):
+    """Computes uas, ls, and las after each epoch based on the training and test stats"""
+    computed_stats = {}
+    if stats == "test":
+      stats = self.test_stats
+      metric_suffix = lambda k: k+"_test"
+    else:
+      stats = self.training_stats
+      metric_suffix = lambda k: k
+
+    if "heads" in self._predict:
+      computed_stats[metric_suffix("uas")] = self.uas(stats["n_chp"], stats["n_tokens"])
+    if "labels" in self._predict:
+      computed_stats[metric_suffix("ls")] = self.ls(stats["n_clp"], stats["n_tokens"])
+    if "heads" in self._predict and "labels" in self._predict:
+      computed_stats[metric_suffix("las")] = self.las(stats["n_chlp"], stats["n_tokens"])
+    return computed_stats
 
   def _head_loss(self, head_scores, correct_heads):
     """Computes loss for head predictions of the parser."""
@@ -313,22 +356,25 @@ class BaseParser(ABC):
       # Head scores = (batch_size, seq_len, seq_len), Label scores = (batch_size, seq_len, n_labels)
       scores = self.model({"words": words, "pos": pos, "morph": morph,
                            "labels": dep_labels}, training=True)
+
       head_scores, label_scores = scores["edges"], scores["labels"]
 
-      # Get the predicted head indices from the head scores, tensor of shape (batch_size*seq_len, 1)
-      head_preds = self._flatten(tf.argmax(head_scores, axis=2))
-
-      # Flatten the head scores to (batch_size*seq_len, seq_len) (i.e. 340, 34).
-      # Holds probs for each token's head prediction.
-      head_scores = self._flatten(head_scores, outer_dim=head_scores.shape[2])
-
-      # Flatten the correct heads to the shape (batch_size*seq_len, 1) (i.e. 340,1)
-      # Index for the right head for each token.
-      correct_heads = self._flatten(heads)
       pad_mask = self._flatten((words != 0))
 
-      # Compute loss
-      head_loss = tf.expand_dims(self._head_loss(head_scores, correct_heads), axis=-1)
+      if "heads" in self._predict:
+        # Get the predicted head indices from the head scores, tensor of shape (batch_size*seq_len, 1)
+        head_preds = self._flatten(tf.argmax(head_scores, axis=2))
+
+        # Flatten the head scores to (batch_size*seq_len, seq_len) (i.e. 340, 34).
+        # Holds probs for each token's head prediction.
+        head_scores = self._flatten(head_scores, outer_dim=head_scores.shape[2])
+
+        # Flatten the correct heads to the shape (batch_size*seq_len, 1) (i.e. 340,1)
+        # Index for the right head for each token.
+        correct_heads = self._flatten(heads)
+
+        # Compute loss
+        head_loss = tf.expand_dims(self._head_loss(head_scores, correct_heads), axis=-1)
 
       if "labels" in self._predict:
 
@@ -345,24 +391,30 @@ class BaseParser(ABC):
         label_loss = tf.expand_dims(self._label_loss(label_scores, correct_labels), axis=-1)
 
     # Compute gradients.
-    if "labels" in self._predict:
+    if "heads" in  self._predict and "labels" in self._predict:
       grads = tape.gradient([head_loss, label_loss], self.model.trainable_weights)
-    else:
+    elif "heads" in self._predict:
       grads = tape.gradient(head_loss, self.model.trainable_weights)
+    elif "labels" in self._predict:
+      grads = tape.gradient(label_loss, self.model.trainable_weights)
+    else:
+      raise ValueError("No loss value to compute gradient for.")
 
     self._optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
 
     # Update training metrics.
     self._update_training_metrics(
-      heads=correct_heads, head_scores=head_scores,
+      heads=correct_heads if "heads" in self._predict else None,
+      head_scores=head_scores if "heads" in self._predict else None,
       labels=correct_labels if "labels" in self._predict else None,
       label_scores=label_scores if "labels" in self._predict else None,
       pad_mask=pad_mask)
 
     # Fill in the return values
-    losses["heads"] = head_loss
-    correct["heads"] = correct_heads
-    predictions["heads"] = head_preds
+    if "heads" in self._predict:
+      losses["heads"] = head_loss
+      correct["heads"] = correct_heads
+      predictions["heads"] = head_preds
 
     if "labels" in self._predict:
       losses["labels"] = label_loss
@@ -414,8 +466,8 @@ class BaseParser(ABC):
 
         # Get the correct heads/labels and correctly predicted heads/labels for this step.
         correct_predictions_dict = self._compute_correct_predictions_in_step(
-          head_predictions=predictions["heads"],
-          correct_heads=correct["heads"],
+          head_predictions=predictions["heads"] if "heads" in self._predict else None,
+          correct_heads=correct["heads"] if "heads" in self._predict else None,
           label_predictions=predictions["labels"] if "labels" in self._predict else None,
           correct_labels=correct["labels"] if "labels" in self._predict else None,
           pad_mask=pad_mask
@@ -431,28 +483,24 @@ class BaseParser(ABC):
       logging.info(f"Training stats: {self.training_stats}")
 
       # Compute UAS, LS, and LAS based on stats at the end of epoch.
-      training_results_for_epoch = {
-        "uas": self.uas(self.training_stats["n_chp"], self.training_stats["n_tokens"]),
-        "ls": self.ls(self.training_stats["n_clp"], self.training_stats["n_tokens"]),
-        "las": self.las(self.training_stats["n_chlp"], self.training_stats["n_tokens"]),
-      }
+      training_results_for_epoch = self._compute_stats()
+
       self._log(description=f"Training results after epoch {epoch}",
            results=training_results_for_epoch)
-
 
       self._log(description=f"Training metrics after epoch {epoch}",
                 results=self._training_metrics)
 
       loss_results_for_epoch = {
-        "head_loss": tf.reduce_mean(losses["heads"]).numpy(),
+        "head_loss": tf.reduce_mean(losses["heads"]).numpy() if "heads" in self._predict else None,
         "label_loss": tf.reduce_mean(losses["labels"]).numpy() if "labels" in self._predict else None
       }
-      if epoch % 2 == 0 and test_data:
+
+      if epoch % 3 == 0 and test_data:
         test_results_for_epoch = self.test(dataset=test_data)
         self._log(description=f"Test results after epoch {epoch}", results=test_results_for_epoch)
 
       logging.info(f"Time for epoch {time.time() - start_time}")
-
 
       # Update the eval metrics based on training, test results and loss values.
       self._update_eval_metrics(
@@ -478,9 +526,10 @@ class BaseParser(ABC):
     for example in dataset:
       scores = self.parse(example)
       head_scores, label_scores = scores["edges"], scores["labels"]
-      head_preds = self._flatten(tf.argmax(head_scores, 2))
-      correct_heads = self._flatten(example["heads"])
-      head_accuracy.update_state(correct_heads, head_preds)
+      if "heads" in self._predict:
+        head_preds = self._flatten(tf.argmax(head_scores, 2))
+        correct_heads = self._flatten(example["heads"])
+        head_accuracy.update_state(correct_heads, head_preds)
       if "labels" in self._predict:
         # Get label predictions and correct labels
         label_preds = self._flatten(tf.argmax(label_scores, 2))
@@ -488,8 +537,8 @@ class BaseParser(ABC):
         label_accuracy.update_state(correct_labels, label_preds)
 
       correct_predictions_dict = self._compute_correct_predictions_in_step(
-        head_predictions=head_preds,
-        correct_heads=correct_heads,
+        head_predictions=head_preds if "heads" in self._predict else None,
+        correct_heads=correct_heads if "heads" in self._predict else None,
         label_predictions=label_preds  if "labels" in self._predict else None,
         correct_labels=correct_labels  if "labels" in self._predict else None,
       )
@@ -497,11 +546,7 @@ class BaseParser(ABC):
                          example["words"].shape[1], stats="test")
 
     logging.info(f"Test stats: {self.test_stats}")
-    test_results = {
-      "uas_test": self.uas(self.test_stats["n_chp"], self.test_stats["n_tokens"]),
-      "ls_test": self.ls(self.test_stats["n_clp"], self.test_stats["n_tokens"]),
-      "las_test": self.las(self.test_stats["n_chlp"], self.test_stats["n_tokens"])
-    }
+    test_results = self._compute_stats(stats="test")
     return test_results
 
   def parse(self, example: Dict):

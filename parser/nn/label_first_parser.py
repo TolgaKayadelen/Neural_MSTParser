@@ -1,4 +1,3 @@
-
 import os
 import tensorflow as tf
 
@@ -95,7 +94,7 @@ if __name__ == "__main__":
 
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
                             n_output_classes=label_feature.n_values,
-                            predict=["edges", "labels"],
+                            predict=["heads", "labels"],
                             features=["words", "pos", "morph"],
                             model_name="tests_base_parser")
 

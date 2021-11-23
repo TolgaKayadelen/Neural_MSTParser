@@ -29,7 +29,7 @@ class LSTMLabelingModel(tf.keras.Model):
     super(LSTMLabelingModel, self).__init__(name=name)
     self.use_pos = use_pos
     self.use_morph = use_morph
-    
+    self._null_label = tf.constant(0)
     self.word_embeddings = layer_utils.EmbeddingLayer(
       pretrained=word_embeddings, name="word_embeddings"
     )
@@ -49,7 +49,19 @@ class LSTMLabelingModel(tf.keras.Model):
                                name="labels")
 
   def call(self, inputs):
-    """Forward pass."""
+    # TODO: can we have the labeler use heads as a feature too.
+    """Forward pass.
+    Args:
+      inputs: Dict[str, tf.keras.Input]. This consist of
+        words: Tensor of shape (batch_size, seq_len)
+        pos: Tensor of shape (batch_size, seq_len)
+        morph: Tensor of shape (batch_size, seq_len, 66)
+      The boolean values set up during the initiation of the model determines
+      which one of these features to use or not.
+    Returns:
+      A dict which conteins:
+        label_scores: [batch_size, seq_len, n_labels] label preds for tokens (i.e. 10, 34, 36)
+    """
     
     word_inputs = inputs["words"]
     word_features = self.word_embeddings(word_inputs)
@@ -71,7 +83,7 @@ class LSTMLabelingModel(tf.keras.Model):
       sentence_repr = self.lstm_block(word_features)
       # sentence_repr = self.attention(sentence_repr)
       labels = self.labels(sentence_repr)
-    return {"labels": labels}
+    return {"edges": self._null_label, "labels": labels}
     
 
 class LabelFirstParsingModel(tf.keras.Model):
@@ -181,44 +193,40 @@ class BiaffineParsingModel(tf.keras.Model):
                n_dep_labels: int,
                word_embeddings: Embeddings,
                name="Biaffine_Parsing_Model",
-               predict: List[str] = ["edges", "labels"],
-               use_pos:bool=True, # TODO: make use_pos and use_morph meaningful.
-               use_morph:bool=True):
+               predict: List[str] = ["heads", "labels"],
+               use_pos:bool=True,
+               use_morph:bool=False):
     super(BiaffineParsingModel, self).__init__(name=name)
     self.predict = predict
+    assert("labels" in self.predict) , "Biaffine parser has to predict labels."
+
     self._null_label = tf.constant(0)
+    self._use_pos = use_pos
+    self._use_morph = use_morph
+
     self.word_embeddings = layer_utils.EmbeddingLayer(
                                           pretrained=word_embeddings,
                                           name="word_embeddings")
-    self.pos_embeddings = layer_utils.EmbeddingLayer(
-                                         input_dim=35, output_dim=32,
-                                         name="pos_embeddings",
-                                         trainable=True)
+
+
+    if self._use_pos:
+      self.pos_embeddings = layer_utils.EmbeddingLayer(
+                                          input_dim=35, output_dim=32,
+                                          name="pos_embeddings",
+                                          trainable=True)
+
     self.concatenate = layers.Concatenate(name="concat")
-    self.encoder = layer_utils.LSTMBlock(n_units=256, dropout_rate=0.3,
-                                         name="lstm_encoder")
+    self.encoder = layer_utils.LSTMBlock(n_units=256, dropout_rate=0.3, name="lstm_encoder")
     self.attention = layer_utils.Attention()
 
-    # TODO (labels is always being predicted in biaffine parser)
-    if "labels" in self.predict:
-      self.rel_perceptron_h = layer_utils.Perceptron(n_units=256,
-                                                     activation="relu",
-                                                     name="rel_mlp_h")
-      self.rel_perceptron_d = layer_utils.Perceptron(n_units=256,
-                                                     activation="relu",
-                                                     name="rel_nlp_d")
-      self.label_scorer = layer_utils.DozatBiaffineScorer(
-                                                  out_channels=n_dep_labels,
-                                                  name="biaffine_label_scorer")
-    
-    self.head_perceptron = layer_utils.Perceptron(n_units=256,
-                                                  activation="relu",
-                                                  name="head_mlp")
-    self.dep_perceptron = layer_utils.Perceptron(n_units=256,
-                                                 activation="relu",
-                                                 name="dep_mlp")
-    self.edge_scorer = layer_utils.DozatBiaffineScorer(
-                                                 name="biaffine_edge_scorer")
+    self.rel_perceptron_h = layer_utils.Perceptron(n_units=256, activation="relu", name="rel_mlp_h")
+    self.rel_perceptron_d = layer_utils.Perceptron(n_units=256, activation="relu", name="rel_nlp_d")
+    self.label_scorer = layer_utils.DozatBiaffineScorer(out_channels=n_dep_labels, name="biaffine_label_scorer")
+
+    self.head_perceptron = layer_utils.Perceptron(n_units=256, activation="relu", name="head_mlp")
+    self.dep_perceptron = layer_utils.Perceptron(n_units=256, activation="relu", name="dep_mlp")
+    self.edge_scorer = layer_utils.DozatBiaffineScorer(name="biaffine_edge_scorer")
+
     logging.info((f"Set up {name} to predict {predict}"))
   
   def call(self, inputs): # inputs = Dict[str, tf.keras.Input]
@@ -234,28 +242,32 @@ class BiaffineParsingModel(tf.keras.Model):
     """
     word_inputs = inputs["words"]
     word_features = self.word_embeddings(word_inputs)
-    pos_inputs = inputs["pos"]
-    pos_features = self.pos_embeddings(pos_inputs)
-    morph_inputs = inputs["morph"]
-    concat = self.concatenate([word_features, pos_features, morph_inputs])
-    sentence_repr = self.encoder(concat)
-    sentence_repr = self.attention(sentence_repr)
-    if "labels" in self.predict:
-      h_arc_head = self.head_perceptron(sentence_repr)
-      h_arc_dep = self.dep_perceptron(sentence_repr)
-      edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
-      
-      h_rel_head = self.rel_perceptron_h(sentence_repr)
-      h_rel_dep = self.rel_perceptron_d(sentence_repr)
-      label_scores = self.label_scorer(h_rel_head, h_rel_dep)
-      # print("edge scores shape: ", edge_scores.shape)
-      # print("label scores shape: ", label_scores.shape)
-      return {"edges": edge_scores,  "labels": label_scores}
+    concat_list = [word_features]
+    if self._use_pos:
+      pos_inputs = inputs["pos"]
+      pos_features = self.pos_embeddings(pos_inputs)
+      concat_list.append(pos_features)
+    if self._use_morph:
+      concat_list.append(inputs["morph"])
+
+    if len(concat_list) > 1:
+      sentence_repr = self.concatenate(concat_list)
     else:
-      h_arc_head = self.head_perceptron(sentence_repr)
-      h_arc_dep = self.dep_perceptron(sentence_repr)
-      edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
-      return {"edges": edge_scores,  "labels": self._null_label}
+      sentence_repr = word_features
+
+    sentence_repr = self.encoder(sentence_repr)
+    sentence_repr = self.attention(sentence_repr)
+
+    h_arc_head = self.head_perceptron(sentence_repr)
+    h_arc_dep = self.dep_perceptron(sentence_repr)
+    edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
+      
+    h_rel_head = self.rel_perceptron_h(sentence_repr)
+    h_rel_dep = self.rel_perceptron_d(sentence_repr)
+    label_scores = self.label_scorer(h_rel_head, h_rel_dep)
+
+    return {"edges": edge_scores,  "labels": label_scores}
+
     
 class EncoderDecoderLabelFirstParser(tf.keras.Model):
   def __init__(self, *,

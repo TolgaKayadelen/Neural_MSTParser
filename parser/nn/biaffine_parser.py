@@ -117,7 +117,8 @@ class BiaffineParser(base_parser.BaseParser):
       predictions: dictionary holding correct values for heads and labels.
         heads: tf.Tensor of (batch_size*seq_len, 1)
         labels: tf.Tensor of (batch_size*seq_len, 1)
-      pad_mask: tf.Tensor of shape (batch_size*seq_len, 1) where padded words are marked as 0.
+      pad_mask: tf.Tensor of shape (batch_size*seq_len, 1) where padded words are
+        marked as 0.
     """
     predictions, correct, losses = {}, {}, {}
     arc_maps = self._arc_maps(heads, dep_labels)
@@ -244,7 +245,7 @@ if __name__ == "__main__":
 
   parser = BiaffineParser(word_embeddings=prep.word_embeddings,
                           n_output_classes=label_feature.n_values,
-                          predict=["edges", "labels"],
+                          predict=["heads", "labels"],
                           features=["words", "pos", "morph"],
                           model_name="tests_biaffine_base_parser")
 
@@ -252,7 +253,8 @@ if __name__ == "__main__":
   _TEST_DATA_DIR="data/UDv23/Turkish/test"
   train_treebank="treebank_train_0_50.pbtxt"
   test_treebank = "treebank_test_0_10.conllu"
-  train_sentences = prep.prepare_sentence_protos(path=os.path.join(_DATA_DIR, train_treebank))
+  train_sentences = prep.prepare_sentence_protos(path=os.path.join(_DATA_DIR,
+                                                                   train_treebank))
   dataset = prep.make_dataset_from_generator(
     sentences=train_sentences,
     batch_size=5
