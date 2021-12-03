@@ -66,17 +66,6 @@ py_library(
     ],
 )
 
-
-py_library(
-	name = "label_first_parser2",
-	srcs = ["label_first_parser2.py"],
-  deps = [
-    ":nn_parser_lib",
-  ],
-)
-
-
-
 py_library(
 	name = "seq2seq_labeler",
 	srcs = ["seq2seq_labeler.py"],
@@ -92,8 +81,6 @@ py_library(
     ":nn_parser_lib",
   ],
 )
-
-
 
 
 # Experimental
@@ -112,31 +99,5 @@ py_test(
   srcs = ["layer_utils_test.py"],
   deps = [
     ":layer_utils",
-  ],
-)
-
-
-# Deprecated (to be deleted later)
-py_library(
-	name = "label_first_parser_deprecated",
-	srcs = ["label_first_parser_deprecated.py"],
-  deps = [
-    ":nn_parser_lib",
-  ],
-)
-
-py_library(
-	name = "biaffine_parser_deprecated",
-	srcs = ["biaffine_parser_deprecated.py"],
-  deps = [
-    ":nn_parser_lib",
-  ],
-)
-
-py_library(
-	name = "bilstm_labeler_deprecated",
-	srcs = ["bilstm_labeler_deprecated.py"],
-  deps = [
-    ":nn_parser_lib",
   ],
 )

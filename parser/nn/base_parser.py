@@ -55,7 +55,7 @@ class BaseParser(ABC):
 
     self.test_stats = collections.Counter()
 
-    self._eval_metrics = self.eval_metrics()
+    self._metrics = self._metrics()
 
     self._training_metrics = self._training_metrics()
 
@@ -161,7 +161,7 @@ class BaseParser(ABC):
   def __str__(self):
     return str(self.model.summary())
 
-  def eval_metrics(self) -> Metrics:
+  def _metrics(self) -> Metrics:
     """Sets up metrics to track for this parser."""
     metrics_list = ()
     if "heads" in self._predict:
@@ -171,14 +171,14 @@ class BaseParser(ABC):
     return nn_utils.set_up_metrics(*metrics_list)
 
 
-  def  _compute_correct_predictions_in_step(self, *,
-                                            head_predictions=None,
-                                            correct_heads=None,
-                                            label_predictions=None,
-                                            correct_labels=None,
-                                            pad_mask=None
-                                            ):
-    """Computes correctly predicted edges and labels.
+  def  _correct_predictions(self, *,
+                            head_predictions=None,
+                            correct_heads=None,
+                            label_predictions=None,
+                            correct_labels=None,
+                            pad_mask=None
+                            ):
+    """Computes correctly predicted edges and labels and relevant stats for them.
 
     Args:
       head_predictions: tensor of shape (n, 1) heads predicted by the system for
@@ -191,10 +191,10 @@ class BaseParser(ABC):
 
     Returns:
       A dictionary that contains:
-      chp: correct_head_predictions, a boolean np.array where correct predictions have value True.
-      clp: correct_label_predictions, a boolean np.array as above.
-      n_chp: number of correctly predicted heads.
-      n_clp: number of correctly predicted labels.
+        chp: correct_head_predictions, a boolean np.array where correct predictions are True.
+        clp: correct_label_predictions, a boolean np.array as above.
+        n_chp: number of correctly predicted heads.
+        n_clp: number of correctly predicted labels.
     """
 
     if pad_mask is None:
@@ -235,10 +235,10 @@ class BaseParser(ABC):
     """Updates the training metrics after each epoch.
 
     Args:
-      heads: tensor of shape (n, 1) where n equals (batch_size*seq_len), representing correct index
-        for each token.
-      head_scores: tensor of shape (n, seq_len). n equals (batch_size*seq_len). Holds probability values
-        for each token's head prediction.
+      heads: tensor of shape (n, 1) where n equals (batch_size*seq_len), representing
+        correct index for each token.
+      head_scores: tensor of shape (n, seq_len). n equals (batch_size*seq_len). Holds
+        probability values for each token's head prediction.
       labels: tensor of shape (n, 1), similar to heads.
       label_scores: tensor of shape (n, n_labels), similar to label_scores.
     """
@@ -248,22 +248,25 @@ class BaseParser(ABC):
     if labels is not None:
       self._training_metrics["labels"].update_state(labels, label_scores, sample_weight=pad_mask)
 
-  def _update_eval_metrics(self, train_metrics, loss_metrics, test_metrics):
+  def _update_all_metrics(self, train_metrics, loss_metrics, test_metrics):
     """Updates eval metrics (UAS, LAS, LS) for training and test data as well as loss metrics."""
     if test_metrics is None:
       all_metrics = {**train_metrics, **loss_metrics}
     else:
       all_metrics = {**train_metrics, **loss_metrics, **test_metrics}
     for key, value in all_metrics.items():
-      if not self._eval_metrics.metric[key].tracked:
+      if not self._metrics.metric[key].tracked:
         logging.info(f"Metric {key} is not tracked.")
       else:
         try:
-          self._eval_metrics.metric[key].value_list.value.append(value)
+          self._metrics.metric[key].value_list.value.append(value)
         except KeyError:
           logging.error(f"No such metric as {key}!!")
 
-  def _update_stats(self, correct_predictions_dict, n_words_in_batch, stats="training"):
+  def _update_correct_prediction_stats(self,
+                                       correct_predictions_dict,
+                                       n_words_in_batch,
+                                       stats="training"):
     """Updates parsing stats at the end of each training or test step.
 
     The stats we keep track of are the following:
@@ -300,9 +303,9 @@ class BaseParser(ABC):
         [1 for tok in zip(h, l) if tok[0] == True and tok[1] == True]
       )
 
-  def _compute_stats(self, stats="training"):
-    """Computes uas, ls, and las after each epoch based on the training and test stats"""
-    computed_stats = {}
+  def _compute_metrics(self, stats="training"):
+    """Computes metrics for uas, ls, and las after each epoch based on the training and test stats"""
+    _metrics = {}
     if stats == "test":
       stats = self.test_stats
       metric_suffix = lambda k: k+"_test"
@@ -311,12 +314,12 @@ class BaseParser(ABC):
       metric_suffix = lambda k: k
 
     if "heads" in self._predict:
-      computed_stats[metric_suffix("uas")] = self.uas(stats["n_chp"], stats["n_tokens"])
+      _metrics[metric_suffix("uas")] = self.uas(stats["n_chp"], stats["n_tokens"])
     if "labels" in self._predict:
-      computed_stats[metric_suffix("ls")] = self.ls(stats["n_clp"], stats["n_tokens"])
+      _metrics[metric_suffix("ls")] = self.ls(stats["n_clp"], stats["n_tokens"])
     if "heads" in self._predict and "labels" in self._predict:
-      computed_stats[metric_suffix("las")] = self.las(stats["n_chlp"], stats["n_tokens"])
-    return computed_stats
+      _metrics[metric_suffix("las")] = self.las(stats["n_chlp"], stats["n_tokens"])
+    return _metrics
 
   def _head_loss(self, head_scores, correct_heads):
     """Computes loss for head predictions of the parser."""
@@ -441,11 +444,11 @@ class BaseParser(ABC):
     for epoch in range(1, epochs+1):
       test_results_for_epoch = None
 
-      # Reset the training metrics
+      # Reset the training metrics before each epoch.
       for metric in self._training_metrics:
         self._training_metrics[metric].reset_states()
 
-      # Reset the training stats
+      # Reset the training stats before each epoch.
       for key in self.training_stats:
         self.training_stats[key] = 0.0
 
@@ -465,7 +468,7 @@ class BaseParser(ABC):
                                                                  heads=heads)
 
         # Get the correct heads/labels and correctly predicted heads/labels for this step.
-        correct_predictions_dict = self._compute_correct_predictions_in_step(
+        correct_predictions_dict = self._correct_predictions(
           head_predictions=predictions["heads"] if "heads" in self._predict else None,
           correct_heads=correct["heads"] if "heads" in self._predict else None,
           label_predictions=predictions["labels"] if "labels" in self._predict else None,
@@ -477,13 +480,13 @@ class BaseParser(ABC):
                                                   pad_mask=pad_mask)
 
         # Update the statistics for correctly predicted heads/labels after this step.
-        self._update_stats(correct_predictions_dict, n_words_in_batch)
+        self._update_correct_prediction_stats(correct_predictions_dict, n_words_in_batch)
 
       # Log stats at the end of epoch
       logging.info(f"Training stats: {self.training_stats}")
 
-      # Compute UAS, LS, and LAS based on stats at the end of epoch.
-      training_results_for_epoch = self._compute_stats()
+      # Compute UAS, LS, and LAS metrics based on stats at the end of epoch.
+      training_results_for_epoch = self._compute_metrics()
 
       self._log(description=f"Training results after epoch {epoch}",
            results=training_results_for_epoch)
@@ -503,13 +506,13 @@ class BaseParser(ABC):
       logging.info(f"Time for epoch {time.time() - start_time}")
 
       # Update the eval metrics based on training, test results and loss values.
-      self._update_eval_metrics(
+      self._update_all_metrics(
         train_metrics=training_results_for_epoch,
         loss_metrics=loss_results_for_epoch,
         test_metrics=test_results_for_epoch,
       )
 
-    return self._eval_metrics
+    return self._metrics
 
 
   def test(self, *, dataset: Dataset):
@@ -536,17 +539,18 @@ class BaseParser(ABC):
         correct_labels = self._flatten(example["dep_labels"])
         label_accuracy.update_state(correct_labels, label_preds)
 
-      correct_predictions_dict = self._compute_correct_predictions_in_step(
+      correct_predictions_dict = self._correct_predictions(
         head_predictions=head_preds if "heads" in self._predict else None,
         correct_heads=correct_heads if "heads" in self._predict else None,
         label_predictions=label_preds  if "labels" in self._predict else None,
         correct_labels=correct_labels  if "labels" in self._predict else None,
       )
-      self._update_stats(correct_predictions_dict,
-                         example["words"].shape[1], stats="test")
+      self._update_correct_prediction_stats(correct_predictions_dict,
+                                            example["words"].shape[1],
+                                            stats="test")
 
     logging.info(f"Test stats: {self.test_stats}")
-    test_results = self._compute_stats(stats="test")
+    test_results = self._compute_metrics(stats="test")
     return test_results
 
   def parse(self, example: Dict):

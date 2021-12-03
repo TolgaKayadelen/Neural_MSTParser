@@ -17,8 +17,7 @@ import numpy as np
 import tensorflow as tf
 
 
-from parser.nn import label_first_parser_deprecated as lfp
-from parser.nn import label_first_parser2 as lfp2
+from parser.nn import label_first_parser as lfp
 from parser.nn import label_first_parser_joint_loss as lfp_joint_loss
 from parser.nn import biaffine_parser as bfp
 from parser.nn import seq2seq_labeler as seq

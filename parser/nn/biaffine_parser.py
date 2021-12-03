@@ -214,21 +214,18 @@ class BiaffineParser(base_parser.BaseParser):
       label_accuracy.update_state(correct_labels, label_preds)
 
 
-      correct_predictions_dict = self._compute_correct_predictions_in_step(
+      correct_predictions_dict = self._correct_predictions(
         head_predictions=head_preds,
         correct_heads=correct_heads,
         label_predictions=label_preds,
         correct_labels=correct_labels
       )
-      self._update_stats(correct_predictions_dict,
-                         example["words"].shape[1], stats="test")
+      self._update_correct_prediction_stats(correct_predictions_dict,
+                                            example["words"].shape[1],
+                                            stats="test")
 
     logging.info(f"Test stats: {self.test_stats}")
-    test_results = {
-      "uas_test": self.uas(self.test_stats["n_chp"], self.test_stats["n_tokens"]),
-      "ls_test": self.ls(self.test_stats["n_clp"], self.test_stats["n_tokens"]),
-      "las_test": self.las(self.test_stats["n_chlp"], self.test_stats["n_tokens"])
-    }
+    test_results = self._compute_metrics(stats="test")
     return test_results
 
 
