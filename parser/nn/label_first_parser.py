@@ -4,7 +4,7 @@ import tensorflow as tf
 
 from parser.nn import base_parser, architectures
 from util.nn import nn_utils
-from util import converter
+from util import converter, writer
 from input import embeddor, preprocessor
 from proto import metrics_pb2
 from tensorflow.keras import layers, metrics, losses, optimizers
@@ -92,20 +92,21 @@ if __name__ == "__main__":
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
 
+  model_name = "lfp_new_parse_with_labels_only"
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
                             n_output_classes=label_feature.n_values,
                             predict=["heads", "labels"],
                             features=["words", "pos", "morph"],
-                            model_name="tests_base_parser")
+                            model_name=model_name)
 
   _DATA_DIR="data/UDv23/Turkish/training"
   _TEST_DATA_DIR="data/UDv23/Turkish/test"
-  train_treebank="treebank_train_0_50.pbtxt"
-  test_treebank = "treebank_test_0_10.conllu"
+  train_treebank="tr_imst_ud_train_dev.pbtxt" # treebank_train_0_50.pbtxt
+  test_treebank = "tr_imst_ud_test_fixed.pbtxt" # "treebank_test_0_10.conllu"
   train_sentences = prep.prepare_sentence_protos(path=os.path.join(_DATA_DIR, train_treebank))
   dataset = prep.make_dataset_from_generator(
     sentences=train_sentences,
-    batch_size=10
+    batch_size=250
   )
   if test_treebank is not None:
     test_sentences = prep.prepare_sentence_protos(path=os.path.join(_TEST_DATA_DIR, test_treebank))
@@ -115,5 +116,7 @@ if __name__ == "__main__":
     )
   else:
     test_dataset=None
-  metrics = parser.train(dataset=dataset, epochs=10, test_data=test_dataset)
+  metrics = parser.train(dataset=dataset, epochs=70, test_data=test_dataset)
   print(metrics)
+  writer.write_proto_as_text(metrics, f"./model/nn/plot/{model_name}_metrics.pbtxt")
+  nn_utils.plot_metrics(name=model_name, metrics=metrics)
