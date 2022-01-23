@@ -72,7 +72,7 @@ class EmbeddingLayer(layers.Layer):
       self.embedding.build((None,))
       self.embedding.set_weights([pretrained.index_to_vector])
     elif input_dim and output_dim:
-      logging.info(f"Setting up new embedding layer for {name}")
+      logging.info(f"Setting up embedding layer for {name}")
       self.embedding = tf.keras.layers.Embedding(
         input_dim=input_dim, output_dim=output_dim, trainable=trainable)
     else:

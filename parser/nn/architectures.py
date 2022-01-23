@@ -45,8 +45,7 @@ class LSTMLabelingModel(tf.keras.Model):
                                             name="lstm_block"
                                             )
     # self.attention = layer_utils.Attention()
-    self.labels = layers.Dense(units=n_output_classes, activation="softmax",
-                               name="labels")
+    self.labels = layers.Dense(units=n_output_classes, name="labels")
 
   def call(self, inputs):
     # TODO: can we have the labeler use heads as a feature too.
@@ -59,7 +58,7 @@ class LSTMLabelingModel(tf.keras.Model):
       The boolean values set up during the initiation of the model determines
       which one of these features to use or not.
     Returns:
-      A dict which conteins:
+      A dict which contains:
         label_scores: [batch_size, seq_len, n_labels] label preds for tokens (i.e. 10, 34, 36)
     """
     

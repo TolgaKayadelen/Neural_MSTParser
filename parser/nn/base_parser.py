@@ -499,9 +499,10 @@ class BaseParser(ABC):
         "label_loss": tf.reduce_mean(losses["labels"]).numpy() if "labels" in self._predict else None
       }
 
-      if epoch % 3 == 0 and test_data:
+      if (epoch % 10 == 0 or epoch == epochs) and test_data:
         test_results_for_epoch = self.test(dataset=test_data)
-        self._log(description=f"Test results after epoch {epoch}", results=test_results_for_epoch)
+        self._log(description=f"Test results after epoch {epoch}",
+                  results=test_results_for_epoch)
 
       logging.info(f"Time for epoch {time.time() - start_time}")
 
@@ -560,7 +561,7 @@ class BaseParser(ABC):
       example: A single example that holds features in a dictionary.
         words: Tensor representing word embedding indices of words in the sentence.
         pos: Tensor representing pos embedding indices of pos in the sentence.
-        morph: Tensor representing morh indices of the morphological features in words in the sentence.
+        morph: Tensor representing morph indices of the morphological features in words in the sentence.
 
     Returns:
       scores: a dictionary of scores representing edge and label predictions.
@@ -573,8 +574,8 @@ class BaseParser(ABC):
                          "morph": morph, "labels": dep_labels}, training=False)
     return scores
 
-  def save(self, suffix: int=0):
-    """Saves the model to path"""
+  def save_weights(self, suffix: int=0):
+    """Saves the model weights to path in tf format."""
     model_name = self.model.name
     try:
       path = os.path.join(_MODEL_DIR, self.model.name)
@@ -586,4 +587,12 @@ class BaseParser(ABC):
       logging.info(f"Saved model to  {path}")
     except FileExistsError:
       logging.warning(f"A model with the same name exists, suffixing {suffix+1}")
-      self.save(suffix=suffix+1)
+      self.save_weights(suffix=suffix+1)
+
+  def load_weights(self, *, name: str, path=None):
+    """Loads a pretrained model weights."""
+    if path is None:
+      path = os.path.join(_MODEL_DIR, name)
+    load_status = self.model.load_weights(os.path.join(path, name))
+    logging.info(f"Loaded model from model named: {name} in: {_MODEL_DIR}")
+    load_status.assert_consumed()
