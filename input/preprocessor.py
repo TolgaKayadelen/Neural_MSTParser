@@ -1,6 +1,9 @@
 """The preprocessing module creates tf.data.Dataset objects for the parser."""
 
 import numpy as np
+np.set_printoptions(threshold=np.inf)
+
+
 import tensorflow as tf
 import time
 
@@ -28,7 +31,7 @@ class SequenceFeature:
                name: str,
                values: List[int]=[],
                dtype=tf.int64,
-               one_hot: bool = False,
+               one_hot : bool = False,
                n_values: int = None,
                is_label: bool = False,
                label_indices: List[int] = []):
@@ -41,41 +44,33 @@ class SequenceFeature:
     self.dtype = dtype
     # the number of values this feature holds. Can be useful e.g. during one-hot conversion.
     self.n_values = n_values
-    # whether this is a one hot feature.
-    self.one_hot = one_hot
+    # whether to set up the one hot version of this feature too.
+    self.one_hot = self._set_one_hot() if one_hot else None
     # whether this is a label feature.
     self.is_label = is_label
     # the label indices (if the feature is a label feature).
     self.label_indices = label_indices
-    
-  def _convert_to_one_hot(self, values, n_values):
-    """Converts an integer array to a one hot vector.
-    
-    An integer array of shape (1, m) becomes a one hot vector of shape
-    (len(indices), n_labels).
-    """
-    if isinstance(values, list):
-      logging.info("Converting list to array")
-      values = np.array(values)
-    if not isinstance(values, np.ndarray):
-      raise ValueError(f"""Can only convert numpy arrays to one hot vectors,
-                      received: {type(values)}""")
-    return np.eye(n_values)[values.reshape(-1)]
-  
-  @property
-  def one_hot(self):
-    return self._one_hot
-  
-  @one_hot.setter
-  def one_hot(self, one_hot):
-    if one_hot:
-      if not self.n_values:
-        raise RuntimeError("n_values must be defined for one hot conversion.")
-      logging.info("Converting values to one hot objects""")
-      self._one_hot = self._convert_to_one_hot(self.values, self.n_values)
+    # the one hot version
+
+  def index_to_onehot(self, value):
+    """Returns the one hot version of a given index or a tensor of indices."""
+    if isinstance(value, list):
+      value = tf.constant(value)
+    if isinstance(value, int):
+      one_hot_values = self.one_hot[value]
+    elif isinstance(value, tf.Tensor):
+      vectors = [tf.expand_dims(self.one_hot[i], 0) for i in value]
+      one_hot_values = tf.concat(vectors, 0)
+      one_hot_values = tf.cast(one_hot_values, self.dtype)
     else:
-      self._one_hot = one_hot
-    return self._one_hot
+      raise ValueError("Input value should be an int or an tf.Tensor")
+    return one_hot_values
+
+  def _set_one_hot(self):
+    if not self.n_values:
+      raise RuntimeError("n_values must be defined for one hot conversion.")
+    logging.info("Computing one hot features""")
+    return tf.one_hot(range(self.n_values), depth=self.n_values)
   
   def __str__(self):
     return f"""name: {self.name},
@@ -90,14 +85,20 @@ class Preprocessor:
 
   def __init__(self, *, 
                word_embeddings: Embeddings = None,
-               features = List[str],
-               labels = List[str]):
+               features: List[str],
+               labels: List[str],
+               one_hot_features: List[str] =  []):
+    """Preprocessor prepares input datasets for TF models to consume."""
+    assert all(o_h_feat in features for o_h_feat in one_hot_features), "Features don't match"
+
     if word_embeddings:
       self.word_embeddings = word_embeddings
     # The features to use for training the parser.
     self.features = features
     # The label feature; target feature to be predicted by the parser.
     self.labels = labels
+    # Which of the features from self.features are one hot
+    self.one_hot_features = one_hot_features
     # Initial sequence features
     self.sequence_features_dict = self._sequence_features_dict()
 
@@ -134,9 +135,11 @@ class Preprocessor:
         label_dict = LabelReader.get_labels(feat).labels
         label_indices = list(label_dict.values())
         label_feature = SequenceFeature(name=feat,
+                                        dtype=tf.float32 if feat in self.one_hot_features else tf.int64,
                                         n_values=len(label_indices),
                                         is_label=feat in self.labels,
-                                        label_indices=label_indices if feat in self.labels else [])
+                                        label_indices=label_indices if feat in self.labels else [],
+                                        one_hot=feat in self.one_hot_features)
         sequence_features[feat] = label_feature
       elif feat in ["tokens" , "sent_id"]:
         sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.string)
@@ -331,6 +334,12 @@ class Preprocessor:
         _dataset_shapes[feature.name]=tf.TensorShape([None])
         _padded_shapes[feature.name]=tf.TensorShape([None])
         _padding_values[feature.name] = tf.constant("-pad-", dtype=feature.dtype)
+      elif feature.name == ["dep_labels"]  and feature.one_hot is not None:
+        _sequence_features[feature.name] = tf.io.FixedLenSequenceFeature(
+          shape=[36], dtype=feature.dtype)
+        _dataset_shapes[feature.name] = tf.TensorShape([None, 36])
+        _padded_shapes[feature.name] = tf.TensorShape([None, 36])
+        _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
       else:
         _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
             shape=[], dtype=feature.dtype)
@@ -377,20 +386,26 @@ class Preprocessor:
     for feature in self.sequence_features_dict.values():
       _output_types[feature.name]=feature.dtype
 
+      # Set up the padding values for features.
       if feature.name in ["tokens", "sent_id"]:
         _padding_values[feature.name] = tf.constant("-pad-", dtype=feature.dtype)
       elif feature.name == "morph":
         _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
       else:
         _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
-      
+
+      # Set up the padded output shapes for features.
       if feature.name == "morph":
         _output_shapes[feature.name]=tf.TensorShape([None, 66]) # (, 66)
         _padded_shapes[feature.name]=tf.TensorShape([None, 66])
+      elif feature.name =="dep_labels" and feature.one_hot is not None:
+        _output_shapes[feature.name] = tf.TensorShape([None, 36])
+        _padded_shapes[feature.name] = tf.TensorShape([None, 36])
       else:
         _output_shapes[feature.name]=[None]
         _padded_shapes[feature.name]=tf.TensorShape([None])
-    
+
+    # Generate the dataset.
     dataset = tf.data.Dataset.from_generator(
       generator,
       output_types=_output_types,
@@ -442,10 +457,15 @@ class Preprocessor:
             morph_features.append(morph_vector)
           yield_dict[feature_name] = morph_features
         if feature_name == "dep_labels":
+          label_feature = self.sequence_features_dict[feature_name]
           sentence.token[0].label = "TOP" # workaround key errors
-          yield_dict[feature_name] = self.numericalize(
+          vectors = self.numericalize(
             values=[token.label for token in sentence.token],
             mapping=feature_mappings["dep_labels"])
+          if label_feature.one_hot is not None:
+            yield_dict[feature_name] = label_feature.index_to_onehot(vectors)
+          else:
+            yield_dict[feature_name] = vectors
         if feature_name == "heads":
           yield_dict[feature_name] = [
             token.selected_head.address for token in sentence.token]
@@ -461,20 +481,21 @@ if __name__ == "__main__":
   # Initialize the preprocessor.
   prep = Preprocessor(word_embeddings=word_embeddings,
                       features=["words", "pos", "morph", "dep_labels", "heads"],
-                      labels=["dep_labels", "heads"])
+                      labels=["dep_labels", "heads"],
+                      one_hot_features=["dep_labels"])
   datapath = "data/UDv23/Turkish/training/treebank_train_0_3.pbtxt"
   sentences = prep.prepare_sentence_protos(path=datapath)
 
   dataset = prep.make_dataset_from_generator(sentences=sentences, batch_size=10)
   
   for batch in dataset:
-    print(batch["tokens"])
-    print(batch["words"])
-    print(batch["pos"])
-    print(batch["sent_id"])
-    print(batch["morph"])
-    print(batch["dep_labels"])
-    print(batch["heads"])
+    print("tokens ", batch["tokens"])
+    print("words ", batch["words"])
+    print("pos ", batch["pos"])
+    print("sent id ", batch["sent_id"])
+    print("morph ", batch["morph"])
+    print("dep labels ", batch["dep_labels"])
+    print("heads ", batch["heads"])
   
   '''
   # Make a dataset and save it

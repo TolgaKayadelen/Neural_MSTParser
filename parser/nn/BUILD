@@ -22,10 +22,19 @@ py_binary(
 py_binary(
 	name = "bilstm_labeler",
 	srcs = ["bilstm_labeler.py"],
-  deps = [
-    ":base_parser",
-    ":nn_parser_lib",
+    deps = [
+        ":base_parser",
+        ":nn_parser_lib",
   ],
+)
+
+py_binary(
+    name = "sequential_parser",
+    srcs = ["sequential_parser.py"],
+    deps = [
+        ":base_parser",
+        ":nn_parser_lib",
+    ],
 )
 
 # Libraries
@@ -59,24 +68,24 @@ py_library(
 )
 
 py_library(
-    name = "base_parser",
-    srcs = ["base_parser.py"],
-    deps = [
-        ":nn_parser_lib",
-    ],
+  name = "base_parser",
+  srcs = ["base_parser.py"],
+  deps = [
+      ":nn_parser_lib",
+  ],
 )
 
 py_library(
-	name = "seq2seq_labeler",
-	srcs = ["seq2seq_labeler.py"],
+  name = "seq2seq_labeler",
+  srcs = ["seq2seq_labeler.py"],
   deps = [
     ":nn_parser_lib",
   ],
 )
 
 py_library(
-	name = "seq2lstm_labeler",
-	srcs = ["seq2lstm_labeler.py"],
+  name = "seq2lstm_labeler",
+  srcs = ["seq2lstm_labeler.py"],
   deps = [
     ":nn_parser_lib",
   ],
@@ -85,8 +94,8 @@ py_library(
 
 # Experimental
 py_library(
-	name = "label_first_parser_joint_loss",
-	srcs = ["label_first_parser_joint_loss.py"],
+  name = "label_first_parser_joint_loss",
+  srcs = ["label_first_parser_joint_loss.py"],
   deps = [
     ":nn_parser_lib",
   ],

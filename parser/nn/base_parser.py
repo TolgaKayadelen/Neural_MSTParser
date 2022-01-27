@@ -34,7 +34,7 @@ class BaseParser(ABC):
 
   def __init__(self, *,
                word_embeddings: Embeddings,
-               n_output_classes: int,
+               n_output_classes: int = None,
                predict: List[str],
                features: List[str] = ["words"],
                model_name: str):
@@ -196,7 +196,6 @@ class BaseParser(ABC):
         n_chp: number of correctly predicted heads.
         n_clp: number of correctly predicted labels.
     """
-
     if pad_mask is None:
       if head_predictions is not None:
         pad_mask = np.full(shape=head_predictions.shape, fill_value=True, dtype=bool)

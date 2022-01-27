@@ -120,7 +120,7 @@ if __name__ == "__main__":
       batch_size=1)
   else:
     test_dataset=None
-  metrics = parser.train(dataset=dataset, epochs=1, test_data=test_dataset)
+  metrics = parser.train(dataset=dataset, epochs=100, test_data=test_dataset)
   # metrics = parser.test(dataset=test_dataset)
   writer.write_proto_as_text(metrics,
                              f"./model/nn/plot/{parser.model_name}_metrics.pbtxt")
