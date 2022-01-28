@@ -332,8 +332,8 @@ if __name__ ==  "__main__":
   # print("parser ", parser)
   _DATA_DIR="data/UDv23/Turkish/training"
   _TEST_DATA_DIR="data/UDv23/Turkish/test"
-  train_treebank="treebank_train_500_1000.pbtxt"
-  test_treebank = "treebank_test_0_10.conllu"
+  train_treebank="treebank_train_0_10.pbtxt"
+  test_treebank = "treebank_test_0_3_gold.pbtxt"
   train_sentences = prep.prepare_sentence_protos(
     path=os.path.join(_DATA_DIR, train_treebank))
   test_sentences = prep.prepare_sentence_protos(
@@ -341,7 +341,7 @@ if __name__ ==  "__main__":
   )
   dataset = prep.make_dataset_from_generator(
     sentences=train_sentences,
-    batch_size=1)
+    batch_size=2)
   test_dataset = prep.make_dataset_from_generator(
     sentences=test_sentences,
     batch_size=1
