@@ -303,7 +303,11 @@ class BaseParser(ABC):
       )
 
   def _compute_metrics(self, stats="training"):
-    """Computes metrics for uas, ls, and las after each epoch based on the training and test stats"""
+    """Computes metrics for uas, ls, and las after each epoch.
+
+    Computes metrics based on the training and test stats.
+    """
+
     _metrics = {}
     if stats == "test":
       stats = self.test_stats

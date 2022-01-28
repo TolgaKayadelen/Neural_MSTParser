@@ -143,11 +143,76 @@ class SequentialParser(base_parser.BaseParser):
                 results=self._training_metrics)
 
       loss_results_per_epoch = {
-        "head_loss": epoch_loss
+        "head_loss": epoch_loss.numpy()
       }
+
+      if (epoch % 10 == 0 or epoch == epochs) and test_data is not None:
+        logging.info("Testing on test data")
+        test_results_for_epoch = self.test(dataset=test_data)
+        self._log(description=f"Test results after epoch {epoch}",
+                  results=test_results_for_epoch)
 
       logging.info(f"Time for epoch {time.time() - start_time}")
       # input("press to cont.")
+      self._update_all_metrics(
+        train_metrics=training_results_for_epoch,
+        loss_metrics=loss_results_per_epoch,
+        test_metrics=test_results_for_epoch
+      )
+
+    return self._metrics
+
+  def test(self, *, dataset: Dataset):
+    """Tests the performance of the parser on the dataset."""
+
+    accuracy = metrics.SparseCategoricalAccuracy()
+
+    for key in self.test_stats:
+      self.test_stats[key] = 0.0
+
+    for sentence in dataset:
+      parent_prob_table = self.parse(sentence)
+
+      # Get predictions
+      _preds = tf.math.top_k(parent_prob_table)
+      predictions = tf.cast(_preds.indices, tf.int64)
+
+      # Get correct heads
+      heads = sentence["heads"]
+      correct_heads = self._flatten(heads[:, 1:]) # slicing 0th token out.
+      accuracy.update_state(correct_heads, predictions)
+
+      # Update stats
+      correct_predictions_dict = self._correct_predictions(
+        head_predictions=predictions,
+        correct_heads=correct_heads
+      )
+      n_tokens, _ = correct_heads.shape
+      self._update_correct_prediction_stats(
+        correct_predictions_dict, n_tokens,
+        stats="test"
+      )
+
+    # Compute metrics
+    test_results = self._compute_metrics(stats="test")
+    return test_results
+
+
+
+  def parse(self, example):
+    """Parses an example with this parser.
+
+    Returns: parent_prob_table.
+    """
+    words, pos, morph, dep_labels, heads = (example["words"], example["pos"],
+                                            example["morph"], example["dep_labels"],
+                                            example["heads"])
+    _, parent_prob_table = self.model({"words" : words,
+                                       "pos" : pos,
+                                       "morph" : morph,
+                                       "labels" : dep_labels,
+                                       "heads" : heads}, training=False)
+    return parent_prob_table
 
 
 
@@ -267,14 +332,21 @@ if __name__ ==  "__main__":
   # print("parser ", parser)
   _DATA_DIR="data/UDv23/Turkish/training"
   _TEST_DATA_DIR="data/UDv23/Turkish/test"
-  train_treebank="treebank_train_0_50.pbtxt"
-  # test_treebank = "tr_imst_ud_test_fixed.pbtxt"
+  train_treebank="treebank_train_500_1000.pbtxt"
+  test_treebank = "treebank_test_0_10.conllu"
   train_sentences = prep.prepare_sentence_protos(
     path=os.path.join(_DATA_DIR, train_treebank))
+  test_sentences = prep.prepare_sentence_protos(
+    path=os.path.join(_TEST_DATA_DIR, test_treebank)
+  )
   dataset = prep.make_dataset_from_generator(
     sentences=train_sentences,
     batch_size=1)
+  test_dataset = prep.make_dataset_from_generator(
+    sentences=test_sentences,
+    batch_size=1
+  )
   # for batch in dataset:
   #  print(batch["heads"])
-  parser.train(dataset=dataset, epochs=20)
-
+  metrics = parser.train(dataset=dataset, test_data=test_dataset, epochs=70)
+  print(metrics)
