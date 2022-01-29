@@ -205,8 +205,13 @@ class BaseParser(ABC):
         raise RuntimeError("Fatal: Either head predictions or label predictions should exist.")
 
     if "heads" in self._predict:
+      # print("head preds ", head_predictions)
+      # print("correct heads ", correct_heads)
       correct_head_preds = tf.boolean_mask(head_predictions == correct_heads, pad_mask)
+      # print("correct head preads ", correct_head_preds)
       n_correct_head_preds = np.sum(correct_head_preds)
+      # print(n_correct_head_preds)
+      # input("press")
     else:
       correct_head_preds=None
       n_correct_head_preds=None
@@ -244,6 +249,7 @@ class BaseParser(ABC):
     # Updates training metrics.
     if heads is not None:
       self._training_metrics["heads"].update_state(heads, head_scores, sample_weight=pad_mask)
+
     if labels is not None:
       self._training_metrics["labels"].update_state(labels, label_scores, sample_weight=pad_mask)
 
@@ -307,7 +313,6 @@ class BaseParser(ABC):
 
     Computes metrics based on the training and test stats.
     """
-
     _metrics = {}
     if stats == "test":
       stats = self.test_stats

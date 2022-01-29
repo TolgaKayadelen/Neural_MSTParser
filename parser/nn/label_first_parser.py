@@ -96,17 +96,17 @@ if __name__ == "__main__":
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
                             n_output_classes=label_feature.n_values,
                             predict=["heads"],
-                            features=["words", "pos", "morph", "dep_labels"],
+                            features=["words", "pos", "morph", "heads", "dep_labels"],
                             model_name=model_name)
 
   _DATA_DIR="data/UDv23/Turkish/training"
   _TEST_DATA_DIR="data/UDv23/Turkish/test"
-  train_treebank="treebank_train_0_10.pbtxt" # treebank_train_0_50.pbtxt
-  test_treebank = "treebank_0_3_gold.pbtxt" # "treebank_test_0_10.conllu"
+  train_treebank="treebank_train_500_1000.pbtxt" # treebank_train_0_50.pbtxt
+  test_treebank = "treebank_test_0_10.conllu" # "treebank_test_0_10.conllu"
   train_sentences = prep.prepare_sentence_protos(path=os.path.join(_DATA_DIR, train_treebank))
   dataset = prep.make_dataset_from_generator(
     sentences=train_sentences,
-    batch_size=1
+    batch_size=25
   )
   if test_treebank is not None:
     test_sentences = prep.prepare_sentence_protos(path=os.path.join(_TEST_DATA_DIR, test_treebank))

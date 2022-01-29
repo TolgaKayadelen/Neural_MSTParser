@@ -37,6 +37,14 @@ py_binary(
     ],
 )
 
+py_binary(
+    name = "sequential_parser_base",
+    srcs = ["sequential_parser_base.py"],
+    deps = [
+        ":base_parser",
+        ":nn_parser_lib",
+    ],
+)
 # Libraries
 py_library(
   name = "nn_parser_lib",
