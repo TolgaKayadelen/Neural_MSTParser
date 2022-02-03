@@ -388,8 +388,8 @@ if __name__ ==  "__main__":
   # print("parser ", parser)
   _DATA_DIR="data/UDv23/Turkish/training"
   _TEST_DATA_DIR="data/UDv23/Turkish/test"
-  train_treebank="treebank_train_500_1000.pbtxt"
-  test_treebank = "treebank_test_0_10.conllu"
+  train_treebank="tr_imst_ud_train_dev.pbtxt"
+  test_treebank = "tr_imst_ud_test_fixed.pbtxt"
   train_sentences = prep.prepare_sentence_protos(
     path=os.path.join(_DATA_DIR, train_treebank))
   test_sentences = prep.prepare_sentence_protos(
@@ -397,12 +397,12 @@ if __name__ ==  "__main__":
   )
   dataset = prep.make_dataset_from_generator(
     sentences=train_sentences,
-    batch_size=25)
+    batch_size=250)
   test_dataset = prep.make_dataset_from_generator(
     sentences=test_sentences,
     batch_size=1
   )
   # for batch in dataset:
   #  print(batch["heads"])
-  metrics = parser.train(dataset=dataset, test_data=test_dataset, epochs=20)
+  metrics = parser.train(dataset=dataset, test_data=test_dataset, epochs=50)
   print(metrics)

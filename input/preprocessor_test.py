@@ -63,10 +63,17 @@ class PreprocessorTest(tf.test.TestCase):
        [30, 23, 24, 14, 14, 31, 20,  4, 31, 24,  0,  0,  0,  0,  0]],
        dtype=tf.int64
     )
+    expected_heads = tf.constant(
+      [[0, 0, 3, 4, 1, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1],
+       [0, 2, 4, 4, 5, 12, 7, 12, 9, 11, 9, 12, 0, 12, 12],
+       [0, 3, 1, 5, 5, 0, 5, -1, -1, -1, -1, -1, -1, -1, -1],
+       [0, 8, 8, 4, 8,  4,  4,  8,  0, 8, -1, -1, -1, -1, -1]]
+    )
     for batch in dataset:
       self.assertAllEqual(expected_words, batch["words"])
       self.assertAllEqual(expected_dep_labels, batch["dep_labels"])
       self.assertAllEqual(expected_pos, batch["pos"])
+      self.assertAllEqual(expected_heads, batch["heads"])
     print("Passed!")
   
   def test_morph_features(self):

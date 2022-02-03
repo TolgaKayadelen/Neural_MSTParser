@@ -118,5 +118,7 @@ if __name__ == "__main__":
     test_dataset=None
   metrics = parser.train(dataset=dataset, epochs=20, test_data=test_dataset)
   print(metrics)
-  # writer.write_proto_as_text(metrics, f"./model/nn/plot/{model_name}_metrics.pbtxt")
-  # nn_utils.plot_metrics(name=model_name, metrics=metrics)
+  writer.write_proto_as_text(metrics, f"./model/nn/plot/{model_name}_metrics.pbtxt")
+  nn_utils.plot_metrics(name=model_name, metrics=metrics)
+  parser.save_weights()
+  logging.info("weights saved!")

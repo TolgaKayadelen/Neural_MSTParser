@@ -87,43 +87,49 @@ if __name__ == "__main__":
                          predict=["labels"],
                          features=["words", "pos", "morph"],
                          model_name="dependency_labeler")
-  # parser.load_weights(name="tests_saving")
+  parser.load_weights(name="dependency_labeler")
   # for w in parser.model.weights:
-  #  print(type(w))
+  #   print(type(w))
   # print(parser.model.weights[-2])
-  # weights = parser.model.get_weights()
-  # for layer in parser.model.layers:
+  weights = parser.model.get_weights()
+  # print("weights are ", weights)
+  # input("press to cont.")
+  #for layer in parser.model.layers:
   #  print(layer.name)
-  #  if layer.name == "labels":
+  #  if layer.name == "word_embeddings":
   #    print("working the labels layer")
+  #    input("press to cont.")
   #    trainable_weights = layer.trainable_weights
   #    print("trainable weights ", trainable_weights)
-  #    print(tf.math.reduce_sum(trainable_weights[0], axis=0))
-  print("parser ", parser)
-  # input("press to cont.")
+      # print(tf.math.reduce_sum(trainable_weights[0], axis=0))
+  #print("parser ", parser)
+  #input("press to cont.")
 
   _DATA_DIR="data/UDv23/Turkish/training"
   _TEST_DATA_DIR="data/UDv23/Turkish/test"
   train_treebank="tr_imst_ud_train_dev.pbtxt"
-  test_treebank = "tr_imst_ud_test_fixed.pbtxt"
-  train_sentences = prep.prepare_sentence_protos(
-    path=os.path.join(_DATA_DIR, train_treebank))
-  dataset = prep.make_dataset_from_generator(
-    sentences=train_sentences,
-    batch_size=250
-  )
+  test_treebank = "treebank_test_0_10.conllu"
+  # train_sentences = prep.prepare_sentence_protos(
+  #   path=os.path.join(_DATA_DIR, train_treebank))
+  # dataset = prep.make_dataset_from_generator(
+  #   sentences=train_sentences,
+  #  batch_size=250
+  # )
   if test_treebank is not None:
     test_sentences = prep.prepare_sentence_protos(
       path=os.path.join(_TEST_DATA_DIR, test_treebank))
     test_dataset = prep.make_dataset_from_generator(
       sentences=test_sentences,
-      batch_size=1)
+      batch_size=5)
   else:
     test_dataset=None
-  metrics = parser.train(dataset=dataset, epochs=100, test_data=test_dataset)
+  for batch in test_dataset:
+    scores = parser.parse(batch)
+    print(scores)
+  # metrics = parser.train(dataset=dataset, epochs=100, test_data=test_dataset)
   # metrics = parser.test(dataset=test_dataset)
-  writer.write_proto_as_text(metrics,
-                             f"./model/nn/plot/{parser.model_name}_metrics.pbtxt")
-  nn_utils.plot_metrics(name=parser.model_name, metrics=metrics)
-  parser.save_weights()
-  logging.info(f"{parser.model_name} results written")
+  # writer.write_proto_as_text(metrics,
+  #                            f"./model/nn/plot/{parser.model_name}_metrics.pbtxt")
+  # nn_utils.plot_metrics(name=parser.model_name, metrics=metrics)
+  # parser.save_weights()
+  # logging.info(f"{parser.model_name} results written")

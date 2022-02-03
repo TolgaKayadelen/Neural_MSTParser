@@ -76,7 +76,7 @@ class EmbeddingLayer(layers.Layer):
       self.embedding = tf.keras.layers.Embedding(
         input_dim=input_dim, output_dim=output_dim, trainable=trainable)
     else:
-      raise FatalError("Can't set embeddings.")
+      raise RuntimeError("Can't set embeddings.")
   
   def call(self, input_tensor):
     """Passes input values through the embedding layer."""

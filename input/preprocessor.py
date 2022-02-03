@@ -334,6 +334,13 @@ class Preprocessor:
         _dataset_shapes[feature.name]=tf.TensorShape([None])
         _padded_shapes[feature.name]=tf.TensorShape([None])
         _padding_values[feature.name] = tf.constant("-pad-", dtype=feature.dtype)
+      elif feature.name == "heads":
+        _sequence_features[feature.name] = tf.io.FixedLenSequenceFeature(
+          shape=[], dtype=feature.dtype)
+        _dataset_shapes[feature.name]=tf.TensorShape([None])
+        _padded_shapes[feature.name]=tf.TensorShape([None])
+        # The padding value for heads is -1.
+        _padding_values[feature.name] = tf.constant(-1, dtype=feature.dtype)
       elif feature.name == ["dep_labels"]  and feature.one_hot is not None:
         _sequence_features[feature.name] = tf.io.FixedLenSequenceFeature(
           shape=[36], dtype=feature.dtype)
@@ -389,8 +396,9 @@ class Preprocessor:
       # Set up the padding values for features.
       if feature.name in ["tokens", "sent_id"]:
         _padding_values[feature.name] = tf.constant("-pad-", dtype=feature.dtype)
-      elif feature.name == "morph":
-        _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
+      # The padding value for heads is -1.
+      elif feature.name == "heads":
+        _padding_values[feature.name] = tf.constant(-1, dtype=feature.dtype)
       else:
         _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
 
@@ -482,10 +490,10 @@ if __name__ == "__main__":
   prep = Preprocessor(word_embeddings=word_embeddings,
                       features=["words", "pos", "morph", "dep_labels", "heads"],
                       labels=["dep_labels", "heads"],
-                      one_hot_features=["dep_labels"])
+                      # one_hot_features=["dep_labels"]
+                      )
   datapath = "data/UDv23/Turkish/training/treebank_train_0_3.pbtxt"
   sentences = prep.prepare_sentence_protos(path=datapath)
-
   dataset = prep.make_dataset_from_generator(sentences=sentences, batch_size=10)
   
   for batch in dataset:
@@ -496,8 +504,8 @@ if __name__ == "__main__":
     print("morph ", batch["morph"])
     print("dep labels ", batch["dep_labels"])
     print("heads ", batch["heads"])
-  
-  '''
+
+  """
   # Make a dataset and save it
   tf_examples = prep.make_tf_examples(sentences=sentences)
   prep.write_tf_records(examples=tf_examples,
@@ -509,5 +517,4 @@ if __name__ == "__main__":
     records="./input/treebank_train_0_3.tfrecords")
   for batch in dataset:
     print(batch)
-  '''
-
+  """
