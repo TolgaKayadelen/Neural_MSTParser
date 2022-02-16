@@ -25,15 +25,15 @@ class LSTMLabelingModel(tf.keras.Model):
                n_output_classes: int,
                use_pos=True,
                use_morph=True,
+               return_lstm_output=True,
                name="LSTM_Labeler"):
     super(LSTMLabelingModel, self).__init__(name=name)
     self.use_pos = use_pos
     self.use_morph = use_morph
-    self._null_label = tf.constant(0)
     self.word_embeddings = layer_utils.EmbeddingLayer(
       pretrained=word_embeddings, name="word_embeddings"
     )
-    
+    self.return_lstm_output = return_lstm_output
     if self.use_pos:
       self.pos_embeddings = layer_utils.EmbeddingLayer(
                                             input_dim=35, output_dim=32,
@@ -44,11 +44,10 @@ class LSTMLabelingModel(tf.keras.Model):
                                             dropout_rate=0.3,
                                             name="lstm_block"
                                             )
-    # self.attention = layer_utils.Attention()
     self.labels = layers.Dense(units=n_output_classes, name="labels")
 
   def call(self, inputs):
-    # TODO: can we have the labeler use heads as a feature too.
+    # TODO: can we have the labeler use heads as a feature too?
     """Forward pass.
     Args:
       inputs: Dict[str, tf.keras.Input]. This consist of
@@ -80,9 +79,11 @@ class LSTMLabelingModel(tf.keras.Model):
       labels = self.labels(sentence_repr)
     else:
       sentence_repr = self.lstm_block(word_features)
-      # sentence_repr = self.attention(sentence_repr)
       labels = self.labels(sentence_repr)
-    return {"edges": self._null_label, "labels": labels}
+    if self.return_lstm_output:
+      return {"labels": labels}, sentence_repr
+    else:
+      return {"labels": labels}
     
 
 class LabelFirstParsingModel(tf.keras.Model):
