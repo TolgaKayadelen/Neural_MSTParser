@@ -1,7 +1,7 @@
 """The preprocessing module creates tf.data.Dataset objects for the parser."""
 
 import numpy as np
-# np.set_printoptions(threshold=np.inf)
+np.set_printoptions(threshold=np.inf)
 
 
 import tensorflow as tf

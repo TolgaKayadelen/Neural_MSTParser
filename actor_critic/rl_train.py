@@ -24,19 +24,24 @@ class ActorCritic:
   def train(self, dataset):
     """Trains the actor and the critic."""
 
-    # Critic V estimates
+    # List of states in an episode.
     states_list = []
+    # List of state values predicted by the critic.
     state_values_list = []
+    # The actions taken by the actor in an episode.
     actions_taken = []
+    # The log probs of the actions taken by the actor in an episode.
     action_log_policies = []
 
-    # A dataset is basically a batch of episodes where episode means sentence.
+    # A dataset is basically a batch of episodes where an episode means a sentence.
     for step, batch in enumerate(dataset):
       # Get label predictions and states from the labeler
+      # States are the LSTM output representation for tokens coming from labeler.
       scores, states = self.actor.parse(batch)
       label_scores = scores["labels"]
       batch_size, sequence_length, _ = label_scores.shape
       log_probs, label_preds = self._label_predictions(label_scores)
+      predicted_label_probs = self._predicted_label_probs(log_probs)
 
       # Send label predictions to the parser as input with other features.
       parser_inputs = {"words": batch["words"],
@@ -45,9 +50,14 @@ class ActorCritic:
                        "morph": batch["morph"]}
       scores = parser.parse(parser_inputs)
 
-      # Remove the first token from label preds and log probs
+      # Remove the first token from label preds and log probs, and predicted label probs
       label_preds = label_preds[:, 1:]
       log_probs = log_probs[:, 1:, :]
+      predicted_label_probs = predicted_label_probs[:, 1:]
+      # print("log probs ", log_probs)
+      # print("predicted label probs ", predicted_label_probs)
+      # print("label preds ", label_preds)
+      # input("press to cont.")
 
       # Get head predictions & remove the first token
       head_preds = self._head_predictions(scores["edges"])
@@ -57,25 +67,44 @@ class ActorCritic:
       correct_heads = batch["heads"]
       correct_heads = correct_heads[:, 1:]
 
-      # Remove the first token from the states and label preds too.
+      # Remove the first token from the states too.
       states = states[:, 1:, :]
 
+      # Do a training step.
       c_loss, a_loss, state_values, returns, advantages, mask = self._train_step(
-        label_preds, log_probs, head_preds, correct_heads, states)
+        label_preds, predicted_label_probs, head_preds, correct_heads, states)
 
-  def _train_step(self, label_preds, log_probs, head_preds, correct_heads, states):
-    mask = (correct_heads != -1)
-    rewards = self.compute_rewards(head_preds, correct_heads, mask)
-    returns = self.compute_returns(rewards, mask)
-    state_values = self.compute_state_values(states, mask)
-    advantages = self.compute_advantages(state_values, returns)
+  def _train_step(self, label_preds, predicted_label_probs, head_preds, correct_heads, states):
+    """Runs one step of training.
+    label_preds: The labeler's label predictions.
+    predicted_label_probs: The log probabilities of the predicted labels.
+    head_preds: The parser's head predictions.
+    correct_heads: The gold heads.
+    states: The token representations coming from the lstm output.
     """
+    # Define the pad mask.
+    mask = (correct_heads != -1)
+    # Compute the rewards per token.
+    rewards = self.compute_rewards(head_preds, correct_heads, mask)
+    # Compute the returns per token.
+    returns = self.compute_returns(rewards, mask)
+    # Get the state_value estimates from the critic.
+    state_values = self.compute_state_values(states, mask)
+    # Compute advantages based on state values and returns.
+    advantages = self.compute_advantages(state_values, returns)
+
     with tf.GradientTape() as tape_critic:
-      critic_loss = self.critic.loss()
+      # y_true=returns, y_pred=state_values
+      critic_loss = self.critic_loss(returns, state_values, mask)
+      print("critic loss ", critic_loss)
+      input("press to cont.")
 
     with tf.GradientTape() as tape_actor:
-      actor_loss = self.actor_loss()
-
+      actor_loss = self.actor_loss(predicted_label_probs, advantages, mask)
+      print("actor loss ", actor_loss)
+      print("press to cont.")
+    # TODO: continue from here to backprop to critic and the label loss to the models.
+    """
     grads_critic = tape_critic.gradient(critic_loss, self.critic.trainable_weights)
     # TODO: change this later. we should be able to just call self.actor.trainable_weights.
     grads_actor = tape_actor.gradient(actor_loss, self.actor.model.trainable_weights)
@@ -95,6 +124,11 @@ class ActorCritic:
     log_probs = tf.nn.log_softmax(label_scores)
     label_preds = tf.argmax(log_probs, 2)
     return log_probs, label_preds
+
+  def _predicted_label_probs(self, label_probs):
+    """Returns the log prob of the predicted label from label log probs"""
+    label_probs = tf.reduce_max(label_probs, axis=2)
+    return tf.expand_dims(label_probs, -1)
 
   def compute_rewards(self, head_predictions, correct_heads, mask):
     """Computes rewards per state based on tree path."""
@@ -146,11 +180,24 @@ class ActorCritic:
     return state_values
 
   def compute_advantages(self, state_values, returns):
-    print("computing advantages")
     advantages = returns - state_values
-    print("advantages ", advantages)
-    input("press to cont.")
     return advantages
+
+  def actor_loss(self, action_log_probs, advantages, mask):
+    print("predicted label probs ", action_log_probs)
+    print("advantages ", advantages)
+    print("mask ", mask)
+    l = tf.boolean_mask(action_log_probs * advantages, mask)
+    print("l ", l)
+    input("press to cont.")
+    loss = -tf.math.reduce_sum(l)
+    return loss
+    # return -tf.math.reduce_sum(action_log_probs * advantages)
+
+  def critic_loss(self, returns, state_values, mask):
+    loss = self.critic.loss(returns, state_values, sample_weight=mask)
+    return loss
+
 
 
 # Critic.
