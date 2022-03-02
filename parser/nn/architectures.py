@@ -44,6 +44,9 @@ class LSTMLabelingModel(tf.keras.Model):
                                             dropout_rate=0.3,
                                             name="lstm_block"
                                             )
+    # Because in the loss function we have from_logits=True, we don't use the
+    # param 'activation=softmax' in the layer. The loss function applies softmax to the
+    # raw probabilites and then applies crossentropy.
     self.labels = layers.Dense(units=n_output_classes, name="labels")
 
   def call(self, inputs):
