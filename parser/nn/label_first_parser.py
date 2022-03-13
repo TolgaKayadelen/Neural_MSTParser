@@ -1,21 +1,16 @@
-import os
+
 import tensorflow as tf
-
-
 from parser.nn import base_parser, architectures
-from util.nn import nn_utils
-from util import converter, writer
-from input import embeddor, preprocessor
 from proto import metrics_pb2
 from tensorflow.keras import layers, metrics, losses, optimizers
 
 
 class LabelFirstParser(base_parser.BaseParser):
   """A label first parser predicts labels before predicting heads."""
+
   @property
   def _optimizer(self):
     return tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
-
 
   def _training_metrics(self):
     return {
@@ -33,6 +28,7 @@ class LabelFirstParser(base_parser.BaseParser):
     """
     return losses.SparseCategoricalCrossentropy(from_logits=True,
                                                 reduction=tf.keras.losses.Reduction.NONE)
+
   @property
   def _label_loss_function(self):
     """Returns loss per token for label prediction.
@@ -49,10 +45,10 @@ class LabelFirstParser(base_parser.BaseParser):
 
   @property
   def inputs(self):
-    word_inputs = tf.keras.Input(shape=(None, ), name="words")
-    pos_inputs = tf.keras.Input(shape=(None, ), name="pos")
+    word_inputs = tf.keras.Input(shape=(None,), name="words")
+    pos_inputs = tf.keras.Input(shape=(None,), name="pos")
     morph_inputs = tf.keras.Input(shape=(None, 66), name="morph")
-    label_inputs = tf.keras.Input(shape=(None, ), name="labels")
+    label_inputs = tf.keras.Input(shape=(None,), name="labels")
     input_dict = {"words": word_inputs}
     if self._use_pos:
       input_dict["pos"] = pos_inputs
@@ -80,45 +76,3 @@ class LabelFirstParser(base_parser.BaseParser):
     )
     model(inputs=self.inputs)
     return model
-
-if __name__ == "__main__":
-  embeddings = nn_utils.load_embeddings()
-  word_embeddings = embeddor.Embeddings(name= "word2vec", matrix=embeddings)
-  prep = preprocessor.Preprocessor(
-    word_embeddings=word_embeddings,
-    features=["words", "pos", "morph", "heads", "dep_labels"],
-    labels=["heads"]
-  )
-  label_feature = next(
-    (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
-
-  model_name = "lfp_test"
-  parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
-                            n_output_classes=label_feature.n_values,
-                            predict=["heads"],
-                            features=["words", "pos", "morph", "heads", "dep_labels"],
-                            model_name=model_name)
-
-  _DATA_DIR="data/UDv23/Turkish/training"
-  _TEST_DATA_DIR="data/UDv23/Turkish/test"
-  train_treebank="tr_imst_ud_train_dev.pbtxt" # treebank_train_0_50.pbtxt
-  test_treebank = "tr_imst_ud_test_fixed.conllu" # "treebank_test_0_10.conllu"
-  train_sentences = prep.prepare_sentence_protos(path=os.path.join(_DATA_DIR, train_treebank))
-  dataset = prep.make_dataset_from_generator(
-    sentences=train_sentences,
-    batch_size=250
-  )
-  if test_treebank is not None:
-    test_sentences = prep.prepare_sentence_protos(path=os.path.join(_TEST_DATA_DIR, test_treebank))
-    test_dataset = prep.make_dataset_from_generator(
-      sentences=test_sentences,
-      batch_size=1
-    )
-  else:
-    test_dataset=None
-  metrics = parser.train(dataset=dataset, epochs=70, test_data=test_dataset)
-  print(metrics)
-  writer.write_proto_as_text(metrics, f"./model/nn/plot/{model_name}_metrics.pbtxt")
-  nn_utils.plot_metrics(name=model_name, metrics=metrics)
-  parser.save_weights()
-  logging.info("weights saved!")

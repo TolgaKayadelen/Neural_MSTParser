@@ -1,31 +1,30 @@
 package(default_visibility = ["//visibility:public"])
 
 # Binaries
-py_binary(
-  name = "label_first_parser",
-  srcs = ["label_first_parser.py"],
-  deps = [
-    ":base_parser",
-    ":nn_parser_lib",
-  ],
-)
 
 py_binary(
-    name = "biaffine_parser",
-    srcs = ["biaffine_parser.py"],
+    name = "label_first_parser_main",
+    srcs = ["label_first_parser_main.py"],
     deps = [
-        ":base_parser",
-        ":nn_parser_lib",
+        ":load_models",
+        ":label_first_parser",
     ],
 )
 
 py_binary(
-	name = "bilstm_labeler",
-	srcs = ["bilstm_labeler.py"],
+	name = "bilstm_labeler_main",
+	srcs = ["bilstm_labeler_main.py"],
     deps = [
-        ":base_parser",
-        ":nn_parser_lib",
+        ":bilstm_labeler",
   ],
+)
+
+py_binary(
+    name = "biaffine_parser_main",
+    srcs = ["biaffine_parser_main.py"],
+    deps = [
+        ":biaffine_parser",
+    ],
 )
 
 py_binary(
@@ -45,6 +44,8 @@ py_binary(
         ":nn_parser_lib",
     ],
 )
+
+
 # Libraries
 py_library(
   name = "nn_parser_lib",
@@ -57,6 +58,35 @@ py_library(
     "//util:converter",
   ]
 )
+
+
+py_library(
+  name = "label_first_parser",
+  srcs = ["label_first_parser.py"],
+  deps = [
+    ":base_parser",
+    ":nn_parser_lib",
+  ],
+)
+
+py_library(
+	name = "bilstm_labeler",
+	srcs = ["bilstm_labeler.py"],
+    deps = [
+        ":base_parser",
+        ":nn_parser_lib",
+  ],
+)
+
+py_library(
+    name = "biaffine_parser",
+    srcs = ["biaffine_parser.py"],
+    deps = [
+        ":base_parser",
+        ":nn_parser_lib",
+    ],
+)
+
 
 py_library(
   name = "layer_utils",
@@ -80,6 +110,16 @@ py_library(
   srcs = ["base_parser.py"],
   deps = [
       ":nn_parser_lib",
+  ],
+)
+
+py_library(
+    name = "load_models",
+    srcs = ["load_models.py"],
+    deps = [
+    ":nn_parser_lib",
+    ":label_first_parser",
+    ":bilstm_labeler",
   ],
 )
 

@@ -601,6 +601,8 @@ class BaseParser(ABC):
     """Loads a pretrained model weights."""
     if path is None:
       path = os.path.join(_MODEL_DIR, name)
+    else:
+      path = os.path.join(path, name)
     load_status = self.model.load_weights(os.path.join(path, name))
     logging.info(f"Loaded model from model named: {name} in: {_MODEL_DIR}")
     load_status.assert_consumed()

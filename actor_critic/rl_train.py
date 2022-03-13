@@ -4,10 +4,7 @@ import tensorflow as tf
 import os
 
 from tensorflow.keras import layers
-from parser.nn import bilstm_labeler
-from util.nn import nn_utils
-from input import embeddor, preprocessor
-from parser.nn import layer_utils, label_first_parser
+from parser.nn import load_models
 
 class ActorCritic:
   """An actor critic model."""
@@ -28,7 +25,7 @@ class ActorCritic:
   def _n_words_in_batch(words, mask):
     return len(tf.boolean_mask(words, mask))
 
-  def train(self, dataset, epochs: int=10):
+  def train(self, dataset, epochs: int=50):
     for epoch in range(1, epochs+1):
       for key in self.training_stats:
         self.training_stats[key] = 0.0
@@ -50,7 +47,7 @@ class ActorCritic:
       with tf.GradientTape() as tape_actor:
         # Get label predictions (actor predictions) and states from the labeler.
         # States are the LSTM output representation of the tokens coming from labeler.
-        # TODO: need to make sure that states are not changing every iteration.
+
         labeler_scores, states = self.actor.parse(batch)
         # label_scores shape = batch_size, seq_len, n_labels
         # These are raw probabilities rather than softmaxed scores.
@@ -136,10 +133,6 @@ class ActorCritic:
 
     # end for
 
-
-
-
-
   def _correct_predictions(self, label_predictions, correct_labels, head_predictions, correct_heads, mask):
     """Returns label accuracy based on a batch."""
     correct_label_preds = tf.boolean_mask(label_predictions == correct_labels, mask)
@@ -216,8 +209,14 @@ class ActorCritic:
         action_probs = softmax_probas. Before computing loss we first convert
           them to log probas.
     """
+    # print("advantages", advantages)
+    # print("action probs ", action_probs)
     action_log_probs = tf.math.log(action_probs)
+    # print("action log probs ", action_log_probs)
+    # input("press to cont.")
     l = tf.boolean_mask(action_log_probs * advantages, mask)
+    # print("l ", l)
+    # input("press to cont.")
     loss = -tf.math.reduce_sum(l)
     return loss
 
@@ -252,7 +251,8 @@ class ActorCritic:
       rewards[i, :] = r
     return tf.convert_to_tensor(rewards)
 
-  def compute_returns(self, rewards, mask, standardize=False):
+  # TODO this will be changed.
+  def compute_returns(self, rewards, mask, standardize=True):
     """Computes returns per state based on rewards."""
     rewards = np.flip(rewards, axis=1)
     returns = np.zeros_like(rewards, dtype=np.float32)
@@ -315,65 +315,50 @@ class CriticNetwork(tf.keras.Model):
 
 
 if __name__ == "__main__":
-  embeddings = nn_utils.load_embeddings()
-  word_embeddings = embeddor.Embeddings(name="word2vec", matrix=embeddings)
-  prep = preprocessor.Preprocessor(
-    word_embeddings=word_embeddings,
-    features=["words", "pos", "morph", "heads", "dep_labels"],
-    labels=["heads"]
-  )
-  label_feature = next(
-    (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
+  embeddings = load_models.load_word_embeddings()
+  prep = load_models.load_preprocessor(word_embeddings=embeddings, head_padding_value=-1)
+  labeler, _  = load_models.load_labeler(labeler_name="dependency_labeler",
+                                         prep=prep, path="./model/nn/pretrained/prod")
 
-  # Load the pretrained LSTM labeler.
-  print("Loading the labeler.")
-  labeler = bilstm_labeler.BiLSTMLabeler(word_embeddings=prep.word_embeddings,
-                                         n_output_classes=label_feature.n_values,
-                                         predict=["labels"],
-                                         features=["words", "pos", "morph"],
-                                         model_name="dependency_labeler_test")
-  labeler.load_weights(name="dependency_labeler_test")
+  parser = load_models.load_parser(parser_name="dependency_parser_label_first",
+                                   prep=prep,
+                                   path="./model/nn/pretrained/prod")
 
-  print(labeler.model_name)
+  for a, b in zip(parser.model.pos_embeddings.weights, labeler.model.pos_embeddings.weights):
+    np.testing.assert_allclose(a.numpy(), b.numpy())
 
+  # print("labeler weights")
+  # for layer in labeler.model.layers:
+  #  print(layer.name, layer.trainable)
 
-  # Load the pretrained label first parser.
-  print("Loading the parser.")
-  parser = label_first_parser.LabelFirstParser(word_embeddings=prep.word_embeddings,
-                                               n_output_classes=label_feature.n_values,
-                                               predict=["heads"],
-                                               features=["words", "pos", "morph", "heads", "dep_labels"],
-                                               model_name="label_first_parser")
-  parser.load_weights(name="lfp_test")
-  print(parser.model_name)
+  # print("\nparser weights")
+  # for layer in parser.model.layers:
+  #   print(layer.name, layer.trainable)
+  # input("press to cont.")
+
+  frozen_layers = [
+    labeler.model.word_embeddings,
+    labeler.model.pos_embeddings,
+    labeler.model.lstm_block]
+
+  for layer in frozen_layers:
+    layer.trainable = False
+    print(layer.name, layer.trainable)
+  # input("press to cont.")
 
   actor_critic = ActorCritic(actor=labeler,
                              critic=CriticNetwork(cr_size=512, discount_factor=0.99),
                              parser=parser)
 
-  _TEST_DATA_DIR="data/UDv23/Turkish/test"
-  test_treebank = "treebank_test_0_10.conllu"
+  _TRAIN_DATA_DIR="data/UDv23/Turkish/test"
+  train_treebank = "tr_imst_ud_test_fixed.pbtxt"
 
-  test_sentences = prep.prepare_sentence_protos(
-    path=os.path.join(_TEST_DATA_DIR, test_treebank))
-  test_dataset = prep.make_dataset_from_generator(
-    sentences=test_sentences, batch_size=5)
+  train_sentences = prep.prepare_sentence_protos(
+    path=os.path.join(_TRAIN_DATA_DIR, train_treebank))
+  train_dataset = prep.make_dataset_from_generator(
+    sentences=train_sentences, batch_size=100)
 
-  actor_critic.train(dataset=test_dataset)
-
-  ### Testing for transferring weights
-  # If you want to keep training your pretrained model, you need to transfer
-  # weights to some new model and keep training from there.
-  word_embeddings=layer_utils.EmbeddingLayer(pretrained=labeler.word_embeddings)
-  pos_embeddings=layers.Embedding(input_dim=35, output_dim=32)
-  pos_embeddings.build((None, 32))
-  pos_embeddings.set_weights(labeler.model.pos_embeddings.get_weights())
-  # print(pos_embeddings.weights)
-  for a, b in zip(pos_embeddings.weights, labeler.model.pos_embeddings.weights):
-    np.testing.assert_allclose(a.numpy(), b.numpy())
-  # pos_em_weights = pos_embeddings.weights
-  # print(pos_em_weights[0][1])
-  # print(pos_em_weights)
+  actor_critic.train(dataset=train_dataset)
 
   ### how to access a specific index's embedding vector.
   # print(word_embeddings.stoi(token="tolga"))
@@ -382,77 +367,3 @@ if __name__ == "__main__":
   # print("length of weights ", len(weights))
   # print(weights[0][493047])
   # print("press to cont.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  """
-  def _train_step(self, label_preds, predicted_label_probs,
-                        head_preds, correct_heads, states):
-    Runs one step of training.
-    label_preds: The labeler's label predictions. shape: batch_size, seq_len-1
-    predicted_label_probs: The log probabilities of the predicted labels. shape: batch_size, seq_len-1, 1
-    head_preds: The parser's head predictions. shape: batch_size, seq_len-1.
-    correct_heads: The gold heads. shape: batch_size, seq_len-1.
-    states: The token representations coming from the lstm output.
-      shape: batch_size, seq_len-1, bilstm_output_size
-    
-    # Define the pad mask.
-    # mask shape = batch_size, seq_len.
-    mask = (correct_heads != -1)
-    # Compute the rewards per token.
-    rewards = self.compute_rewards(head_preds, correct_heads, mask)
-    # Compute the returns per token.
-    returns = self.compute_returns(rewards, mask)
-    # Get the state_value estimates from the critic.
-
-    # Compute advantages based on state values and returns.
-
-
-    with tf.GradientTape() as tape_critic:
-      # y_true=returns, y_pred=state_values
-      state_values = self.compute_state_values(states, mask)
-      critic_loss = self.critic_loss(returns, state_values, mask)
-      print("critic_loss ", critic_loss)
-      input("press to cont.")
-
-    with tf.GradientTape() as tape_actor:
-      advantages = self.compute_advantages(state_values, returns)
-      actor_loss = self.actor_loss(predicted_label_probs, advantages, mask)
-      print("actor_loss ", actor_loss)
-      input("press to cont.")
-
-
-    # print("critic trainable weigts ", self.critic.trainable_weights)
-    grads_critic = tape_critic.gradient(critic_loss, self.critic.trainable_weights)
-    # print("grads critic ", grads_critic)
-    # input("press to cont.")
-
-    # print("actor trainable weights ", self.actor.model.trainable_weights)
-    grads_actor = tape_actor.gradient(actor_loss, self.actor.model.trainable_weights)
-
-    # See: https://stackoverflow.com/questions/61830841
-    print("grads actor ", grads_actor)
-    input("press to cont.")
-    self.critic.optimizer.apply_gradients(zip(grads_critic, self.critic.trainable_weights))
-
-    self.actor._optimizer.apply_gradients(zip(grads_actor, self.actor.model.trainable_weights))
-
-    return critic_loss, actor_loss
-    """

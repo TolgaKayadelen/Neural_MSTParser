@@ -120,12 +120,12 @@ class LabelFirstParsingModel(tf.keras.Model):
                                             trainable=True)
 
     self.concatenate = layers.Concatenate(name="concat")
-    self.encoder = layer_utils.LSTMBlock(n_units=256, dropout_rate=0.3,
-                                         name="lstm_encoder")
+    self.lstm_block = layer_utils.LSTMBlock(n_units=256, dropout_rate=0.3,
+                                            name="lstm_block")
     self.attention = layer_utils.Attention()
     
     if "labels" in self.predict:
-      self.dep_labels = layers.Dense(units=n_dep_labels, name="dep_labels")
+      self.dep_labels = layers.Dense(units=n_dep_labels, name="labels")
     else:
       if self.use_dep_labels: # using dep labels as gold features.
         self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=36,
@@ -176,7 +176,7 @@ class LabelFirstParsingModel(tf.keras.Model):
       sentence_repr = self.concatenate(concat_list)
     else:
       sentence_repr = word_features
-    sentence_repr = self.encoder(sentence_repr)
+    sentence_repr = self.lstm_block(sentence_repr)
     sentence_repr = self.attention(sentence_repr)
     if "labels" in self.predict:
       dep_labels = self.dep_labels(sentence_repr)

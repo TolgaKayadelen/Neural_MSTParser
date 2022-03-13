@@ -87,7 +87,8 @@ class Preprocessor:
                word_embeddings: Embeddings = None,
                features: List[str],
                labels: List[str],
-               one_hot_features: List[str] =  []):
+               one_hot_features: List[str] =  [],
+               head_padding_value=0):
     """Preprocessor prepares input datasets for TF models to consume."""
     assert all(o_h_feat in features for o_h_feat in one_hot_features), "Features don't match"
 
@@ -101,6 +102,8 @@ class Preprocessor:
     self.one_hot_features = one_hot_features
     # Initial sequence features
     self.sequence_features_dict = self._sequence_features_dict()
+    # Padding value for the heads.
+    self.head_padding_value = head_padding_value
 
   def prepare_sentence_protos(self, path: str):
     """Returns a list of sentence_pb2 formatted protocol buffer objects.
@@ -340,7 +343,7 @@ class Preprocessor:
         _dataset_shapes[feature.name]=tf.TensorShape([None])
         _padded_shapes[feature.name]=tf.TensorShape([None])
         # The padding value for heads is -1.
-        _padding_values[feature.name] = tf.constant(-1, dtype=feature.dtype)
+        _padding_values[feature.name] = tf.constant(self.head_padding_value, dtype=feature.dtype)
       elif feature.name == ["dep_labels"]  and feature.one_hot is not None:
         _sequence_features[feature.name] = tf.io.FixedLenSequenceFeature(
           shape=[36], dtype=feature.dtype)
@@ -398,7 +401,7 @@ class Preprocessor:
         _padding_values[feature.name] = tf.constant("-pad-", dtype=feature.dtype)
       # The padding value for heads is -1.
       elif feature.name == "heads":
-        _padding_values[feature.name] = tf.constant(-1, dtype=feature.dtype)
+        _padding_values[feature.name] = tf.constant(self.head_padding_value, dtype=feature.dtype)
       else:
         _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
 
