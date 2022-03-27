@@ -78,7 +78,6 @@ class LSTMLabelingModel(tf.keras.Model):
     if len(concat_list) > 1:
       concat = self.concatenate(concat_list)
       sentence_repr = self.lstm_block(concat)
-      # sentence_repr = self.attention(sentence_repr)
       labels = self.labels(sentence_repr)
     else:
       sentence_repr = self.lstm_block(word_features)

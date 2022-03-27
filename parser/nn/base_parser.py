@@ -86,7 +86,7 @@ class BaseParser(ABC):
     pass
 
   @abstractmethod
-  def _parsing_model(self, model_name):
+  def _parsing_model(self, model_name, sequential=False):
     """Defines the parsing/labeling model. Subclasses should call the model they want
     from architectures.
     """
@@ -94,7 +94,7 @@ class BaseParser(ABC):
     self._use_morph = "morph" in self.features
     self._use_dep_labels = False
     if "dep_labels" in self.features:
-      if "labels" in self._predict:
+      if "labels" in self._predict and not sequential:
         logging.warning(
           """Dep labels are requested as features but setting labels as prediction target.
           Ignoring the dep_labels as feature.""")
@@ -507,7 +507,7 @@ class BaseParser(ABC):
         "label_loss": tf.reduce_mean(losses["labels"]).numpy() if "labels" in self._predict else None
       }
 
-      if (epoch % 10 == 0 or epoch == epochs) and test_data:
+      if (epoch % 3 == 0 or epoch == epochs) and test_data:
         test_results_for_epoch = self.test(dataset=test_data)
         self._log(description=f"Test results after epoch {epoch}",
                   results=test_results_for_epoch)
