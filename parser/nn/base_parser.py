@@ -507,7 +507,7 @@ class BaseParser(ABC):
         "label_loss": tf.reduce_mean(losses["labels"]).numpy() if "labels" in self._predict else None
       }
 
-      if (epoch % 3 == 0 or epoch == epochs) and test_data:
+      if (epoch % 5 == 0 or epoch == epochs) and test_data:
         test_results_for_epoch = self.test(dataset=test_data)
         self._log(description=f"Test results after epoch {epoch}",
                   results=test_results_for_epoch)

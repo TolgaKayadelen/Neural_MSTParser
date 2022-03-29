@@ -159,12 +159,18 @@ class LSTMBlock(layers.Layer):
     super(LSTMBlock, self).__init__(name=name)
     self.dropout_rate = dropout_rate
     self.lstm1 = layers.Bidirectional(layers.LSTM(
-      units=n_units, return_sequences=return_sequences, name="lstm1"))
+      units=n_units, return_sequences=return_sequences,
+      # stateful=True,
+      name="lstm1"))
     self.lstm2 = layers.Bidirectional(layers.LSTM(
-      units=n_units, return_sequences=return_sequences, name="lstm2"))
+      units=n_units, return_sequences=return_sequences,
+      # stateful=True,
+      name="lstm2"))
     self.lstm3 = layers.Bidirectional(layers.LSTM(
       units=n_units, return_sequences=return_sequences,
-      return_state=return_state, name="lstm3"))
+      return_state=return_state,
+      # stateful=True,
+      name="lstm3"))
     self.dropout1 = layers.Dropout(rate=dropout_rate, name="dropout1")
     self.dropout2 = layers.Dropout(rate=dropout_rate, name="dropout2")
     self.dropout3 = layers.Dropout(rate=dropout_rate, name="dropout3")

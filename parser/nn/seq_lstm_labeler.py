@@ -26,7 +26,7 @@ class SeqLSTMLabelingModel(tf.keras.Model):
   """Sequential LSTM labeler."""
   def __init__(self, *,
                word_embeddings: Embeddings,
-               n_units: int = 50,
+               n_units: int = 100,
                n_output_classes: int,
                use_pos=True,
                use_morph=True,
@@ -269,7 +269,8 @@ class SeqLSTMLabeler(base_parser.BaseParser):
       scores, lstm_output = self.model({"words": words, "pos": pos, "morph": morph,
                                         "labels": dep_labels}, training=True)
       label_scores = scores["labels"]
-      # print("label scores ", label_scores)
+      print("label scores ", label_scores)
+      input("press to cont.")
       # print("concat ", lstm_output)
       # input("press to continue.")
       pad_mask = self._flatten((words != 0))
