@@ -28,6 +28,14 @@ py_binary(
 )
 
 py_binary(
+	name = "seq_lstm_labeler_main_t",
+	srcs = ["seq_lstm_labeler_main_t.py"],
+    deps = [
+        ":seq_lstm_labeler_t",
+  ],
+)
+
+py_binary(
     name = "biaffine_parser_main",
     srcs = ["biaffine_parser_main.py"],
     deps = [
@@ -89,6 +97,16 @@ py_library(
 py_library(
 	name = "seq_lstm_labeler",
 	srcs = ["seq_lstm_labeler.py"],
+    deps = [
+        ":base_parser",
+        ":nn_parser_lib",
+        "//tagset/dep_labels:dep_label_enum_py_pb2",
+  ],
+)
+
+py_library(
+	name = "seq_lstm_labeler_t",
+	srcs = ["seq_lstm_labeler_t.py"],
     deps = [
         ":base_parser",
         ":nn_parser_lib",

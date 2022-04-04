@@ -483,7 +483,7 @@ class BaseParser(ABC):
           correct_labels=correct["labels"] if "labels" in self._predict else None,
           pad_mask=pad_mask
          )
-
+        # TODO: only send the pad mask shape to this function rather than pad_mask.
         n_words_in_batch = self._n_words_in_batch(words=words,
                                                   pad_mask=pad_mask)
 
