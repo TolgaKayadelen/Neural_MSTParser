@@ -463,17 +463,18 @@ class BaseParser(ABC):
       logging.info(f"\n\n{'->' * 12} Training Epoch: {epoch} {'<-' * 12}\n\n")
       start_time = time.time()
 
+      losses = collections.defaultdict(list)
       for step, batch in enumerate(dataset):
 
         words, pos, morph = batch["words"], batch["pos"], batch["morph"]
         dep_labels, heads = batch["dep_labels"], batch["heads"]
 
         # Get loss values, predictions, and correct heads/labels for this training step.
-        predictions, losses, correct, pad_mask = self.train_step(words=words,
-                                                                 pos=pos,
-                                                                 morph=morph,
-                                                                 dep_labels=dep_labels,
-                                                                 heads=heads)
+        predictions, batch_loss, correct, pad_mask = self.train_step(words=words,
+                                                                     pos=pos,
+                                                                     morph=morph,
+                                                                     dep_labels=dep_labels,
+                                                                     heads=heads)
 
         # Get the correct heads/labels and correctly predicted heads/labels for this step.
         correct_predictions_dict = self._correct_predictions(
@@ -483,6 +484,7 @@ class BaseParser(ABC):
           correct_labels=correct["labels"] if "labels" in self._predict else None,
           pad_mask=pad_mask
          )
+
         # TODO: only send the pad mask shape to this function rather than pad_mask.
         n_words_in_batch = self._n_words_in_batch(words=words,
                                                   pad_mask=pad_mask)
@@ -490,22 +492,30 @@ class BaseParser(ABC):
         # Update the statistics for correctly predicted heads/labels after this step.
         self._update_correct_prediction_stats(correct_predictions_dict, n_words_in_batch)
 
+        losses["labels"].append(tf.reduce_sum(batch_loss["labels"]))
+
+        ### input(f"in base parser {losses['labels']}")
+
       # Log stats at the end of epoch
       logging.info(f"Training stats: {self.training_stats}")
 
       # Compute UAS, LS, and LAS metrics based on stats at the end of epoch.
       training_results_for_epoch = self._compute_metrics()
 
-      self._log(description=f"Training results after epoch {epoch}",
-           results=training_results_for_epoch)
-
-      self._log(description=f"Training metrics after epoch {epoch}",
-                results=self._training_metrics)
-
       loss_results_for_epoch = {
         "head_loss": tf.reduce_mean(losses["heads"]).numpy() if "heads" in self._predict else None,
         "label_loss": tf.reduce_mean(losses["labels"]).numpy() if "labels" in self._predict else None
       }
+
+      self._log(description=f"Training results after epoch {epoch}",
+                results=training_results_for_epoch)
+
+      self._log(description=f"Training metrics after epoch {epoch}",
+                results=self._training_metrics)
+
+      self._log(description=f"Loss after epoch {epoch}",
+                results=loss_results_for_epoch)
+      # input("press to cont.")
 
       if (epoch % 5 == 0 or epoch == epochs) and test_data:
         test_results_for_epoch = self.test(dataset=test_data)

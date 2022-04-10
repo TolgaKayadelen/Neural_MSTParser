@@ -44,15 +44,15 @@ if __name__ == "__main__":
 
   _DATA_DIR="data/UDv23/Turkish/training"
   _TEST_DATA_DIR="data/UDv23/Turkish/test"
-  # train_treebank= "tr_imst_ud_train_dev.pbtxt"
-  train_treebank = "treebank_train_500_1000.pbtxt"
-  # test_treebank = "tr_imst_ud_test_fixed.pbtxt" \
-  test_treebank = "treebank_test_0_10.conllu"
+  train_treebank= "tr_imst_ud_train_dev.pbtxt"
+  # train_treebank = "treebank_train_500_1000.pbtxt"
+  test_treebank = "tr_imst_ud_test_fixed.pbtxt" \
+  # test_treebank = "treebank_test_0_10.conllu"
   train_sentences = prep.prepare_sentence_protos(
      path=os.path.join(_DATA_DIR, train_treebank))
   dataset = prep.make_dataset_from_generator(
     sentences=train_sentences,
-    batch_size=2
+    batch_size=500
   )
   if test_treebank is not None:
     test_sentences = prep.prepare_sentence_protos(
@@ -66,7 +66,7 @@ if __name__ == "__main__":
   #  scores = parser.parse(batch)   # uncomment for testing loading
   #  print(scores)                  # uncomment for testing loading
 
-  metrics = parser.train(dataset=dataset, epochs=100,
+  metrics = parser.train(dataset=dataset, epochs=75,
                          test_data=test_dataset)
   # metrics = parser.test(dataset=test_dataset)
   print(metrics)

@@ -26,7 +26,7 @@ class SeqLSTMLabelingModel(tf.keras.Model):
   """Sequential LSTM labeler."""
   def __init__(self, *,
                word_embeddings: Embeddings,
-               n_units: int = 5,
+               n_units: int = 256,
                n_output_classes: int,
                use_pos=True,
                use_morph=True,
@@ -50,12 +50,12 @@ class SeqLSTMLabelingModel(tf.keras.Model):
         trainable=True)
     if use_previous_token_label:
       self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=36,
-                                                         output_dim=50,
+                                                         output_dim=100,
                                                          name="label_embeddings",
                                                          trainable=True)
     self.concatenate = layers.Concatenate(name="concat")
     self.lstm_block = layer_utils.LSTMBlock(n_units=n_units,
-                                            # dropout_rate=0.3,
+                                            dropout_rate=0.3,
                                             name="lstm_block"
                                             )
     # Because in the loss function we have from_logits=True, we don't use the
@@ -77,7 +77,7 @@ class SeqLSTMLabelingModel(tf.keras.Model):
         label_scores: [batch_size, seq_len, n_labels] label preds for tokens (i.e. 10, 34, 36)
     """
     word_inputs = inputs["words"]
-    # print("word inputs ", word_inputs)
+    ### print("word inputs ", word_inputs)
     word_features = self.word_embeddings_layer(word_inputs)
     concat_list = [word_features]
     if self.use_pos:
@@ -118,8 +118,10 @@ class SeqLSTMLabelingModel(tf.keras.Model):
 
       # start iterating over tokens.
       for i in range(1, sequence_length):
+        # take the ith token
         token_slice = concat[:, i, :]
         # Sanity check to make sure that correct label embedding is concatenated
+        # to this token.
         tf.debugging.assert_equal(concat_label_feat, token_slice[0, 398:])
         ### input(f"""token slice: {token_slice},
         ###          label emb in token: {token_slice[0, 398:]}""")
@@ -144,12 +146,15 @@ class SeqLSTMLabelingModel(tf.keras.Model):
         correct_labels_table.append(correct_label_slice)
         ### print(f" label preds table {label_preds_table}")
         ### input(f" label scores table {label_scores_table}")
+
+      # At the end of the for loop, when all the tokens are iterated, concat
+      # all the tables into tensors.
       label_scores = tf.concat(label_scores_table, axis=1)
-      print("label scores ", label_scores)
+      ### print("label scores ", label_scores)
       label_preds = tf.concat(label_preds_table, axis=1)
-      print(f"label preds {label_preds}, {label_preds.shape}, {type(label_preds)}")
+      ### print(f"label preds {label_preds}, {label_preds.shape}, {type(label_preds)}")
       correct_labels = tf.concat(correct_labels_table, axis=1)
-      input(f"correct labels {correct_labels}, {correct_labels.shape}, {type(correct_labels)}")
+      ### input(f"correct labels {correct_labels}, {correct_labels.shape}, {type(correct_labels)}")
       tf.assert_equal(label_preds.shape, correct_labels.shape)
       tf.assert_equal(label_preds, tf.argmax(label_scores, 2))
       assert(label_scores.shape[1] == sequence_length-1)
@@ -163,17 +168,17 @@ class SeqLSTMLabelingModel(tf.keras.Model):
       label_preds = []
       label_embeddings = self.label_embeddings.get_weights()
       tokens = [self.word_embeddings.itos(idx=index.numpy()) for index in word_inputs[0]]
-      # print("tokens ", tokens)
-      # input("press to cont.")
+      ### print("tokens ", tokens)
+      ### input("press to cont.")
       batch_size, sequence_length = word_inputs.shape
       # print("seq len ", sequence_length)
       concat = self.concatenate(concat_list)
       # print("concat in test ", concat)
       # input("press to cont.")
       for i in range(1, sequence_length):
-        # print("word inputs ", word_inputs)
+        ### print("word inputs ", word_inputs)
         word = word_inputs[0, i]
-        # print(f"word is {word} and token is {tokens[i]}")
+        ### print(f"word is {word} and token is {tokens[i]}")
         # input("press to cont.")
         # we start from the first (not 0th) token.
         token_slice = concat[:, i, :]
@@ -306,31 +311,34 @@ class SeqLSTMLabeler(base_parser.BaseParser):
       raise ValueError("Cannot predict heads using dependency labeler.")
 
     predictions, correct, losses = {}, {}, {}
-    print("words ", words)
-    print("words ", words[:, 1:])
-    input("press to cont.")
+    ### print("words ", words)
+    ### print("words ", words[:, 1:])
+    ### input("press to cont.")
     pad_mask = self._flatten(words[:, 1:] != 0)
-    print("pad mask ", pad_mask)
+    ### print("pad mask ", pad_mask)
     with tf.GradientTape() as tape:
       scores, lstm_output, label_preds, correct_labels = self.model({"words": words, "pos": pos, "morph": morph,
                                                                     "labels": dep_labels}, training=True)
       label_scores = scores["labels"]
       correct_labels_here = dep_labels[:, 1:]
       tf.assert_equal(correct_labels_here.shape, label_preds.shape)
-      print(f"correct labels from function {correct_labels}")
-      input(f"correct labels here: {correct_labels_here}")
+      ### print(f"correct labels from function {correct_labels}")
+      # TODO: stop getting correct_labels from model but use the slicing over dep labels here.
+      ### input(f"correct labels here: {correct_labels_here}")
       # Flatten the label scores to (batch_size*seq_len, n_classes) (i.e. 340, 36).
       label_scores = self._flatten(label_scores, outer_dim=label_scores.shape[2])
-      print(f"label scores after pad mask {label_scores}, {label_scores.shape}")
-      input("press to cont.")
+      ### print(f"label scores after flatten {label_scores}, {label_scores.shape}")
+      ### input("press to cont.")
       # Flatten the correct labels to the shape (batch_size*seq_len, 1) (i.e. 340,1)
       # Index for the right label for each token.
       correct_labels = self._flatten(correct_labels)
-      print(f"correct labels after flattened {correct_labels}, {correct_labels.shape}")
+      ### print(f"correct labels after flattened {correct_labels}, {correct_labels.shape}")
       label_preds = self._flatten(label_preds)
-      print(f"label preds after flattened {label_preds}, {label_preds.shape}")
-      input("press to cont.")
+      ### print(f"label preds after flattened {label_preds}, {label_preds.shape}")
+
       label_loss = tf.expand_dims(self._label_loss(label_scores, correct_labels), axis=-1)
+      # print("label loss ", label_loss)
+      # input("press to cont.")
       grads = tape.gradient(label_loss, self.model.trainable_weights)
 
     self._optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
@@ -342,6 +350,8 @@ class SeqLSTMLabeler(base_parser.BaseParser):
       pad_mask=pad_mask)
 
     losses["labels"] = label_loss
+    # TODO: should we reduce mean here while saving this and then sum in the train function.
+    # print("label losses in train step", losses["labels"])
     correct["labels"] = correct_labels
     predictions["labels"] = label_preds
 
