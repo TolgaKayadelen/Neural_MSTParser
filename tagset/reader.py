@@ -65,9 +65,10 @@ class LabelReader:
     else:
       label_dict = {}
       for key in tags.Tag.DESCRIPTOR.values_by_name.keys():
-        if key in ["UNKNOWN_TAG", "UNKNOWN_CATEGORY", "UNKNOWN_LABEL"]:
+        if key.startswith("UNKNOWN_"):
           continue
-        if key in {"advmod_emph", "aux_q", "compound_lvc", "compound_redup", "nmod_poss"}:
+        if key in {"advmod_emph", "aux_q", "compound_lvc",
+                   "compound_redup", "nmod_poss", "cc_preconj"}:
           label_dict[key.replace("_", ":")] = tags.Tag.Value(key)
         else:
           label_dict[key] = tags.Tag.Value(key)
@@ -75,4 +76,6 @@ class LabelReader:
     
     if self._reverse:
       return {k:v for v,k in label_dict.items()}
+    # print("label dict ", label_dict)
+    # input("press to cont.")
     return label_dict

@@ -327,9 +327,9 @@ class Preprocessor:
     for feature in self.sequence_features_dict.values():
       if feature.name == "morph":
         _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
-            shape=[66], dtype=feature.dtype)
-        _dataset_shapes[feature.name]=tf.TensorShape([None, 66])
-        _padded_shapes[feature.name]=tf.TensorShape([None, 66])
+            shape=[57], dtype=feature.dtype)
+        _dataset_shapes[feature.name]=tf.TensorShape([None, 56])
+        _padded_shapes[feature.name]=tf.TensorShape([None, 56])
         _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
       elif feature.name in ["tokens", "sent_id"]:
         _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
@@ -346,9 +346,9 @@ class Preprocessor:
         _padding_values[feature.name] = tf.constant(self.head_padding_value, dtype=feature.dtype)
       elif feature.name == ["dep_labels"]  and feature.one_hot is not None:
         _sequence_features[feature.name] = tf.io.FixedLenSequenceFeature(
-          shape=[36], dtype=feature.dtype)
-        _dataset_shapes[feature.name] = tf.TensorShape([None, 36])
-        _padded_shapes[feature.name] = tf.TensorShape([None, 36])
+          shape=[43], dtype=feature.dtype)
+        _dataset_shapes[feature.name] = tf.TensorShape([None, 43])
+        _padded_shapes[feature.name] = tf.TensorShape([None, 43])
         _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
       else:
         _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
@@ -407,11 +407,11 @@ class Preprocessor:
 
       # Set up the padded output shapes for features.
       if feature.name == "morph":
-        _output_shapes[feature.name]=tf.TensorShape([None, 66]) # (, 66)
-        _padded_shapes[feature.name]=tf.TensorShape([None, 66])
+        _output_shapes[feature.name]=tf.TensorShape([None, 56]) # (, 56)
+        _padded_shapes[feature.name]=tf.TensorShape([None, 56])
       elif feature.name =="dep_labels" and feature.one_hot is not None:
-        _output_shapes[feature.name] = tf.TensorShape([None, 36])
-        _padded_shapes[feature.name] = tf.TensorShape([None, 36])
+        _output_shapes[feature.name] = tf.TensorShape([None, 43])
+        _padded_shapes[feature.name] = tf.TensorShape([None, 43])
       else:
         _output_shapes[feature.name]=[None]
         _padded_shapes[feature.name]=tf.TensorShape([None])
@@ -495,9 +495,9 @@ if __name__ == "__main__":
                       labels=["dep_labels", "heads"],
                       # one_hot_features=["dep_labels"]
                       )
-  datapath = "data/UDv23/Turkish/training/treebank_train_0_3.pbtxt"
+  datapath = "data/UDv29/dev/tr/tr_boun-ud-dev.pbtxt"
   sentences = prep.prepare_sentence_protos(path=datapath)
-  dataset = prep.make_dataset_from_generator(sentences=sentences, batch_size=10)
+  dataset = prep.make_dataset_from_generator(sentences=sentences, batch_size=2)
   
   for batch in dataset:
     print("tokens ", batch["tokens"])
@@ -507,6 +507,7 @@ if __name__ == "__main__":
     print("morph ", batch["morph"])
     print("dep labels ", batch["dep_labels"])
     print("heads ", batch["heads"])
+    input("press to cont.")
 
   """
   # Make a dataset and save it

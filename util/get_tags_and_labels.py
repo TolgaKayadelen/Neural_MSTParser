@@ -39,17 +39,21 @@ def GetPosTags(data):
     for sentence in sentence_list:
         tokens = sentence.token
         for token in tokens:
-            fine_tags[token.pos] += 1
             coarse_tags[token.category] += 1
+            fine_tags[token.pos] += 1
             labels[token.label] += 1
 
-    print("labels: {}\n".format(pd.Series(labels)))
-    print("coarse_tags: {}\n".format(pd.Series(coarse_tags)))
-    print("fine_tags: {}\n".format(pd.Series(fine_tags)))
+    # labels = {v: k for k, v in labels.items()}
+    print("labels: {}\n".format(pd.Series(labels).sort_values()))
+    # print(coarse_tags)
+    # coarse_tags = {v: k for k, v in coarse_tags.items()}
+    print("coarse_tags: {}\n".format(pd.Series(coarse_tags).sort_values()))
+    # fine_tags = {v: k for k, v in fine_tags.items()}
+    print("fine_tags: {}\n".format(pd.Series(fine_tags).sort_values()))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data", type=str, help="data to read",
-        default="./data/UDv23/Turkish/training/treebank_tr_imst_ud_train.protobuf")
+        default="./data/UDv29/train/tr/tr_bimst-ud-train.pbtxt")
     args = parser.parse_args()
     GetPosTags(args.data)

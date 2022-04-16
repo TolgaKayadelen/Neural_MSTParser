@@ -199,8 +199,8 @@ class Converter:
             if line.startswith("# text"):
                 metadata["text"] = line.split("=")[1].strip()
                 continue
-            if re.match("([0-9]|[1-9][0-9])-([0-9]|[1-9][0-9])", line):
-                # print("skipping {}".format(line))
+            if re.match("(([0-9]|[1-9][0-9]|[1-9][0-9][0-9])-([0-9]|[1-9][0-9]|[1-9][0-9][0-9]))", line):
+                print("skipping {}".format(line))
                 continue
             values = [item.strip() for item in line.split("\t")]
             sentence_dict[token]["idx"] = int(values[0])
@@ -383,8 +383,6 @@ class PropbankConverter(Converter):
     return sentence
 
 def main(args):
-  print(args.propbank)
-  input("..")
   if args.propbank:
     converter = PropbankConverter(args.input_file)
     sentence_protos = []

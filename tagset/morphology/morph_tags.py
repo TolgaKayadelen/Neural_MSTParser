@@ -3,7 +3,7 @@
 from util import reader
 
 def from_data():
-  data = "data/UDv23/Turkish/training/treebank_train_0_500.pbtxt"
+  data = "./data/UDv29/train/tr/tr_boun-ud-train.pbtxt"
   trb = reader.ReadTreebankTextProto(data)
   morph_tagset = set()
   for sentence in trb.sentence:

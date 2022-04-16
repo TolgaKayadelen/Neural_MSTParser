@@ -45,11 +45,11 @@ class SeqLSTMLabelingModel(tf.keras.Model):
     self.return_lstm_output = return_lstm_output
     if self.use_pos:
       self.pos_embeddings = layer_utils.EmbeddingLayer(
-        input_dim=35, output_dim=32,
+        input_dim=37, output_dim=32,
         name="pos_embeddings",
         trainable=True)
     if use_previous_token_label:
-      self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=36,
+      self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=43,
                                                          output_dim=50,
                                                          name="label_embeddings",
                                                          trainable=True)

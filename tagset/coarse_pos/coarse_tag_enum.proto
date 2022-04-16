@@ -13,11 +13,14 @@ enum Tag {
   DET = 6;              // determiner
   INTJ = 7;             // interjection
   NOUN = 8;             // noun
-  NUM = 9;              // numeral modifier
-  PRON = 10;            // pronoun
-  PROPN = 11;           // proper noun
-  PUNCT = 12;            // punctuation
-  TOP = 13;             // root
-  VERB = 14;            // verb
-  X = 15;               // nonsense
+  PART = 9;             // Particle (ki)
+  NUM = 10;             // numeral modifier
+  PRON = 11;            // pronoun
+  PROPN = 12;           // proper noun
+  PUNCT = 13;           // punctuation
+  SCONJ = 14;           // lakin, nitekim, zira ..
+  SYM = 15;             // symbol
+  VERB = 16;            // verb
+  X = 17;               // piril, tefek, isil, batil, nisanli, ol, camasir
+  TOP = 18;             // root
 }

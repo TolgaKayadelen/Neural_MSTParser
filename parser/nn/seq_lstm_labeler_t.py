@@ -45,11 +45,11 @@ class SeqLSTMLabelingModel(tf.keras.Model):
     self.return_lstm_output = return_lstm_output
     if self.use_pos:
       self.pos_embeddings = layer_utils.EmbeddingLayer(
-        input_dim=35, output_dim=32,
+        input_dim=37, output_dim=32,
         name="pos_embeddings",
         trainable=True)
     if use_previous_token_label:
-      self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=36,
+      self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=43,
                                                          output_dim=100,
                                                          name="label_embeddings",
                                                          trainable=True)
@@ -77,7 +77,7 @@ class SeqLSTMLabelingModel(tf.keras.Model):
         label_scores: [batch_size, seq_len, n_labels] label preds for tokens (i.e. 10, 34, 36)
     """
     word_inputs = inputs["words"]
-    ### print("word inputs ", word_inputs)
+    # print("word inputs ", word_inputs)
     word_features = self.word_embeddings_layer(word_inputs)
     concat_list = [word_features]
     if self.use_pos:
@@ -120,11 +120,12 @@ class SeqLSTMLabelingModel(tf.keras.Model):
       for i in range(1, sequence_length):
         # take the ith token
         token_slice = concat[:, i, :]
+        ### print(f"""token slice: {token_slice}, {token_slice.shape},
+        ###          label emb in token: {token_slice[0, 388:]}""")
+        ### input("press to cont.")
         # Sanity check to make sure that correct label embedding is concatenated
         # to this token.
-        tf.debugging.assert_equal(concat_label_feat, token_slice[0, 398:])
-        ### input(f"""token slice: {token_slice},
-        ###          label emb in token: {token_slice[0, 398:]}""")
+        tf.debugging.assert_equal(concat_label_feat, token_slice[0, 388:])
         # expand from, e.g. [2,448] to [2,1,448]
         # 2=batch size, 1=seq_len, 448=feature_dim
         token_slice = tf.expand_dims(token_slice, axis=1)
@@ -133,14 +134,14 @@ class SeqLSTMLabelingModel(tf.keras.Model):
         label_preds = tf.argmax(label_scores, axis=2)
         correct_label_slice = tf.expand_dims(correct_labels[:, i], -1)
         ### input(f"""label scores: {label_scores},
-        ###          label_preds: {label_preds},
-        ###          correct label slice: {correct_label_slice}""")
+        ###           label_preds: {label_preds},
+        ###           correct label slice: {correct_label_slice}""")
 
         # get the label index in the token of the first batch instance.
         label_index = correct_label_slice[0][0]
-        ### input(f"label index:  {label_index})
+        ### input(f"label index:  {label_index}")
         concat_label_feat = self.label_embeddings.get_weights()[0][label_index]
-        ### input(f"concat label feat: {concat_label_feat})
+        ### input(f"concat label feat: {concat_label_feat}")
         label_scores_table.append(label_scores)
         label_preds_table.append(label_preds)
         correct_labels_table.append(correct_label_slice)
@@ -182,8 +183,8 @@ class SeqLSTMLabelingModel(tf.keras.Model):
         # input("press to cont.")
         # we start from the first (not 0th) token.
         token_slice = concat[:, i, :]
-        # print("token slice ", token_slice)
-        # input("press to cont.")
+        ### print("token slice ", token_slice)
+        ### input("press to cont.")
         # validate that we are capturing the embeddings for the right word
         # word_embeddings = self.word_embeddings.get_weights()
         # print(word_embeddings[0][word])
@@ -194,8 +195,8 @@ class SeqLSTMLabelingModel(tf.keras.Model):
         if i == 1:
           label_emb = tf.expand_dims(label_embeddings[0][dep_label_tags.TOP], 0)
         token_input = tf.concat([token_slice, label_emb], axis=1)
-        # print("token input ", token_input)
-        # input("press to cont.")
+        ### print("token input ", token_input)
+        ### input("press to cont.")
         # we convert from [1,448] to [1,1,448] because the layer expects a batch_size.
         lstm_out = self.lstm_block(tf.expand_dims(token_input, 0))
         label_score = self.labels(lstm_out)
@@ -204,13 +205,13 @@ class SeqLSTMLabelingModel(tf.keras.Model):
         predicted_label = tf.argmax(label_score, axis=2)[0][0]
         label_preds.append(predicted_label.numpy())
         # print(self.dep_label_keys)
-        # print("predicted_label ", predicted_label.numpy())
-        # print(self.dep_label_keys[predicted_label])
-        # input("press to cont.")
+        ### print("predicted_label ", predicted_label.numpy())
+        ### print(self.dep_label_keys[predicted_label])
+        ### input("press to cont.")
 
         label_emb = tf.expand_dims(label_embeddings[0][predicted_label], 0)
-        # print("pred label emb ", label_emb)
-        # input("press to cont.")
+        ### print("pred label emb ", label_emb)
+        ### input("press to cont.")
       return label_preds
 
 
