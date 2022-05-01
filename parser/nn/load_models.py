@@ -54,8 +54,8 @@ def load_data(preprocessor: preprocessor.Preprocessor,
               train_treebank: str,
               batch_size: int,
               test_treebank: str = None):
-  _DATA_DIR = "data/UDv23/Turkish/training"
-  _TEST_DATA_DIR = "data/UDv23/Turkish/test"
+  _DATA_DIR = "data/UDv29/train/tr"
+  _TEST_DATA_DIR = "data/UDv29/dev/tr"
   train_sentences = preprocessor.prepare_sentence_protos(
     path=os.path.join(_DATA_DIR, train_treebank)
   )

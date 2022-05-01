@@ -11,23 +11,23 @@ if __name__ == "__main__":
   word_embeddings = load_models.load_word_embeddings()
   prep = load_models.load_preprocessor(word_embeddings)
 
-  labeler, label_feature = load_models.load_labeler("dependency_labeler", prep)
+  label_feature = next(
+    (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
 
-  parser_model_name = "dependency_parser_label_first"
+  parser_model_name = "label_first_predict_heads_and_labels_boun"
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
                             n_output_classes=label_feature.n_values,
-                            predict=["heads"],
+                            predict=["heads", "labels"],
                             features=["words", "pos", "morph", "heads", "dep_labels"],
                             model_name=parser_model_name)
 
+  """ Uncomment if you want to load pretrained weights
+   labeler, label_feature = load_models.load_labeler("dependency_labeler", prep)
   # print(parser.model.pos_embeddings.weights)
-  # input("press to cont.")
   # print(labeler.model.pos_embeddings.weights)
-  # input("press to cont.")
   parser.model.pos_embeddings.set_weights(labeler.model.pos_embeddings.get_weights())
   # print("parser pos embeddings after transfer ")
   # print(parser.model.pos_embeddings.weights)
-  # input("press to cont.")
 
   for a, b in zip(parser.model.pos_embeddings.weights, labeler.model.pos_embeddings.weights):
     np.testing.assert_allclose(a.numpy(), b.numpy())
@@ -36,11 +36,12 @@ if __name__ == "__main__":
   parser.model.word_embeddings.trainable = False
   print("pos emb. trainable ", parser.model.pos_embeddings.trainable)
   print("word emb. trainble ", parser.model.word_embeddings.trainable)
+  """
 
 
   # get the data
-  train_treebank = "tr_imst_ud_train_dev.pbtxt" # "treebank_train_0_50.pbtxt"
-  test_treebank = "tr_imst_ud_test_fixed.pbtxt" # "treebank_test_0_10.conllu"
+  train_treebank= "tr_boun-ud-train.pbtxt"
+  test_treebank = "tr_boun-ud-dev.pbtxt"
   train_dataset, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
                                                       batch_size=250,

@@ -492,9 +492,10 @@ class BaseParser(ABC):
         # Update the statistics for correctly predicted heads/labels after this step.
         self._update_correct_prediction_stats(correct_predictions_dict, n_words_in_batch)
 
-        losses["labels"].append(tf.reduce_sum(batch_loss["labels"]))
-
-        ### input(f"in base parser {losses['labels']}")
+        if "labels" in self._predict:
+          losses["labels"].append(tf.reduce_sum(batch_loss["labels"]))
+        if "heads" in self._predict:
+          losses["heads"].append(tf.reduce_sum(batch_loss["heads"]))
 
       # Log stats at the end of epoch
       logging.info(f"Training stats: {self.training_stats}")

@@ -151,43 +151,61 @@ class DozatBiaffineScorer(layers.Layer):
 
 class LSTMBlock(layers.Layer):
   """A bidirectional LSTM block with 3 Birectional LSTM layers"""
-  def __init__(self, *, n_units: int,
+  def __init__(self, *,
+              n_units: int,
+              num_layers = 3,
               return_sequences: bool = True,
               return_state: bool = False,
               dropout_rate: float = 0.0,
               name="LSTMBlock"):
     super(LSTMBlock, self).__init__(name=name)
+    total_layers = 0
     self.dropout_rate = dropout_rate
+    if num_layers > 3:
+      raise ValueError("More than 3 LSTM layers not supported.")
     self.lstm1 = layers.Bidirectional(layers.LSTM(
       units=n_units, return_sequences=return_sequences,
-      # stateful=True,
       name="lstm1"))
-    self.lstm2 = layers.Bidirectional(layers.LSTM(
-      units=n_units, return_sequences=return_sequences,
-      # stateful=True,
-      name="lstm2"))
-    self.lstm3 = layers.Bidirectional(layers.LSTM(
-      units=n_units, return_sequences=return_sequences,
-      return_state=return_state,
-      # stateful=True,
-      name="lstm3"))
     self.dropout1 = layers.Dropout(rate=dropout_rate, name="dropout1")
-    self.dropout2 = layers.Dropout(rate=dropout_rate, name="dropout2")
-    self.dropout3 = layers.Dropout(rate=dropout_rate, name="dropout3")
-  
+    total_layers += 1
+    num_layers -= 1
+    if num_layers >= 1:
+      self.lstm2 = layers.Bidirectional(layers.LSTM(
+        units=n_units, return_sequences=return_sequences,
+        name="lstm2"))
+      self.dropout2 = layers.Dropout(rate=dropout_rate, name="dropout2")
+      total_layers += 1
+      num_layers -= 1
+    else: self.lstm2 = None
+    if num_layers >= 1:
+      self.lstm3 = layers.Bidirectional(layers.LSTM(
+        units=n_units, return_sequences=return_sequences,
+        return_state=return_state,
+        name="lstm3"))
+      self.dropout3 = layers.Dropout(rate=dropout_rate, name="dropout3")
+      num_layers -= 1
+      total_layers += 1
+    else: self.lstm3 = None
+    logging.info(f"Total LSTM layers {total_layers}")
+    input("Press to cont.")
+
   def call(self, input_tensor):
     dropout = self.dropout_rate > 0
     if dropout:
       out = self.lstm1(input_tensor)
       out = self.dropout1(out)
-      out = self.lstm2(out)
-      out = self.dropout2(out)
-      out = self.lstm3(out)
-      out = self.dropout3(out)
+      if self.lstm2:
+        out = self.lstm2(out)
+        out = self.dropout2(out)
+      if self.lstm3:
+        out = self.lstm3(out)
+        out = self.dropout3(out)
     else:
       out = self.lstm1(input_tensor)
-      out = self.lstm2(out)
-      out = self.lstm3(out)
+      if self.lstm2 is not None:
+        out = self.lstm2(out)
+      if self.lstm3 is not None:
+        out = self.lstm3(out)
     return out
 
 class UnidirectionalLSTMBlock(layers.Layer):

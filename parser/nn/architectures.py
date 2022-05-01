@@ -36,7 +36,7 @@ class LSTMLabelingModel(tf.keras.Model):
     self.return_lstm_output = return_lstm_output
     if self.use_pos:
       self.pos_embeddings = layer_utils.EmbeddingLayer(
-                                            input_dim=35, output_dim=32,
+                                            input_dim=37, output_dim=32,
                                             name="pos_embeddings",
                                             trainable=True)
     self.concatenate = layers.Concatenate(name="concat")
@@ -114,20 +114,22 @@ class LabelFirstParsingModel(tf.keras.Model):
 
     if self.use_pos:
       self.pos_embeddings = layer_utils.EmbeddingLayer(
-                                            input_dim=35, output_dim=32,
+                                            input_dim=37, output_dim=32,
                                             name="pos_embeddings",
                                             trainable=True)
 
     self.concatenate = layers.Concatenate(name="concat")
-    self.lstm_block = layer_utils.LSTMBlock(n_units=256, dropout_rate=0.3,
+    self.lstm_block = layer_utils.LSTMBlock(n_units=256,
+                                            dropout_rate=0.3,
+                                            num_layers=2,
                                             name="lstm_block")
-    self.attention = layer_utils.Attention()
+    # self.attention = layer_utils.Attention()
     
     if "labels" in self.predict:
       self.dep_labels = layers.Dense(units=n_dep_labels, name="labels")
     else:
       if self.use_dep_labels: # using dep labels as gold features.
-        self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=36,
+        self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=43,
                                                            output_dim=50,
                                                            name="label_embeddings",
                                                            trainable=True)
@@ -176,7 +178,7 @@ class LabelFirstParsingModel(tf.keras.Model):
     else:
       sentence_repr = word_features
     sentence_repr = self.lstm_block(sentence_repr)
-    sentence_repr = self.attention(sentence_repr)
+    # sentence_repr = self.attention(sentence_repr)
     if "labels" in self.predict:
       dep_labels = self.dep_labels(sentence_repr)
       h_arc_head = self.head_perceptron(dep_labels)
@@ -213,7 +215,7 @@ class BiaffineParsingModel(tf.keras.Model):
 
     if self._use_pos:
       self.pos_embeddings = layer_utils.EmbeddingLayer(
-                                          input_dim=35, output_dim=32,
+                                          input_dim=37, output_dim=32,
                                           name="pos_embeddings",
                                           trainable=True)
 
@@ -275,7 +277,7 @@ class EncoderDecoderLabelFirstParser(tf.keras.Model):
   def __init__(self, *,
                n_dep_labels: int,
                word_embeddings: Embeddings,
-               pos_embedding_dim: int = 32,
+               pos_embedding_dim: int = 37,
                character_embedding_dim: int = 32,
                encoder_dim: int,
                decoder_dim: int,
@@ -315,7 +317,7 @@ class EncoderDecoderLabelFirstParser(tf.keras.Model):
 class LSTMEncoder(tf.keras.Model):
   def __init__(self, *,
                word_embeddings: Embeddings,
-               pos_embedding_dim: int = 32,
+               pos_embedding_dim: int = 37,
                encoder_dim: int,
                batch_size: int,
               name="LSTMEncoder"):
@@ -327,7 +329,7 @@ class LSTMEncoder(tf.keras.Model):
                                       name="word_embeddings"
                                       )
       self.pos_embeddings = layer_utils.EmbeddingLayer(
-                                      input_dim=35,
+                                      input_dim=37,
                                       output_dim=pos_embedding_dim,
                                       name="pos_embeddings",
                                       trainable=True
@@ -360,7 +362,7 @@ class LSTMDecoder(tf.keras.Model):
                n_labels: int,
                decoder_dim: int,
                word_embeddings: Embeddings,
-               pos_embedding_dim: int = 32,
+               pos_embedding_dim: int = 37,
                name="LSTMDecoder"
                ):
       super(LSTMDecoder, self).__init__(name=name)
@@ -427,7 +429,7 @@ class LSTMSeqEncoder(tf.keras.Model):
                                       name="word_embeddings"
                                       )
       self.pos_embeddings = layer_utils.EmbeddingLayer(
-                                      input_dim=35, output_dim=32,
+                                      input_dim=37, output_dim=32,
                                       name="pos_embeddings",
                                       trainable=True
                                       )
@@ -464,7 +466,7 @@ class LSTMSeqDecoder(tf.keras.Model):
   def __init__(self, *,
                n_labels: int,
                decoder_dim: int,
-               embedding_dim: int = 32,
+               embedding_dim: int = 37,
                batch_size: int,
                attention_type='luong',
                name="LSTMSeqDecoder"):

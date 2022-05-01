@@ -47,7 +47,7 @@ class LabelFirstParser(base_parser.BaseParser):
   def inputs(self):
     word_inputs = tf.keras.Input(shape=(None,), name="words")
     pos_inputs = tf.keras.Input(shape=(None,), name="pos")
-    morph_inputs = tf.keras.Input(shape=(None, 66), name="morph")
+    morph_inputs = tf.keras.Input(shape=(None, 56), name="morph")
     label_inputs = tf.keras.Input(shape=(None,), name="labels")
     input_dict = {"words": word_inputs}
     if self._use_pos:

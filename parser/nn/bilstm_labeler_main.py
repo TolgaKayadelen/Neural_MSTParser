@@ -42,10 +42,10 @@ if __name__ == "__main__":
   #print("parser ", parser)
   #input("press to cont.")
 
-  _DATA_DIR="data/UDv23/Turkish/training"
-  _TEST_DATA_DIR="data/UDv23/Turkish/test"
-  train_treebank="tr_imst_ud_train_dev.pbtxt"
-  test_treebank = "tr_imst_ud_test_fixed.pbtxt"
+  _DATA_DIR="data/UDv29/train/tr"
+  _TEST_DATA_DIR="data/UDv29/dev/tr"
+  train_treebank= "tr_boun-ud-train.pbtxt"
+  test_treebank = "tr_boun-ud-dev.pbtxt"
   train_sentences = prep.prepare_sentence_protos(
     path=os.path.join(_DATA_DIR, train_treebank))
   dataset = prep.make_dataset_from_generator(

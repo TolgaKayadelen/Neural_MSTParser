@@ -45,9 +45,7 @@ if __name__ == "__main__":
   _DATA_DIR="data/UDv29/train/tr"
   _TEST_DATA_DIR="data/UDv29/dev/tr"
   train_treebank= "tr_boun-ud-train.pbtxt"
-  # train_treebank = "treebank_train_500_1000.pbtxt"
-  test_treebank = "tr_boun-ud-dev.pbtxt" \
-  # test_treebank = "treebank_test_0_10.conllu"
+  test_treebank = "tr_boun-ud-dev.pbtxt"
   train_sentences = prep.prepare_sentence_protos(
      path=os.path.join(_DATA_DIR, train_treebank))
   dataset = prep.make_dataset_from_generator(
