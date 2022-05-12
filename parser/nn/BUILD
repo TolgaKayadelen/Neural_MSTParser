@@ -36,6 +36,14 @@ py_binary(
 )
 
 py_binary(
+    name = "seq_lstm_attn_main",
+    srcs = ["seq_lstm_attn_main.py"],
+    deps = [
+        ":seq_lstm_attn"
+    ]
+)
+
+py_binary(
     name = "biaffine_parser_main",
     srcs = ["biaffine_parser_main.py"],
     deps = [
@@ -115,6 +123,16 @@ py_library(
 )
 
 py_library(
+	name = "seq_lstm_attn",
+	srcs = ["seq_lstm_attn.py"],
+    deps = [
+        ":base_parser",
+        ":nn_parser_lib",
+        "//tagset/dep_labels:dep_label_enum_py_pb2",
+  ],
+)
+
+py_library(
     name = "biaffine_parser",
     srcs = ["biaffine_parser.py"],
     deps = [
@@ -158,9 +176,6 @@ py_library(
     ":bilstm_labeler",
   ],
 )
-
-
-
 
 
 # Deprecated

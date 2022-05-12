@@ -40,6 +40,7 @@ import numpy as np
 import argparse
 import os
 import re
+import random
 import pandas as pd
 # import sys
 # reload(sys)
@@ -400,6 +401,7 @@ def main(args):
     converter = Converter(args.input_file)
     # input("Press to continue..")
     sentences = converter.sentence_list
+    # random_sentences = random.sample(sentences, 50)
     sentence_protos = converter.ConvertConllToProto(conll_sentences=sentences)
 
   converter.Write(sentence_protos, output_file=args.output_file,

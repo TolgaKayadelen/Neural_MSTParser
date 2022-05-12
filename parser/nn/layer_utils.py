@@ -187,7 +187,7 @@ class LSTMBlock(layers.Layer):
       total_layers += 1
     else: self.lstm3 = None
     logging.info(f"Total LSTM layers {total_layers}")
-    input("Press to cont.")
+    # input("Press to cont.")
 
   def call(self, input_tensor):
     dropout = self.dropout_rate > 0

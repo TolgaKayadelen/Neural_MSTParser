@@ -5,11 +5,8 @@ vector of) the label  predicted in the previous timestep as input
 In test time, tokens are labeled one by one rather than all in once, hence
 the name sequential_lstm_labeler."""
 
-
-import os
 import logging
 import tensorflow as tf
-import numpy as np
 from parser.nn import layer_utils
 
 from input import embeddor
@@ -351,7 +348,6 @@ class SeqLSTMLabeler(base_parser.BaseParser):
       pad_mask=pad_mask)
 
     losses["labels"] = label_loss
-    # TODO: should we reduce mean here while saving this and then sum in the train function.
     # print("label losses in train step", losses["labels"])
     correct["labels"] = correct_labels
     predictions["labels"] = label_preds

@@ -37,7 +37,8 @@ class BaseParser(ABC):
                n_output_classes: int = None,
                predict: List[str],
                features: List[str] = ["words"],
-               model_name: str):
+               model_name: str,
+               test_every: int = 10):
     # Embeddings
     self.word_embeddings = word_embeddings
 
@@ -58,6 +59,8 @@ class BaseParser(ABC):
     self._metrics = self._metrics()
 
     self._training_metrics = self._training_metrics()
+
+    self._test_every = test_every
 
     assert(all(val in ["heads", "labels"] for val in self._predict)), "Invalid prediction target!"
 
@@ -518,7 +521,7 @@ class BaseParser(ABC):
                 results=loss_results_for_epoch)
       # input("press to cont.")
 
-      if (epoch % 5 == 0 or epoch == epochs) and test_data:
+      if (epoch % self._test_every == 0 or epoch == epochs) and test_data:
         test_results_for_epoch = self.test(dataset=test_data)
         self._log(description=f"Test results after epoch {epoch}",
                   results=test_results_for_epoch)
