@@ -26,13 +26,13 @@ if __name__ == "__main__":
 
   _DATA_DIR="data/UDv29/train/tr"
   _TEST_DATA_DIR="data/UDv29/test/tr"
-  train_treebank = "tr_boun-ud-train-random10.pbtxt"
+  train_treebank = "tr_boun-ud-train-random500.pbtxt"
   test_treebank = None # "tr_boun-ud-test-random50.pbtxt"
   train_sentences = prep.prepare_sentence_protos(
     path=os.path.join(_DATA_DIR, train_treebank))
   dataset = prep.make_dataset_from_generator(
     sentences=train_sentences,
-    batch_size=10
+    batch_size=50
   )
   if test_treebank is not None:
     test_sentences = prep.prepare_sentence_protos(
@@ -43,7 +43,7 @@ if __name__ == "__main__":
   else:
     test_dataset=None
 
-  metrics = parser.train(dataset=dataset, epochs=100,
+  metrics = parser.train(dataset=dataset, epochs=400,
                          test_data=test_dataset)
   print(metrics)
   # writer.write_proto_as_text(metrics,
