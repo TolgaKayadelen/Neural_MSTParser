@@ -3,7 +3,7 @@
 import numpy as np
 np.set_printoptions(threshold=np.inf)
 
-
+from pathlib import Path
 import tensorflow as tf
 import time
 
@@ -327,7 +327,7 @@ class Preprocessor:
     for feature in self.sequence_features_dict.values():
       if feature.name == "morph":
         _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
-            shape=[57], dtype=feature.dtype)
+            shape=[56], dtype=feature.dtype)
         _dataset_shapes[feature.name]=tf.TensorShape([None, 56])
         _padded_shapes[feature.name]=tf.TensorShape([None, 56])
         _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
@@ -482,9 +482,30 @@ class Preprocessor:
             token.selected_head.address for token in sentence.token]
       yield yield_dict
 
-    
+
+def make_to_tfrecords(path: str):
+  """Converts a set of tf.Examples to tf_records"""
+  embeddings = nn_utils.load_embeddings()
+  word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
+  prep = Preprocessor(word_embeddings=word_embeddings,
+                      features=["words", "tokens", "sent_id", "pos", "morph", "dep_labels", "heads"],
+                      labels=["dep_labels", "heads"])
+  sentences = prep.prepare_sentence_protos(path=path)
+  tf_examples = prep.make_tf_examples(sentences=sentences)
+  input_path = Path(path)
+  output_path = str(input_path.parent) + "/" + str(input_path.stem) + ".tfrecords"
+  print(output_path)
+  input("press to cont.")
+  prep.write_tf_records(examples=tf_examples, path=output_path)
+  logging.info(f"tf_records written to {output_path}")
+
+
 if __name__ == "__main__":
-  
+
+  data = "data/UDv29/train/tr/tr_boun-ud-train-random500.pbtxt"
+  make_to_tfrecords(data)
+
+  ''' Make a dataset with example_generator
   # Load word embeddings
   embeddings = nn_utils.load_embeddings()
   word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
@@ -495,30 +516,29 @@ if __name__ == "__main__":
                       labels=["dep_labels", "heads"],
                       # one_hot_features=["dep_labels"]
                       )
-  datapath = "data/UDv29/dev/tr/tr_boun-ud-dev.pbtxt"
+  datapath = "./data/UDv29/train/tr/tr_boun-ud-train-random1.pbtxt"
   sentences = prep.prepare_sentence_protos(path=datapath)
-  dataset = prep.make_dataset_from_generator(sentences=sentences, batch_size=2)
+  dataset = prep.make_dataset_from_generator(sentences=sentences, batch_size=1)
   
   for batch in dataset:
-    print("tokens ", batch["tokens"])
-    print("words ", batch["words"])
-    print("pos ", batch["pos"])
-    print("sent id ", batch["sent_id"])
-    print("morph ", batch["morph"])
-    print("dep labels ", batch["dep_labels"])
-    print("heads ", batch["heads"])
+    print(batch)
     input("press to cont.")
+  '''
 
-  """
+  '''Make a dataset as tf_records 
   # Make a dataset and save it
   tf_examples = prep.make_tf_examples(sentences=sentences)
   prep.write_tf_records(examples=tf_examples,
-                        path="./input/treebank_train_0_3.tfrecords")
+                        path="./input/tr_boun-train-random1.tfrecords")
   
 
   # Read dataset from saved tfrecords
   dataset = prep.read_dataset_from_tfrecords(
-    records="./input/treebank_train_0_3.tfrecords")
+    records="./input/treebank_boun-train-random1.tfrecords")
+  print("tf examples")
   for batch in dataset:
     print(batch)
-  """
+  '''
+
+
+
