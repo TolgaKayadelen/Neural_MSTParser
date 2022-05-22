@@ -1,12 +1,18 @@
 import os
 import logging
+import tensorflow as tf
 
+import argparse
 from parser.nn.seq_lstm_attn import SeqLSTMAttnLabeler
 from util import converter, writer
 from util.nn import nn_utils
 from input import embeddor, preprocessor
 
-if __name__ == "__main__":
+def main(args):
+  tf.debugging.experimental.enable_dump_debug_info(
+    "tfdbg2_parser_logdir",
+    tensor_debug_mode="FULL_HEALTH",
+    circular_buffer_size=-1)
   embeddings = nn_utils.load_embeddings()
   word_embeddings = embeddor.Embeddings(name="word2vec", matrix=embeddings)
   prep = preprocessor.Preprocessor(
@@ -22,14 +28,15 @@ if __name__ == "__main__":
                               predict=["labels"],
                               features=["words", "pos", "morph"],
                               model_name="seq_lstm_attn_labeler",
-                              test_every=5)
+                              test_every=args.test_every)
 
   _DATA_DIR="data/UDv29/train/tr"
   _TEST_DATA_DIR="data/UDv29/test/tr"
+  logging.info(f"Reading training data from {args.train_data}")
   dataset = prep.read_dataset_from_tfrecords(
-    records= _DATA_DIR + "/tr_boun-ud-train-random500.tfrecords",
-    batch_size=50)
-  test_treebank = None
+    records= _DATA_DIR + args.train_data,
+    batch_size=args.batch_size)
+  test_treebank = args.test_data # None
 
   """
   train_treebank = "tr_boun-ud-train-random500.pbtxt"
@@ -46,11 +53,11 @@ if __name__ == "__main__":
       path=os.path.join(_TEST_DATA_DIR, test_treebank))
     test_dataset = prep.make_dataset_from_generator(
       sentences=test_sentences,
-      batch_size=3)
+      batch_size=1)
   else:
     test_dataset=None
 
-  metrics = parser.train(dataset=dataset, epochs=400,
+  metrics = parser.train(dataset=dataset, epochs=args.epochs,
                          test_data=test_dataset)
   print(metrics)
   # writer.write_proto_as_text(metrics,
@@ -58,3 +65,28 @@ if __name__ == "__main__":
   # nn_utils.plot_metrics(name=parser.model_name, metrics=metrics)
   # parser.save_weights()
   # logging.info(f"{parser.model_name} results written")
+
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser()
+  parser.add_argument("--batch_size",
+                      type=int,
+                      default=1,
+                      help="Size of training and test data batches")
+  parser.add_argument("--epochs",
+                      type=int,
+                      default=3,
+                      help="Trains a new model.")
+  parser.add_argument("--test_data",
+                      type=str,
+                      default=None,
+                      help="Test/dev dataset name.")
+  parser.add_argument("--test_every",
+                      type=int,
+                      default=5,
+                      help="Trains a new model.")
+  parser.add_argument("--train_data",
+                      type=str,
+                      default="/tr_boun-ud-train-random1.tfrecords",
+                      help="Train dataset name")
+  args = parser.parse_args()
+  main(args)

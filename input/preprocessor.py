@@ -495,14 +495,13 @@ def make_to_tfrecords(path: str):
   input_path = Path(path)
   output_path = str(input_path.parent) + "/" + str(input_path.stem) + ".tfrecords"
   print(output_path)
-  input("press to cont.")
   prep.write_tf_records(examples=tf_examples, path=output_path)
   logging.info(f"tf_records written to {output_path}")
 
 
 if __name__ == "__main__":
 
-  data = "data/UDv29/train/tr/tr_boun-ud-train-random500.pbtxt"
+  data = "data/UDv29/train/tr/tr_boun-ud-train-random10.pbtxt"
   make_to_tfrecords(data)
 
   ''' Make a dataset with example_generator

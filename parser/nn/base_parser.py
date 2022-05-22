@@ -6,7 +6,7 @@ import time
 
 from input import embeddor
 import tensorflow as tf
-import tensorflow_addons as tfa
+# import tensorflow_addons as tfa
 import matplotlib as mpl
 import numpy as np
 
@@ -64,6 +64,7 @@ class BaseParser(ABC):
 
     assert(all(val in ["heads", "labels"] for val in self._predict)), "Invalid prediction target!"
 
+  # TODO: Make it an attribute. Making it a property causes tf.function fail in subclasses.
   @property
   @abstractmethod
   def _optimizer(self):
@@ -173,7 +174,7 @@ class BaseParser(ABC):
       metrics_list += ("ls", "ls_test", "las", "las_test", "label_loss")
     return nn_utils.set_up_metrics(*metrics_list)
 
-
+  # @tf.function
   def  _correct_predictions(self, *,
                             head_predictions=None,
                             correct_heads=None,
@@ -199,6 +200,8 @@ class BaseParser(ABC):
         n_chp: number of correctly predicted heads.
         n_clp: number of correctly predicted labels.
     """
+    correct_predictions_dict = {"chp": None, "n_chp": None, "clp": None, "n_clp": None}
+
     if pad_mask is None:
       if head_predictions is not None:
         pad_mask = np.full(shape=head_predictions.shape, fill_value=True, dtype=bool)
@@ -208,30 +211,21 @@ class BaseParser(ABC):
         raise RuntimeError("Fatal: Either head predictions or label predictions should exist.")
 
     if "heads" in self._predict:
-      # print("head preds ", head_predictions)
-      # print("correct heads ", correct_heads)
       correct_head_preds = tf.boolean_mask(head_predictions == correct_heads, pad_mask)
-      # print("correct head preads ", correct_head_preds)
-      n_correct_head_preds = np.sum(correct_head_preds)
-      # print(n_correct_head_preds)
-      # input("press")
-    else:
-      correct_head_preds=None
-      n_correct_head_preds=None
+      n_correct_head_preds = tf.math.reduce_sum(tf.cast(correct_head_preds, tf.int32))
+      correct_predictions_dict["chp"] = correct_head_preds
+      correct_predictions_dict["n_chp"] = n_correct_head_preds.numpy()
+
 
     if "labels" in self._predict:
       correct_label_preds = tf.boolean_mask(label_predictions == correct_labels, pad_mask)
-      n_correct_label_preds = np.sum(correct_label_preds)
-    else:
-      correct_label_preds=None
-      n_correct_label_preds=None
+      n_correct_label_preds = tf.math.reduce_sum(tf.cast(correct_label_preds, tf.int32))
+      # print(n_correct_label_preds.numpy())
+      correct_predictions_dict["clp"] = correct_label_preds
+      correct_predictions_dict["n_clp"] = n_correct_label_preds.numpy()
+      # input("press to cont.")
 
-    return {
-      "chp": correct_head_preds,
-      "n_chp": n_correct_head_preds,
-      "clp": correct_label_preds,
-      "n_clp": n_correct_label_preds,
-    }
+    return correct_predictions_dict
 
   def _update_training_metrics(self, *,
                                heads=None,
@@ -267,6 +261,10 @@ class BaseParser(ABC):
         logging.info(f"Metric {key} is not tracked.")
       else:
         try:
+          # TODO: fix this at the point of the caller site and always send a real number.
+          if tf.is_tensor(value):
+            value = value.numpy()
+          # input("press to cont.")
           self._metrics.metric[key].value_list.value.append(value)
         except KeyError:
           logging.error(f"No such metric as {key}!!")
@@ -290,6 +288,7 @@ class BaseParser(ABC):
     else:
       stats = self.test_stats
 
+    # print("words in batch ", n_words_in_batch)
     stats["n_tokens"] += n_words_in_batch
     h, l = None, None
 
@@ -332,14 +331,17 @@ class BaseParser(ABC):
       _metrics[metric_suffix("las")] = self.las(stats["n_chlp"], stats["n_tokens"])
     return _metrics
 
+  @tf.function
   def _head_loss(self, head_scores, correct_heads):
     """Computes loss for head predictions of the parser."""
     return self._head_loss_function(correct_heads, head_scores)
 
+  @tf.function
   def _label_loss(self, label_scores, correct_labels):
     """Computes loss for label predictions for the parser."""
     return self._label_loss_function(correct_labels, label_scores)
 
+  @tf.function
   def train_step(self, *,
                  words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
                  dep_labels: tf.Tensor, heads: tf.Tensor) -> Tuple[tf.Tensor, ...]:
@@ -436,7 +438,6 @@ class BaseParser(ABC):
       predictions["labels"] = label_preds
 
     return predictions, losses, correct, pad_mask
-
 
   def train(self, *,
             dataset: Dataset,
@@ -536,7 +537,6 @@ class BaseParser(ABC):
       )
 
     return self._metrics
-
 
   def test(self, *, dataset: Dataset):
     """Tests the performance of this parser on some dataset."""

@@ -15,6 +15,7 @@ import tensorflow.keras.backend as K
 
 from input import embeddor
 from proto import metrics_pb2
+from typing import List, Dict, Tuple
 
 from parser.nn import base_parser
 from parser.nn import layer_utils
@@ -64,6 +65,7 @@ class SeqLSTMAttnModel(tf.keras.Model):
     self.use_morph = use_morph
     self.word_embeddings = word_embeddings
     self.n_output_classes = n_output_classes
+    self.scores = {}
 
     # Pre attention layers
     self.word_embeddings_layer = layer_utils.EmbeddingLayer(
@@ -85,6 +87,8 @@ class SeqLSTMAttnModel(tf.keras.Model):
     # Attention layers
     # We will override the repeat factor of this in repeator in call function
     # depending on the sequence length of the particular batch.
+    self.s0 = layers.Input(self.n_s, name="s0")
+    self.c0 = layers.Input(self.n_s, name="c0")
     self.attn_repeator = layers.RepeatVector(1)
     self.attn_concatenator = layers.Concatenate(axis=-1)
     self.attn_densor1 = layers.Dense(50, activation = "tanh")
@@ -100,7 +104,6 @@ class SeqLSTMAttnModel(tf.keras.Model):
                                      activation=softmax,
                                      name="output")
     # self.output_layer = layers.Dense(units=n_dep_labels, name="labels")
-
 
   def _one_step_attention(self, a, s_prev):
     """
@@ -177,6 +180,7 @@ class SeqLSTMAttnModel(tf.keras.Model):
     # print("c0 shape ", c0.shape)
     c0 = tf.zeros((batch_size, self.n_s))
     # print("c0 shape ", c0.shape)
+
     if self.use_pos:
       pos_inputs = inputs["pos"]
       pos_features = self.pos_embeddings(pos_inputs)
@@ -196,7 +200,6 @@ class SeqLSTMAttnModel(tf.keras.Model):
     # print("a shape ", a.shape)
     s = s0
     c = c0
-    # input("press to cont.")
 
     for t in range(seq_len):
       context = self._one_step_attention(a, s)
@@ -218,13 +221,29 @@ class SeqLSTMAttnModel(tf.keras.Model):
     label_scores = tf.reshape(tf.concat(outputs, axis=1),
                               shape=(batch_size, seq_len, self.n_output_classes))
     # print("outputs concat: ", label_scores)
-    return {"labels": label_scores}
+    self.scores["labels"] = label_scores
+    return self.scores
 
 
 class SeqLSTMAttnLabeler(base_parser.BaseParser):
+  def __init__(self, *,
+               word_embeddings: Embeddings,
+               n_output_classes: int = None,
+               predict: List[str],
+               features: List[str] = ["words"],
+               model_name: str,
+               test_every: int = 10):
+    super(SeqLSTMAttnLabeler, self).__init__(word_embeddings=word_embeddings,
+                                             n_output_classes=n_output_classes,
+                                             predict=predict,
+                                             features=features,
+                                             model_name=model_name,
+                                             test_every=test_every)
+    self.optimizer = tf.keras.optimizers.Adam(0.01, beta_1=0.9, beta_2=0.9, clipnorm=1.)
+
   @property
   def _optimizer(self):
-    return tf.keras.optimizers.Adam(0.01, beta_1=0.9, beta_2=0.9, clipnorm=1.)
+    raise NotImplementedError("Please use the .optimizer attribute instead.")
 
 
   def _training_metrics(self):
@@ -280,7 +299,6 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
     print(f"""Using features pos: {self._use_pos}, morph: {self._use_morph}""")
     model = SeqLSTMAttnModel(
       n_output_classes=self._n_output_classes,
-      # n_output_classes=5,
       word_embeddings=self.word_embeddings,
       name=model_name,
       use_pos=self._use_pos,
@@ -289,7 +307,7 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
     # model(inputs=self.inputs)
     return model
 
-
+  @tf.function
   def train_step(self, *,
                  words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
                  dep_labels: tf.Tensor, heads: tf.Tensor) -> Tuple[tf.Tensor, ...]:
@@ -346,11 +364,20 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
       # print(f"label preds after flattened {preds_flattened}, {preds_flattened.shape}")
       # input("press to cont.")
       label_loss = tf.expand_dims(self._label_loss(label_scores, correct_labels), axis=-1)
-      # print("label loss ", label_loss)
-      # input("press to cont.")
-      grads = tape.gradient(label_loss, self.model.trainable_weights)
 
-    self._optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
+      # nan_loss = any(tf.math.is_nan(label_loss))
+      # if nan_loss:
+      #  print("label loss ", label_loss)
+      #  print("labe scores ", label_scores)
+      #  input("press to cont.")
+
+      # if nan_loss:
+      #  for grad in grads:
+      #    print("grad ", grad)
+      #    input("press to cont.")
+
+    grads = tape.gradient(label_loss, self.model.trainable_weights)
+    self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
     pad_mask = self._flatten(words[:, 1:] != 0)
     # print("pad mask ", pad_mask)
     # input("press to cont.")
@@ -368,7 +395,7 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
 
     return predictions, losses, correct, pad_mask
 
-
+  @tf.function
   def test(self, *, dataset: Dataset):
     """Tests the performance of this parser on some dataset."""
     print("Testing on the test set..")
@@ -405,6 +432,7 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
     test_results = self._compute_metrics(stats="test")
     return test_results
 
+  @tf.function
   def parse(self, example: Dict, training=False):
     """Parse an example with this parser.
 
