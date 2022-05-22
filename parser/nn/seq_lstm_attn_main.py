@@ -1,6 +1,7 @@
 import os
 import logging
 import tensorflow as tf
+import datetime
 
 import argparse
 from parser.nn.seq_lstm_attn import SeqLSTMAttnLabeler
@@ -9,8 +10,10 @@ from util.nn import nn_utils
 from input import embeddor, preprocessor
 
 def main(args):
+  current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+  log_dir = "debug/seq_lstm_attn/" + current_time
   tf.debugging.experimental.enable_dump_debug_info(
-    "tfdbg2_parser_logdir",
+    log_dir,
     tensor_debug_mode="FULL_HEALTH",
     circular_buffer_size=-1)
   embeddings = nn_utils.load_embeddings()
@@ -28,6 +31,7 @@ def main(args):
                               predict=["labels"],
                               features=["words", "pos", "morph"],
                               model_name="seq_lstm_attn_labeler",
+                              log_dir=log_dir,
                               test_every=args.test_every)
 
   _DATA_DIR="data/UDv29/train/tr"
@@ -74,7 +78,7 @@ if __name__ == "__main__":
                       help="Size of training and test data batches")
   parser.add_argument("--epochs",
                       type=int,
-                      default=3,
+                      default=20,
                       help="Trains a new model.")
   parser.add_argument("--test_data",
                       type=str,

@@ -38,6 +38,7 @@ class BaseParser(ABC):
                predict: List[str],
                features: List[str] = ["words"],
                model_name: str,
+               log_dir: str,
                test_every: int = 10):
     # Embeddings
     self.word_embeddings = word_embeddings
@@ -62,6 +63,12 @@ class BaseParser(ABC):
 
     self._test_every = test_every
 
+    self._log_dir = log_dir
+
+    self.loss_summary_writer = tf.summary.create_file_writer(log_dir + "/loss")
+    self.metric_summary_writer = tf.summary.create_file_writer(log_dir + "/metrics")
+
+    logging.info(f"Logging to {self._log_dir}")
     assert(all(val in ["heads", "labels"] for val in self._predict)), "Invalid prediction target!"
 
   # TODO: Make it an attribute. Making it a property causes tf.function fail in subclasses.
@@ -500,6 +507,7 @@ class BaseParser(ABC):
           losses["labels"].append(tf.reduce_sum(batch_loss["labels"]))
         if "heads" in self._predict:
           losses["heads"].append(tf.reduce_sum(batch_loss["heads"]))
+        # end inner for
 
       # Log stats at the end of epoch
       logging.info(f"Training stats: {self.training_stats}")
@@ -511,6 +519,19 @@ class BaseParser(ABC):
         "head_loss": tf.reduce_mean(losses["heads"]).numpy() if "heads" in self._predict else None,
         "label_loss": tf.reduce_mean(losses["labels"]).numpy() if "labels" in self._predict else None
       }
+      if epoch % 5 == 0 or epoch == epochs:
+        if "labels" in self._predict:
+          with self.loss_summary_writer.as_default():
+            tf.summary.scalar("label loss", loss_results_for_epoch["label_loss"], step=epoch)
+          with self.metric_summary_writer.as_default():
+            tf.summary.scalar("label score", training_results_for_epoch["ls"], step=epoch)
+
+        if "heads" in self._predict:
+          with self.loss_summary_writer.as_default():
+            tf.summary.scalar("head loss", loss_results_for_epoch["head_loss"], step=epoch)
+          with self.metric_summary_writer.as_default():
+            tf.summary.scalar("uas", training_results_for_epoch["uas"], steps=epoch)
+            tf.summary.scalar("las", training_results_for_epoch["las"], steps=epoch)
 
       self._log(description=f"Training results after epoch {epoch}",
                 results=training_results_for_epoch)

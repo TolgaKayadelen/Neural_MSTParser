@@ -232,12 +232,14 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
                predict: List[str],
                features: List[str] = ["words"],
                model_name: str,
+               log_dir: str,
                test_every: int = 10):
     super(SeqLSTMAttnLabeler, self).__init__(word_embeddings=word_embeddings,
                                              n_output_classes=n_output_classes,
                                              predict=predict,
                                              features=features,
                                              model_name=model_name,
+                                             log_dir=log_dir,
                                              test_every=test_every)
     self.optimizer = tf.keras.optimizers.Adam(0.01, beta_1=0.9, beta_2=0.9, clipnorm=1.)
 
