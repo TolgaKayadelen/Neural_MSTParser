@@ -66,7 +66,8 @@ class BaseParser(ABC):
     self._log_dir = log_dir
 
     self.loss_summary_writer = tf.summary.create_file_writer(log_dir + "/loss")
-    self.metric_summary_writer = tf.summary.create_file_writer(log_dir + "/metrics")
+    self.train_summary_writer = tf.summary.create_file_writer(log_dir + "/train")
+    self.test_summary_writer = tf.summary.create_file_writer(log_dir + "/test")
 
     logging.info(f"Logging to {self._log_dir}")
     assert(all(val in ["heads", "labels"] for val in self._predict)), "Invalid prediction target!"
@@ -459,7 +460,7 @@ class BaseParser(ABC):
     Returns:
       training_results: logs of scores and losses at the end of training.
     """
-
+    logging.info("Training started")
     for epoch in range(1, epochs+1):
       test_results_for_epoch = None
 
@@ -476,7 +477,6 @@ class BaseParser(ABC):
 
       losses = collections.defaultdict(list)
       for step, batch in enumerate(dataset):
-
         words, pos, morph = batch["words"], batch["pos"], batch["morph"]
         dep_labels, heads = batch["dep_labels"], batch["heads"]
 
@@ -519,19 +519,6 @@ class BaseParser(ABC):
         "head_loss": tf.reduce_mean(losses["heads"]).numpy() if "heads" in self._predict else None,
         "label_loss": tf.reduce_mean(losses["labels"]).numpy() if "labels" in self._predict else None
       }
-      if epoch % 5 == 0 or epoch == epochs:
-        if "labels" in self._predict:
-          with self.loss_summary_writer.as_default():
-            tf.summary.scalar("label loss", loss_results_for_epoch["label_loss"], step=epoch)
-          with self.metric_summary_writer.as_default():
-            tf.summary.scalar("label score", training_results_for_epoch["ls"], step=epoch)
-
-        if "heads" in self._predict:
-          with self.loss_summary_writer.as_default():
-            tf.summary.scalar("head loss", loss_results_for_epoch["head_loss"], step=epoch)
-          with self.metric_summary_writer.as_default():
-            tf.summary.scalar("uas", training_results_for_epoch["uas"], steps=epoch)
-            tf.summary.scalar("las", training_results_for_epoch["las"], steps=epoch)
 
       self._log(description=f"Training results after epoch {epoch}",
                 results=training_results_for_epoch)
@@ -541,12 +528,29 @@ class BaseParser(ABC):
 
       self._log(description=f"Loss after epoch {epoch}",
                 results=loss_results_for_epoch)
-      # input("press to cont.")
 
-      if (epoch % self._test_every == 0 or epoch == epochs) and test_data:
-        test_results_for_epoch = self.test(dataset=test_data)
-        self._log(description=f"Test results after epoch {epoch}",
-                  results=test_results_for_epoch)
+      if epoch % self._test_every == 0 or epoch == epochs:
+        if "labels" in self._predict:
+          with self.loss_summary_writer.as_default():
+            tf.summary.scalar("label loss", loss_results_for_epoch["label_loss"], step=epoch)
+          with self.train_summary_writer.as_default():
+            tf.summary.scalar("label score", training_results_for_epoch["ls"], step=epoch)
+
+        if "heads" in self._predict:
+          with self.loss_summary_writer.as_default():
+            tf.summary.scalar("head loss", loss_results_for_epoch["head_loss"], step=epoch)
+          with self.train_summary_writer.as_default():
+            tf.summary.scalar("uas", training_results_for_epoch["uas"], steps=epoch)
+            tf.summary.scalar("las", training_results_for_epoch["las"], steps=epoch)
+
+        if test_data is not None:
+          test_results_for_epoch = self.test(dataset=test_data)
+          with self.test_summary_writer.as_default():
+            for key, value in test_results_for_epoch.items():
+              print("key ", key, test_results_for_epoch[key])
+              tf.summary.scalar(key, test_results_for_epoch[key], step=epoch)
+          self._log(description=f"Test results after epoch {epoch}",
+                    results=test_results_for_epoch)
 
       logging.info(f"Time for epoch {time.time() - start_time}")
 

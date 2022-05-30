@@ -1,5 +1,6 @@
 """The preprocessing module creates tf.data.Dataset objects for the parser."""
 
+import random
 import numpy as np
 np.set_printoptions(threshold=np.inf)
 
@@ -483,25 +484,27 @@ class Preprocessor:
       yield yield_dict
 
 
-def make_to_tfrecords(path: str):
+def make_to_tfrecords(path: str, sample: int = 0):
   """Converts a set of tf.Examples to tf_records"""
   embeddings = nn_utils.load_embeddings()
   word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
+  input_path = Path(path)
+  output_path = str(input_path.parent) + "/" + str(input_path.stem) + ".tfrecords"
   prep = Preprocessor(word_embeddings=word_embeddings,
                       features=["words", "tokens", "sent_id", "pos", "morph", "dep_labels", "heads"],
                       labels=["dep_labels", "heads"])
   sentences = prep.prepare_sentence_protos(path=path)
+  if sample > 0:
+    sentences = random.sample(sentences, sample)
+    output_path = str(input_path.parent) + "/" + str(input_path.stem) + "sample_" + str(sample) + ".tfrecords"
   tf_examples = prep.make_tf_examples(sentences=sentences)
-  input_path = Path(path)
-  output_path = str(input_path.parent) + "/" + str(input_path.stem) + ".tfrecords"
-  print(output_path)
   prep.write_tf_records(examples=tf_examples, path=output_path)
   logging.info(f"tf_records written to {output_path}")
 
 
 if __name__ == "__main__":
 
-  data = "data/UDv29/train/tr/tr_boun-ud-train-random10.pbtxt"
+  data = "data/UDv29/train/tr/tr_boun-ud-train-random500.pbtxt"
   make_to_tfrecords(data)
 
   ''' Make a dataset with example_generator

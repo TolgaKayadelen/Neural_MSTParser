@@ -34,12 +34,12 @@ def main(args):
                               log_dir=log_dir,
                               test_every=args.test_every)
 
-  _DATA_DIR="data/UDv29/train/tr"
-  _TEST_DATA_DIR="data/UDv29/test/tr"
+  _DATA_DIR="data/UDv29/train/tr/"
+  _TEST_DATA_DIR="data/UDv29/test/tr/"
   logging.info(f"Reading training data from {args.train_data}")
   dataset = prep.read_dataset_from_tfrecords(
     records= _DATA_DIR + args.train_data,
-    batch_size=args.batch_size)
+    batch_size=args.train_batch_size)
   test_treebank = args.test_data # None
 
   """
@@ -53,11 +53,11 @@ def main(args):
   )
   """
   if test_treebank is not None:
-    test_sentences = prep.prepare_sentence_protos(
-      path=os.path.join(_TEST_DATA_DIR, test_treebank))
-    test_dataset = prep.make_dataset_from_generator(
-      sentences=test_sentences,
-      batch_size=1)
+    # test_sentences = prep.prepare_sentence_protos(
+    #  path=os.path.join(_TEST_DATA_DIR, test_treebank))
+    test_dataset = prep.read_dataset_from_tfrecords(
+      records= _TEST_DATA_DIR + test_treebank,
+      batch_size=args.test_batch_size)
   else:
     test_dataset=None
 
@@ -72,25 +72,30 @@ def main(args):
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
-  parser.add_argument("--batch_size",
-                      type=int,
-                      default=1,
-                      help="Size of training and test data batches")
-  parser.add_argument("--epochs",
-                      type=int,
-                      default=20,
-                      help="Trains a new model.")
-  parser.add_argument("--test_data",
-                      type=str,
-                      default=None,
-                      help="Test/dev dataset name.")
-  parser.add_argument("--test_every",
-                      type=int,
-                      default=5,
-                      help="Trains a new model.")
   parser.add_argument("--train_data",
                       type=str,
-                      default="/tr_boun-ud-train-random1.tfrecords",
+                      default="tr_boun-ud-train-random50.tfrecords",
                       help="Train dataset name")
+  parser.add_argument("--train_batch_size",
+                      type=int,
+                      default=50,
+                      help="Size of training data batches")
+  parser.add_argument("--test_data",
+                      type=str,
+                      default="tr_boun-ud-test-random10.tfrecords",
+                      help="Test/dev dataset name.")
+  parser.add_argument("--test_batch_size",
+                      type=int,
+                      default=10,
+                      help="Size of test data batches")
+  parser.add_argument("--epochs",
+                      type=int,
+                      default=300,
+                      help="Trains a new model.")
+  parser.add_argument("--test_every",
+                      type=int,
+                      default=10,
+                      help="Decides after how many iterations to test.")
+
   args = parser.parse_args()
   main(args)

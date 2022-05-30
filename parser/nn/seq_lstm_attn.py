@@ -293,6 +293,7 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
       words = words[:, 1:]
     tf.assert_equal(words.shape[0] * words.shape[1], pad_mask.shape[0] * pad_mask.shape[1])
     words_reshaped = tf.reshape(words, shape=pad_mask.shape)
+    # print("words reshaped ", words_reshaped)
     n_words_in_batch = len(tf.boolean_mask(words_reshaped, pad_mask))
     return n_words_in_batch
 
@@ -394,42 +395,59 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
     correct["labels"] = correct_labels
     predictions["labels"] = preds_flattened
 
-
     return predictions, losses, correct, pad_mask
 
-  @tf.function
   def test(self, *, dataset: Dataset):
-    """Tests the performance of this parser on some dataset."""
-    print("Testing on the test set..")
-    label_accuracy = tf.keras.metrics.Accuracy()
-
+    print("Testing on the test set. Using batch mode..")
     # resetting test stats at the beginning.
     for key in self.test_stats:
       self.test_stats[key] = 0.0
 
-    # We traverse the test dataset not batch by batch, but example by example.
-    for example in dataset:
-      label_preds = self.parse(example, training=False)
-      # label_preds = tf.expand_dims(label_preds, 0)
-      # print("label preds ", label_preds)
-      correct_labels = example["dep_labels"][:, 1:]
+    for step, batch in enumerate(dataset):
+      words, pos, morph = (batch["words"], batch["pos"], batch["morph"])
+      dep_labels = batch["dep_labels"]
+      scores = self.model({"words": words, "pos": pos, "morph": morph,
+                           "labels": dep_labels}, training=False)
+
+      # Remove the 0th token from scores, preds, and labels, as it's dummy.
+      label_scores = scores["labels"][:, 1:, :]
+      preds = tf.argmax(label_scores, axis=2)
+      # print("preds ", preds)
+      correct_labels = dep_labels[:, 1:]
       # print("correct labels ", correct_labels)
-      words = example["words"][:, 1:]
-      # print("words ", words)
-      # print("words in batch ", words.shape[1])
       # input("press to cont.")
-      label_accuracy.update_state(correct_labels, label_preds)
+
+      # Sanity check
+      tf.assert_equal(correct_labels.shape, preds.shape)
+      tf.assert_equal(tf.argmax(label_scores, axis=2), preds)
+
+      label_scores = self._flatten(label_scores, outer_dim=label_scores.shape[2])
+      # print(f"label scores after flatten {label_scores}, {label_scores.shape}")
+
+      # Flatten the correct labels to the shape (batch_size*seq_len, 1) (i.e. 340,1)
+      # Correct labels are indices for the right label for each token.
+      correct_labels = self._flatten(correct_labels)
+      # print(f"correct labels after flattened {correct_labels}, {correct_labels.shape}")
+      preds_flattened = self._flatten(preds)
+      # print("preds flatted ", preds_flattened)
+
+      pad_mask = self._flatten(words[:, 1:] != 0)
+      # print("words ", words)
+      words = words[:, 1:]
+      # print("words after ", words)
+      # print("pad mask ", pad_mask)
 
       correct_predictions_dict = self._correct_predictions(
-        label_predictions=label_preds,
+        label_predictions=preds_flattened,
         correct_labels=correct_labels,
+        pad_mask=pad_mask
       )
-      # print("correct predictions dict ", correct_predictions_dict)
-      # input("press to cont.")
-      self._update_correct_prediction_stats(correct_predictions_dict,
-                                            example["words"].shape[1],
-                                            stats="test")
 
+      n_words_in_batch = self._n_words_in_batch(words, pad_mask=pad_mask)
+
+      self._update_correct_prediction_stats(correct_predictions_dict,
+                                            n_words_in_batch=n_words_in_batch,
+                                            stats="test")
     logging.info(f"Test stats: {self.test_stats}")
     test_results = self._compute_metrics(stats="test")
     return test_results
@@ -445,12 +463,12 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
         morph: Tensor representing morph indices of the morphological features in words in the sentence.
 
     Returns:
-      scores: a dictionary of scores representing edge and label predictions.
-        labels: Tensor of shape (1, seq_len, n_labels)
+      label_preds
     """
     words, pos, morph = (example["words"], example["pos"], example["morph"])
     scores = self.model({"words": words, "pos": pos, "morph": morph},
                         training=False)
+    # Remove the 0th token from scores.
     label_scores = scores["labels"][:, 1:, :]
     # print("label scores ", label_scores)
     label_preds = tf.argmax(label_scores, axis=2)
