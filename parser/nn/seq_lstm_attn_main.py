@@ -74,11 +74,11 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   parser.add_argument("--train_data",
                       type=str,
-                      default="tr_boun-ud-train-random50.tfrecords",
+                      default="tr_boun-ud-train-random10.tfrecords",
                       help="Train dataset name")
   parser.add_argument("--train_batch_size",
                       type=int,
-                      default=50,
+                      default=100,
                       help="Size of training data batches")
   parser.add_argument("--test_data",
                       type=str,

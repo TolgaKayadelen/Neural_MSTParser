@@ -349,7 +349,7 @@ class BaseParser(ABC):
     """Computes loss for label predictions for the parser."""
     return self._label_loss_function(correct_labels, label_scores)
 
-  @tf.function
+  @tf.function(jit_compile=True)
   def train_step(self, *,
                  words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
                  dep_labels: tf.Tensor, heads: tf.Tensor) -> Tuple[tf.Tensor, ...]:
