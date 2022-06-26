@@ -2,6 +2,7 @@ import os
 import logging
 import time
 import collections
+import datetime
 
 import tensorflow as tf
 import numpy as np
@@ -261,14 +262,14 @@ class SequentialParsingModel(tf.keras.Model):
 
     if self.use_pos:
       self.pos_embeddings = layer_utils.EmbeddingLayer(
-        input_dim=35, output_dim=32,
+        input_dim=37, output_dim=32,
         name="pos_embeddings",
         trainable=True
       )
 
     if self.use_dep_labels and self.use_label_embeddings:
       self.label_embeddings = layer_utils.EmbeddingLayer(
-        input_dim=36, output_dim=50, name="label_embeddings", trainable=True
+        input_dim=43, output_dim=50, name="label_embeddings", trainable=True
       )
 
     self.concatenate = layers.Concatenate(name="concat")
@@ -368,6 +369,8 @@ class SequentialParsingModel(tf.keras.Model):
     return loss, parent_dict
 
 if __name__ ==  "__main__":
+  current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+  log_dir = "debug/sequential_parser/" + current_time
   embeddings = nn_utils.load_embeddings()
   word_embeddings = embeddor.Embeddings(
     name="word2vec", matrix=embeddings
@@ -383,13 +386,15 @@ if __name__ ==  "__main__":
     word_embeddings=prep.word_embeddings,
     predict=["heads"],
     features=["words", "pos", "morph", "dep_labels", "sent_id"],
+    log_dir=log_dir,
+    test_every=2,
     model_name="Sequential_Parser"
   )
   # print("parser ", parser)
-  _DATA_DIR="data/UDv23/Turkish/training"
-  _TEST_DATA_DIR="data/UDv23/Turkish/test"
-  train_treebank="tr_imst_ud_train_dev.pbtxt"
-  test_treebank = "tr_imst_ud_test_fixed.pbtxt"
+  _DATA_DIR="data/UDv29/train/tr"
+  _TEST_DATA_DIR="data/UDv29/test/tr"
+  train_treebank="tr_boun-ud-train.pbtxt"
+  test_treebank = "tr_boun-ud-test.pbtxt"
   train_sentences = prep.prepare_sentence_protos(
     path=os.path.join(_DATA_DIR, train_treebank))
   test_sentences = prep.prepare_sentence_protos(
@@ -397,12 +402,12 @@ if __name__ ==  "__main__":
   )
   dataset = prep.make_dataset_from_generator(
     sentences=train_sentences,
-    batch_size=250)
+    batch_size=100)
   test_dataset = prep.make_dataset_from_generator(
     sentences=test_sentences,
     batch_size=1
   )
   # for batch in dataset:
   #  print(batch["heads"])
-  metrics = parser.train(dataset=dataset, test_data=test_dataset, epochs=50)
+  metrics = parser.train(dataset=dataset, test_data=test_dataset, epochs=100)
   print(metrics)

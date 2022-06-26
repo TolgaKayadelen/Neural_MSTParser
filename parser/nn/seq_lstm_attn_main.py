@@ -12,10 +12,10 @@ from input import embeddor, preprocessor
 def main(args):
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
   log_dir = "debug/seq_lstm_attn/" + current_time
-  tf.debugging.experimental.enable_dump_debug_info(
-    log_dir,
-    tensor_debug_mode="FULL_HEALTH",
-    circular_buffer_size=-1)
+  # tf.debugging.experimental.enable_dump_debug_info(
+  #  log_dir,
+  #  tensor_debug_mode="FULL_HEALTH",
+  #  circular_buffer_size=-1)
   embeddings = nn_utils.load_embeddings()
   word_embeddings = embeddor.Embeddings(name="word2vec", matrix=embeddings)
   prep = preprocessor.Preprocessor(
@@ -74,7 +74,7 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   parser.add_argument("--train_data",
                       type=str,
-                      default="tr_boun-ud-train-random10.tfrecords",
+                      default="tr_boun-ud-train.tfrecords",
                       help="Train dataset name")
   parser.add_argument("--train_batch_size",
                       type=int,
@@ -82,19 +82,19 @@ if __name__ == "__main__":
                       help="Size of training data batches")
   parser.add_argument("--test_data",
                       type=str,
-                      default="tr_boun-ud-test-random10.tfrecords",
+                      default="tr_boun-ud-test.tfrecords",
                       help="Test/dev dataset name.")
   parser.add_argument("--test_batch_size",
                       type=int,
-                      default=10,
+                      default=50,
                       help="Size of test data batches")
   parser.add_argument("--epochs",
                       type=int,
-                      default=300,
+                      default=250,
                       help="Trains a new model.")
   parser.add_argument("--test_every",
                       type=int,
-                      default=10,
+                      default=5,
                       help="Decides after how many iterations to test.")
 
   args = parser.parse_args()

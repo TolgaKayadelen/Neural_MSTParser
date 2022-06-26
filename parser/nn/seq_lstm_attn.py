@@ -82,6 +82,7 @@ class SeqLSTMAttnModel(tf.keras.Model):
     self.pre_attn_lstm = layer_utils.LSTMBlock(
                                             n_units=n_units,
                                             num_layers=2,
+                                            dropout_rate=0.3,
                                             name="lstm_block")
 
     # Attention layers
@@ -241,7 +242,7 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
                                              model_name=model_name,
                                              log_dir=log_dir,
                                              test_every=test_every)
-    self.optimizer = tf.keras.optimizers.Adam(0.01, beta_1=0.9, beta_2=0.9, clipnorm=1.)
+    self.optimizer = tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9, clipnorm=1.)
 
   @property
   def _optimizer(self):

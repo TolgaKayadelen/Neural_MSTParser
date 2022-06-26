@@ -504,7 +504,7 @@ def make_tfrecords(path: str, sample: int = 0):
 
 if __name__ == "__main__":
 
-  data = "data/UDv29/train/tr/tr_boun-ud-train.pbtxt"
+  data = "data/UDv29/test/tr/tr_boun-ud-test.pbtxt"
   make_tfrecords(data)
 
   ''' Make a dataset with example_generator
