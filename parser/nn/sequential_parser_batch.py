@@ -319,16 +319,23 @@ class SequentialParsingModel(tf.keras.Model):
 
     for i in range(1, sequence_length):
       dependant_slice = tf.expand_dims(sentence_repr[:, i, :], 1)
-      # dependant_slice = tf.expand_dims(dependant_slice, 1)
       # print("sentence repr ", sentence_repr)
+      # print("dependency slice ", dependant_slice)
+      # input("press to cont.")
+
 
       tile = tf.constant([1, sequence_length, 1])
+      # print("tile is  ", tile)
+      # input("press  to cont.")
       dependant = tf.tile(dependant_slice, tile)
       # print("dependant ", dependant)
+      # input("press")
+      # print("sentence repr ", sentence_repr)
+      # input("press")
 
       head_mask = tf.expand_dims(tf.reduce_all(tf.equal(sentence_repr, dependant), axis=2), -1)
       # print("head mask is ", head_mask)
-
+      # input("press")
       # computing head probability
       # these are not normalized (softmaxed) values because the loss function normalizes them.
       # the below computation computes the associative score between source and target.
@@ -336,8 +343,11 @@ class SequentialParsingModel(tf.keras.Model):
         tf.nn.tanh(
           self.u_a(sentence_repr) + self.w_a(dependant))
       )
+      # print("head probs before ", head_probs)
       # Apply 0 to the case where the candidate head is the token itself.
       head_probs = tf.squeeze(tf.where(head_mask, -1e4, head_probs), -1)
+      # print("head probs after ", head_probs)
+      # input("press")
       # Also apply 0 to the padded tokens
       if batch_size > 1:
         head_probs = tf.where(pad_mask, -1e4, head_probs)
@@ -388,7 +398,7 @@ if __name__ ==  "__main__":
     features=["words", "pos", "morph", "dep_labels", "sent_id"],
     log_dir=log_dir,
     test_every=2,
-    model_name="Sequential_Parser"
+    model_name="Sequential_Parser_Batch"
   )
   # print("parser ", parser)
   _DATA_DIR="data/UDv29/train/tr"
@@ -402,7 +412,7 @@ if __name__ ==  "__main__":
   )
   dataset = prep.make_dataset_from_generator(
     sentences=train_sentences,
-    batch_size=100)
+    batch_size=50)
   test_dataset = prep.make_dataset_from_generator(
     sentences=test_sentences,
     batch_size=1

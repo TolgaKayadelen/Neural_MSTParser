@@ -52,8 +52,17 @@ py_binary(
 )
 
 py_binary(
-    name = "sequential_parser",
-    srcs = ["sequential_parser.py"],
+    name = "sequential_parser_batch",
+    srcs = ["sequential_parser_batch.py"],
+    deps = [
+        ":base_parser",
+        ":nn_parser_lib",
+    ],
+)
+
+py_binary(
+    name = "sequential_parser_exp",
+    srcs = ["sequential_parser_exp.py"],
     deps = [
         ":base_parser",
         ":nn_parser_lib",

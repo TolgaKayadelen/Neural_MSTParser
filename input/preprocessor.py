@@ -489,9 +489,11 @@ def make_tfrecords(path: str, sample: int = 0):
   embeddings = nn_utils.load_embeddings()
   word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
   input_path = Path(path)
-  output_path = str(input_path.parent) + "/" + str(input_path.stem) + ".tfrecords"
+  # TODO fix the output path to be non one hot.
+  output_path = str(input_path.parent) + "/" + str(input_path.stem) + "_one_hot_labels"+ ".tfrecords"
   prep = Preprocessor(word_embeddings=word_embeddings,
                       features=["words", "tokens", "sent_id", "pos", "morph", "dep_labels", "heads"],
+                      one_hot_features=["dep_labels"],  # TODO remove this one later.
                       labels=["dep_labels", "heads"])
   sentences = prep.prepare_sentence_protos(path=path)
   if sample > 0:
