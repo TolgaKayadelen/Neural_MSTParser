@@ -39,7 +39,7 @@ class BaseParser(ABC):
                features: List[str] = ["words"],
                model_name: str,
                log_dir: str,
-               test_every: int = 10):
+               test_every: int = 1):
     # Embeddings
     self.word_embeddings = word_embeddings
 

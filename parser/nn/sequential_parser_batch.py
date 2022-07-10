@@ -183,37 +183,56 @@ class SequentialParser(base_parser.BaseParser):
       self.test_stats[key] = 0.0
 
     for sentence in dataset:
+      words = sentence["words"]
+      # print("words ", words)
       parent_prob_dict= self.parse(sentence)
+      batch_size, sequence_length = words.shape[0], words.shape[1]
 
-     #  pad_mask = (sentence["words"] != 0)[:, 1:]
-     #  pad_mask = self._flatten(pad_mask)
+
+      if batch_size > 1:
+        pad_mask = (words != 0)[:, 1:]
+        pad_mask = self._flatten(pad_mask)
+      else:
+        pad_mask=None
+      # print("pad mask ", pad_mask)
 
       # Get preds
       parent_prob_table = list(parent_prob_dict.values())
       _preds = [tf.math.top_k(prob_table).indices for prob_table in parent_prob_table]
+      # print("_preds ", _preds)
       preds = tf.cast(tf.concat(_preds, 0), tf.int64)
+      # print("preds ", preds)
       parent_prob_table = tf.concat(parent_prob_table, 0)
-
 
       # Get correct heads
       heads = sentence["heads"]
       correct_heads = self._flatten(heads[:, 1:]) # slicing the 0th token out.
+      # print("correct heads ", correct_heads)
       accuracy.update_state(correct_heads, parent_prob_table)
-
       # Update stats
       correct_predictions_dict = self._correct_predictions(
         head_predictions=preds,
-        correct_heads=correct_heads
+        correct_heads=correct_heads,
+        pad_mask=pad_mask
       )
+      # print("correct predictions dict ", correct_predictions_dict)
 
-      n_tokens, _ = correct_heads.shape
+      if pad_mask is not None:
+        n_tokens = np.sum(pad_mask)
+        # print("pad mask ", pad_mask)
+        logging.info(f"n_tokens in batch using pad mask: {n_tokens}")
+      else:
+        n_tokens, _ = correct_heads.shape
+        logging.info(f"n_tokens in batch using correct heads: {n_tokens}")
+      # input("press to cont.")
       self._update_correct_prediction_stats(
         correct_predictions_dict, n_tokens,
         stats="test"
       )
-
+      print("test stats ", self.test_stats)
     # Compute metrics
     test_results = self._compute_metrics(stats="test")
+    print("test results ", test_results)
     return test_results
 
 
@@ -403,8 +422,8 @@ if __name__ ==  "__main__":
   # print("parser ", parser)
   _DATA_DIR="data/UDv29/train/tr"
   _TEST_DATA_DIR="data/UDv29/test/tr"
-  train_treebank="tr_boun-ud-train.pbtxt"
-  test_treebank = "tr_boun-ud-test.pbtxt"
+  train_treebank="tr_boun-ud-train-random500.pbtxt"
+  test_treebank = "tr_boun-ud-test-random50.pbtxt"
   train_sentences = prep.prepare_sentence_protos(
     path=os.path.join(_DATA_DIR, train_treebank))
   test_sentences = prep.prepare_sentence_protos(
@@ -412,10 +431,10 @@ if __name__ ==  "__main__":
   )
   dataset = prep.make_dataset_from_generator(
     sentences=train_sentences,
-    batch_size=50)
+    batch_size=25)
   test_dataset = prep.make_dataset_from_generator(
     sentences=test_sentences,
-    batch_size=1
+    batch_size=5
   )
   # for batch in dataset:
   #  print(batch["heads"])
