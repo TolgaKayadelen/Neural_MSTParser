@@ -75,6 +75,7 @@ class EmbeddingLayer(layers.Layer):
       logging.info(f"Setting up embedding layer for {name}")
       self.embedding = tf.keras.layers.Embedding(
         input_dim=input_dim, output_dim=output_dim, trainable=trainable)
+      self.embedding.build(input_dim)
     else:
       raise RuntimeError("Can't set embeddings.")
   
@@ -166,6 +167,7 @@ class LSTMBlock(layers.Layer):
     self.lstm1 = layers.Bidirectional(layers.LSTM(
       units=n_units, return_sequences=return_sequences,
       name="lstm1"))
+
     self.dropout1 = layers.Dropout(rate=dropout_rate, name="dropout1")
     total_layers += 1
     num_layers -= 1
@@ -187,7 +189,13 @@ class LSTMBlock(layers.Layer):
       total_layers += 1
     else: self.lstm3 = None
     logging.info(f"Total LSTM layers {total_layers}")
+    self.lstm1.build((None, None, 388))
+    if self.lstm2:
+      self.lstm2.build((None, None, n_units*2))
+    if self.lstm3:
+      self.lstm3.build((None, None, n_units*2))
     # input("Press to cont.")
+
 
   def call(self, input_tensor):
     dropout = self.dropout_rate > 0

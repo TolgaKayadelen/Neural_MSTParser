@@ -14,11 +14,12 @@ def load_word_embeddings():
   return word_embeddings
 
 
-def load_preprocessor(word_embeddings, head_padding_value=0):
+def load_preprocessor(word_embeddings, head_padding_value=0, one_hot_features=[]):
   prep = preprocessor.Preprocessor(
     word_embeddings=word_embeddings,
-    features=["words", "pos", "morph", "heads", "dep_labels"],
+    features=["words", "pos", "morph", "heads", "dep_labels", "sent_id"],
     labels=["heads"],
+    one_hot_features=one_hot_features,
     head_padding_value=head_padding_value
   )
   return prep

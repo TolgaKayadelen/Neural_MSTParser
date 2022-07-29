@@ -43,11 +43,17 @@ class SequentialParser(base_parser.BaseParser):
 
   @property
   def inputs(self):
+    pass
+    '''
     word_inputs = tf.keras.Input(shape=(None, ), name="words")
     pos_inputs = tf.keras.Input(shape=(None, ), name="pos")
     morph_inputs = tf.keras.Input(shape=(None, 66), name="morph")
-    label_inputs = tf.keras.Input(shape=(None, ), name="labels")
-    input_dict = {"words": word_inputs}
+    label_inputs = tf.keras.Input(shape=(None, 43), name="labels")
+    sent_id_inputs = tf.keras.Input(shape=(None, ), name="sent_id")
+    head_inputs = tf.keras.Input(shape=(None, ), name="heads")
+    sentence_repr = tf.keras.Input(shape=(None, None, 512), name="sentence_repr")
+    input_dict = {"words": word_inputs, "sent_id": sent_id_inputs,
+                  "heads": head_inputs, "sentence_repr": sentence_repr}
 
     if self._use_pos:
       input_dict["pos"] = pos_inputs
@@ -55,8 +61,8 @@ class SequentialParser(base_parser.BaseParser):
       input_dict["morph"] = morph_inputs
     if self._use_dep_labels:
       input_dict["labels"] = label_inputs
-    print(label_inputs)
     return input_dict
+    '''
 
   def _n_words_in_batch(self, words, pad_mask=None):
     words_reshaped = tf.reshape(words, shape=pad_mask.shape)
@@ -74,15 +80,24 @@ class SequentialParser(base_parser.BaseParser):
       use_morph = self._use_morph,
       use_dep_labels = self._use_dep_labels
     )
-    # model(inputs=self.inputs)
+    model(inputs = {"words": tf.random.uniform(shape=[2,2]),
+                    "pos": tf.random.uniform(shape=[2,2]),
+                    "morph": tf.random.uniform(shape=[2,2,56]),
+                    "labels": tf.random.uniform(shape=[2,2,43]),
+                    "sent_id": tf.random.uniform(shape=[2,2]),
+                    "heads": tf.random.uniform(shape=[2,2]),
+                    "sentence_repr": tf.random.uniform(shape=[2, 2, 512]),
+                    })
     return model
 
   def train_step(self, words, pos, morph, dep_labels, heads, sent_ids=None):
     """Runs one training step."""
     with tf.GradientTape() as tape:
       loss, parent_prob_dict =  self.model({"words": words, "pos": pos, "morph": morph,
-                                              "labels": dep_labels,
-                                              "heads": heads, "sent_ids": sent_ids}, training=True)
+                                            "labels": dep_labels,
+                                            "heads": heads, "sent_id": sent_ids,
+                                            "sentence_repr": None},
+                                             training=True)
 
 
     # Compute gradients and apply backprop.
@@ -112,7 +127,6 @@ class SequentialParser(base_parser.BaseParser):
       head_scores=parent_prob_table,
       pad_mask=pad_mask)
     return loss, correct_heads, preds, pad_mask
-
 
   def train(self, *,
             dataset: Dataset,
@@ -241,8 +255,6 @@ class SequentialParser(base_parser.BaseParser):
     print("test results ", test_results)
     return test_results
 
-
-
   def parse(self, example):
     """Parses an example with this parser.
 
@@ -260,8 +272,6 @@ class SequentialParser(base_parser.BaseParser):
                                        "sent_ids": sent_ids},
                                         training=False)
     return parent_prob_dict
-
-
 
 
 # From the model we get the parent probabilities.
@@ -303,65 +313,72 @@ class SequentialParsingModel(tf.keras.Model):
 
     self.concatenate = layers.Concatenate(name="concat")
     self.encoder = layer_utils.LSTMBlock(n_units=256,
+                                         num_layers=2,
                                          dropout_rate=0.3,
                                          name="lstm_encoder")
 
     # here we define the perceptrons of the model
-    self.u_a = layers.Dense(self.bilstm_output_size, activation=None)
-    self.w_a = layers.Dense(self.bilstm_output_size, activation=None)
+    self.u_a = layers.Dense(self.bilstm_output_size, activation=None, name="u_a")
+    self.w_a = layers.Dense(self.bilstm_output_size, activation=None, name="v_a")
 
-    self.v_a_inv = layers.Dense(1, activation=None, use_bias=False,
-                                name="v_a_inv")
+    self.v_a_inv = layers.Dense(1, activation=None, use_bias=False, name="v_a_inv")
     # if self.use_dep_labels:
     #   if self.use_label_embeddings:
     #     self.w_a = layers.Dense(self.bilstm_output_size+self.label_embedding_dim_size, activation=None)
     #   else:
     #     self.w_a = layers.Dense(self.bilstm_output_size+self.dep_label_size, activation=None)
 
-  def call(self, inputs, training=True):
-    """Forward pass."""
+  def call(self, inputs, encode_sentence=True, training=True):
+    """Forward pass.
+
+    If training False:
+      We get sentence_repr as input (e.g. the output of the whole lstm_block) as incoming from the dep labeler.
+      We pass the stages where we pass input over word/pos embeddings etc. and only compute the head scores.
+    """
     word_inputs = inputs["words"]
-    sent_ids = inputs["sent_ids"]
-    sent_ids = sent_ids[:, :1]
     pad_mask = (word_inputs == 0)
-    word_features = self.word_embeddings(word_inputs)
-    batch_size, sequence_length = word_inputs.shape
-    # logging.info(f"batch size = {batch_size}, seq_len = {sequence_length}")
-    concat_list = [word_features]
+    sent_ids = inputs["sent_id"]
+    sent_ids = sent_ids[:, :1]
     loss = 0.0
-    if self.use_pos:
-      pos_inputs = inputs["pos"]
-      pos_features = self.pos_embeddings(pos_inputs)
-      concat_list.append(pos_features)
-    if self.use_morph:
-      morph_inputs = inputs["morph"]
-      concat_list.append(morph_inputs)
 
-    # if self.use_dep_labels:
-    #   label_inputs = inputs["labels"]
-      # print("label inputs ", label_inputs)
-    #   if self.use_label_embeddings:
-    #     label_features = self.label_embeddings(label_inputs)
-        # print("label features ", label_features)
-    #     concat_list.append(label_features)
-    #   else:
-    #     concat_list.append(label_inputs)
-    # print("concat list ", concat_list)
+    if encode_sentence:
+      word_features = self.word_embeddings(word_inputs)
+      # logging.info(f"batch size = {batch_size}, seq_len = {sequence_length}")
+      # input("press to cont.")
+      concat_list = [word_features]
 
-    if len(concat_list) > 1:
-      sentence_repr = self.concatenate(concat_list)
+      if self.use_pos:
+        pos_inputs = inputs["pos"]
+        pos_features = self.pos_embeddings(pos_inputs)
+        concat_list.append(pos_features)
+      if self.use_morph:
+        morph_inputs = inputs["morph"]
+        concat_list.append(morph_inputs)
+      if len(concat_list) > 1:
+        sentence_repr = self.concatenate(concat_list)
+      else:
+        sentence_repr = word_features
+
+      sentence_repr = self.encoder(sentence_repr)
     else:
-      sentence_repr = word_features
+      # If received sentence_repr from labeler encoding
+      sentence_repr = inputs["sentence_repr"]
+      # print(sentence_repr, "sentenece repr received")
+      # input("press to cont.")
+      # print("pad mask ", pad_mask)
+      # input("press to cont.")
 
-    sentence_repr = self.encoder(sentence_repr)
+    batch_size, sequence_length = sentence_repr.shape[0], sentence_repr.shape[1]
+    print(f"batch_size {batch_size}, seq_len: {sequence_length}")
+    # input("press")
     # this will be a dict of arrays
     parent_prob_dict = collections.defaultdict(list)
 
     for i in range(1, sequence_length):
       dependant_slice = tf.expand_dims(sentence_repr[:, i, :], 1)
-      # print("sentence repr ", sentence_repr)
       # print("dependency slice ", dependant_slice)
       # print("label inputs ", inputs["labels"])
+      # input("press to cont.")
       label_input = tf.expand_dims(inputs["labels"][:, i, :], 1)
       # print("label input ", label_input)
       # input("press")
@@ -381,12 +398,12 @@ class SequentialParsingModel(tf.keras.Model):
       temp[:, i] = True
       # print("temp ", temp)
       head_mask = tf.convert_to_tensor(temp)
-      # head_mask = tf.expand_dims(tf.reduce_all(tf.equal(sentence_repr, dependant), axis=2), -1)
       # print("head mask is ", head_mask)
       # input("press")
 
       # print("sentence repr", sentence_repr)
       # input("press to cont.")
+      # TODO: there's probably no need for this concat operation, validate!
       sentence_repr_concat = tf.concat([sentence_repr, tf.zeros(shape=[batch_size, sequence_length, self.dep_label_size])], axis=2)
       # print("sentence repr", sentence_repr_concat)
       # input("press to cont.")
@@ -397,32 +414,36 @@ class SequentialParsingModel(tf.keras.Model):
         tf.nn.tanh(
           self.u_a(sentence_repr_concat) + self.w_a(dependant))
       )
-      # print("head probs before ", head_probs)
+      print("head probs before ", head_probs)
       # Apply 0 to the case where the candidate head is the token itself.
       head_probs = tf.squeeze(tf.where(head_mask, -1e4, head_probs), -1)
-      # print("head probs after ", head_probs)
+      print("head probs after ", head_probs)
       # input("press")
       # Also apply 0 to the padded tokens
       if batch_size > 1:
         head_probs = tf.where(pad_mask, -1e4, head_probs)
-      # print("head_probs after applying mask", head_probs)
+      print("head_probs after applying mask", head_probs)
       true_heads = tf.expand_dims(inputs["heads"][:, i], 1)
       # print("true heads ", true_heads)
+      # input("press")
 
       # Compute the loss
       # In the computation of the loss, we leave out the 0th token as well
       # Since the loop starts from the 1st token all the time.
-      loss += self.loss_function(true_heads, head_probs)
+      if training:
+        loss += self.loss_function(true_heads, head_probs)
+
       if batch_size > 1:
-        # unpadded_tokens = tf.ragged.boolean_mask(
-        #  head_probs, mask=tf.math.logical_not(pad_mask))
-        # print("unpadded tokens ", unpadded_tokens)
+        # print("sent ids ", sent_ids)
+        # input("press to cont.")
         for sent_id, token in zip(sent_ids, head_probs): # unpadded_tokens):
           # print("slice is ", sent_id, token)
           parent_prob_dict[sent_id.numpy()[0]].append(tf.expand_dims(tf.math.exp(token), 0))
+          # print("parent_prob_dict ", parent_prob_dict)
       else:
         sent_id = sent_ids[0].numpy()[0]
         parent_prob_dict[sent_id].append(tf.math.exp(head_probs))
+      # input("pres")
 
     parent_dict= {}
     for key in parent_prob_dict.keys():
@@ -450,9 +471,9 @@ if __name__ ==  "__main__":
     word_embeddings=prep.word_embeddings,
     predict=["heads"],
     features=["words", "pos", "morph", "dep_labels", "sent_id"],
-    log_dir=log_dir,
-    test_every=1,
-    model_name="Sequential_Parser_Exp"
+    # log_dir=log_dir,
+    test_every=10,
+    model_name="sequential_parser_exp_saved"
   )
   # print("parser ", parser)
   _DATA_DIR="data/UDv29/train/tr"
@@ -469,10 +490,10 @@ if __name__ ==  "__main__":
   )
   dataset = prep.make_dataset_from_generator(
     sentences=train_sentences,
-    batch_size=25)
+    batch_size=100)
   test_dataset = prep.make_dataset_from_generator(
     sentences=test_sentences,
-    batch_size=5
+    batch_size=20
   )
   '''
   dataset = prep.read_dataset_from_tfrecords(
@@ -487,5 +508,7 @@ if __name__ ==  "__main__":
 
   # for batch in dataset:
   #  print(batch["heads"])
-  metrics = parser.train(dataset=dataset, test_data=test_dataset, epochs=50)
+  metrics = parser.train(dataset=dataset, test_data=None, epochs=1)
   print(metrics)
+  parser.save_weights()
+  logging.info("weights saved!")

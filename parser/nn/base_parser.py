@@ -38,8 +38,8 @@ class BaseParser(ABC):
                predict: List[str],
                features: List[str] = ["words"],
                model_name: str,
-               log_dir: str,
-               test_every: int = 1):
+               log_dir = None,
+               test_every: int = 5):
     # Embeddings
     self.word_embeddings = word_embeddings
 
@@ -62,14 +62,16 @@ class BaseParser(ABC):
     self._training_metrics = self._training_metrics()
 
     self._test_every = test_every
+    logging.info(f"Testing every {self._test_every}")
 
     self._log_dir = log_dir
 
-    self.loss_summary_writer = tf.summary.create_file_writer(log_dir + "/loss")
-    self.train_summary_writer = tf.summary.create_file_writer(log_dir + "/train")
-    self.test_summary_writer = tf.summary.create_file_writer(log_dir + "/test")
+    if self._log_dir:
+      self.loss_summary_writer = tf.summary.create_file_writer(log_dir + "/loss")
+      self.train_summary_writer = tf.summary.create_file_writer(log_dir + "/train")
+      self.test_summary_writer = tf.summary.create_file_writer(log_dir + "/test")
+      logging.info(f"Logging to {self._log_dir}")
 
-    logging.info(f"Logging to {self._log_dir}")
     assert(all(val in ["heads", "labels"] for val in self._predict)), "Invalid prediction target!"
 
   # TODO: Make it an attribute. Making it a property causes tf.function fail in subclasses.
@@ -530,25 +532,27 @@ class BaseParser(ABC):
                 results=loss_results_for_epoch)
 
       if epoch % self._test_every == 0 or epoch == epochs:
-        if "labels" in self._predict:
-          with self.loss_summary_writer.as_default():
-            tf.summary.scalar("label loss", loss_results_for_epoch["label_loss"], step=epoch)
-          with self.train_summary_writer.as_default():
-            tf.summary.scalar("label score", training_results_for_epoch["ls"], step=epoch)
+        if self._log_dir:
+          if "labels" in self._predict:
+            with self.loss_summary_writer.as_default():
+              tf.summary.scalar("label loss", loss_results_for_epoch["label_loss"], step=epoch)
+            with self.train_summary_writer.as_default():
+              tf.summary.scalar("label score", training_results_for_epoch["ls"], step=epoch)
 
-        if "heads" in self._predict:
-          with self.loss_summary_writer.as_default():
-            tf.summary.scalar("head loss", loss_results_for_epoch["head_loss"], step=epoch)
-          with self.train_summary_writer.as_default():
-            tf.summary.scalar("uas", training_results_for_epoch["uas"], steps=epoch)
-            tf.summary.scalar("las", training_results_for_epoch["las"], steps=epoch)
+          if "heads" in self._predict:
+            with self.loss_summary_writer.as_default():
+              tf.summary.scalar("head loss", loss_results_for_epoch["head_loss"], step=epoch)
+            with self.train_summary_writer.as_default():
+              tf.summary.scalar("uas", training_results_for_epoch["uas"], steps=epoch)
+              tf.summary.scalar("las", training_results_for_epoch["las"], steps=epoch)
 
         if test_data is not None:
           test_results_for_epoch = self.test(dataset=test_data)
-          with self.test_summary_writer.as_default():
-            for key, value in test_results_for_epoch.items():
-              print("key ", key, test_results_for_epoch[key])
-              tf.summary.scalar(key, test_results_for_epoch[key], step=epoch)
+          if self._log_dir:
+            with self.test_summary_writer.as_default():
+              for key, value in test_results_for_epoch.items():
+                print("key ", key, test_results_for_epoch[key])
+                tf.summary.scalar(key, test_results_for_epoch[key], step=epoch)
           self._log(description=f"Test results after epoch {epoch}",
                     results=test_results_for_epoch)
 

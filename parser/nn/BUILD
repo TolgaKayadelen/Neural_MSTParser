@@ -78,6 +78,27 @@ py_binary(
     ],
 )
 
+py_binary(
+    name = "combined_parser",
+    srcs = ["combined_parser.py"],
+    deps = [
+        ":combined_model",
+        ":combined_parser_memory",
+    ],
+)
+
+py_binary(
+    name = "agent",
+    srcs = ["agent.py"],
+    deps = [
+      ":base_parser",
+      ":nn_parser_lib",
+      ":combined_parser_memory",
+      ":seq_lstm_attn",
+      ":sequential_parser_exp",
+      ":load_models"
+    ],
+)
 
 # Libraries
 py_library(
@@ -90,6 +111,15 @@ py_library(
     "//util:writer",
     "//util:converter",
   ]
+)
+
+py_library(
+    name = "combined_model",
+    srcs = ["combined_model.py"],
+    deps = [
+        ":base_parser",
+        "nn_parser_lib",
+    ],
 )
 
 
@@ -174,6 +204,12 @@ py_library(
   deps = [
       ":nn_parser_lib",
   ],
+)
+
+py_library(
+    name = "combined_parser_memory",
+    srcs = ["combined_parser_memory.py"],
+    deps = [],
 )
 
 py_library(

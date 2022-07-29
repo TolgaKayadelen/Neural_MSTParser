@@ -5,7 +5,7 @@ package tagset.morphology;
 // Morphology Tags.
 // These tags are read from training data with get_morph_tags.py
 enum Tag {
-  // Next available id:
+  // Next available id: 57
   UNKNOWN_MORPH = 0;
   abbr_yes = 1;
   // aspect_durperf = 2;

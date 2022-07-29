@@ -83,7 +83,7 @@ class SeqLSTMAttnModel(tf.keras.Model):
                                             n_units=n_units,
                                             num_layers=2,
                                             dropout_rate=0.3,
-                                            name="lstm_block")
+                                            name="lstm_encoder")
 
     # Attention layers
     # We will override the repeat factor of this in repeator in call function
@@ -158,13 +158,7 @@ class SeqLSTMAttnModel(tf.keras.Model):
     return context
 
   def call(self, inputs):
-    """Call function.
-    Args:
-        X: inputs
-        Tx: length of the input sequence
-        n_a: hidden state size of the Bi-LSTM.
-        n_s = hidden state size of the post-attention LSTM.
-    """
+    """Call function."""
     outputs = []
     word_inputs = inputs["words"]
     # print("word inputs ", word_inputs)
@@ -196,34 +190,32 @@ class SeqLSTMAttnModel(tf.keras.Model):
     else:
       sentence_repr = word_features
 
-    # Pass inputs from pre attention lstm
-    a = self.pre_attn_lstm(sentence_repr)
-    # print("a shape ", a.shape)
+    # Pass inputs through pre attention lstm
+    sentence_repr = self.pre_attn_lstm(sentence_repr)
     s = s0
     c = c0
+    states = []
 
     for t in range(seq_len):
-      context = self._one_step_attention(a, s)
+      "Generating a label as in an n-gram model until the end of sentence (seq len)"
+      context = self._one_step_attention(sentence_repr, s)
       # print("context is ", context)
       # print("context shape is ", context.shape)
       # print("s is ", s)
       # print("c is ", c)
-      # input("press to cont.")
       s, _, c = self.post_attn_lstm(inputs=context,
                                      initial_state=[s,c])
       # print("s is ", s)
       # print("c is ", c)
 
       out = self.output_layer(s)
-      # print("output is ", out)
-      # input("press to cont.")
+      states.append(s)
       outputs.append(out)
-    # print("outputs ", outputs)
     label_scores = tf.reshape(tf.concat(outputs, axis=1),
                               shape=(batch_size, seq_len, self.n_output_classes))
-    # print("outputs concat: ", label_scores)
-    self.scores["labels"] = label_scores
-    return self.scores
+    states = tf.reshape(tf.concat(states, axis=1),
+                        shape=(batch_size, seq_len, self.n_s))
+    return states, label_scores, sentence_repr
 
 
 class SeqLSTMAttnLabeler(base_parser.BaseParser):
@@ -233,7 +225,7 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
                predict: List[str],
                features: List[str] = ["words"],
                model_name: str,
-               log_dir: str,
+               log_dir: str = None,
                test_every: int = 10):
     super(SeqLSTMAttnLabeler, self).__init__(word_embeddings=word_embeddings,
                                              n_output_classes=n_output_classes,
@@ -340,11 +332,11 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
     # print("words ", words)
     # print("words ", words[:, 1:])
     with tf.GradientTape() as tape:
-      scores = self.model({"words": words, "pos": pos, "morph": morph,
-                           "labels": dep_labels}, training=True)
+      states, label_scores, _ = self.model({"words": words, "pos": pos, "morph": morph,
+                                            "labels": dep_labels}, training=True)
 
       # Remove the 0th token from scores, preds, and labels, as it's dummy.
-      label_scores = scores["labels"][:, 1:, :]
+      label_scores = label_scores[:, 1:, :]
       # print("scores ", label_scores)
       preds = tf.argmax(label_scores, axis=2)
       # print("preds ", preds)
@@ -369,17 +361,6 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
       # input("press to cont.")
       label_loss = tf.expand_dims(self._label_loss(label_scores, correct_labels), axis=-1)
 
-      # nan_loss = any(tf.math.is_nan(label_loss))
-      # if nan_loss:
-      #  print("label loss ", label_loss)
-      #  print("labe scores ", label_scores)
-      #  input("press to cont.")
-
-      # if nan_loss:
-      #  for grad in grads:
-      #    print("grad ", grad)
-      #    input("press to cont.")
-
     grads = tape.gradient(label_loss, self.model.trainable_weights)
     self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
     pad_mask = self._flatten(words[:, 1:] != 0)
@@ -392,7 +373,6 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
       pad_mask=pad_mask)
 
     losses["labels"] = label_loss
-    # print("label losses in train step", losses["labels"])
     correct["labels"] = correct_labels
     predictions["labels"] = preds_flattened
 
@@ -407,11 +387,11 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
     for step, batch in enumerate(dataset):
       words, pos, morph = (batch["words"], batch["pos"], batch["morph"])
       dep_labels = batch["dep_labels"]
-      scores = self.model({"words": words, "pos": pos, "morph": morph,
+      _, scores, _ = self.model({"words": words, "pos": pos, "morph": morph,
                            "labels": dep_labels}, training=False)
 
       # Remove the 0th token from scores, preds, and labels, as it's dummy.
-      label_scores = scores["labels"][:, 1:, :]
+      label_scores = scores[:, 1:, :]
       preds = tf.argmax(label_scores, axis=2)
       # print("preds ", preds)
       correct_labels = dep_labels[:, 1:]
