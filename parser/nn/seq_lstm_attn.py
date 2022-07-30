@@ -217,6 +217,9 @@ class SeqLSTMAttnModel(tf.keras.Model):
                         shape=(batch_size, seq_len, self.n_s))
     return states, label_scores, sentence_repr
 
+### *********************************************************************************** ###
+################################### END of MODEL ##########################################
+### *********************************************************************************** ###
 
 class SeqLSTMAttnLabeler(base_parser.BaseParser):
   def __init__(self, *,

@@ -369,7 +369,7 @@ class SequentialParsingModel(tf.keras.Model):
       # input("press to cont.")
 
     batch_size, sequence_length = sentence_repr.shape[0], sentence_repr.shape[1]
-    print(f"batch_size {batch_size}, seq_len: {sequence_length}")
+    # print(f"batch_size {batch_size}, seq_len: {sequence_length}")
     # input("press")
     # this will be a dict of arrays
     parent_prob_dict = collections.defaultdict(list)
@@ -414,15 +414,15 @@ class SequentialParsingModel(tf.keras.Model):
         tf.nn.tanh(
           self.u_a(sentence_repr_concat) + self.w_a(dependant))
       )
-      print("head probs before ", head_probs)
+      # print("head probs before ", head_probs)
       # Apply 0 to the case where the candidate head is the token itself.
       head_probs = tf.squeeze(tf.where(head_mask, -1e4, head_probs), -1)
-      print("head probs after ", head_probs)
+      # print("head probs after ", head_probs)
       # input("press")
       # Also apply 0 to the padded tokens
       if batch_size > 1:
         head_probs = tf.where(pad_mask, -1e4, head_probs)
-      print("head_probs after applying mask", head_probs)
+      # print("head_probs after applying mask", head_probs)
       true_heads = tf.expand_dims(inputs["heads"][:, i], 1)
       # print("true heads ", true_heads)
       # input("press")

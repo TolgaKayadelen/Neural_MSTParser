@@ -133,7 +133,7 @@ class CombinedParser(base_parser.BaseParser):
       print("rewards ", rewards)
       # in fact target_mask is the target_qs here.
       # it's just that we don't compute any loss based on non existing (zerod-out) losses.
-      target_mask = tf.multiply(target_qs, tf.squeeze(actiions_hot))
+      target_mask = tf.multiply(target_qs, tf.squeeze(actions_hot))
       print("target mask ", target_mask)
       input("press to cont.")
       # in this setting, action_qs are label scores, rewards are target qs.

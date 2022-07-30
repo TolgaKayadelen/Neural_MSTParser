@@ -15,23 +15,22 @@ class Memory:
     self.batch_size = batch_size
 
   def update(self, experiences):
-    """Adds a list of experiences into the memory buffer.
-
-    Args:
-        experience: a (state, action_name, reward, action_one_hot) tuple.
-    """
+    """Adds a list of experiences into the memory buffer."""
     self.buffer.extend(experiences)
 
   def __len__(self):
     return len(self.buffer)
 
+  def __str__(self):
+    return str(self.buffer)
+
   def filled(self):
     return len(self.buffer) == self.memory_size
 
   def random_sample(self):
-    """Uniformally selects from the replay memory buffer.
+    """Randomly selects datapoints from the replay memory buffer.
 
-    Uniformally and randomly selects experiences to train the nueral
+    Uniformally and randomly selects experiences to train the neural
     network on. Transposes the experiences to allow batch math on
     the experience components.
 
@@ -46,36 +45,38 @@ class Memory:
     # Sampling is based on batch size. We randomly select n number of elements from
     # buffer for training. Here we get the indices only. Then based on these indices,
     # we pick states, actions, rewards and state_primes in these indices from the batch.
-    index = np.random.choice(
+    sample_indexes = np.random.choice(
       np.arange(buffer_size), size=self.batch_size, replace=False)
-    # print("index ", index)
+    # print("sample_indexes ", sample_indexes)
     # input("press to cont.")
 
     # Columns have different data types, so numpy array would be awkward.
     # print("buffer ", self.buffer)
     # input("press to cont.")
-    batch = np.array([self.buffer[i] for i in index]).T.tolist()
-    # print("***************")
-    # print("batch ", batch)
-    # print("length of batch ", len(batch))
-    # input("press to cont.")
+    batch = np.array([self.buffer[i] for i in sample_indexes]).T.tolist()
+    print("***********************")
+    # for datapoint in batch:
+    #   print(datapoint)
+    #   input("######################")
     states = tf.convert_to_tensor([exp.state for exp in batch])
     # print("states ", states)
+    # input("***********************")
     actions = tf.convert_to_tensor([exp.action for exp in batch])
     # print("actions ", actions)
-    # input("press to cont")
-    # actions = np.array(batch[1], dtype=np.int8)
-    # rewards = np.array(batch[2], dtype=np.float32)
+    # input("***********************")
     action_qs = tf.convert_to_tensor([exp.action_qs for exp in batch])
     # print("action qs ", action_qs)
+    # input("***********************")
     rewards = tf.convert_to_tensor([exp.reward for exp in batch])
     # print("rewards ", rewards)
-    # actions_one_hot = tf.one_hot(actions, output_size)
-    actions_one_hot = tf.convert_to_tensor([exp.action_hot for exp in batch])
-    # print("actions one hot ", actions_one_hot)
+    # input("***********************")
+    actions_hot = tf.convert_to_tensor([exp.action_hot for exp in batch])
+    # print("actions one hot ", actions_hot)
+    # input("***********************")
     action_names = tf.convert_to_tensor([exp.action_name for exp in batch])
-    # input("press to cont.")
-    return states, actions, action_qs, rewards, actions_one_hot, action_names
+    # print("action names ", action_names)
+    # input("***********************")
+    return states, actions, action_qs, rewards, actions_hot, action_names
 
   def weighted_sample(self):
     pass
