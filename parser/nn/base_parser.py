@@ -351,7 +351,7 @@ class BaseParser(ABC):
     """Computes loss for label predictions for the parser."""
     return self._label_loss_function(correct_labels, label_scores)
 
-  @tf.function(jit_compile=True)
+  # @tf.function
   def train_step(self, *,
                  words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
                  dep_labels: tf.Tensor, heads: tf.Tensor) -> Tuple[tf.Tensor, ...]:
@@ -532,19 +532,22 @@ class BaseParser(ABC):
                 results=loss_results_for_epoch)
 
       if epoch % self._test_every == 0 or epoch == epochs:
+        log_las = False
         if self._log_dir:
           if "labels" in self._predict:
             with self.loss_summary_writer.as_default():
               tf.summary.scalar("label loss", loss_results_for_epoch["label_loss"], step=epoch)
             with self.train_summary_writer.as_default():
               tf.summary.scalar("label score", training_results_for_epoch["ls"], step=epoch)
+            log_las=True
 
           if "heads" in self._predict:
             with self.loss_summary_writer.as_default():
               tf.summary.scalar("head loss", loss_results_for_epoch["head_loss"], step=epoch)
             with self.train_summary_writer.as_default():
-              tf.summary.scalar("uas", training_results_for_epoch["uas"], steps=epoch)
-              tf.summary.scalar("las", training_results_for_epoch["las"], steps=epoch)
+              tf.summary.scalar("uas", training_results_for_epoch["uas"], step=epoch)
+              if log_las:
+                tf.summary.scalar("las", training_results_for_epoch["las"], step=epoch)
 
         if test_data is not None:
           test_results_for_epoch = self.test(dataset=test_data)
@@ -583,8 +586,11 @@ class BaseParser(ABC):
       head_scores, label_scores = scores["edges"], scores["labels"]
       if "heads" in self._predict:
         head_preds = self._flatten(tf.argmax(head_scores, 2))
+        # print("head preds ", head_preds)
         correct_heads = self._flatten(example["heads"])
+        # print("correct heads ", correct_heads)
         head_accuracy.update_state(correct_heads, head_preds)
+        # input()
       if "labels" in self._predict:
         # Get label predictions and correct labels
         label_preds = self._flatten(tf.argmax(label_scores, 2))

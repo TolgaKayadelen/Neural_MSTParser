@@ -21,7 +21,7 @@ from google.protobuf import json_format
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
-def GetPosTags(data):
+def get_tags_and_labels(data):
     sentence_list = []
     coarse_tags = defaultdict(int)
     fine_tags = defaultdict(int)
@@ -54,6 +54,7 @@ def GetPosTags(data):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data", type=str, help="data to read",
-        default="./data/UDv29/train/tr/tr_bimst-ud-train.pbtxt")
+        default="./data/UDv29/test/tr/tr_boun-ud-test.pbtxt")
     args = parser.parse_args()
-    GetPosTags(args.data)
+    get_tags_and_labels(args.data)
+

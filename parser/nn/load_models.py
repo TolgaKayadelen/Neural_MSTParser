@@ -54,11 +54,20 @@ def load_parser(parser_name, prep, path=None):
 def load_data(preprocessor: preprocessor.Preprocessor,
               train_treebank: str,
               batch_size: int,
-              test_treebank: str = None):
-  _DATA_DIR = "data/UDv29/train/tr"
-  _TEST_DATA_DIR = "data/UDv29/dev/tr"
+              test_treebank: str = None,
+              data_dir: str = None,
+              test_data_dir: str = None,
+              ):
+  if data_dir is not None:
+    data_dir = data_dir
+  else:
+    data_dir = "data/UDv29/train/tr"
+  if test_data_dir is not None:
+    test_data_dir = test_data_dir
+  else:
+    test_data_dir = "data/UDv29/dev/tr"
   train_sentences = preprocessor.prepare_sentence_protos(
-    path=os.path.join(_DATA_DIR, train_treebank)
+    path=os.path.join(data_dir, train_treebank)
   )
   train_dataset = preprocessor.make_dataset_from_generator(
     sentences=train_sentences, batch_size=batch_size
@@ -66,7 +75,7 @@ def load_data(preprocessor: preprocessor.Preprocessor,
 
   if test_treebank is not None:
     test_sentences = preprocessor.prepare_sentence_protos(
-      path=os.path.join(_TEST_DATA_DIR, test_treebank)
+      path=os.path.join(test_data_dir, test_treebank)
     )
     test_dataset = preprocessor.make_dataset_from_generator(
       sentences = test_sentences,

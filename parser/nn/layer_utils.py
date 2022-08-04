@@ -152,13 +152,56 @@ class DozatBiaffineScorer(layers.Layer):
 
 class LSTMBlock(layers.Layer):
   """A bidirectional LSTM block with 3 Birectional LSTM layers"""
+  def __init__(self, *, n_units: int,
+               return_sequences: bool = True,
+               return_state: bool = False,
+               dropout_rate: float = 0.0,
+               name="LSTMBlock"):
+    super(LSTMBlock, self).__init__(name=name)
+    self.dropout_rate = dropout_rate
+    self.lstm1 = layers.Bidirectional(layers.LSTM(
+      units=n_units, return_sequences=return_sequences,
+      # stateful=True,
+      name="lstm1"))
+    self.lstm2 = layers.Bidirectional(layers.LSTM(
+      units=n_units, return_sequences=return_sequences,
+      # stateful=True,
+      name="lstm2"))
+    self.lstm3 = layers.Bidirectional(layers.LSTM(
+      units=n_units, return_sequences=return_sequences,
+      return_state=return_state,
+      # stateful=True,
+      name="lstm3"))
+    self.dropout1 = layers.Dropout(rate=dropout_rate, name="dropout1")
+    self.dropout2 = layers.Dropout(rate=dropout_rate, name="dropout2")
+    self.dropout3 = layers.Dropout(rate=dropout_rate, name="dropout3")
+    def call(self, input_tensor):
+      dropout = self.dropout_rate > 0
+      if dropout:
+        out = self.lstm1(input_tensor)
+        out = self.dropout1(out)
+        out = self.lstm2(out)
+        out = self.dropout2(out)
+        out = self.lstm3(out)
+        out = self.dropout3(out)
+      else:
+        out = self.lstm1(input_tensor)
+        out = self.lstm2(out)
+        out = self.lstm3(out)
+      return out
+
+
+
+#TODO: make sure that the transfer learning methods call this class rather than the above.
+class LSTMBlockForTransfer(layers.Layer):
+  """A bidirectional LSTM block with 3 Birectional LSTM layers"""
   def __init__(self, *,
-              n_units: int,
-              num_layers = 3,
-              return_sequences: bool = True,
-              return_state: bool = False,
-              dropout_rate: float = 0.0,
-              name="LSTMBlock"):
+               n_units: int,
+               num_layers = 3,
+               return_sequences: bool = True,
+               return_state: bool = False,
+               dropout_rate: float = 0.0,
+               name="LSTMBlock"):
     super(LSTMBlock, self).__init__(name=name)
     total_layers = 0
     self.dropout_rate = dropout_rate
@@ -195,7 +238,6 @@ class LSTMBlock(layers.Layer):
     if self.lstm3:
       self.lstm3.build((None, None, n_units*2))
     # input("Press to cont.")
-
 
   def call(self, input_tensor, training):
     if not training:

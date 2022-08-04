@@ -120,7 +120,6 @@ class LabelFirstParsingModel(tf.keras.Model):
     self.concatenate = layers.Concatenate(name="concat")
     self.lstm_block = layer_utils.LSTMBlock(n_units=256,
                                             dropout_rate=0.3,
-                                            num_layers=2,
                                             name="lstm_block")
     # self.attention = layer_utils.Attention()
     
