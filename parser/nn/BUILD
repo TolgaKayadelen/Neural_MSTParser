@@ -96,7 +96,8 @@ py_binary(
       ":combined_parser_memory",
       ":seq_lstm_attn",
       ":sequential_parser_exp",
-      ":load_models"
+      ":load_models",
+      ":rl_env"
     ],
 )
 
@@ -111,6 +112,14 @@ py_library(
     "//util:writer",
     "//util:converter",
   ]
+)
+
+py_library(
+    name = "rl_env",
+    srcs = ["rl_env.py"],
+    deps = [
+        ":nn_parser_lib",
+    ],
 )
 
 py_library(

@@ -69,7 +69,8 @@ class SeqLSTMAttnModel(tf.keras.Model):
 
     # Pre attention layers
     self.word_embeddings_layer = layer_utils.EmbeddingLayer(
-      pretrained=word_embeddings, name="word_embeddings_layer"
+      pretrained=word_embeddings, trainable=False,
+      name="word_embeddings_layer"
     )
     if self.use_pos:
       self.pos_embeddings = layer_utils.EmbeddingLayer(
@@ -83,7 +84,7 @@ class SeqLSTMAttnModel(tf.keras.Model):
                                             n_units=n_units,
                                             num_layers=2,
                                             dropout_rate=0.3,
-                                            name="lstm_encoder")
+                                            name="pre_attn_lstm")
 
     # Attention layers
     # We will override the repeat factor of this in repeator in call function
@@ -191,7 +192,7 @@ class SeqLSTMAttnModel(tf.keras.Model):
       sentence_repr = word_features
 
     # Pass inputs through pre attention lstm
-    sentence_repr = self.pre_attn_lstm(sentence_repr)
+    sentence_repr = self.pre_attn_lstm(sentence_repr, training=False)
     s = s0
     c = c0
     states = []

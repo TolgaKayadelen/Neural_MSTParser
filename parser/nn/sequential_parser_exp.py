@@ -269,10 +269,14 @@ class SequentialParser(base_parser.BaseParser):
                                        "morph" : morph,
                                        "labels" : dep_labels,
                                        "heads" : heads,
-                                       "sent_ids": sent_ids},
+                                       "sent_id": sent_ids},
                                         training=False)
     return parent_prob_dict
 
+
+### *********************************************************************************** ###
+################################### END of MODEL ##########################################
+### *********************************************************************************** ###
 
 # From the model we get the parent probabilities.
 class SequentialParsingModel(tf.keras.Model):
@@ -295,7 +299,8 @@ class SequentialParsingModel(tf.keras.Model):
     self.loss_function = losses.SparseCategoricalCrossentropy(from_logits=True)
 
     self.word_embeddings = layer_utils.EmbeddingLayer(
-      pretrained=word_embeddings, name="word_embeddings"
+      pretrained=word_embeddings, trainable=False,
+      name="word_embeddings"
     )
 
     if self.use_pos:
@@ -358,11 +363,13 @@ class SequentialParsingModel(tf.keras.Model):
         sentence_repr = self.concatenate(concat_list)
       else:
         sentence_repr = word_features
-
-      sentence_repr = self.encoder(sentence_repr)
+      sentence_repr = self.encoder(sentence_repr, training=True)
     else:
-      # If received sentence_repr from labeler encoding
+      # If received state from labeler encoding. This means we have a pretrained model. So training=False.
       sentence_repr = inputs["sentence_repr"]
+      # print("received sentence representation: ", sentence_repr)
+      # input()
+      # sentence_repr = self.encoder(sentence_repr, training=False)
       # print(sentence_repr, "sentenece repr received")
       # input("press to cont.")
       # print("pad mask ", pad_mask)
@@ -404,7 +411,8 @@ class SequentialParsingModel(tf.keras.Model):
       # print("sentence repr", sentence_repr)
       # input("press to cont.")
       # TODO: there's probably no need for this concat operation, validate!
-      sentence_repr_concat = tf.concat([sentence_repr, tf.zeros(shape=[batch_size, sequence_length, self.dep_label_size])], axis=2)
+      sentence_repr_concat = tf.concat([sentence_repr, tf.zeros(shape=[batch_size, sequence_length,
+                                                                       self.dep_label_size])], axis=2)
       # print("sentence repr", sentence_repr_concat)
       # input("press to cont.")
       # computing head probability
@@ -472,8 +480,8 @@ if __name__ ==  "__main__":
     predict=["heads"],
     features=["words", "pos", "morph", "dep_labels", "sent_id"],
     # log_dir=log_dir,
-    test_every=10,
-    model_name="sequential_parser_exp_saved"
+    test_every=2,
+    model_name="sequential_parser_exp_real_test"
   )
   # print("parser ", parser)
   _DATA_DIR="data/UDv29/train/tr"
@@ -493,7 +501,7 @@ if __name__ ==  "__main__":
     batch_size=100)
   test_dataset = prep.make_dataset_from_generator(
     sentences=test_sentences,
-    batch_size=20
+    batch_size=10
   )
   '''
   dataset = prep.read_dataset_from_tfrecords(
@@ -508,7 +516,7 @@ if __name__ ==  "__main__":
 
   # for batch in dataset:
   #  print(batch["heads"])
-  metrics = parser.train(dataset=dataset, test_data=None, epochs=1)
+  metrics = parser.train(dataset=dataset, test_data=test_dataset, epochs=50)
   print(metrics)
   parser.save_weights()
   logging.info("weights saved!")
