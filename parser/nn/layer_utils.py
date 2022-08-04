@@ -197,8 +197,11 @@ class LSTMBlock(layers.Layer):
     # input("Press to cont.")
 
 
-  def call(self, input_tensor):
-    dropout = self.dropout_rate > 0
+  def call(self, input_tensor, training):
+    if not training:
+      dropout=False
+    else:
+      dropout = self.dropout_rate > 0
     if dropout:
       out = self.lstm1(input_tensor)
       out = self.dropout1(out)
