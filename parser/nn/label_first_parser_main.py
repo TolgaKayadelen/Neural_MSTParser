@@ -1,5 +1,6 @@
 import logging
 import numpy as np
+import datetime
 
 from parser.nn import load_models
 from parser.nn.label_first_parser import LabelFirstParser
@@ -7,18 +8,28 @@ from util import writer
 from util.nn import nn_utils
 
 if __name__ == "__main__":
-  use_pretrained_weights_from_labeler = True
+  # use_pretrained_weights_from_labeler = True
+  current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+  log_dir = "debug/label_first_parser/" + current_time
   word_embeddings = load_models.load_word_embeddings()
   prep = load_models.load_preprocessor(word_embeddings)
 
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
 
-  parser_model_name = "label_first_predict_heads_and_labels_boun"
+  parser_model_name = "label_first_gold_labels_pos_morph_boun"
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
                             n_output_classes=label_feature.n_values,
-                            predict=["heads", "labels"],
-                            features=["words", "pos", "morph", "heads", "dep_labels"],
+                            predict=["heads",
+                                     # "labels"
+                                     ],
+                            features=["words",
+                                      "pos",
+                                      "morph",
+                                      "heads",
+                                      "dep_labels"],
+                            log_dir=log_dir,
+                            test_every=1,
                             model_name=parser_model_name)
 
   """ Uncomment if you want to load pretrained weights
@@ -47,9 +58,9 @@ if __name__ == "__main__":
                                                       batch_size=250,
                                                       test_treebank=test_treebank)
 
-  metrics = parser.train(dataset=train_dataset, epochs=70, test_data=test_dataset)
+  metrics = parser.train(dataset=train_dataset, epochs=50, test_data=test_dataset)
   print(metrics)
-  writer.write_proto_as_text(metrics, f"./model/nn/plot/{parser_model_name}_metrics.pbtxt")
+  writer.write_proto_as_text(metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
   nn_utils.plot_metrics(name=parser_model_name, metrics=metrics)
   parser.save_weights()
   logging.info("weights saved!")

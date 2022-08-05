@@ -65,7 +65,7 @@ def load_data(preprocessor: preprocessor.Preprocessor,
   if test_data_dir is not None:
     test_data_dir = test_data_dir
   else:
-    test_data_dir = "data/UDv29/dev/tr"
+    test_data_dir = "data/UDv29/test/tr"
   train_sentences = preprocessor.prepare_sentence_protos(
     path=os.path.join(data_dir, train_treebank)
   )

@@ -101,6 +101,16 @@ py_binary(
     ],
 )
 
+py_binary(
+    name = "lfp_tag_ranker",
+    srcs = ["lfp_tag_ranker.py"],
+    deps = [
+        ":load_models",
+        ":nn_parser_lib",
+        ":base_parser",
+    ],
+)
+
 # Libraries
 py_library(
   name = "nn_parser_lib",
@@ -111,6 +121,7 @@ py_library(
     "//util/nn:nn_utils",
     "//util:writer",
     "//util:converter",
+    "//tagset/dep_labels:dep_label_enum_py_pb2",
   ]
 )
 

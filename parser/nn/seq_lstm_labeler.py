@@ -356,4 +356,3 @@ class SeqLSTMLabeler(base_parser.BaseParser):
       label_preds  = self.model({"words": words, "pos": pos,
                                 "morph": morph}, training=False)
       return label_preds
-

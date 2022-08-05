@@ -16,6 +16,7 @@ from proto import metrics_pb2
 from tagset.reader import LabelReader
 from tensorflow.keras import layers, metrics, losses, optimizers
 from typing import List, Dict, Tuple
+from tagset.dep_labels import dep_label_enum_pb2 as dep_label_tags
 from util.nn import nn_utils
 
 # Set up basic configurations
@@ -171,6 +172,10 @@ class BaseParser(ABC):
     """
     batch_size, seq_len = _tensor.shape[0], _tensor.shape[1]
     return tf.reshape(_tensor, shape=(batch_size*seq_len, outer_dim))
+
+  @staticmethod
+  def _label_index_to_name(label_index):
+    return dep_label_tags.Tag.Name(label_index[0])
 
   def __str__(self):
     return str(self.model.summary())
