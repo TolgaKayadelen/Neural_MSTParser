@@ -57,6 +57,7 @@ def load_data(preprocessor: preprocessor.Preprocessor,
               test_treebank: str = None,
               data_dir: str = None,
               test_data_dir: str = None,
+              type="pbtxt",
               ):
   if data_dir is not None:
     data_dir = data_dir
@@ -66,22 +67,38 @@ def load_data(preprocessor: preprocessor.Preprocessor,
     test_data_dir = test_data_dir
   else:
     test_data_dir = "data/UDv29/test/tr"
-  train_sentences = preprocessor.prepare_sentence_protos(
-    path=os.path.join(data_dir, train_treebank)
-  )
-  train_dataset = preprocessor.make_dataset_from_generator(
-    sentences=train_sentences, batch_size=batch_size
-  )
+  if type=="pbtxt":
+    train_sentences = preprocessor.prepare_sentence_protos(
+      path=os.path.join(data_dir, train_treebank)
+    )
+    train_dataset = preprocessor.make_dataset_from_generator(
+      sentences=train_sentences, batch_size=batch_size
+    )
 
-  if test_treebank is not None:
-    test_sentences = preprocessor.prepare_sentence_protos(
-      path=os.path.join(test_data_dir, test_treebank)
+    if test_treebank is not None:
+      test_sentences = preprocessor.prepare_sentence_protos(
+        path=os.path.join(test_data_dir, test_treebank)
+     )
+      test_dataset = preprocessor.make_dataset_from_generator(
+        sentences = test_sentences,
+        batch_size=1
+      )
+    else:
+      test_dataset = None
+  elif type =="tfrecords":
+    train_dataset = preprocessor.read_dataset_from_tfrecords(
+      records=os.path.join(data_dir, train_treebank),
+      batch_size=batch_size
     )
-    test_dataset = preprocessor.make_dataset_from_generator(
-      sentences = test_sentences,
-      batch_size=1
-    )
+    if test_treebank is not None:
+      test_dataset = preprocessor.read_dataset_from_tfrecords(
+        records=os.path.join(test_data_dir, test_treebank),
+        batch_size=1
+      )
+    else:
+      test_dataset = None
+
   else:
-    test_dataset = None
+    raise ValueError("Invalid data type requested.")
 
   return train_dataset, test_dataset

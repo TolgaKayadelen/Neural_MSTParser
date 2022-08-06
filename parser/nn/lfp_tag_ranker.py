@@ -467,9 +467,9 @@ if __name__ == "__main__":
                                                         batch_size=10,
                                                         test_treebank=test_treebank)
 
-    metrics = parser.train(dataset=train_dataset, epochs=50, test_data=test_dataset)
-    print(metrics)
-    writer.write_proto_as_text(metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
+    _metrics = parser.train(dataset=train_dataset, epochs=2, test_data=test_dataset)
+    print(_metrics)
+    writer.write_proto_as_text(_metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
     # nn_utils.plot_metrics(name=parser_model_name, metrics=metrics)
     # parser.save_weights()
     # logging.info("weights saved!")

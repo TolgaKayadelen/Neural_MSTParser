@@ -484,16 +484,17 @@ class Preprocessor:
       yield yield_dict
 
 
-def make_tfrecords(path: str, sample: int = 0):
+def make_tfrecords(path: str, sample: int = 1000):
   """Converts a set of tf.Examples to tf_records"""
   embeddings = nn_utils.load_embeddings()
   word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
   input_path = Path(path)
   # TODO fix the output path to be non one hot.
-  output_path = str(input_path.parent) + "/" + str(input_path.stem) + "_one_hot_labels"+ ".tfrecords"
+  # output_path = str(input_path.parent) + "/" + str(input_path.stem) + "_one_hot_labels"+ ".tfrecords"
+  output_path = str(input_path.parent) + "/" + str(input_path.stem) +".tfrecords"
   prep = Preprocessor(word_embeddings=word_embeddings,
                       features=["words", "tokens", "sent_id", "pos", "morph", "dep_labels", "heads"],
-                      one_hot_features=["dep_labels"],  # TODO remove this one later.
+                      # one_hot_features=["dep_labels"],  # TODO remove this one later.
                       labels=["dep_labels", "heads"])
   sentences = prep.prepare_sentence_protos(path=path)
   if sample > 0:
@@ -506,7 +507,7 @@ def make_tfrecords(path: str, sample: int = 0):
 
 if __name__ == "__main__":
 
-  data = "data/UDv29/test/tr/tr_boun-ud-test.pbtxt"
+  data = "data/UDv29/train/tr/tr_boun-ud-train.pbtxt"
   make_tfrecords(data)
 
   ''' Make a dataset with example_generator

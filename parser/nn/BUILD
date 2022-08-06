@@ -111,6 +111,26 @@ py_binary(
     ],
 )
 
+py_binary(
+	name = "bilstm_labeler_binary",
+	srcs = ["bilstm_labeler_binary.py"],
+    deps = [
+        ":base_parser",
+        ":nn_parser_lib",
+        ":load_models",
+  ],
+)
+
+py_binary(
+	name = "bilstm_labeler_binary_softmax",
+	srcs = ["bilstm_labeler_binary_softmax.py"],
+    deps = [
+        ":base_parser",
+        ":nn_parser_lib",
+        ":load_models",
+  ],
+)
+
 # Libraries
 py_library(
   name = "nn_parser_lib",

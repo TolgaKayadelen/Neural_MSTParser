@@ -175,7 +175,38 @@ class BaseParser(ABC):
 
   @staticmethod
   def _label_index_to_name(label_index):
-    return dep_label_tags.Tag.Name(label_index[0])
+    # print("label index ", label_index)
+    # input()
+    try:
+      name = dep_label_tags.Tag.Name(label_index[0])
+    except IndexError:
+      name = dep_label_tags.Tag.Name(label_index)
+      return name
+    raise ValueError(f"Argument {label_index} is not a valid type.")
+
+  @staticmethod
+  def _label_name_to_index(label_name):
+    return dep_label_tags.Tag.Value(label_name)
+
+  @staticmethod
+  def _enumerated_tensor(_tensor):
+    """Converts a 2D tensor to its enumerated version."""
+    enumerated_tensors_list = []
+    if not len(_tensor.shape) == 2:
+      raise ValueError(f"enumerated tensor only works for 2D tensors. Received tensor of shape {_tensor.shape}")
+    batch_size = _tensor.shape[0]
+    for i in range(batch_size):
+      # print("i ", i)
+      # print("tensor[i]", _tensor[i])
+      # input("press ")
+      _t = tf.constant([i, tf.keras.backend.get_value(_tensor[i][0])])
+      enumerated_tensors_list.append(_t)
+
+    _enumerated_tensor = tf.convert_to_tensor(enumerated_tensors_list)
+    # print("enumerated_tensor ", _enumerated_tensor)
+    # input("press")
+    return _enumerated_tensor
+
 
   def __str__(self):
     return str(self.model.summary())
