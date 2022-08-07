@@ -484,7 +484,7 @@ class Preprocessor:
       yield yield_dict
 
 
-def make_tfrecords(path: str, sample: int = 1000):
+def make_tfrecords(path: str, sample: int = 0):
   """Converts a set of tf.Examples to tf_records"""
   embeddings = nn_utils.load_embeddings()
   word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
@@ -507,7 +507,7 @@ def make_tfrecords(path: str, sample: int = 1000):
 
 if __name__ == "__main__":
 
-  data = "data/UDv29/train/tr/tr_boun-ud-train.pbtxt"
+  data = "data/UDv29/train/tr/tr_combined-train.pbtxt"
   make_tfrecords(data)
 
   ''' Make a dataset with example_generator
