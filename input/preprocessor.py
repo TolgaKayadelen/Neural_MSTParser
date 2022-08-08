@@ -149,7 +149,7 @@ class Preprocessor:
         sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.string)
       elif feat == "morph":
         sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.float32)
-      elif feat in ["words", "pos"]:
+      elif feat in ["words", "pos", "category"]:
         sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.int64)
       else:
         raise ValueError(f"{feat} is not a valid feature.")
@@ -491,9 +491,9 @@ def make_tfrecords(path: str, sample: int = 0):
   input_path = Path(path)
   # TODO fix the output path to be non one hot.
   # output_path = str(input_path.parent) + "/" + str(input_path.stem) + "_one_hot_labels"+ ".tfrecords"
-  output_path = str(input_path.parent) + "/" + str(input_path.stem) +".tfrecords"
+  output_path = str(input_path.parent) + "/" + str(input_path.stem) + ".tfrecords"
   prep = Preprocessor(word_embeddings=word_embeddings,
-                      features=["words", "tokens", "sent_id", "pos", "morph", "dep_labels", "heads"],
+                      features=["words", "tokens", "sent_id", "pos", "category", "morph", "dep_labels", "heads"],
                       # one_hot_features=["dep_labels"],  # TODO remove this one later.
                       labels=["dep_labels", "heads"])
   sentences = prep.prepare_sentence_protos(path=path)
@@ -507,7 +507,7 @@ def make_tfrecords(path: str, sample: int = 0):
 
 if __name__ == "__main__":
 
-  data = "data/UDv29/train/tr/tr_combined-train.pbtxt"
+  data = "data/UDv29/train/tr/tr_combined-ud-train.pbtxt"
   make_tfrecords(data)
 
   ''' Make a dataset with example_generator

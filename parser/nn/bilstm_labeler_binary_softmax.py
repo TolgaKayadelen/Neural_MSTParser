@@ -79,7 +79,7 @@ class BiLSTMLabelerBinarySoftmax(base_parser.BaseParser):
 
   def train_step(self, *,
                  words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
-                 dep_labels: tf.Tensor, heads: tf.Tensor) -> Tuple[tf.Tensor, ...]:
+                 dep_labels: tf.Tensor, heads: tf.Tensor, tokens: tf.Tensor) -> Tuple[tf.Tensor, ...]:
     """Runs one training step.
     Args:
         words: tf.Tensor of word indices of shape (batch_size, seq_len) where the seq_len
@@ -99,13 +99,17 @@ class BiLSTMLabelerBinarySoftmax(base_parser.BaseParser):
       pad_mask: tf.Tensor of shape (batch_size*seq_len, 1) where padded words are marked as 0.
     """
     masked_labels = []
-    for vector in dep_labels:
-      if any(self._label_index_to_name(index.numpy()) == "root" for index in vector):
-        # print(list(self._label_index_to_name(index.numpy()) for index in vector))
-        tag_index = self._label_name_to_index("root")
-        # keep the root value and replace all other with 0
-        vector = tf.multiply(vector, tf.cast(vector==tag_index, tf.int64))
-        masked_labels.append(tf.expand_dims(vector, 0))
+    for vector, tok in zip(dep_labels, tokens):
+      if not any(self._label_index_to_name(index.numpy()) == "root" for index in vector):
+        print(list(self._label_index_to_name(index.numpy()) for index in vector))
+        print("tokens ", tok)
+        input()
+        continue
+      tag_index = self._label_name_to_index("root")
+      # keep the root value and replace all other with 0
+      vector = tf.multiply(vector, tf.cast(vector==tag_index, tf.int64))
+      masked_labels.append(tf.expand_dims(vector, 0))
+      # print("masked labels ", masked_labels)
     label_inputs=tf.concat(masked_labels, axis=0)
     # print("label inputs ", label_inputs)
     labels = tf.cast(tf.cast(label_inputs, tf.bool), tf.float32)
@@ -115,6 +119,8 @@ class BiLSTMLabelerBinarySoftmax(base_parser.BaseParser):
     # input()
     predictions, correct, losses = {}, {}, {}
     pad_mask = self._flatten((words != 0))
+    # print("pad mask ", pad_mask)
+
 
     with tf.GradientTape() as tape:
       label_scores = self.model({"words": words, "pos": pos, "morph": morph,
@@ -130,7 +136,7 @@ class BiLSTMLabelerBinarySoftmax(base_parser.BaseParser):
       # positive_label_predictions = tf.one_hot(positive_label_predictions, labels.shape[1])
       # print("positive label preds ", positive_label_predictions)
       # input()
-      correctly_predicted_roots = positive_label_predictions == tf.argmax(labels, 1)
+      correctly_predicted_roots = (positive_label_predictions == tf.argmax(labels, 1))
       total_correct_predictions = np.sum(correctly_predicted_roots)
       # print("corr pred roots ", correctly_predicted_roots)
       # print("total_correct_predictions ", total_correct_predictions)
@@ -140,13 +146,28 @@ class BiLSTMLabelerBinarySoftmax(base_parser.BaseParser):
       label_preds = self._flatten(label_preds)
       # print("label preds ", label_preds)
       # input()
-      # Flatten the label scores to (batch_size*seq_len, n_classes) (i.e. 340, 36).
-      label_scores = self._flatten(label_scores, outer_dim=label_scores.shape[2])
-      # print("label scores ", label_scores)
+
+      # print(tokens)
       # Flatten the correct labels to the shape (batch_size*seq_len, 1) (i.e. 340,1)
       # Index for the right label for each token.
       correct_labels = self._flatten(labels)
       # print("correct labels ", correct_labels)
+      # input()
+      correct_labels = tf.expand_dims(tf.boolean_mask(correct_labels, pad_mask), 1)
+      # print("after mask ", correct_labels)
+      # input()
+
+      # Flatten the label scores to (batch_size*seq_len, n_classes) (i.e. 340, 36).
+      # print("pad mask ", pad_mask)
+      label_mask = tf.tile(pad_mask, [1, label_scores.shape[2]])
+      # print("label mask ", label_mask)
+      # input()
+      label_scores = self._flatten(label_scores, outer_dim=label_scores.shape[2])
+      original_shape = (correct_labels.shape[0], 2)
+      # print("label scores ", label_scores)
+      label_scores = tf.reshape(tf.boolean_mask(label_scores, label_mask), original_shape)
+      # print("label scores ", label_scores)
+      # print("----------------------------")
       # input()
       label_loss = tf.expand_dims(self._label_loss(label_scores, correct_labels), axis=-1)
       grads = tape.gradient(label_loss, self.model.trainable_weights)
@@ -156,8 +177,7 @@ class BiLSTMLabelerBinarySoftmax(base_parser.BaseParser):
     # Update training metrics.
     self._update_training_metrics(
       labels=correct_labels,
-      label_scores=label_scores,
-      pad_mask=pad_mask)
+      label_scores=label_scores)
 
     losses["labels"] = label_loss
     correct["labels"] = correct_labels
@@ -206,7 +226,8 @@ class BiLSTMLabelerBinarySoftmax(base_parser.BaseParser):
                                                           pos=pos,
                                                           morph=morph,
                                                           dep_labels=dep_labels,
-                                                          heads=heads)
+                                                          heads=heads,
+                                                          tokens=batch["tokens"])
         total_correct_predictions += total_corr
         total_labels += total_l
         losses["labels"].append(tf.reduce_sum(batch_loss["labels"]))
@@ -463,7 +484,7 @@ if __name__ == "__main__":
                                       model_name="root_classifier",
                                       test_every=1)
 
-  train_treebank= "tr_boun-ud-train.tfrecords"
+  train_treebank= "tr_combined-ud-train.tfrecords"
   test_treebank = "tr_boun-ud-test.tfrecords"
   # test_treebank = None
   train_dataset, test_dataset = load_models.load_data(preprocessor=prep,
