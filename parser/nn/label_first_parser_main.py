@@ -12,12 +12,14 @@ if __name__ == "__main__":
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
   log_dir = "debug/label_first_parser/" + current_time
   word_embeddings = load_models.load_word_embeddings()
-  prep = load_models.load_preprocessor(word_embeddings)
+  prep = load_models.load_preprocessor(word_embeddings,
+                                       # one_hot_features=["dep_labels"]
+                                       )
 
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
 
-  parser_model_name = "label_first_gold_labels_pos_morph_boun"
+  parser_model_name = "lfp_gold_labels_pos_morph_boun_one_hot"
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
                             n_output_classes=label_feature.n_values,
                             predict=["heads",
@@ -26,11 +28,13 @@ if __name__ == "__main__":
                             features=["words",
                                       "pos",
                                       "morph",
+                                      "category",
                                       "heads",
                                       "dep_labels"],
                             log_dir=log_dir,
                             test_every=1,
-                            model_name=parser_model_name)
+                            model_name=parser_model_name,
+                            one_hot_labels=False)
 
   """ Uncomment if you want to load pretrained weights
    labeler, label_feature = load_models.load_labeler("dependency_labeler", prep)
@@ -51,14 +55,19 @@ if __name__ == "__main__":
 
 
   # get the data
-  train_treebank= "tr_boun-ud-train.pbtxt"
-  test_treebank = "tr_boun-ud-dev.pbtxt"
+  train_treebank= "tr_boun-ud-train.tfrecords"
+  test_treebank = "tr_boun-ud-test.tfrecords"
   train_dataset, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
-                                                      batch_size=250,
-                                                      test_treebank=test_treebank)
+                                                      batch_size=2,
+                                                      test_treebank=test_treebank,
+                                                      type="tfrecords")
 
-  metrics = parser.train(dataset=train_dataset, epochs=50, test_data=test_dataset)
+
+  for batch in train_dataset:
+    print(batch)
+    input()
+  metrics = parser.train(dataset=train_dataset, epochs=1, test_data=test_dataset)
   print(metrics)
   writer.write_proto_as_text(metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
   nn_utils.plot_metrics(name=parser_model_name, metrics=metrics)

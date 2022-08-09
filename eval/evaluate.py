@@ -19,6 +19,8 @@ bazel-bin/parser_main/evaluate \
 --print_results=True
 """
 
+import os
+import argparse
 import pandas as pd
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
@@ -28,12 +30,19 @@ from util import reader
 from tagset.reader import LabelReader
 from typing import Dict
 from google.protobuf import text_format
+from tagset.dep_labels import dep_label_enum_pb2 as dep_label_tags
 
 import logging
 
+_EVAL_DIR="./eval/eval_data"
+
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-label_to_enum = LabelReader.get_labels("dep_labels").labels
+# label_to_enum = LabelReader.get_labels("dep_labels").labels
+# print("label to enum ", label_to_enum)
+
+def _label_name_to_index(label_name):
+  return dep_label_tags.Tag.Value(label_name)
 
 def evaluate_parser(args, print_results=False):
   """Function to evaluate the dependency parser output on gold data.
@@ -97,6 +106,7 @@ class Evaluator:
     gold_and_test = []
     for sent_id in self.gold:
       gold_and_test.append((self.gold[sent_id], self.test[sent_id]))
+    # print("gold and test ", gold_and_test)
     return gold_and_test
   
   @property
@@ -124,23 +134,23 @@ class Evaluator:
         
     for label in self.typed_uas.keys():
       evaluation.typed_uas.uas.add(
-                              label=label_to_enum[label],
+                              label=_label_name_to_index(label),
                               score=round(self.typed_uas[label],2)
                               )
     for label in self.labeled_attachment_prec.keys():
       evaluation.labeled_attachment_prec.prec.add(
-                              label=label_to_enum[label],
+                              label=_label_name_to_index(label),
                               score=round(self.labeled_attachment_prec[label],2)
                               )
     for label in self.labeled_attachment_recall.keys():
       evaluation.labeled_attachment_recall.recall.add(
-                              label=label_to_enum[label],
+                              label=_label_name_to_index(label),
                               score=round(self.labeled_attachment_recall[label], 2)
                               )
         
     for _, row in self.labeled_attachment_metrics.reset_index().iterrows():
       evaluation.labeled_attachment_metrics.labeled_attachment_metric.add(
-                              label=label_to_enum[row["index"]],
+                              label=_label_name_to_index(row["index"]),
                               count=int(row["count"]),
                               prec=row["labeled_attachment_precision"],
                               recall=row["labeled_attachment_recall"],
@@ -241,9 +251,11 @@ class Evaluator:
     
     for gold_sent, test_sent in self.gold_and_test:
       gold_heads = [tok.selected_head.address for tok in gold_sent.token[1:]]
+      print("gold heads ", gold_heads)
       pred_heads = [tok.selected_head.address for tok in test_sent.token[1:]]
+      print("test heads ", pred_heads)
       assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
-      uas += 100 * sum(
+      uas += sum(
           gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
     return uas / len(self.gold)
         
@@ -262,7 +274,7 @@ class Evaluator:
         (tok.selected_head.address, tok.label) for tok in test_sent.token[1:]
       ]
       assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
-      las += 100 * sum(
+      las +=  sum(
           gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
     
     return las / len(self.gold)
@@ -419,12 +431,12 @@ class Evaluator:
       results["label_confusion_matrix"] = self.labels_conf_matrix
       results["eval_proto"] = self.evaluation
       logging.info("Label Prediction Metrics")
-      print(self.label_prediction_metrics)
+      print(f"{self.label_prediction_metrics}\n\n\n")
       logging.info(f"Label Prediction Confusion Matrix:")
-      print(self.labels_conf_matrix)
+      print(f"{self.labels_conf_matrix}\n\n\n")
       logging.info("Labeled Attachment Evaluation Matrix:")
-      print(self.evaluation_matrix)
-      logging.info(f"Evaluation:")
+      print(f"{self.evaluation_matrix}\n\n\n")
+      logging.info(f"Evaluation Proto:")
       print(self.evaluation)
     else:
       if "uas_total" in requested_metrics:
@@ -443,3 +455,37 @@ class Evaluator:
         results["labeled_attachment_metrics"] = self.labeled_attachment_metrics
         results["eval_proto"] = self.evaluation
     return results
+
+
+def _read_file(path):
+  with open(path, "r") as f:
+    read = f.read()
+  return read
+
+def _read_parser_test_data(basename):
+  path = os.path.join(_EVAL_DIR, "{}.pbtxt".format(basename))
+  return text_format.Parse(_read_file(path), treebank_pb2.Treebank())
+
+
+def main(args):
+  gold_data = _read_parser_test_data(args.gold_data)
+  test_data = _read_parser_test_data(args.test_data)
+  evaluator = Evaluator(gold_data, test_data)
+  results = evaluator.evaluate(args.metrics)
+
+
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser()
+  parser.add_argument("--test_data", type=str,
+                      help="The test data to read (.protobuf)")
+  parser.add_argument("--gold_data", type=str,
+                      help="Gold data to use for evaluating a model.")
+  parser.add_argument("--metrics", nargs='*',
+                      default=["uas_total", "las_total"],
+                      help="Space separated list of metrics to evaluate.",
+                      choices=["uas_total", "las_total", "typed_uas",
+                               "typed_las_prec", "typed_las_recall", "typed_las_f1",
+                               "all"])
+
+  args = parser.parse_args()
+  main(args)

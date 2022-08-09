@@ -296,6 +296,7 @@ class Preprocessor:
           np.put(morph_vector, morph_indices, [1])
           morph_features.append(morph_vector)
         self.sequence_features_dict["morph"].values = morph_features
+      # TODO: we cannot make tfexamples with one hot label features.
       if "dep_labels" in self.features:
         sentence.token[0].label = "TOP" # workaround key errors
         dep_indices = self.numericalize(

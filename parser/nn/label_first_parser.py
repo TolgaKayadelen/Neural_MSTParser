@@ -56,7 +56,10 @@ class LabelFirstParser(base_parser.BaseParser):
     word_inputs = tf.keras.Input(shape=(None,), name="words")
     pos_inputs = tf.keras.Input(shape=(None,), name="pos")
     morph_inputs = tf.keras.Input(shape=(None, 56), name="morph")
-    label_inputs = tf.keras.Input(shape=(None,), name="labels")
+    if not self.one_hot_labels:
+      label_inputs = tf.keras.Input(shape=(None, ), name="labels")
+    else:
+      label_inputs = tf.keras.Input(shape=(None, 43), name="labels")
     input_dict = {"words": word_inputs}
     if self._use_pos:
       input_dict["pos"] = pos_inputs
@@ -81,7 +84,8 @@ class LabelFirstParser(base_parser.BaseParser):
       name=model_name,
       use_pos=self._use_pos,
       use_morph=self._use_morph,
-      use_dep_labels=self._use_dep_labels
+      use_dep_labels=self._use_dep_labels,
+      one_hot_labels=self.one_hot_labels,
     )
     model(inputs=self.inputs)
     return model
@@ -95,13 +99,15 @@ class LabelFirstParsingModel(tf.keras.Model):
                predict: List[str],
                use_pos:bool = True,
                use_morph:bool=True,
-               use_dep_labels:bool=False # for cases where we predict only edges using dep labels as gold.
+               use_dep_labels:bool=False, # for cases where we predict only edges using dep labels as gold.
+               one_hot_labels: False
                ):
     super(LabelFirstParsingModel, self).__init__(name=name)
     self.predict = predict
     self.use_pos = use_pos
     self.use_morph = use_morph
     self.use_dep_labels = use_dep_labels
+    self.one_hot_labels = one_hot_labels
     self._null_label = tf.constant(0)
 
     assert(not("labels" in self.predict and self.use_dep_labels)), "Can't use dep_labels both as feature and label!"
@@ -126,11 +132,12 @@ class LabelFirstParsingModel(tf.keras.Model):
     if "labels" in self.predict:
       self.dep_labels = layers.Dense(units=n_dep_labels, name="labels")
     else:
-      if self.use_dep_labels: # using dep labels as gold features.
+      if self.use_dep_labels and not self.one_hot_labels:
         self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=43,
                                                            output_dim=50,
                                                            name="label_embeddings",
                                                            trainable=True)
+
 
     self.head_perceptron = layer_utils.Perceptron(n_units=256,
                                                   activation="relu",
@@ -169,10 +176,17 @@ class LabelFirstParsingModel(tf.keras.Model):
       concat_list.append(morph_inputs)
     if self.use_dep_labels:
       label_inputs = inputs["labels"]
-      label_features = self.label_embeddings(label_inputs)
-      concat_list.append(label_features)
+      if not self.one_hot_labels:
+        label_features = self.label_embeddings(label_inputs)
+        # print("label featires ", label_features)
+        # input()
+        concat_list.append(label_features)
+      else:
+        concat_list.append(label_inputs)
     if len(concat_list) > 1:
       sentence_repr = self.concatenate(concat_list)
+      # print("sentence repr ", sentence_repr)
+      # input()
     else:
       sentence_repr = word_features
 

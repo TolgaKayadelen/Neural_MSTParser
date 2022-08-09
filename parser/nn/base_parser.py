@@ -1,5 +1,6 @@
 import collections
 import logging
+import datetime
 import os
 import sys
 import time
@@ -11,12 +12,17 @@ import matplotlib as mpl
 import numpy as np
 
 from abc import ABC, abstractmethod
+from data.treebank import sentence_pb2
+from data.treebank import treebank_pb2
 from parser.nn import architectures
 from proto import metrics_pb2
 from tagset.reader import LabelReader
 from tensorflow.keras import layers, metrics, losses, optimizers
 from typing import List, Dict, Tuple
 from tagset.dep_labels import dep_label_enum_pb2 as dep_label_tags
+from tagset.fine_pos import fine_tag_enum_pb2 as pos_tags
+from tagset.coarse_pos import coarse_tag_enum_pb2 as category_tags
+from util import writer
 from util.nn import nn_utils
 
 # Set up basic configurations
@@ -40,7 +46,8 @@ class BaseParser(ABC):
                features: List[str] = ["words"],
                model_name: str,
                log_dir = None,
-               test_every: int = 5):
+               test_every: int = 5,
+               one_hot_labels=False):
     # Embeddings
     self.word_embeddings = word_embeddings
 
@@ -49,6 +56,8 @@ class BaseParser(ABC):
     self._predict = predict
 
     self.features = features
+
+    self.one_hot_labels = one_hot_labels
 
     self.model_name = model_name
 
@@ -179,7 +188,7 @@ class BaseParser(ABC):
     # input()
     try:
       name = dep_label_tags.Tag.Name(label_index[0])
-    except IndexError:
+    except:
       name = dep_label_tags.Tag.Name(label_index)
       return name
     raise ValueError(f"Argument {label_index} is not a valid type.")
@@ -187,6 +196,22 @@ class BaseParser(ABC):
   @staticmethod
   def _label_name_to_index(label_name):
     return dep_label_tags.Tag.Value(label_name)
+
+  @staticmethod
+  def _pos_index_to_name(pos_index):
+    return pos_tags.Tag.Name(pos_index)
+
+  @staticmethod
+  def _pos_name_to_index(pos_name):
+    return pos_tags.Tag.Value(pos_name)
+
+  @staticmethod
+  def _cat_index_to_name(cat_index):
+    return category_tags.Tag.Name(cat_index)
+
+  @staticmethod
+  def _cat_name_to_index(cat_name):
+    return category_tags.Tag.Value(cat_name)
 
   @staticmethod
   def _enumerated_tensor(_tensor):
@@ -603,7 +628,8 @@ class BaseParser(ABC):
         loss_metrics=loss_results_for_epoch,
         test_metrics=test_results_for_epoch,
       )
-
+    # At the end of training, parse the data with the learned weights and save it as proto.
+    self.parse_and_save(test_data)
     return self._metrics
 
   def test(self, *, dataset: Dataset):
@@ -691,3 +717,56 @@ class BaseParser(ABC):
     load_status = self.model.load_weights(os.path.join(path, name))
     logging.info(f"Loaded model from model named: {name} in: {_MODEL_DIR}")
     load_status.assert_consumed()
+
+  def parse_and_save(self, dataset: Dataset):
+    """Parses a set of sentences with this parser and saves the gold and predicted outputs to a directory."""
+    current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    gold_treebank_name = f"{self.model_name}_{current_time}_gold.pbtxt"
+    parsed_treebank_name = f"{self.model_name}_{current_time}_parsed.pbtxt"
+    eval_path = "./eval/eval_data"
+    gold_treebank = treebank_pb2.Treebank()
+    parsed_treebank = treebank_pb2.Treebank()
+
+    for example in dataset:
+      gold_sentence_pb2 = gold_treebank.sentence.add()
+      parsed_sentence_pb2 = parsed_treebank.sentence.add()
+      sent_id, tokens, dep_labels, heads, pos, category = (example["sent_id"], example["tokens"],
+                                                           example["dep_labels"], example["heads"],
+                                                           example["pos"], example["category"])
+      # first populate gold treebank with the gold annotations
+      index = 0
+      for token, dep_label, head, pos_tag, category_tag in zip(tokens[0], dep_labels[0], heads[0], pos[0], category[0]):
+        gold_sentence_pb2.sent_id = sent_id[0][0].numpy()
+        token = gold_sentence_pb2.token.add(
+          word=tf.keras.backend.get_value(token),
+          category=self._cat_index_to_name(tf.keras.backend.get_value(category_tag)),
+          pos=self._pos_index_to_name(tf.keras.backend.get_value(pos_tag)),
+          label=self._label_index_to_name(tf.keras.backend.get_value(dep_label)),
+          index=index)
+        token.selected_head.address=tf.keras.backend.get_value(head)
+        index += 1
+
+      # next populate parsed data
+      scores = self.parse(example)
+      head_scores, label_scores = scores["edges"], scores["labels"]
+      # get the heads and labels from parsed example
+      if "heads" in self._predict:
+        heads = tf.argmax(head_scores, axis=2)
+        print("parsed_heads ", heads)
+      if "labels" in self._predict:
+        dep_labels = tf.argmax(label_scores, axis=2)
+        print("parsed_labels ", dep_labels)
+      index = 0
+      for token, dep_label, head, pos_tag, category_tag in zip(tokens[0], dep_labels[0], heads[0], pos[0], category[0]):
+        parsed_sentence_pb2.sent_id = sent_id[0][0].numpy()
+        token = parsed_sentence_pb2.token.add(
+          word=tf.keras.backend.get_value(token),
+          category=self._cat_index_to_name(tf.keras.backend.get_value(category_tag)),
+          pos=self._pos_index_to_name(tf.keras.backend.get_value(pos_tag)),
+          label=self._label_index_to_name(tf.keras.backend.get_value(dep_label)),
+          index=index)
+        token.selected_head.address=tf.keras.backend.get_value(head)
+        index += 1
+
+    writer.write_proto_as_text(gold_treebank, os.path.join(eval_path, gold_treebank_name))
+    writer.write_proto_as_text(parsed_treebank, os.path.join(eval_path, parsed_treebank_name))
