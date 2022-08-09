@@ -231,7 +231,7 @@ class LSTMBlock(layers.Layer):
       name="lstm3"))
     self.dropout1 = layers.Dropout(rate=dropout_rate, name="dropout1")
     self.dropout2 = layers.Dropout(rate=dropout_rate, name="dropout2")
-    self.dropout3 = layers.Dropout(rate=dropout_rate, name="dropout3")
+    # self.dropout3 = layers.Dropout(rate=dropout_rate, name="dropout3")
 
   def call(self, input_tensor, training=True):
     dropout = self.dropout_rate > 0 and training
@@ -242,7 +242,7 @@ class LSTMBlock(layers.Layer):
       out = self.lstm2(out)
       out = self.dropout2(out)
       out = self.lstm3(out)
-      out = self.dropout3(out)
+      # out = self.dropout3(out)
     else:
       out = self.lstm1(input_tensor)
       out = self.lstm2(out)

@@ -19,18 +19,19 @@ if __name__ == "__main__":
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
 
-  parser_model_name = "lfp_gold_labels_pos_morph_boun_one_hot"
+  parser_model_name = "lfp_gold_labels_pos_morph_boun_no_dense"
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
                             n_output_classes=label_feature.n_values,
                             predict=["heads",
-                                     # "labels"
+                                     "labels"
                                      ],
                             features=["words",
-                                      "pos",
-                                      "morph",
-                                      "category",
+                                      # "pos",
+                                      # "morph",
+                                      # "category",
                                       "heads",
-                                      "dep_labels"],
+                                      # "dep_labels"
+                                      ],
                             log_dir=log_dir,
                             test_every=1,
                             model_name=parser_model_name,
@@ -64,10 +65,10 @@ if __name__ == "__main__":
                                                       type="tfrecords")
 
 
-  for batch in train_dataset:
-    print(batch)
-    input()
-  metrics = parser.train(dataset=train_dataset, epochs=1, test_data=test_dataset)
+  # for batch in train_dataset:
+  #   print(batch)
+  # input()
+  metrics = parser.train(dataset=train_dataset, epochs=50, test_data=test_dataset)
   print(metrics)
   writer.write_proto_as_text(metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
   nn_utils.plot_metrics(name=parser_model_name, metrics=metrics)
