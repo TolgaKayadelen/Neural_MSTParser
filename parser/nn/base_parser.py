@@ -34,7 +34,7 @@ Embeddings = embeddor.Embeddings
 Metrics = metrics_pb2.Metrics
 
 # Path for saving or loading pretrained models.
-_MODEL_DIR = "./model/nn/pretrained"
+_MODEL_DIR = "./model/nn/pretrained/prod"
 
 class BaseParser(ABC):
   """The base parser implements methods that are shared between all parsers."""
@@ -462,6 +462,10 @@ class BaseParser(ABC):
 
         # Compute loss
         head_loss = tf.expand_dims(self._head_loss(head_scores, correct_heads), axis=-1)
+        # print("head scores ", head_scores)
+        # print("corr heads ", correct_heads)
+        # print("head loss ", head_loss)
+        # input()
 
       if "labels" in self._predict:
 
@@ -476,10 +480,19 @@ class BaseParser(ABC):
         correct_labels = self._flatten(dep_labels)
 
         label_loss = tf.expand_dims(self._label_loss(label_scores, correct_labels), axis=-1)
-
+        # print("label scores ", label_scores)
+        # print("corr labels ", correct_labels)
+        # print("lbel loss ", label_loss)
+        # input()
+      joint_loss = head_loss + label_loss
     # Compute gradients.
+
     if "heads" in  self._predict and "labels" in self._predict:
-      grads = tape.gradient([head_loss, label_loss], self.model.trainable_weights)
+      # TEST
+      grads = tape.gradient(joint_loss, self.model.trainable_weights)
+
+      # ORIGINAL
+      # grads = tape.gradient([head_loss, label_loss], self.model.trainable_weights)
     elif "heads" in self._predict:
       grads = tape.gradient(head_loss, self.model.trainable_weights)
     elif "labels" in self._predict:
@@ -487,7 +500,10 @@ class BaseParser(ABC):
     else:
       raise ValueError("No loss value to compute gradient for.")
 
+    # TEST
     self._optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
+    # ORIGINAL
+    # self._optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
 
     # Update training metrics.
     self._update_training_metrics(
@@ -569,7 +585,7 @@ class BaseParser(ABC):
         if "labels" in self._predict:
           losses["labels"].append(tf.reduce_sum(batch_loss["labels"]))
         if "heads" in self._predict:
-          losses["heads"].append(tf.reduce_sum(batch_loss["heads"]))
+          losses["heads"].append(tf.reduce_sum(batch_loss["heads"])) # * 1. / batch_size?
         # end inner for
 
       # Log stats at the end of epoch
@@ -752,10 +768,10 @@ class BaseParser(ABC):
       # get the heads and labels from parsed example
       if "heads" in self._predict:
         heads = tf.argmax(head_scores, axis=2)
-        print("parsed_heads ", heads)
+        # print("parsed_heads ", heads)
       if "labels" in self._predict:
         dep_labels = tf.argmax(label_scores, axis=2)
-        print("parsed_labels ", dep_labels)
+        # print("parsed_labels ", dep_labels)
       index = 0
       for token, dep_label, head, pos_tag, category_tag in zip(tokens[0], dep_labels[0], heads[0], pos[0], category[0]):
         parsed_sentence_pb2.sent_id = sent_id[0][0].numpy()

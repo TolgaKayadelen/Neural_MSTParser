@@ -175,6 +175,16 @@ py_library(
 )
 
 py_library(
+  name = "label_first_parser_exp",
+  srcs = ["label_first_parser_exp.py"],
+  deps = [
+    ":base_parser",
+    ":nn_parser_lib",
+  ],
+)
+
+
+py_library(
 	name = "bilstm_labeler",
 	srcs = ["bilstm_labeler.py"],
     deps = [

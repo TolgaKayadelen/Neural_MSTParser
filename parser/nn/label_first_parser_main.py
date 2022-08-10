@@ -19,7 +19,7 @@ if __name__ == "__main__":
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
 
-  parser_model_name = "lfp_gold_labels_pos_morph_boun_no_dense"
+  parser_model_name = "lfp_pred_labels_no_p_m_joint_loss"
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
                             n_output_classes=label_feature.n_values,
                             predict=["heads",
@@ -33,7 +33,7 @@ if __name__ == "__main__":
                                       # "dep_labels"
                                       ],
                             log_dir=log_dir,
-                            test_every=1,
+                            test_every=5,
                             model_name=parser_model_name,
                             one_hot_labels=False)
 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
   test_treebank = "tr_boun-ud-test.tfrecords"
   train_dataset, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
-                                                      batch_size=2,
+                                                      batch_size=250,
                                                       test_treebank=test_treebank,
                                                       type="tfrecords")
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
   # for batch in train_dataset:
   #   print(batch)
   # input()
-  metrics = parser.train(dataset=train_dataset, epochs=50, test_data=test_dataset)
+  metrics = parser.train(dataset=train_dataset, epochs=75, test_data=test_dataset)
   print(metrics)
   writer.write_proto_as_text(metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
   nn_utils.plot_metrics(name=parser_model_name, metrics=metrics)
