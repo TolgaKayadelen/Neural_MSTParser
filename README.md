@@ -1,6 +1,6 @@
-# kBest MST Parser with Argument Structure
+# Label First Dependency Parsing
 
-__Usage Notes__
+__Usage Notes__ [Deprecated]
 
 - Training a new parser and test on training data
   - Train the model and test on a subportion of the training data. Use --split flag to determine which subpart of the training data will be used for testing.
