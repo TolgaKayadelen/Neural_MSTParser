@@ -466,6 +466,7 @@ class BaseParser(ABC):
         # print("corr heads ", correct_heads)
         # print("head loss ", head_loss)
         # input()
+        joint_loss = head_loss
 
       if "labels" in self._predict:
 
@@ -484,14 +485,10 @@ class BaseParser(ABC):
         # print("corr labels ", correct_labels)
         # print("lbel loss ", label_loss)
         # input()
-      joint_loss = head_loss + label_loss
-    # Compute gradients.
+        joint_loss = head_loss + label_loss
 
     if "heads" in  self._predict and "labels" in self._predict:
-      # TEST
       grads = tape.gradient(joint_loss, self.model.trainable_weights)
-
-      # ORIGINAL
       # grads = tape.gradient([head_loss, label_loss], self.model.trainable_weights)
     elif "heads" in self._predict:
       grads = tape.gradient(head_loss, self.model.trainable_weights)
