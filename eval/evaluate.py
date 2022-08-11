@@ -22,6 +22,7 @@ bazel-bin/parser_main/evaluate \
 import os
 import argparse
 import pandas as pd
+import datetime
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
 from proto import evaluation_pb2
@@ -56,8 +57,9 @@ def evaluate_parser(args, print_results=False):
   gold_data = reader.ReadTreebankTextProto(args.gold_data)
   test_data = reader.ReadTreebankTextProto(args.test_data)
   eval_metrics = args.metrics
+  write_results = args.write_results
   logging.info("Requested eval metrics {}".format(eval_metrics))
-  evaluator = Evaluator(gold_data, test_data)
+  evaluator = Evaluator(gold_data, test_data, write_results)
   results = evaluator.Evaluate(eval_metrics)
   if print_results:
     for key in results:
@@ -73,7 +75,7 @@ f1 = lambda recall, precision: 2 * (recall * precision) / (recall + precision)
 
 class Evaluator:
   """The evaluator module."""
-  def __init__(self, gold, test):
+  def __init__(self, gold, test, write_results, model_name=None):
     """
     Initializes this evaluator with a gold and test treebank.
     Args:
@@ -97,6 +99,8 @@ class Evaluator:
                     "labeled_attachment_precision",
 				            "labeled_attachment_recall",
                     "labeled_attachment_metrics", "all"]
+    self.write_results = write_results
+    self.model_name = model_name
   
   @property
   def gold_and_test(self):
@@ -251,9 +255,9 @@ class Evaluator:
     
     for gold_sent, test_sent in self.gold_and_test:
       gold_heads = [tok.selected_head.address for tok in gold_sent.token[1:]]
-      print("gold heads ", gold_heads)
+      # print("gold heads ", gold_heads)
       pred_heads = [tok.selected_head.address for tok in test_sent.token[1:]]
-      print("test heads ", pred_heads)
+      # print("test heads ", pred_heads)
       assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
       uas += sum(
           gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
@@ -430,6 +434,7 @@ class Evaluator:
       results["eval_matrix"] = self.evaluation_matrix
       results["label_confusion_matrix"] = self.labels_conf_matrix
       results["eval_proto"] = self.evaluation
+      results["label_prediction_metrics"] = self.label_prediction_metrics
       logging.info("Label Prediction Metrics")
       print(f"{self.label_prediction_metrics}\n\n\n")
       logging.info(f"Label Prediction Confusion Matrix:")
@@ -454,6 +459,19 @@ class Evaluator:
         # this returns precision and recall as well
         results["labeled_attachment_metrics"] = self.labeled_attachment_metrics
         results["eval_proto"] = self.evaluation
+    if self.write_results:
+      if self.model_name:
+        output_file_name = self.model_name +"_eval_results.txt"
+      else:
+        current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        output_file_name = f"{current_time}_eval_results"
+      with open(os.path.join(_EVAL_DIR, output_file_name), "w") as f:
+        for key in results.keys():
+          f.write(key)
+          f.write("\n")
+          f.write(str(results[key]))
+          f.write("\n\n")
+      logging.info(f"Eval results written to {output_file_name}")
     return results
 
 
@@ -470,7 +488,8 @@ def _read_parser_test_data(basename):
 def main(args):
   gold_data = _read_parser_test_data(args.gold_data)
   test_data = _read_parser_test_data(args.test_data)
-  evaluator = Evaluator(gold_data, test_data)
+  model_name = os.path.basename(args.test_data)
+  evaluator = Evaluator(gold_data, test_data, args.write_results, model_name)
   results = evaluator.evaluate(args.metrics)
 
 
@@ -480,6 +499,8 @@ if __name__ == "__main__":
                       help="The test data to read (.protobuf)")
   parser.add_argument("--gold_data", type=str,
                       help="Gold data to use for evaluating a model.")
+  parser.add_argument("--write_results", type=bool, default=True,
+                      help="Whether to write a eval results to a file.")
   parser.add_argument("--metrics", nargs='*',
                       default=["uas_total", "las_total"],
                       help="Space separated list of metrics to evaluate.",
