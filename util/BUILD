@@ -76,6 +76,14 @@ py_binary(
 	],
 )
 
+py_binary(
+    name = "morph_label_cooccurence",
+    srcs = ["morph_label_cooccurence.py"],
+    deps = [
+        ":reader",
+    ]
+)
+
 # Tests.
 py_test(
 	name = "converter_test",

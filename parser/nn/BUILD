@@ -16,6 +16,8 @@ py_binary(
 	srcs = ["bilstm_labeler_main.py"],
     deps = [
         ":bilstm_labeler",
+        ":bilstm_labeler_exp",
+        ":load_models",
   ],
 )
 
@@ -187,6 +189,15 @@ py_library(
 py_library(
 	name = "bilstm_labeler",
 	srcs = ["bilstm_labeler.py"],
+    deps = [
+        ":base_parser",
+        ":nn_parser_lib",
+  ],
+)
+
+py_library(
+	name = "bilstm_labeler_exp",
+	srcs = ["bilstm_labeler_exp.py"],
     deps = [
         ":base_parser",
         ":nn_parser_lib",

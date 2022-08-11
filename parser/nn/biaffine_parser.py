@@ -201,7 +201,9 @@ class BiaffineParser(base_parser.BaseParser):
       head_accuracy.update_state(correct_heads, head_preds)
 
 
-      # Compute label accuracy
+      # Compute label accuracy compared to gold labels.
+      # We use arc maps to just get the slice of gold labels here and compared
+      # predicted labels to it to compute accuracy.
       arc_maps = self._arc_maps(example["heads"], example["dep_labels"])
       label_scores = tf.transpose(label_scores, perm=[0,2,3,1])
       logits = tf.gather_nd(label_scores, indices=arc_maps[:, :3])

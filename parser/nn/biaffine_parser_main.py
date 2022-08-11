@@ -25,7 +25,7 @@ if __name__ == "__main__":
   _DATA_DIR="data/UDv23/Turkish/training"
   _TEST_DATA_DIR="data/UDv23/Turkish/test"
   train_treebank="treebank_train_0_50.pbtxt"
-  test_treebank = "treebank_test_0_10.conllu"
+  test_treebank = "treebank_test_0_10.pbtxt"
   train_sentences = prep.prepare_sentence_protos(path=os.path.join(_DATA_DIR,
                                                                    train_treebank))
   dataset = prep.make_dataset_from_generator(

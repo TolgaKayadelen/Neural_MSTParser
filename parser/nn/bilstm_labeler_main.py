@@ -1,27 +1,23 @@
 import os
 import logging
 
-from parser.nn.bilstm_labeler import BiLSTMLabeler
+# from parser.nn.bilstm_labeler import BiLSTMLabeler
+from parser.nn.bilstm_labeler_exp import BiLSTMLabeler
 from util import converter, writer
 from util.nn import nn_utils
 from input import embeddor, preprocessor
+from parser.nn import load_models
+
 
 if __name__ == "__main__":
-  embeddings = nn_utils.load_embeddings()
-  word_embeddings = embeddor.Embeddings(name= "word2vec", matrix=embeddings)
-  prep = preprocessor.Preprocessor(
-    word_embeddings=word_embeddings,
-    features=["words", "pos", "morph", "heads", "dep_labels"],
-    labels=["heads"]
-  )
-  label_feature = next(
-    (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
-
+  word_embeddings = load_models.load_word_embeddings()
+  prep = load_models.load_preprocessor(word_embeddings)
   parser = BiLSTMLabeler(word_embeddings=prep.word_embeddings,
-                         n_output_classes=label_feature.n_values,
+                         n_output_classes=8,
                          predict=["labels"],
                          features=["words", "pos", "morph"],
-                         model_name="dependency_labeler_test")
+                         model_name="bilstm_labeler_reduced_tags",
+                         test_every=5)
 
   # LOADING A PRETRAINED PARSER AND PARSING WITH THAT.
   # parser.load_weights(name="dependency_labeler") # uncomment
@@ -42,34 +38,18 @@ if __name__ == "__main__":
   #print("parser ", parser)
   #input("press to cont.")
 
-  _DATA_DIR="data/UDv29/train/tr"
-  _TEST_DATA_DIR="data/UDv29/dev/tr"
-  train_treebank= "tr_boun-ud-train.pbtxt"
-  test_treebank = "tr_boun-ud-dev.pbtxt"
-  train_sentences = prep.prepare_sentence_protos(
-    path=os.path.join(_DATA_DIR, train_treebank))
-  dataset = prep.make_dataset_from_generator(
-    sentences=train_sentences,
-    batch_size=250
-  )
-  if test_treebank is not None:
-    test_sentences = prep.prepare_sentence_protos(
-      path=os.path.join(_TEST_DATA_DIR, test_treebank))
-    test_dataset = prep.make_dataset_from_generator(
-      sentences=test_sentences,
-      batch_size=1)
-  else:
-    test_dataset=None
-  # for batch in test_dataset:      # uncomment for testing loading
-  #  scores = parser.parse(batch)   # uncomment for testing loading
-  #  print(scores)                  # uncomment for testing loading
+  train_treebank= "tr_boun-ud-train.tfrecords"
+  test_treebank = "tr_boun-ud-test.tfrecords"
+  train_dataset, test_dataset = load_models.load_data(preprocessor=prep,
+                                                      train_treebank=train_treebank,
+                                                      batch_size=250,
+                                                      test_treebank=test_treebank,
+                                                      type="tfrecords")
 
-  metrics = parser.train(dataset=dataset, epochs=70,
-                         test_data=test_dataset)
-  # metrics = parser.test(dataset=test_dataset)
-  print(metrics)
+  _metrics = parser.train(dataset=train_dataset, epochs=200, test_data=test_dataset)
+  print(_metrics)
   writer.write_proto_as_text(metrics,
                              f"./model/nn/plot/{parser.model_name}_metrics.pbtxt")
-  nn_utils.plot_metrics(name=parser.model_name, metrics=metrics)
-  parser.save_weights()
-  logging.info(f"{parser.model_name} results written")
+  # nn_utils.plot_metrics(name=parser.model_name, metrics=metrics)
+  # parser.save_weights()
+  # logging.info(f"{parser.model_name} results written")

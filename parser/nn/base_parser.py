@@ -500,10 +500,7 @@ class BaseParser(ABC):
     else:
       raise ValueError("No loss value to compute gradient for.")
 
-    # TEST
     self._optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
-    # ORIGINAL
-    # self._optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
 
     # Update training metrics.
     self._update_training_metrics(
@@ -644,6 +641,12 @@ class BaseParser(ABC):
         loss_metrics=loss_results_for_epoch,
         test_metrics=test_results_for_epoch,
       )
+      if epoch % (self._test_every * 2) == 0 and epoch > 100:
+        c = input("continue training")
+        if c == "yes" or c == "y":
+          print("continuing for 10 more epochs")
+        else:
+          break
     # At the end of training, parse the data with the learned weights and save it as proto.
     self.parse_and_save(test_data)
     return self._metrics

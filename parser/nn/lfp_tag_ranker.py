@@ -325,17 +325,23 @@ class LabelFirstParsingModel(tf.keras.Model):
       # print('label inputs ', label_inputs)
       masked_labels = []
       for vector in label_inputs:
-        if any(_label_index_to_name(index.numpy()) == "root" for index in vector):
-          # print(list(_label_index_to_name(index.numpy()) for index in vector))
-          tag_index = _label_name_to_index("root")
-          # keep the root value and replace all other with 0
-          vector = tf.multiply(vector, tf.cast(vector==tag_index, tf.int64))
-          masked_labels.append(tf.expand_dims(vector, 0))
+        # print(vector)
+        indexes = [_label_index_to_name(index.numpy()) in ["nsubj", "csubj", "root"]  for index in vector]
+        # print(indexes)
+        vector = tf.multiply(vector, tf.cast(indexes, tf.int64))
+        # print(vector)
+        # input()
+        masked_labels.append(tf.expand_dims(vector, 0))
+
       label_inputs=tf.concat(masked_labels, axis=0)
       # print("label inputs ", label_inputs)
       # get the indices of the label we are keeping
-      indices = _enumerated_tensor(tf.expand_dims(tf.argmax(label_inputs, 1), 1))
+      indices = tf.where(label_inputs)
+      # print("non zero indexes ", indices)
+      # input()
+      # indices = _enumerated_tensor(nonzeros)
       # print("indices ", indices)
+      # input()
       # pass the updated inputs through embedding
       label_features = self.label_embeddings(label_inputs)
       # print("label features ", label_features)
@@ -343,11 +349,13 @@ class LabelFirstParsingModel(tf.keras.Model):
       # get the slices where the embedding belongs to the kept label
       label_slices = tf.gather_nd(label_features, indices)
       # print("label slices ", label_slices)
+      # input()
       # change all the rest except for the label slice to t.ones.
       mask_features = tf.ones_like(label_features)
       # print("mask features ", mask_features)
 
-      label_features = tf.tensor_scatter_nd_update(mask_features, indices=indices, updates=label_slices)
+      label_features = tf.tensor_scatter_nd_update(mask_features,
+                                                   indices=indices, updates=label_slices)
       # print("label features ", label_features)
       # input()
 
@@ -424,52 +432,53 @@ class LSTMBlock(layers.Layer):
 
 if __name__ == "__main__":
   # use_pretrained_weights_from_labeler = True
-  labels_to_keep = ["root", "obl", "nmod_poss", "amod",
-                    "obj", "conj", "advmod", "det", "acl",
-                    "case", "cc",  "advcl", "compound", "flat", "nmod",
-                    "advmod_emph", "nummod", "ccomp", "compound_lvc", "cop", "csubj",
-                    "compound_redup", "discourse", "aux_q", "parataxis", "aux", "mark",
-                    "iobj", "cc_preconj", "appos",  "clf", "xcomp", "vocative"]
+  # labels_to_keep = ["root", "obl", "nmod_poss", "amod",
+  #                   "obj", "conj", "advmod", "det", "acl",
+  #                   "case", "cc",  "advcl", "compound", "flat", "nmod",
+  #                   "advmod_emph", "nummod", "ccomp", "compound_lvc", "cop", "csubj",
+  #                   "compound_redup", "discourse", "aux_q", "parataxis", "aux", "mark",
+  #                   "iobj", "cc_preconj", "appos",  "clf", "xcomp", "vocative"]
   word_embeddings = load_models.load_word_embeddings()
   prep = load_models.load_preprocessor(word_embeddings)
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
-  for label in labels_to_keep:
-    try:
-      index = _label_name_to_index(label)
-    except KeyError:
-      logging.Error(f"Couldn't find name for {label}")
-    logging.info(f"-----------> TESTING LABEL {label} <----------------")
-    current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    log_dir = f"debug/lfp_tag_ranker_{label}/" + current_time
-    parser_model_name = f"lfp_tag_ranking_model_{label}"
-    logging.info(f"model name {parser_model_name}")
-    parser = LFPTagRanker(word_embeddings=prep.word_embeddings,
-                          n_output_classes=label_feature.n_values,
-                          predict=["heads",
+  # for label in labels_to_keep:
+  #  try:
+  #      index = _label_name_to_index(label)
+  #   except KeyError:
+  #     logging.Error(f"Couldn't find name for {label}")
+  #   logging.info(f"-----------> TESTING LABEL {label} <----------------")
+  current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+  # log_dir = f"debug/lfp_tag_ranker_{label}/" + current_time
+  parser_model_name = f"lfp_tag_ranking_model_keep_root_and_subj"
+  logging.info(f"model name {parser_model_name}")
+  parser = LFPTagRanker(word_embeddings=prep.word_embeddings,
+                        n_output_classes=label_feature.n_values,
+                        predict=["heads",
                                  # "labels"
                                  ],
-                          features=["words",
+                        features=["words",
                                     "pos",
                                     "morph",
                                     "heads",
                                     "dep_labels"],
-                          log_dir=log_dir,
-                          test_every=1,
-                          model_name=parser_model_name)
+                        log_dir=None,
+                        test_every=1,
+                        model_name=parser_model_name)
 
 
   # get the data
-    train_treebank= "tr_boun-ud-train-random10.pbtxt"
-    test_treebank = "tr_boun-ud-test-random10.pbtxt"
-    train_dataset, test_dataset = load_models.load_data(preprocessor=prep,
-                                                        train_treebank=train_treebank,
-                                                        batch_size=10,
-                                                        test_treebank=test_treebank)
+  train_treebank= "tr_boun-ud-train.tfrecords"
+  test_treebank = "tr_boun-ud-test.tfrecords"
+  train_dataset, test_dataset = load_models.load_data(preprocessor=prep,
+                                                      train_treebank=train_treebank,
+                                                      batch_size=250,
+                                                      test_treebank=test_treebank,
+                                                      type="tfrecords")
 
-    _metrics = parser.train(dataset=train_dataset, epochs=2, test_data=test_dataset)
-    print(_metrics)
-    writer.write_proto_as_text(_metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
-    # nn_utils.plot_metrics(name=parser_model_name, metrics=metrics)
-    # parser.save_weights()
-    # logging.info("weights saved!")
+  _metrics = parser.train(dataset=train_dataset, epochs=50, test_data=test_dataset)
+  print(_metrics)
+  writer.write_proto_as_text(_metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
+   # nn_utils.plot_metrics(name=parser_model_name, metrics=metrics)
+   # parser.save_weights()
+   # logging.info("weights saved!")
