@@ -42,7 +42,8 @@ class Labeler:
     pos_embedding = tf.keras.layers.Embedding(input_dim=37, output_dim=32,
                                               name="pos_embeddings",
                                               trainable=True)(pos_input)
-    concat = tf.keras.layers.Concatenate(name="concat")([w_embedding, s_w_embedding, pos_embedding, morph_input])
+    concat = tf.keras.layers.Concatenate(name="concat")(
+      [w_embedding, s_w_embedding, pos_embedding, morph_input])
     lstm1 = layers.Bidirectional(layers.LSTM(
       units=self.n_units, return_sequences=True, name="lstm1"))(concat)
     dropout1 = layers.Dropout(rate=0.3, name="dropout1")(lstm1)
@@ -112,17 +113,23 @@ if __name__ == "__main__":
       val_acc_tracker.append(history.history["val_accuracy"][1])
       # print(loss_tracker, acc_tracker, val_loss_tracker, val_acc_tracker)
       # input()
+    val_acc = np.mean(val_acc_tracker)
+    acc = np.mean(acc_tracker)
     print(f"end of epoch {epoch}")
     print("--------------------> metrics <-------------------------")
     print("epoch mean loss: ", np.mean(loss_tracker))
-    print("epoch mean acc: ", np.mean(acc_tracker))
+    print("epoch mean acc: ", acc)
     print("epoch mean val loss: ", np.mean(val_loss_tracker))
-    print("epoch mean val acc: ", np.mean(val_acc_tracker))
+    print("epoch mean val acc: ", val_acc)
     c = input("Start new epoch: y/n")
-    if c == "y":
-      continue
-    else:
-      break
+    if acc > 0.98 and val_acc < 0.85:
+      c = input("continue training?")
+      if  c == "n":
+        break
+    if acc > 0.85:
+      c = input("continue training?")
+      if  c == "n":
+        break
   for step, test_example in enumerate(test_dataset):
     print(test_example)
     input()

@@ -19,7 +19,7 @@ if __name__ == "__main__":
                             features=["words",
                                       "pos",
                                       "morph",
-                                      "category",
+                                      # "category",
                                       "heads",
                                       "dep_labels"
                                       ],
@@ -34,7 +34,7 @@ if __name__ == "__main__":
   test_treebank = "tr_boun-ud-test-random50.pbtxt"
   train_dataset, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
-                                                      batch_size=5,
+                                                      batch_size=50,
                                                       test_treebank=test_treebank,
                                                       test_batch_size=1,
                                                       type="pbtxt")
@@ -45,7 +45,7 @@ if __name__ == "__main__":
   # input()
   metrics = parser.train(dataset=train_dataset, epochs=75, test_data=test_dataset)
   print(metrics)
-  writer.write_proto_as_text(metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
+  # writer.write_proto_as_text(metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
   # nn_utils.plot_metrics(name=parser_model_name, metrics=metrics)
   # parser.save_weights()
   # logging.info("weights saved!")

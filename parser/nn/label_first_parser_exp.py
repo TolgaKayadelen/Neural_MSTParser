@@ -15,7 +15,7 @@ from util.nn import label_converter
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-from typing import List
+from typing import List, Dict
 
 Dataset = tf.data.Dataset
 Embeddings = embeddor.Embeddings
@@ -39,7 +39,9 @@ class LabelFirstParser(base_parser.BaseParser):
                      1: 1.96, 2: 1.88, 5: 3.65, 6: 2.78}
     model = bilstm_labeler_coarse_dep.Labeler(
       word_embeddings=self.word_embeddings).build_model(show_summary=True)
+    epoch = 1
     while True:
+      epoch += 1
       loss_tracker = []
       acc_tracker = []
       val_loss_tracker = []
@@ -73,15 +75,17 @@ class LabelFirstParser(base_parser.BaseParser):
         val_acc_tracker.append(history.history["val_accuracy"][1])
       # End of one epoch
       val_acc = np.mean(val_acc_tracker)
+      train_acc = np.mean(acc_tracker)
       logging.info(f"--------------------> Metrics for epoch <-------------------------")
       logging.info(f"epoch mean loss: {np.mean(loss_tracker)}")
-      logging.info(f"epoch mean acc: {np.mean(acc_tracker)}")
+      logging.info(f"epoch mean acc: {train_acc}")
       logging.info(f"epoch mean val loss: {np.mean(val_loss_tracker)}")
       logging.info(f"epoch mean val acc: {val_acc}")
-      c = input("continue training?")
-      if c ==  "n":
-        break
-      if val_acc > 0.5:
+      if train_acc > 0.95 and val_acc < 0.85:
+        c = input("continue training?")
+        if c ==  "n":
+          break
+      if val_acc > 0.85:
         break
 
     return model
@@ -165,7 +169,7 @@ class LabelFirstParser(base_parser.BaseParser):
       training_results: logs of scores and losses at the end of training.
     """
     logging.info("Training Coarse Labeler First")
-    coarse_labeling_model = self.train_coarse_labeler(dataset, test_data)
+    self.coarse_labeling_model = self.train_coarse_labeler(dataset, test_data)
     for epoch in range(1, epochs+1):
       test_results_for_epoch = None
 
@@ -182,19 +186,20 @@ class LabelFirstParser(base_parser.BaseParser):
 
       losses = collections.defaultdict(list)
       for step, batch in enumerate(dataset):
-        words, pos, morph, heads = batch["words"], batch["pos"], batch["morph"], batch["heads"]
-        # TODO: decide which method to call here.
-        coarse_labels_scores = coarse_labeling_model([words, pos, morph])
-        # print("words ", words)
-        coarse_label_preds = tf.argmax(coarse_labels_scores, axis=2)
-        print("coarse labels ", coarse_label_preds)
-        input()
+        words, pos, morph = batch["words"], batch["pos"], batch["morph"]
+        dep_labels, heads = batch["dep_labels"], batch["heads"]
+
+        # In training time we train with the gold coarse labels. In test time we'll get it from them from the model.
+        # print("dep labels training ", dep_labels)
+        coarse_labels = label_converter.convert_labels(dep_labels)
+        # print("coarse labels training ", coarse_labels)
+        # input()
 
         # Get loss values, predictions, and correct heads/labels for this training step.
         predictions, batch_loss, correct, pad_mask = self.train_step(words=words,
                                                                      pos=pos,
                                                                      morph=morph,
-                                                                     dep_labels=coarse_label_preds,
+                                                                     dep_labels=coarse_labels,
                                                                      heads=heads)
 
         # Get the correct heads/labels and correctly predicted heads/labels for this step.
@@ -284,6 +289,75 @@ class LabelFirstParser(base_parser.BaseParser):
     # At the end of training, parse the data with the learned weights and save it as proto.
     self.parse_and_save(test_data)
     return self._metrics
+
+  def test(self, *, dataset: Dataset):
+    """Tests the performance of this parser on some dataset."""
+    print("Testing on the test set..")
+    head_accuracy = tf.keras.metrics.Accuracy()
+    label_accuracy = tf.keras.metrics.Accuracy()
+
+    # resetting test stats at the beginning.
+    for key in self.test_stats:
+      self.test_stats[key] = 0.0
+
+    # We traverse the test dataset not batch by batch, but example by example.
+    for example in dataset:
+      scores = self.parse(example)
+      head_scores, label_scores = scores["edges"], scores["labels"]
+      if "heads" in self._predict:
+        head_preds = self._flatten(tf.argmax(head_scores, 2))
+        # print("head preds ", head_preds)
+        correct_heads = self._flatten(example["heads"])
+        # print("correct heads ", correct_heads)
+        head_accuracy.update_state(correct_heads, head_preds)
+        # input()
+      if "labels" in self._predict:
+        # Get label predictions and correct labels
+        label_preds = self._flatten(tf.argmax(label_scores, 2))
+        correct_labels = self._flatten(example["dep_labels"])
+        label_accuracy.update_state(correct_labels, label_preds)
+
+      correct_predictions_dict = self._correct_predictions(
+        head_predictions=head_preds if "heads" in self._predict else None,
+        correct_heads=correct_heads if "heads" in self._predict else None,
+        label_predictions=label_preds  if "labels" in self._predict else None,
+        correct_labels=correct_labels  if "labels" in self._predict else None,
+      )
+      self._update_correct_prediction_stats(correct_predictions_dict,
+                                            example["words"].shape[1],
+                                            stats="test")
+
+    logging.info(f"Test stats: {self.test_stats}")
+    test_results = self._compute_metrics(stats="test")
+    return test_results
+
+  def parse(self, example: Dict):
+    """Parse an example with this parser.
+
+    Args:
+      example: A single example that holds features in a dictionary.
+        words: Tensor representing word embedding indices of words in the sentence.
+        pos: Tensor representing pos embedding indices of pos in the sentence.
+        morph: Tensor representing morph indices of the morphological features in words in the sentence.
+
+    Returns:
+      scores: a dictionary of scores representing edge and label predictions.
+        edges: Tensor of shape (1, seq_len, seq_len)
+        labels: Tensor of shape (1, seq_len, n_labels)
+    """
+    words, pos, morph = (example["words"], example["pos"], example["morph"])
+    # TODO: decide which method to call here.
+    coarse_labels_scores = self.coarse_labeling_model([words, pos, morph])
+    # print("words ", words)
+    coarse_label_preds = tf.argmax(coarse_labels_scores, axis=2)
+    # print("coarse labels ", coarse_label_preds)
+    # input()
+    scores = self.model({"words": words, "pos": pos,
+                         "morph": morph, "labels": coarse_label_preds}, training=False)
+    return scores
+
+
+
 
 class LabelFirstParsingModel(tf.keras.Model):
   """Label first parsing model predicts labels before edges."""
@@ -422,11 +496,11 @@ class LSTMBlock(layers.Layer):
       # stateful=True,
       name="lstm1"))
     self.lstm2 = layers.Bidirectional(layers.LSTM(
-      units=128, return_sequences=return_sequences,
+      units=n_units, return_sequences=return_sequences,
       # stateful=True,
       name="lstm2"))
     self.lstm3 = layers.Bidirectional(layers.LSTM(
-      units=64, return_sequences=return_sequences,
+      units=n_units, return_sequences=return_sequences,
       return_state=return_state,
       # stateful=True,
       name="lstm3"))

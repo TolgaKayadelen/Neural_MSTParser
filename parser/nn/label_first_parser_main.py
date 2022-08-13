@@ -3,8 +3,7 @@ import numpy as np
 import datetime
 
 from parser.nn import load_models
-# from parser.nn.label_first_parser import LabelFirstParser
-from parser.nn.label_first_parser_exp import LabelFirstParser
+from parser.nn.label_first_parser import LabelFirstParser
 from util import writer
 from util.nn import nn_utils
 
@@ -22,7 +21,7 @@ if __name__ == "__main__":
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
                             n_output_classes=label_feature.n_values,
                             predict=["heads",
-                                     # "labels"
+                                     "labels"
                                      ],
                             features=["words",
                                       "pos",
@@ -55,13 +54,13 @@ if __name__ == "__main__":
 
 
   # get the data
-  train_treebank= "tr_boun-ud-train.tfrecords"
-  test_treebank = "tr_boun-ud-test.tfrecords"
+  train_treebank= "tr_boun-ud-train-random500.pbtxt"
+  test_treebank = "tr_boun-ud-test-random50.pbtxt"
   train_dataset, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
-                                                      batch_size=250,
+                                                      batch_size=50,
                                                       test_treebank=test_treebank,
-                                                      type="tfrecords")
+                                                      type="pbtxt")
 
 
   # for batch in train_dataset:
