@@ -1,12 +1,7 @@
-import logging
-import numpy as np
 import datetime
-
 from parser.nn import load_models
-# from parser.nn.label_first_parser import LabelFirstParser
 from parser.nn.label_first_parser_exp import LabelFirstParser
 from util import writer
-from util.nn import nn_utils
 
 if __name__ == "__main__":
   # use_pretrained_weights_from_labeler = True
@@ -15,19 +10,16 @@ if __name__ == "__main__":
   word_embeddings = load_models.load_word_embeddings()
   prep = load_models.load_preprocessor(word_embeddings)
 
-  label_feature = next(
-    (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
-
-  parser_model_name = "lfp_pred_labels_no_p_m_joint_loss"
+  parser_model_name = "lfp_with_coarse_dep_labels"
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
-                            n_output_classes=label_feature.n_values,
+                            n_output_classes=8,
                             predict=["heads",
                                      # "labels"
                                      ],
                             features=["words",
                                       "pos",
                                       "morph",
-                                      # "category",
+                                      "category",
                                       "heads",
                                       "dep_labels"
                                       ],
@@ -36,32 +28,16 @@ if __name__ == "__main__":
                             model_name=parser_model_name,
                             one_hot_labels=False)
 
-  """ Uncomment if you want to load pretrained weights
-   labeler, label_feature = load_models.load_labeler("dependency_labeler", prep)
-  # print(parser.model.pos_embeddings.weights)
-  # print(labeler.model.pos_embeddings.weights)
-  parser.model.pos_embeddings.set_weights(labeler.model.pos_embeddings.get_weights())
-  # print("parser pos embeddings after transfer ")
-  # print(parser.model.pos_embeddings.weights)
-
-  for a, b in zip(parser.model.pos_embeddings.weights, labeler.model.pos_embeddings.weights):
-    np.testing.assert_allclose(a.numpy(), b.numpy())
-
-  parser.model.pos_embeddings.trainable = False
-  parser.model.word_embeddings.trainable = False
-  print("pos emb. trainable ", parser.model.pos_embeddings.trainable)
-  print("word emb. trainble ", parser.model.word_embeddings.trainable)
-  """
-
 
   # get the data
-  train_treebank= "tr_boun-ud-train.tfrecords"
-  test_treebank = "tr_boun-ud-test.tfrecords"
+  train_treebank= "tr_boun-ud-train-random500.pbtxt"
+  test_treebank = "tr_boun-ud-test-random50.pbtxt"
   train_dataset, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
-                                                      batch_size=250,
+                                                      batch_size=5,
                                                       test_treebank=test_treebank,
-                                                      type="tfrecords")
+                                                      test_batch_size=1,
+                                                      type="pbtxt")
 
 
   # for batch in train_dataset:

@@ -144,9 +144,38 @@ def get_argument_spans(sentence, token_index, predicate_index, argument_span=[])
   span_indices = set([token.index for token in argument_span])
   return list(span_indices)
 
+
+def morph_label_cooccurences(treebank):
+  cooccurences = defaultdict(Counter)
+  sentences = treebank.sentence
+  total_tokens = sum([sentence.length for sentence in sentences])
+  total_subjects = 0
+  total_objects = 0
+  for sentence in sentences:
+    for token in sentence.token:
+      morphology = token.morphology
+      for morph in morphology:
+        if morph.name == "case":
+          cooccurences[morph.value][token.label] += 1
+  return cooccurences
+
+
+def create_class_weight(labels_dict, mu=0.9):
+  total = np.sum(list(labels_dict.values()))
+  keys = labels_dict.keys()
+  class_weight = dict()
+
+  for key in keys:
+    score = math.log(mu*total/float(labels_dict[key]))
+    class_weight[key] = score if score > 1.0 else 1.0
+  return class_weight
+
+
 if __name__ == "__main__":
   trb = reader.ReadTreebankTextProto(
     "data/testdata/propbank/propbank_ud_testdata_proto.pbtxt"
   )
   sentence = trb.sentence[1]
   annotate_bio_spans(sentence)
+
+

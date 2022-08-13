@@ -58,6 +58,7 @@ def load_data(preprocessor: preprocessor.Preprocessor,
               data_dir: str = None,
               test_data_dir: str = None,
               type="pbtxt",
+              test_batch_size=1
               ):
   if data_dir is not None:
     data_dir = data_dir
@@ -81,7 +82,7 @@ def load_data(preprocessor: preprocessor.Preprocessor,
      )
       test_dataset = preprocessor.make_dataset_from_generator(
         sentences = test_sentences,
-        batch_size=1
+        batch_size=test_batch_size
       )
     else:
       test_dataset = None
@@ -93,7 +94,7 @@ def load_data(preprocessor: preprocessor.Preprocessor,
     if test_treebank is not None:
       test_dataset = preprocessor.read_dataset_from_tfrecords(
         records=os.path.join(test_data_dir, test_treebank),
-        batch_size=1
+        batch_size=test_batch_size
       )
     else:
       test_dataset = None

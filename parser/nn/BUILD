@@ -12,12 +12,31 @@ py_binary(
 )
 
 py_binary(
+    name = "label_first_parser_exp_main",
+    srcs = ["label_first_parser_exp_main.py"],
+    deps = [
+        ":load_models",
+        ":label_first_parser_exp",
+    ],
+)
+
+py_binary(
 	name = "bilstm_labeler_main",
 	srcs = ["bilstm_labeler_main.py"],
     deps = [
         ":bilstm_labeler",
         ":bilstm_labeler_exp",
         ":load_models",
+  ],
+)
+
+py_binary(
+	name = "bilstm_labeler_coarse_dep",
+	srcs = ["bilstm_labeler_coarse_dep.py"],
+    deps = [
+        ":load_models",
+        ":nn_parser_lib",
+        "//util/nn:label_converter",
   ],
 )
 
@@ -182,6 +201,7 @@ py_library(
   deps = [
     ":base_parser",
     ":nn_parser_lib",
+    ":bilstm_labeler_coarse_dep",
   ],
 )
 
@@ -189,15 +209,6 @@ py_library(
 py_library(
 	name = "bilstm_labeler",
 	srcs = ["bilstm_labeler.py"],
-    deps = [
-        ":base_parser",
-        ":nn_parser_lib",
-  ],
-)
-
-py_library(
-	name = "bilstm_labeler_exp",
-	srcs = ["bilstm_labeler_exp.py"],
     deps = [
         ":base_parser",
         ":nn_parser_lib",
