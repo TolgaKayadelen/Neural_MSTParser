@@ -51,19 +51,26 @@ def load_parser(parser_name, prep, path=None):
   return parser
 
 
-def load_data(preprocessor: preprocessor.Preprocessor,
+def load_data(*, preprocessor: preprocessor.Preprocessor,
               train_treebank: str,
-              batch_size: int,
+              dev_treebank: str = None,
               test_treebank: str = None,
               data_dir: str = None,
+              dev_data_dir: str = None,
               test_data_dir: str = None,
               type="pbtxt",
+              batch_size: int,
+              dev_batch_size: int,
               test_batch_size=1
               ):
   if data_dir is not None:
     data_dir = data_dir
   else:
     data_dir = "data/UDv29/train/tr"
+  if dev_data_dir is not None:
+    dev_data_dir = dev_data_dir
+  else:
+    dev_data_dir = "data/UDv29/dev/tr"
   if test_data_dir is not None:
     test_data_dir = test_data_dir
   else:
@@ -75,6 +82,16 @@ def load_data(preprocessor: preprocessor.Preprocessor,
     train_dataset = preprocessor.make_dataset_from_generator(
       sentences=train_sentences, batch_size=batch_size
     )
+    if dev_treebank is not None:
+      dev_sentences = preprocessor.prepare_sentence_protos(
+        path=os.path.join(dev_data_dir, dev_treebank)
+      )
+      dev_dataset = preprocessor.make_dataset_from_generator(
+        sentences = dev_sentences,
+        batch_size=dev_batch_size
+      )
+    else:
+      dev_dataset = None
 
     if test_treebank is not None:
       test_sentences = preprocessor.prepare_sentence_protos(
@@ -91,6 +108,13 @@ def load_data(preprocessor: preprocessor.Preprocessor,
       records=os.path.join(data_dir, train_treebank),
       batch_size=batch_size
     )
+    if dev_treebank is not None:
+      dev_dataset = preprocessor.read_dataset_from_tfrecords(
+        records=os.path.join(dev_data_dir, dev_treebank),
+        batch_size=dev_batch_size
+      )
+    else:
+      dev_dataset = None
     if test_treebank is not None:
       test_dataset = preprocessor.read_dataset_from_tfrecords(
         records=os.path.join(test_data_dir, test_treebank),
@@ -102,4 +126,4 @@ def load_data(preprocessor: preprocessor.Preprocessor,
   else:
     raise ValueError("Invalid data type requested.")
 
-  return train_dataset, test_dataset
+  return train_dataset, dev_dataset, test_dataset

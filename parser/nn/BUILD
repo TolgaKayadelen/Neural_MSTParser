@@ -41,6 +41,17 @@ py_binary(
 )
 
 py_binary(
+	name = "bilstm_labeler_fine_dep",
+	srcs = ["bilstm_labeler_fine_dep.py"],
+    deps = [
+        ":load_models",
+        ":nn_parser_lib",
+        "//util/nn:label_converter",
+        "//tagset:reader"
+  ],
+)
+
+py_binary(
 	name = "seq_lstm_labeler_main",
 	srcs = ["seq_lstm_labeler_main.py"],
     deps = [
