@@ -182,7 +182,7 @@ class Converter:
         metadata = {}
         token = 0
         for line in sentence:
-            if line.startswith('# newdoc id'):
+            if line.startswith('# newdoc'):
                 continue
             if line.startswith('# Change'):
                 continue
@@ -194,6 +194,24 @@ class Converter:
                 continue
             if line.startswith('# Checktree'):
                 continue
+            if line.startswith('# global'):
+              continue
+            if line.startswith('# s_type'):
+              continue
+            if line.startswith("# meta"):
+              continue
+            if line.startswith("# newpar"):
+              continue
+            if line.startswith("# speaker"):
+              continue
+            if line.startswith("# addressee"):
+              continue
+            if line.startswith("# trailing_xml"):
+              continue
+            if line.startswith("# TODO"):
+              continue
+            if line.startswith("# orig"):
+              continue
             if line.startswith("# sent_id"):
                 metadata["sent_id"] = line.split("=")[1].strip()
                 continue
@@ -203,6 +221,10 @@ class Converter:
             if re.match("(([0-9]|[1-9][0-9]|[1-9][0-9][0-9])-([0-9]|[1-9][0-9]|[1-9][0-9][0-9]))", line):
                 print("skipping {}".format(line))
                 continue
+            if re.match("([0-9][0-9]\.[0-9]|[0-9]\.[0-9])", line):
+              print("skipping {}".format(line))
+              # input()
+              continue
             values = [item.strip() for item in line.split("\t")]
             sentence_dict[token]["idx"] = int(values[0])
             sentence_dict[token]["word"] = values[1]

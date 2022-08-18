@@ -30,14 +30,17 @@ if __name__ == "__main__":
 
 
   # get the data
-  train_treebank= "tr_boun-ud-train-random500.pbtxt"
-  test_treebank = "tr_boun-ud-test-random50.pbtxt"
-  train_dataset, test_dataset = load_models.load_data(preprocessor=prep,
-                                                      train_treebank=train_treebank,
-                                                      batch_size=5,
-                                                      test_treebank=test_treebank,
-                                                      test_batch_size=1,
-                                                      type="pbtxt")
+  train_treebank= "tr_boun-ud-train.pbtxt"
+  dev_treebank = "tr-boun-ud-dev.pbtxt"
+  test_treebank = "tr_boun-ud-test.pbtxt"
+  train_dataset, dev_dataset, test_dataset = load_models.load_data(preprocessor=prep,
+                                                                   train_treebank=train_treebank,
+                                                                   batch_size=5,
+                                                                   dev_treebank=dev_treebank,
+                                                                   test_batch_size=1,
+                                                                   test_treebank=test_treebank,
+                                                                   test_batch_size=800,
+                                                                   type="pbtxt")
 
 
   # for batch in train_dataset:
