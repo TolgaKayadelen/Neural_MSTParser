@@ -71,7 +71,8 @@ py_binary(
     name = "seq_lstm_attn_main",
     srcs = ["seq_lstm_attn_main.py"],
     deps = [
-        ":seq_lstm_attn"
+        ":seq_lstm_attn",
+        ":load_models",
     ]
 )
 

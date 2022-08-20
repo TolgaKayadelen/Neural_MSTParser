@@ -80,11 +80,9 @@ class SeqLSTMAttnModel(tf.keras.Model):
     self.concatenate = layers.Concatenate(name="concat")
 
     # The pre attention bidirectional LSTM layer.
-    self.pre_attn_lstm = layer_utils.LSTMBlock(
-                                            n_units=n_units,
-                                            num_layers=2,
-                                            dropout_rate=0.3,
-                                            name="pre_attn_lstm")
+    self.pre_attn_lstm = LSTMBlock(n_units=n_units,
+                                   dropout_rate=0.3,
+                                   name="pre_attn_lstm")
 
     # Attention layers
     # We will override the repeat factor of this in repeator in call function
@@ -216,7 +214,46 @@ class SeqLSTMAttnModel(tf.keras.Model):
                               shape=(batch_size, seq_len, self.n_output_classes))
     states = tf.reshape(tf.concat(states, axis=1),
                         shape=(batch_size, seq_len, self.n_s))
-    return states, label_scores, sentence_repr
+    # return {"edges": None, "labels": label_scores}, states, sentence_repr
+    return {"edges": None, "labels": label_scores}
+
+
+class LSTMBlock(layers.Layer):
+  """A bidirectional LSTM block with 2 Birectional LSTM layers"""
+  def __init__(self, *, n_units: int,
+               return_sequences: bool = True,
+               return_state: bool = False,
+               dropout_rate: float = 0.0,
+               name="LSTMBlock"):
+    super(LSTMBlock, self).__init__(name=name)
+    print("Setting up LSTM block with dropout rate ", dropout_rate)
+    self.dropout_rate = dropout_rate
+    self.lstm1 = layers.Bidirectional(layers.LSTM(
+      units=n_units, return_sequences=return_sequences,
+      # stateful=True,
+      name="lstm1"))
+    self.lstm2 = layers.Bidirectional(layers.LSTM(
+      units=n_units, return_sequences=return_sequences,
+      # stateful=True,
+      name="lstm2"))
+    self.dropout1 = layers.Dropout(rate=dropout_rate, name="dropout1")
+
+  def call(self, input_tensor, training=True):
+    dropout = self.dropout_rate > 0 and training
+    # print("dropout is ", dropout)
+    if dropout:
+      out = self.lstm1(input_tensor)
+      out = self.dropout1(out)
+      out = self.lstm2(out)
+      # out = self.dropout2(out)
+      # out = self.lstm3(out)
+      # out = self.dropout3(out)
+    else:
+      out = self.lstm1(input_tensor)
+      out = self.lstm2(out)
+      # out = self.lstm3(out)
+    return out
+
 
 ### *********************************************************************************** ###
 ################################### END of MODEL ##########################################
@@ -336,10 +373,11 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
     # print("words ", words)
     # print("words ", words[:, 1:])
     with tf.GradientTape() as tape:
-      states, label_scores, _ = self.model({"words": words, "pos": pos, "morph": morph,
-                                            "labels": dep_labels}, training=True)
+      scores = self.model({"words": words, "pos": pos, "morph": morph,
+                            "labels": dep_labels}, training=True)
 
       # Remove the 0th token from scores, preds, and labels, as it's dummy.
+      label_scores = scores["labels"]
       label_scores = label_scores[:, 1:, :]
       # print("scores ", label_scores)
       preds = tf.argmax(label_scores, axis=2)
@@ -391,11 +429,12 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
     for step, batch in enumerate(dataset):
       words, pos, morph = (batch["words"], batch["pos"], batch["morph"])
       dep_labels = batch["dep_labels"]
-      _, scores, _ = self.model({"words": words, "pos": pos, "morph": morph,
+      scores = self.model({"words": words, "pos": pos, "morph": morph,
                            "labels": dep_labels}, training=False)
 
+      label_scores = scores["labels"]
       # Remove the 0th token from scores, preds, and labels, as it's dummy.
-      label_scores = scores[:, 1:, :]
+      label_scores = label_scores[:, 1:, :]
       preds = tf.argmax(label_scores, axis=2)
       # print("preds ", preds)
       correct_labels = dep_labels[:, 1:]
@@ -454,8 +493,9 @@ class SeqLSTMAttnLabeler(base_parser.BaseParser):
     scores = self.model({"words": words, "pos": pos, "morph": morph},
                         training=False)
     # Remove the 0th token from scores.
-    label_scores = scores["labels"][:, 1:, :]
+    label_scores = scores["labels"]
+    return {"edges": None, "labels": label_scores}
     # print("label scores ", label_scores)
-    label_preds = tf.argmax(label_scores, axis=2)
+    # label_preds = tf.argmax(label_scores, axis=2)
     # print("label preds ", label_preds)
-    return label_preds
+    # return label_preds

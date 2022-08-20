@@ -1,0 +1,59 @@
+
+syntax = "proto2";
+
+// For those replaced tags, you have to account for them in prep.numericalize()
+
+package tagset.dep_labels.en;
+
+enum Tag {
+  TOP = 0;
+  root = 1;
+  punct = 2;
+  flat = 3;
+  amod = 4;
+  nsubj = 5;
+  parataxis = 6;
+  obj = 7;
+  det = 8;
+  appos = 9;
+  case = 10;
+  obl = 11;
+  nmod = 12;
+  aux = 13;
+  iobj = 14;
+  mark = 15;
+  acl = 16;
+  ccomp = 17;
+  compound_prt = 18;
+  nummod = 19;
+  nsubj_pass = 20; // nsubj:pass
+  aux_pass = 21; // aux:pass
+  cop = 22;
+  compound = 23;
+  advmod = 24;
+  advcl = 25;
+  nmod_poss = 26; // nmod:poss
+  cc = 27;
+  conj = 28;
+  xcomp = 29;
+  acl_relcl = 30; // acl:relcl
+  expl = 31;
+  fixed = 32;
+  det_predet = 33; // det:predet
+  obl_npmod = 34; // obl:npmod
+  obl_tmod = 35; // obl:tmod
+  nmod_tmod = 36; // nmod:tmod
+  csubj = 37;
+  orphan = 38;
+  csubj_pass = 39; // csubj:pass
+  vocative = 40;
+  nmod_npmod = 41; // nmod:npmod
+  list = 42;
+  discourse = 43;
+  dislocated = 44;
+  reparandum = 45;
+  cc_preconj = 46; // cc:preconj
+  flat_foreign = 47; // flat:foreign
+  goeswith = 48;
+  dep = 49;
+}

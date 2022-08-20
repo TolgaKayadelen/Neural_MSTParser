@@ -77,7 +77,7 @@ def load_data(*, preprocessor: preprocessor.Preprocessor,
   if data_dir is not None:
     data_dir = data_dir
   else:
-    data_dir = "data/UDv29/test/" + language
+    data_dir = "data/UDv29/train/" + language
   if dev_data_dir is not None:
     dev_data_dir = dev_data_dir
   else:

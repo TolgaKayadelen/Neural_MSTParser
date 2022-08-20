@@ -755,6 +755,7 @@ class BaseParser(ABC):
                                                            example["pos"], example["category"])
       # first populate gold treebank with the gold annotations
       index = 0
+      # print("gold labels ", dep_labels)
       for token, dep_label, head, pos_tag, category_tag in zip(tokens[0], dep_labels[0], heads[0], pos[0], category[0]):
         gold_sentence_pb2.sent_id = sent_id[0][0].numpy()
         token = gold_sentence_pb2.token.add(
@@ -777,6 +778,8 @@ class BaseParser(ABC):
         dep_labels = tf.argmax(label_scores, axis=2)
         # print("parsed_labels ", dep_labels)
       index = 0
+      # print("test labels ", dep_labels)
+      # input()
       for token, dep_label, head, pos_tag, category_tag in zip(tokens[0], dep_labels[0], heads[0], pos[0], category[0]):
         parsed_sentence_pb2.sent_id = sent_id[0][0].numpy()
         token = parsed_sentence_pb2.token.add(
