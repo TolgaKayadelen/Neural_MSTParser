@@ -1,19 +1,35 @@
 from tagset.fine_pos import fine_tag_enum_pb2 as fine_tags
 from tagset.coarse_pos import coarse_tag_enum_pb2 as coarse_tags
 from tagset.dep_labels import dep_label_enum_pb2 as dep_labels
+
+from tagset.fine_pos.en import fine_tag_enum_pb2 as fine_tags_en
+from tagset.coarse_pos.en import coarse_tag_enum_pb2 as coarse_tags_en
+from tagset.dep_labels.en import dep_label_enum_pb2 as dep_labels_en
 from tagset.arg_str import semantic_role_enum_pb2 as srl
 from tagset.morphology import morph_tag_enum_pb2 as morph_tags
 
+
+_LANGUAGE_TO_TAG = {
+  "en": {"pos": fine_tags_en, "category": coarse_tags_en, "dep_labels": dep_labels_en},
+  "tr": {"pos": fine_tags, "category": coarse_tags, "dep_labels": dep_labels,
+         "srl": srl, "morph": morph_tags}
+}
+
+_TAGS_TO_REPLACE = {'SEMICOLON': ":", 'COMMA': ",", 'DOT': ".", 'LRB': "-LRB-", 'RRB': "-RRB-",
+                    'PRP_DOLLAR': "PRP$", 'DOUBLE_QUOTE_ITALIC': "``",
+                    'DOUBLE_QUOTE': "''", 'WP_DOLLAR': "WP$", 'DOLLAR': "$"}
+
+
 class LabelReader:
   """The label reader returns a dict of label:index pairs."""
-  def __init__(self, tagset, reverse):
+  def __init__(self, tagset, language, reverse):
     self._tagset = tagset
+    self._language = language
     self._reverse = reverse
-  
+
   @classmethod
-  def get_labels(cls, tagset, reverse=False):
-    return cls(tagset, reverse)
-  
+  def get_labels(cls, tagset, language="tr", reverse=False):
+    return cls(tagset, language, reverse)
     
   def itov(self, idx: int):
     """Returns the label value given an integer index."""
@@ -37,10 +53,13 @@ class LabelReader:
     # read the tagset
     if self._tagset == "pos":
       tags = fine_tags
+      tags = _LANGUAGE_TO_TAG[self._language]["pos"]
     elif self._tagset == "category":
       tags = coarse_tags
+      tags = _LANGUAGE_TO_TAG[self._language]["category"]
     elif self._tagset == "dep_labels":
       tags = dep_labels
+      tags = _LANGUAGE_TO_TAG[self._language]["dep_labels"]
     elif self._tagset == "srl":
       tags = srl
     elif self._tagset == "morph":
@@ -65,13 +84,23 @@ class LabelReader:
     else:
       label_dict = {}
       for key in tags.Tag.DESCRIPTOR.values_by_name.keys():
+        # print(key)
+        # input()
         if key.startswith("UNKNOWN_"):
           continue
         if key in {"advmod_emph", "aux_q", "compound_lvc",
-                   "compound_redup", "nmod_poss", "cc_preconj"}:
+                   "compound_redup", "nmod_poss", "cc_preconj",
+                   "nsubj_pass", "aux_pass", "compound_prt", 'acl_relcl',
+                   'det_predet', 'obl_npmod', 'obl_tmod', 'nmod_tmod', 'csubj_pass',
+                   'nmod_npmod', 'flat_foreign'}:
           label_dict[key.replace("_", ":")] = tags.Tag.Value(key)
+        elif key in {'SEMICOLON', 'COMMA', 'DOT', 'LRB', 'RRB', 'PRP_DOLLAR', 'DOUBLE_QUOTE_ITALIC',
+                     'DOUBLE_QUOTE', 'WP_DOLLAR', 'DOLLAR'}:
+          label_dict[_TAGS_TO_REPLACE[key]] = tags.Tag.Value(key)
+
         else:
           label_dict[key] = tags.Tag.Value(key)
+          # print(label_dict)
     label_dict["-pad-"] = 0
     
     if self._reverse:

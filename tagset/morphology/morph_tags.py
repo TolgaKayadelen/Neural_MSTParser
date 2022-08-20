@@ -1,9 +1,9 @@
-"""One of script to get all the morphological tags in the training data."""
+"""One off script to get all the morphological tags in the training data."""
 
 from util import reader
 
 def from_data():
-  data = "./data/UDv29/train/tr/tr_boun-ud-train.pbtxt"
+  data = "./data/UDv29/train/tr/tr_kenet-ud-train.pbtxt"
   trb = reader.ReadTreebankTextProto(data)
   morph_tagset = set()
   for sentence in trb.sentence:

@@ -41,6 +41,7 @@ class BaseParser(ABC):
 
   def __init__(self, *,
                word_embeddings: Embeddings,
+               language="tr",
                n_output_classes: int = None,
                predict: List[str],
                features: List[str] = ["words"],
@@ -48,6 +49,8 @@ class BaseParser(ABC):
                log_dir = None,
                test_every: int = 5,
                one_hot_labels=False):
+
+    self.language = language
     # Embeddings
     self.word_embeddings = word_embeddings
 
@@ -550,8 +553,9 @@ class BaseParser(ABC):
 
       losses = collections.defaultdict(list)
       for step, batch in enumerate(dataset):
-        words, pos, morph = batch["words"], batch["pos"], batch["morph"]
+        words, pos = batch["words"], batch["pos"]
         dep_labels, heads = batch["dep_labels"], batch["heads"]
+        morph = batch["morph"] if "morph" in batch.keys() else None
 
         # Get loss values, predictions, and correct heads/labels for this training step.
         predictions, batch_loss, correct, pad_mask = self.train_step(words=words,

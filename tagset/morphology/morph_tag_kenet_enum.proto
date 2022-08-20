@@ -1,0 +1,72 @@
+syntax = "proto2";
+
+package tagset.morphology;
+
+// Morphology Tags.
+// These tags are read from training data with get_morph_tags.py
+enum Tag {
+    aspect_hab = 1;
+    aspect_perf = 2;
+    aspect_prog = 3;
+    aspect_rapid = 4;
+    case_abl = 5;
+    case_acc = 6;
+    case_dat = 7;
+    case_gen = 8;
+    case_ins = 9;
+    case_loc = 10;
+    case_nom = 11;
+    definite_def = 12;
+    definite_ind = 13;
+    degree_cmp = 14;
+    degree_sup = 15;
+    mood_cnd = 16;
+    mood_cndgen = 17;
+    mood_cndgenpot = 18;
+    mood_cndpot = 19;
+    mood_des = 20;
+    mood_despot = 21;
+    mood_gen = 22;
+    mood_gennec = 23;
+    mood_genpot = 24;
+    mood_imp = 25;
+    mood_ind = 26;
+    mood_nec = 27;
+    mood_opt = 28;
+    mood_pot = 29;
+    number_plur = 30;
+    number_psor_plur = 31;
+    number_psor_sing = 32;
+    number_sing = 33;
+    numtype_card = 34;
+    numtype_dist = 35;
+    numtype_ord = 36;
+    person_1 = 37;
+    person_2 = 38;
+    person_3 = 39;
+    person_psor_1 = 40;
+    person_psor_2 = 41;
+    person_psor_3 = 42;
+    polarity_neg = 43;
+    polarity_pos = 44;
+    prontype_art = 45;
+    prontype_dem = 46;
+    prontype_ind = 47;
+    prontype_int = 48;
+    prontype_neg = 49;
+    prontype_prs = 50;
+    prontype_rcp = 51;
+    reflex_yes = 52;
+    tense_fut = 53;
+    tense_past = 54;
+    tense_pres = 55;
+    verbform_conv = 56;
+    verbform_fin = 57;
+    verbform_part = 58;
+    verbform_vnoun = 59;
+    voice_cau = 60;
+    voice_caupass = 61;
+    voice_pass = 62;
+    voice_rcp = 63;
+    voice_rfl = 64;
+}

@@ -31,42 +31,12 @@ _POS_CATEGORIES = {'ADJ': 1,
                    '-pad-': 0
                   }
 
-_POS_TAGS = {'ANum': 1,
-             'Abr': 2,
-             'Adj': 3,
-             'Adverb': 4,
-             'Conj': 5,
-             'Demons': 6,
-             'Det': 7,
-             'Dup': 8,
-             'Interj': 9,
-             'NAdj': 10,
-             'NNum': 11,
-             'Neg': 12,
-             'Ness': 13,
-             'Noun': 14,
-             'PCAbl': 15,
-             'PCAcc': 16,
-             'PCDat': 17,
-             'PCGen': 18,
-             'PCIns': 19,
-             'PCNom': 20,
-             'Pers': 21,
-             'PostP': 22,
-             'Prop': 23,
-             'Punc': 24,
-             'Quant': 25,
-             'Ques': 26,
-             'Reflex': 27,
-             'Rel': 28,
-             'Since': 29,
-             'TOP': 30,
-             'Verb': 31,
-             'With': 32,
-             'Without': 33,
-             'Zero': 34,
-             '-pad-': 0
-            }
+_POS_TAGS = {'Abr': 1, 'Adj': 2, 'Adverb': 3, 'ANum': 4, 'Aux': 5, 'Conj': 6, 'Demons': 7,
+             'Det': 8, 'Dup': 9, 'Interj': 10, 'NAdj': 11, 'Neg': 12, 'Ness': 13, 'NNum': 14,
+             'Noun': 15, 'PCAbl': 16, 'PCAcc': 17, 'PCDat': 18, 'PCGen': 19, 'PCIns': 20, 'PCNom': 21,
+             'Pers': 22, 'PostP': 23, 'Prop': 24, 'Punc': 25, 'Quant': 26, 'Ques': 27, 'Reflex': 28,
+             'Rel': 29, 'Since': 30, 'TOP': 31, 'Verb': 32, 'With': 33, 'Without': 34, 'Zero': 35, '_': 36,
+             "-pad-": 0}
 
 _DEP_LABELS = {'acl': 1,
                'advcl': 2,
@@ -130,8 +100,7 @@ _SEMANTIC_ROLES = {'-pad-': 0, 'B-A0': 1, 'I-A0': 2, 'B-A1': 3, 'I-A1': 4, 'B-A3
                   }
 
 
-_MORPH = {'UNKNOWN_MORPH': 0,
-          'abbr_yes': 1,
+_MORPH = {'abbr_yes': 1,
           'aspect_hab': 2,
           'aspect_imp': 3,
           'aspect_perf': 4,
@@ -190,48 +159,60 @@ _MORPH = {'UNKNOWN_MORPH': 0,
 
 class LabelReaderTest(parameterized.TestCase):
   """Tests for the label reader."""
+  def test_read_tags(self):
+    print(LabelReader.get_labels("pos", "en").labels)
+    print(LabelReader.get_labels("category", "en").labels)
+    print(LabelReader.get_labels("dep_labels", "en").labels)
+
+
   @parameterized.named_parameters(
     [
       {
         "testcase_name": "pos",
         "tagset": "pos",
+        "language": "tr",
         "reverse": False,
         "expected_labels": _POS_TAGS,
       },
       {
         "testcase_name": "category",
         "tagset": "category",
+        "language": "tr",
         "reverse": False,
         "expected_labels": _POS_CATEGORIES,
       },
       {
         "testcase_name": "category_reversed",
         "tagset": "category",
+        "language": "tr",
         "reverse": True,
         "expected_labels": {k:v for v,k in _POS_CATEGORIES.items()}
       },
       {
         "testcase_name": "dep_labels",
         "tagset": "dep_labels",
+        "language": "tr",
         "reverse": False,
         "expected_labels": _DEP_LABELS,
       },
       {
         "testcase_name": "semantic_roles",
         "tagset": "srl",
+        "language": "tr",
         "reverse": False,
         "expected_labels": _SEMANTIC_ROLES,
       },
       {
         "testcase_name": "morphology",
         "tagset": "morph",
+        "language": "tr",
         "reverse": False,
         "expected_labels": _MORPH,
       }
     ]
   )
-  def test_read_labels(self, tagset, reverse, expected_labels):
-    self.assertDictEqual(LabelReader.get_labels(tagset, reverse).labels,
+  def test_read_labels(self, tagset, language, reverse, expected_labels):
+    self.assertDictEqual(LabelReader.get_labels(tagset, language, reverse).labels,
                          expected_labels)
     # if reverse:
     #   print(LabelReader.get_labels(tagset, reverse).labels)
@@ -244,8 +225,9 @@ class LabelReaderTest(parameterized.TestCase):
   
   def test_vtoi(self):
     label_reader = LabelReader.get_labels("pos")
-    self.assertEqual(label_reader.vtoi("Adj"), 3)
-    print("Passed!")
+    self.assertEqual(label_reader.vtoi("Adj"), 2)
+    print("Passed")
+
 
 if __name__ == "__main__":
 	absltest.main()

@@ -89,7 +89,8 @@ class Preprocessor:
                features: List[str],
                labels: List[str],
                one_hot_features: List[str] =  [],
-               head_padding_value=0):
+               head_padding_value=0,
+               language="tr"):
     """Preprocessor prepares input datasets for TF models to consume."""
     assert all(o_h_feat in features for o_h_feat in one_hot_features), "Features don't match"
 
@@ -97,6 +98,7 @@ class Preprocessor:
       self.word_embeddings = word_embeddings
     # The features to use for training the parser.
     self.features = features
+    self.language = language
     # The label feature; target feature to be predicted by the parser.
     self.labels = labels
     # Which of the features from self.features are one hot
@@ -136,7 +138,7 @@ class Preprocessor:
       if feat == "heads":
         sequence_features[feat] = SequenceFeature(name=feat, is_label=feat in self.labels)
       elif feat == "dep_labels":
-        label_dict = LabelReader.get_labels(feat).labels
+        label_dict = LabelReader.get_labels(feat, self.language).labels
         label_indices = list(label_dict.values())
         label_feature = SequenceFeature(name=feat,
                                         dtype=tf.float32 if feat in self.one_hot_features else tf.int64,
@@ -211,13 +213,13 @@ class Preprocessor:
         embeddings = nn_utils.load_embeddings()
         mappings["words"] = Embeddings(name="word2vec", matrix=embeddings)
     if "morph" in feature_names:
-      mappings["morph"] = LabelReader.get_labels("morph").labels
+      mappings["morph"] = LabelReader.get_labels("morph", self.language).labels
     if "pos" in feature_names:
-      mappings["pos"] = LabelReader.get_labels("pos").labels
+      mappings["pos"] = LabelReader.get_labels("pos", self.language).labels
     if "category" in feature_names:
-      mappings["category"] = LabelReader.get_labels("category").labels
+      mappings["category"] = LabelReader.get_labels("category", self.language).labels
     if "dep_labels" in feature_names:
-      mappings["dep_labels"] = LabelReader.get_labels("dep_labels").labels
+      mappings["dep_labels"] = LabelReader.get_labels("dep_labels", self.language).labels
     if "srl" in feature_names:
       raise RuntimeError("Semantic role features are not supported yet.")
     # print("mappings ", mappings)
@@ -429,7 +431,7 @@ class Preprocessor:
                                    padding_values=_padding_values)
 
     logging.info("Shuffling dataset.")
-    dataset = dataset.shuffle(buffer_size=5073)
+    dataset = dataset.shuffle(buffer_size=8000)
 
     return dataset
 

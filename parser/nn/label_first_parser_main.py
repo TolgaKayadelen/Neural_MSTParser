@@ -11,14 +11,20 @@ if __name__ == "__main__":
   # use_pretrained_weights_from_labeler = True
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
   log_dir = "debug/label_first_parser/" + current_time
-  word_embeddings = load_models.load_word_embeddings()
-  prep = load_models.load_preprocessor(word_embeddings)
+  language = "tr"
+  if language == "tr":
+    word_embeddings = load_models.load_word_embeddings()
+  else:
+    word_embeddings=None
+
+  prep = load_models.load_preprocessor(word_embeddings=word_embeddings, language=language)
 
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
 
-  parser_model_name = "lfp_pred_labels_no_p_m_joint_loss"
+  parser_model_name = "nnn"
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
+                            language=language,
                             n_output_classes=label_feature.n_values,
                             predict=["heads",
                                      "labels"
@@ -54,15 +60,15 @@ if __name__ == "__main__":
 
 
   # get the data
-  train_treebank= "tr_boun-ud-train-random500.pbtxt"
-  test_treebank = "tr_boun-ud-test-random50.pbtxt"
-  train_dataset, test_dataset = load_models.load_data(preprocessor=prep,
+  train_treebank= "tr_boun-ud-test.pbtxt"
+
+  test_treebank = "tr_boun-ud-test.pbtxt"
+  train_dataset, _, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
-                                                      batch_size=50,
+                                                      batch_size=2,
                                                       test_treebank=test_treebank,
-                                                      type="pbtxt")
-
-
+                                                      type="pbtxt",
+                                                      language=language)
   # for batch in train_dataset:
   #   print(batch)
   # input()

@@ -5,6 +5,7 @@ py_library(
 	name = "reader",
 	srcs = ["reader.py"],
 	deps = [
+	":en_tagset",
     "//tagset/fine_pos:fine_tag_enum_py_pb2",
     "//tagset/coarse_pos:coarse_tag_enum_py_pb2",
     "//tagset/dep_labels:dep_label_enum_py_pb2",
@@ -20,4 +21,14 @@ py_test(
   deps = [
     ":reader",
   ],
+)
+
+py_library(
+    name = "en_tagset",
+    deps = [
+        "//tagset/fine_pos/en:fine_tag_enum_py_pb2",
+        "//tagset/coarse_pos/en:coarse_tag_enum_py_pb2",
+        "//tagset/dep_labels/en:dep_label_enum_py_pb2",
+
+    ]
 )

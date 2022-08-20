@@ -21,7 +21,7 @@ from google.protobuf import json_format
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
-def get_tags_and_labels(data):
+def get_tags_and_labels(data, dict=False):
     sentence_list = []
     coarse_tags = defaultdict(int)
     fine_tags = defaultdict(int)
@@ -42,19 +42,38 @@ def get_tags_and_labels(data):
             coarse_tags[token.category] += 1
             fine_tags[token.pos] += 1
             labels[token.label] += 1
-
-    # labels = {v: k for k, v in labels.items()}
-    print("labels: {}\n".format(pd.Series(labels).sort_values()))
-    # print(coarse_tags)
-    # coarse_tags = {v: k for k, v in coarse_tags.items()}
-    print("coarse_tags: {}\n".format(pd.Series(coarse_tags).sort_values()))
-    # fine_tags = {v: k for k, v in fine_tags.items()}
-    print("fine_tags: {}\n".format(pd.Series(fine_tags).sort_values()))
+    if dict:
+        coarse, fine, labels = coarse_tags.keys(), fine_tags.keys(), labels.keys()
+        coarse_tags = {key:index for index,key in enumerate(coarse)}
+        fine_tags = {key:index for index,key in enumerate(fine)}
+        labels = {key:index for index,key in enumerate(labels)}
+        print("COARSE TAGS")
+        for k, v in coarse_tags.items():
+            print(f"{k} = {v};")
+        print("\n\n")
+        print("FINE TAGS")
+        for k, v in fine_tags.items():
+            print(f"{k} = {v};")
+        print("\n\n")
+        print("LABELS")
+        for k, v in labels.items():
+            print(f"{k} = {v};")
+    else:
+        # labels = {v: k for k, v in labels.items()}
+        print("labels: {}\n".format(pd.Series(labels).sort_values()))
+        print("labels: {}\n".format(pd.Series(labels).sort_index()))
+        # print(coarse_tags)
+        # coarse_tags = {v: k for k, v in coarse_tags.items()}
+        print("coarse_tags: {}\n".format(pd.Series(coarse_tags).sort_values()))
+        print("coarse_tags: {}\n".format(pd.Series(coarse_tags).sort_index()))
+        # fine_tags = {v: k for k, v in fine_tags.items()}
+        print("fine_tags: {}\n".format(pd.Series(fine_tags).sort_values()))
+        print("fine_tags: {}\n".format(pd.Series(fine_tags).sort_index()))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data", type=str, help="data to read",
-        default="./data/UDv29/test/tr/tr_boun-ud-test.pbtxt")
+        default="./data/UDv29/train/tr/tr_boun-ud-train.pbtxt")
     args = parser.parse_args()
     get_tags_and_labels(args.data)
 

@@ -4,13 +4,13 @@ package tagset.fine_pos;
 
 // Fine Part of Speech Tags.
 enum Tag {
-  // Next available id: 35
+  // Next available id: 37
   UNKNOWN_TAG = 0;
   Abr = 1;
   Adj = 2;
   Adverb = 3;
   ANum = 4;
-  Aux=5;
+  Aux = 5;
   Conj = 6;
   Demons = 7;
   Det = 8;

@@ -1,0 +1,60 @@
+syntax = "proto2";
+
+package tagset.fine_pos.en;
+
+// For those replaced tags, you have to account for them in prep.numericalize()
+
+// Fine Part of Speech Tags.
+enum Tag {
+  TOP = 0;
+  NNP = 1;
+  HYPH = 2;
+  SEMICOLON = 3; // replaces ":"
+  JJ = 4;
+  NNS = 5;
+  VBD = 6;
+  COMMA = 7; // replaces ","
+  DT = 8;
+  NN = 9;
+  IN = 10;
+  DOT = 11; // replaces "."
+  LRB = 12; // -LRB-
+  MD = 13;
+  VB = 14;
+  VBG = 15;
+  PRP = 16;
+  TO = 17;
+  RRB = 18; // -RRB-
+  VBN = 19;
+  RP = 20;
+  CD = 21;
+  VBZ = 22;
+  RB = 23;
+  NNPS = 24;
+  VBP = 25;
+  PRP_DOLLAR = 26; // PRP$
+  CC = 27;
+  WP = 28;
+  EX = 29;
+  WDT = 30;
+  RBR = 31;
+  PDT = 32;
+  JJR = 33;
+  WRB = 34;
+  JJS = 35;
+  DOUBLE_QUOTE_ITALIC = 36; // replaces  ``
+  DOUBLE_QUOTE = 37; // replaces ''
+  POS = 38;
+  RBS = 39;
+  WP_DOLLAR = 40; // WP$
+  ADD = 41;
+  FW = 42;
+  LS = 43;
+  UH = 44;
+  AFX = 45;
+  DOLLAR = 46; // replaces "$"
+  NFP = 47;
+  SYM = 48;
+  GW = 49;
+  XX = 50;
+}

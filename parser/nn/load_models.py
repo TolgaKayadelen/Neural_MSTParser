@@ -14,14 +14,24 @@ def load_word_embeddings():
   return word_embeddings
 
 
-def load_preprocessor(word_embeddings, head_padding_value=0, one_hot_features=[]):
-  prep = preprocessor.Preprocessor(
-    word_embeddings=word_embeddings,
-    features=["words", "pos", "morph", "heads", "category", "dep_labels", "sent_id"],
-    labels=["heads"],
-    head_padding_value=head_padding_value,
-    one_hot_features=one_hot_features
-  )
+def load_preprocessor(*, word_embeddings=None, head_padding_value=0, one_hot_features=[], language="tr"):
+  if language == "tr":
+    prep = preprocessor.Preprocessor(
+      word_embeddings=word_embeddings,
+      features=["words", "pos", "morph", "heads", "category", "dep_labels", "sent_id"],
+      labels=["heads"],
+      head_padding_value=head_padding_value,
+      one_hot_features=one_hot_features,
+      language=language,
+    )
+  elif language == "en":
+    prep = preprocessor.Preprocessor(
+      features=[ "words", "pos", "heads", "category", "dep_labels", "sent_id"],
+      labels=["heads"],
+      head_padding_value=head_padding_value,
+      one_hot_features=one_hot_features,
+      language=language,
+    )
   return prep
 
 
@@ -60,21 +70,22 @@ def load_data(*, preprocessor: preprocessor.Preprocessor,
               test_data_dir: str = None,
               type="pbtxt",
               batch_size: int,
-              dev_batch_size: int,
-              test_batch_size=1
+              dev_batch_size: int = None,
+              test_batch_size=1,
+              language="tr",
               ):
   if data_dir is not None:
     data_dir = data_dir
   else:
-    data_dir = "data/UDv29/train/tr"
+    data_dir = "data/UDv29/test/" + language
   if dev_data_dir is not None:
     dev_data_dir = dev_data_dir
   else:
-    dev_data_dir = "data/UDv29/dev/tr"
+    dev_data_dir = "data/UDv29/dev/" + language
   if test_data_dir is not None:
     test_data_dir = test_data_dir
   else:
-    test_data_dir = "data/UDv29/test/tr"
+    test_data_dir = "data/UDv29/test/" + language
   if type=="pbtxt":
     train_sentences = preprocessor.prepare_sentence_protos(
       path=os.path.join(data_dir, train_treebank)

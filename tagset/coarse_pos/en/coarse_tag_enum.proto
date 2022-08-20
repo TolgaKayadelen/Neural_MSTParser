@@ -1,0 +1,25 @@
+syntax = "proto2";
+
+package tagset.coarse_pos.en;
+
+// Coarse Part of Speech tags.
+enum Tag {
+  TOP = 0;
+  PROPN = 1;
+  PUNCT = 2;
+  ADJ = 3;
+  NOUN = 4;
+  VERB = 5;
+  DET = 6;
+  ADP = 7;
+  AUX = 8;
+  PRON = 9;
+  PART = 10;
+  SCONJ = 11;
+  NUM = 12;
+  ADV = 13;
+  CCONJ = 14;
+  X = 15;
+  INTJ = 16;
+  SYM = 17;
+}
