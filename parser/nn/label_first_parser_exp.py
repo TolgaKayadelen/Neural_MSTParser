@@ -4,13 +4,16 @@ import numpy as np
 import time
 import collections
 
+from sklearn.metrics import classification_report
+
 from proto import metrics_pb2
 from input import embeddor
 from tensorflow.keras import layers, metrics, losses, optimizers
 from parser.nn import layer_utils
 from parser.nn import base_parser
-from parser.nn import bilstm_labeler_coarse_dep
+from parser.nn import bilstm_labeler_fine_dep
 from util.nn import label_converter
+from tagset.reader import LabelReader
 
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
@@ -34,12 +37,20 @@ class LabelFirstParser(base_parser.BaseParser):
       "labels": metrics.SparseCategoricalAccuracy()
     }
 
-  def train_coarse_labeler(self, train_dataset, test_dataset):
-    class_weights = {7: 1.0, 3: 1.0, 0: 1.0, 4: 3.0,
-                     1: 1.96, 2: 1.88, 5: 3.65, 6: 2.78}
-    model = bilstm_labeler_coarse_dep.Labeler(
+  def train_coarse_labeler(self, train_dataset, dev_dataset, test_dataset):
+    class_weights = {0: 0.01, 1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0, 5: 1.0, 6: 1.0, 7: 1.0, 8: 1.0, 9: 1.0, 10: 1.0, 11: 1.0,
+                     12: 3.0, 13: 1.0, 14: 1.0, 15: 1.0, 16: 1.0, 17: 1.0, 18: 1.0, 19: 3.0, 20: 1.0, 21: 1.0, 22: 1.0,
+                     23: 0.01, 24: 1.0, 25: 1.0, 26: 1.0, 27: 1.0, 28: 0.01, 29: 1.0, 30: 1.0, 31: 1.0, 32: 3.0, 33: 1.0,
+                     34: 3.0, 35: 1.0, 36: 1.0, 37: 1.0, 38: 0.01, 39: 4.0, 40: 1.0, 41: 3.0, 42: 0.01}
+    class_names = list(LabelReader.get_labels("dep_labels").labels.keys())
+    class_names.remove("-pad-")
+    class_names = ["pad"] + class_names
+    print("class names ", class_names, len(class_names))
+    # input()
+    model = bilstm_labeler_fine_dep.Labeler(
       word_embeddings=self.word_embeddings).build_model(show_summary=True)
     epoch = 1
+    labels_to_keep = []
     while True:
       epoch += 1
       loss_tracker = []
@@ -47,7 +58,7 @@ class LabelFirstParser(base_parser.BaseParser):
       val_loss_tracker = []
       val_acc_tracker = []
       step = 0
-      for data, test_data in zip(train_dataset, test_dataset):
+      for data, dev_data in zip(train_dataset, dev_dataset):
         step+=1
         print("batch ", step)
         # test_data = test_dataset.get_single_element()
@@ -55,25 +66,27 @@ class LabelFirstParser(base_parser.BaseParser):
         # print(test_data["dep_labels"].shape)
         # input()
         words, pos, morph, dep_labels = data["words"], data["pos"], data["morph"], data["dep_labels"]
-        converted_dep_labels = label_converter.convert_labels(dep_labels)
+        # converted_dep_labels = label_converter.convert_labels(dep_labels)
         # print(converted_dep_labels)
         # input()
 
-        test_w, test_p, test_m, test_dep = test_data["words"], test_data["pos"], test_data["morph"], \
-                                           test_data["dep_labels"]
-        converted_test_labels = label_converter.convert_labels(test_dep)
+        dev_w, dev_p, dev_m, dev_dep = dev_data["words"], dev_data["pos"], dev_data["morph"], \
+                                       dev_data["dep_labels"]
+
+        # converted_test_labels = label_converter.convert_labels(test_dep)
         # print("converted test labels ", converted_test_labels)
         # input()
-        history = model.fit([words, pos, morph], converted_dep_labels,
-                            validation_data=([test_w, test_p, test_m], converted_test_labels),
+        history = model.fit([words, pos, morph], dep_labels,
+                            validation_data=([dev_w, dev_p, dev_m], dev_dep),
                             class_weight=class_weights,
-                            epochs=2)
+                            epochs=1)
         # print(history.history.keys())
-        loss_tracker.append(history.history["loss"][1])
-        acc_tracker.append(history.history["accuracy"][1])
-        val_loss_tracker.append(history.history["val_loss"][1])
-        val_acc_tracker.append(history.history["val_accuracy"][1])
+        loss_tracker.append(history.history["loss"][0])
+        acc_tracker.append(history.history["accuracy"][0])
+        val_loss_tracker.append(history.history["val_loss"][0])
+        val_acc_tracker.append(history.history["val_accuracy"][0])
       # End of one epoch
+      print(f"end of epoch {epoch}")
       val_acc = np.mean(val_acc_tracker)
       train_acc = np.mean(acc_tracker)
       logging.info(f"--------------------> Metrics for epoch <-------------------------")
@@ -81,14 +94,40 @@ class LabelFirstParser(base_parser.BaseParser):
       logging.info(f"epoch mean acc: {train_acc}")
       logging.info(f"epoch mean val loss: {np.mean(val_loss_tracker)}")
       logging.info(f"epoch mean val acc: {val_acc}")
-      if train_acc > 0.95 and val_acc < 0.85:
-        c = input("continue training?")
-        if c ==  "n":
-          break
-      if val_acc > 0.85:
-        break
 
-    return model
+
+      # see class metrics on test set
+      test_data = test_dataset.get_single_element()
+      test_ex_w, test_ex_p, test_ex_m, test_ex_dep = (test_data["words"], test_data["pos"],
+                                                      test_data["morph"], test_data["dep_labels"])
+      # print("test ex dep ", test_ex_dep)
+      # input()
+      test_ex_dep_r = tf.squeeze(tf.reshape(test_ex_dep, (1, test_ex_dep.shape[0]*test_ex_dep.shape[1])))
+      # print("test ex dep r ", test_ex_dep_r)
+      scores = model([test_ex_w, test_ex_p, test_ex_m])
+      preds = tf.argmax(scores, axis=2)
+      # print("preds ", preds)
+      # input()
+      preds_r = tf.squeeze(tf.reshape(preds, (1, preds.shape[0]*preds.shape[1])))
+      # print("preds r ", preds_r)
+      # input()
+      report = classification_report(y_true=test_ex_dep_r, y_pred=preds_r, output_dict=True)
+      for k, v in report.items():
+        print(k, v)
+      print("\n")
+
+      # if train_acc > 0.3 and val_acc < 0.85:
+      if report["39"]["precision"] > 0.8:
+        c = input("continue training? y or n")
+        if c ==  "n":
+          for k, v in report.items():
+            if k not in ["weighted avg", "accuracy", "macro avg", '0', '38', '42'] and v["precision"] > 0.8:
+              labels_to_keep.append(int(k))
+          print("labels to keep ", labels_to_keep)
+          # input()
+          break
+
+    return model, labels_to_keep
 
   @property
   def _head_loss_function(self):
@@ -142,7 +181,7 @@ class LabelFirstParser(base_parser.BaseParser):
     print(f"""Using features pos: {self._use_pos}, morph: {self._use_morph},
               dep_labels: {self._use_dep_labels}""")
     model = LabelFirstParsingModel(
-      n_dep_labels=8,
+      n_dep_labels=43,
       word_embeddings=self.word_embeddings,
       predict=self._predict,
       name=model_name,
@@ -157,8 +196,10 @@ class LabelFirstParser(base_parser.BaseParser):
 
   def train(self, *,
             dataset: Dataset,
+            dev_data: Dataset,
             epochs: int = 10,
-            test_data: Dataset=None):
+            test_data: Dataset=None,
+            test_data_labeler=None):
     """Training.
 
     Args:
@@ -169,7 +210,15 @@ class LabelFirstParser(base_parser.BaseParser):
       training_results: logs of scores and losses at the end of training.
     """
     logging.info("Training Coarse Labeler First")
-    self.coarse_labeling_model = self.train_coarse_labeler(dataset, test_data)
+    # TODO: the labeler also should return condifent labels.
+    print(self.model.name, self.model.label_preds_to_keep)
+    # input()
+    self.coarse_labeling_model, labels_to_keep = self.train_coarse_labeler(dataset, dev_data, test_data_labeler)
+    print("final labels to keep ", labels_to_keep)
+    # udpate the label prds to keep feature of the model
+    self.model.label_preds_to_keep = labels_to_keep
+    print(self.model.name, self.model.label_preds_to_keep)
+    # input()
     for epoch in range(1, epochs+1):
       test_results_for_epoch = None
 
@@ -189,9 +238,9 @@ class LabelFirstParser(base_parser.BaseParser):
         words, pos, morph = batch["words"], batch["pos"], batch["morph"]
         dep_labels, heads = batch["dep_labels"], batch["heads"]
 
-        # In training time we train with the gold coarse labels. In test time we'll get it from them from the model.
+        # In training time we train with the gold labels. In test time we'll get it from them from the model.
         # print("dep labels training ", dep_labels)
-        coarse_labels = label_converter.convert_labels(dep_labels)
+        # coarse_labels = label_converter.convert_labels(dep_labels)
         # print("coarse labels training ", coarse_labels)
         # input()
 
@@ -199,7 +248,7 @@ class LabelFirstParser(base_parser.BaseParser):
         predictions, batch_loss, correct, pad_mask = self.train_step(words=words,
                                                                      pos=pos,
                                                                      morph=morph,
-                                                                     dep_labels=coarse_labels,
+                                                                     dep_labels=dep_labels,
                                                                      heads=heads)
 
         # Get the correct heads/labels and correctly predicted heads/labels for this step.
@@ -347,16 +396,15 @@ class LabelFirstParser(base_parser.BaseParser):
     """
     words, pos, morph = (example["words"], example["pos"], example["morph"])
     # TODO: decide which method to call here.
-    coarse_labels_scores = self.coarse_labeling_model([words, pos, morph])
+    label_scores = self.coarse_labeling_model([words, pos, morph])
     # print("words ", words)
-    coarse_label_preds = tf.argmax(coarse_labels_scores, axis=2)
-    # print("coarse labels ", coarse_label_preds)
-    # input()
+    label_preds = tf.argmax(label_scores, axis=2)
+    print("label preds ", label_preds)
+
     scores = self.model({"words": words, "pos": pos,
-                         "morph": morph, "labels": coarse_label_preds}, training=False)
+                         "morph": morph, "labels": label_preds}, training=False)
+    # TODO here we should do filtering out non-confident candidates.
     return scores
-
-
 
 
 class LabelFirstParsingModel(tf.keras.Model):
@@ -370,6 +418,7 @@ class LabelFirstParsingModel(tf.keras.Model):
                use_morph:bool=True,
                use_dep_labels:bool=True,
                one_hot_labels: False,
+               label_preds_to_keep = []
                ):
     super(LabelFirstParsingModel, self).__init__(name=name)
     self.predict = predict
@@ -378,6 +427,7 @@ class LabelFirstParsingModel(tf.keras.Model):
     self.use_dep_labels = use_dep_labels
     self.one_hot_labels = one_hot_labels
     self._null_label = tf.constant(0)
+    self.label_preds_to_keep = label_preds_to_keep
 
     assert(not("labels" in self.predict and self.use_dep_labels)), "Can't use dep_labels both as feature and label!"
 
@@ -445,13 +495,36 @@ class LabelFirstParsingModel(tf.keras.Model):
       concat_list.append(morph_inputs)
     if self.use_dep_labels:
       label_inputs = inputs["labels"]
-      if not self.one_hot_labels:
+      if not training:
+        if self.label_preds_to_keep:
+          # print("label inputs ", label_inputs)
+          # print("label preds to keep ", self.label_preds_to_keep)
+          vector = [index.numpy() in self.label_preds_to_keep for index in label_inputs[0]]
+          # print("vector ", vector)
+          # input()
+          label_inputs = tf.multiply(label_inputs, vector)
+        # print("new label inputs ", label_inputs)
+        # input()
+        indices=tf.where(label_inputs)
+        # print("non zero indices ", indices)
+        # input()
+        # pass the updated inputs through embedding
         label_features = self.label_embeddings(label_inputs)
-        # print("label featires ", label_features)
+        # print("label features ", label_features)
+        # input()
+        label_slices = tf.gather_nd(label_features, indices)
+        # print("label slices ", label_slices)
+        # input()
+        mask_features = tf.ones_like(label_features)
+        # print("mask features ", mask_features)
+        label_features = tf.tensor_scatter_nd_update(mask_features,
+                                                     indices=indices, updates=label_slices)
+        # print("label features updated ", label_features)
         # input()
         concat_list.append(label_features)
       else:
-        concat_list.append(label_inputs)
+        label_features = self.label_embeddings(label_inputs)
+        concat_list.append(label_features)
     if len(concat_list) > 1:
       sentence_repr = self.concatenate(concat_list)
       # print("sentence repr ", sentence_repr)

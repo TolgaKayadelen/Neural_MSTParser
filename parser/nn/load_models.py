@@ -62,14 +62,14 @@ def load_parser(parser_name, prep, path=None):
 
 
 def load_data(*, preprocessor: preprocessor.Preprocessor,
-              train_treebank: str,
+              train_treebank: str = None,
               dev_treebank: str = None,
               test_treebank: str = None,
               data_dir: str = None,
               dev_data_dir: str = None,
               test_data_dir: str = None,
               type="pbtxt",
-              batch_size: int,
+              batch_size: int = None,
               dev_batch_size: int = None,
               test_batch_size=1,
               language="tr",
@@ -87,12 +87,15 @@ def load_data(*, preprocessor: preprocessor.Preprocessor,
   else:
     test_data_dir = "data/UDv29/test/" + language
   if type=="pbtxt":
-    train_sentences = preprocessor.prepare_sentence_protos(
-      path=os.path.join(data_dir, train_treebank)
-    )
-    train_dataset = preprocessor.make_dataset_from_generator(
-      sentences=train_sentences, batch_size=batch_size
-    )
+    if train_treebank is not None:
+      train_sentences = preprocessor.prepare_sentence_protos(
+        path=os.path.join(data_dir, train_treebank)
+      )
+      train_dataset = preprocessor.make_dataset_from_generator(
+        sentences=train_sentences, batch_size=batch_size
+      )
+    else:
+      train_dataset = None
     if dev_treebank is not None:
       dev_sentences = preprocessor.prepare_sentence_protos(
         path=os.path.join(dev_data_dir, dev_treebank)
@@ -115,10 +118,11 @@ def load_data(*, preprocessor: preprocessor.Preprocessor,
     else:
       test_dataset = None
   elif type =="tfrecords":
-    train_dataset = preprocessor.read_dataset_from_tfrecords(
-      records=os.path.join(data_dir, train_treebank),
-      batch_size=batch_size
-    )
+    if train_treebank is not None:
+      train_dataset = preprocessor.read_dataset_from_tfrecords(
+        records=os.path.join(data_dir, train_treebank),
+        batch_size=batch_size
+      )
     if dev_treebank is not None:
       dev_dataset = preprocessor.read_dataset_from_tfrecords(
         records=os.path.join(dev_data_dir, dev_treebank),

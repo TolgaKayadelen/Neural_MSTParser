@@ -81,6 +81,7 @@ py_binary(
     srcs = ["biaffine_parser_main.py"],
     deps = [
         ":biaffine_parser",
+        ":load_models",
     ],
 )
 
@@ -214,6 +215,7 @@ py_library(
     ":base_parser",
     ":nn_parser_lib",
     ":bilstm_labeler_coarse_dep",
+    ":bilstm_labeler_fine_dep",
   ],
 )
 

@@ -33,8 +33,8 @@ if __name__ == "__main__":
                                       "pos",
                                       "morph",
                                       # "category",
-                                      "heads",
-                                      "dep_labels"
+                                      # "heads",
+                                      #"dep_labels"
                                       ],
                             log_dir=log_dir,
                             test_every=5,
@@ -60,12 +60,12 @@ if __name__ == "__main__":
 
 
   # get the data
-  train_treebank= "tr_boun-ud-test.pbtxt"
+  train_treebank= "tr_boun-ud-train-random500.pbtxt"
 
-  test_treebank = "tr_boun-ud-test.pbtxt"
+  test_treebank = "tr_boun-ud-test-random50.pbtxt"
   train_dataset, _, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
-                                                      batch_size=2,
+                                                      batch_size=50,
                                                       test_treebank=test_treebank,
                                                       type="pbtxt",
                                                       language=language)

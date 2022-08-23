@@ -219,7 +219,7 @@ class BiaffineParsingModel(tf.keras.Model):
 
     self.concatenate = layers.Concatenate(name="concat")
     self.encoder = layer_utils.LSTMBlock(n_units=256, dropout_rate=0.3, name="lstm_encoder")
-    self.attention = layer_utils.Attention()
+    # self.attention = layer_utils.Attention()
 
     self.rel_perceptron_h = layer_utils.Perceptron(n_units=256, activation="relu", name="rel_mlp_h")
     self.rel_perceptron_d = layer_utils.Perceptron(n_units=256, activation="relu", name="rel_nlp_d")
@@ -258,7 +258,7 @@ class BiaffineParsingModel(tf.keras.Model):
       sentence_repr = word_features
 
     sentence_repr = self.encoder(sentence_repr)
-    sentence_repr = self.attention(sentence_repr)
+    # sentence_repr = self.attention(sentence_repr)
 
     h_arc_head = self.head_perceptron(sentence_repr)
     h_arc_dep = self.dep_perceptron(sentence_repr)

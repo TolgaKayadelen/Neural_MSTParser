@@ -491,8 +491,9 @@ class BaseParser(ABC):
         joint_loss = head_loss + label_loss
 
     if "heads" in  self._predict and "labels" in self._predict:
-      grads = tape.gradient(joint_loss, self.model.trainable_weights)
-      # grads = tape.gradient([head_loss, label_loss], self.model.trainable_weights)
+      # grads = tape.gradient(joint_loss, self.model.trainable_weights)
+      # biaffine parser likes separate optimization.
+      grads = tape.gradient([head_loss, label_loss], self.model.trainable_weights)
     elif "heads" in self._predict:
       grads = tape.gradient(head_loss, self.model.trainable_weights)
     elif "labels" in self._predict:

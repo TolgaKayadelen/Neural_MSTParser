@@ -38,7 +38,7 @@ class BiaffineParser(base_parser.BaseParser):
   def inputs(self):
     word_inputs = tf.keras.Input(shape=(None, ), name="words")
     pos_inputs = tf.keras.Input(shape=(None, ), name="pos")
-    morph_inputs = tf.keras.Input(shape=(None, 66), name="morph")
+    morph_inputs = tf.keras.Input(shape=(None, 56), name="morph")
     input_dict = {"words": word_inputs}
     if self._use_pos:
       input_dict["pos"] = pos_inputs
@@ -82,6 +82,8 @@ class BiaffineParser(base_parser.BaseParser):
 
   def _parsing_model(self, model_name):
     super()._parsing_model(model_name)
+    print(f"""Using features pos: {self._use_pos}, morph: {self._use_morph},
+              dep_labels: {self._use_dep_labels}""")
     model = architectures.BiaffineParsingModel(
       n_dep_labels=self._n_output_classes,
       word_embeddings=self.word_embeddings,
@@ -193,12 +195,17 @@ class BiaffineParser(base_parser.BaseParser):
 
     for example in dataset:
       scores = self.parse(example)
+      # print("scores ", scores)
 
       # Compute head accuracy
       head_scores, label_scores = scores["edges"], scores["labels"]
       head_preds = self._flatten(tf.argmax(head_scores, 2))
       correct_heads = self._flatten(example["heads"])
       head_accuracy.update_state(correct_heads, head_preds)
+      # print("heads preds ", head_preds)
+      # print("correct heads ", correct_heads)
+      # print("head acc ", head_accuracy.result())
+      # input()
 
 
       # Compute label accuracy compared to gold labels.
@@ -209,8 +216,12 @@ class BiaffineParser(base_parser.BaseParser):
       logits = tf.gather_nd(label_scores, indices=arc_maps[:, :3])
       correct_labels = tf.expand_dims(tf.convert_to_tensor(arc_maps[:, 3]), axis=-1)
       label_preds = tf.expand_dims(tf.argmax(logits, axis=1), axis=-1)
+      # print("label preds ", label_preds)
+      # print("correct labels ", correct_labels)
+      # print("corr labels ", example["dep_labels"])
       label_accuracy.update_state(correct_labels, label_preds)
-
+      # print("label acc ", label_accuracy.result())
+      # input()
 
       correct_predictions_dict = self._correct_predictions(
         head_predictions=head_preds,
@@ -218,9 +229,13 @@ class BiaffineParser(base_parser.BaseParser):
         label_predictions=label_preds,
         correct_labels=correct_labels
       )
+      # print("corre pred dict ", correct_predictions_dict)
+      # input()
       self._update_correct_prediction_stats(correct_predictions_dict,
                                             example["words"].shape[1],
                                             stats="test")
+      # print("states ", self.test_stats)
+      # input()
 
     logging.info(f"Test stats: {self.test_stats}")
     test_results = self._compute_metrics(stats="test")

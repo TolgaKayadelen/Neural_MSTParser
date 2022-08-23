@@ -149,8 +149,6 @@ if __name__ == "__main__":
     if c == "n":
       break
 
-
-
   # If you want to inspect some results manually at the end of training.
   for step, test_example in enumerate(test_dataset):
     # print(test_example)
