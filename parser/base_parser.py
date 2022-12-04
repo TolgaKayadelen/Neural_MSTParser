@@ -14,7 +14,7 @@ import numpy as np
 from abc import ABC, abstractmethod
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
-from parser.nn import architectures
+from parser.utils import architectures
 from proto import metrics_pb2
 from tagset.reader import LabelReader
 from tensorflow.keras import layers, metrics, losses, optimizers
@@ -48,6 +48,7 @@ class BaseParser(ABC):
                model_name: str,
                log_dir = None,
                test_every: int = 5,
+               top_k: int = 5,
                one_hot_labels=False):
 
     self.language = language
@@ -76,6 +77,8 @@ class BaseParser(ABC):
 
     self._test_every = test_every
     logging.info(f"Testing every {self._test_every}")
+
+    self._top_k = top_k
 
     self._log_dir = log_dir
 
@@ -254,6 +257,7 @@ class BaseParser(ABC):
                             correct_heads=None,
                             label_predictions=None,
                             correct_labels=None,
+                            top_k_label_predictions=None,
                             pad_mask=None
                             ):
     """Computes correctly predicted edges and labels and relevant stats for them.
@@ -274,7 +278,8 @@ class BaseParser(ABC):
         n_chp: number of correctly predicted heads.
         n_clp: number of correctly predicted labels.
     """
-    correct_predictions_dict = {"chp": None, "n_chp": None, "clp": None, "n_clp": None}
+    correct_predictions_dict = {"chp": None, "n_chp": None, "clp": None, "n_clp": None,
+                                "n_clp_topk": None}
 
     if pad_mask is None:
       if head_predictions is not None:
@@ -290,13 +295,28 @@ class BaseParser(ABC):
       correct_predictions_dict["chp"] = correct_head_preds
       correct_predictions_dict["n_chp"] = n_correct_head_preds.numpy()
 
-
     if "labels" in self._predict:
+      # print("pad mask ", pad_mask)
       correct_label_preds = tf.boolean_mask(label_predictions == correct_labels, pad_mask)
       n_correct_label_preds = tf.math.reduce_sum(tf.cast(correct_label_preds, tf.int32))
-      # print(n_correct_label_preds.numpy())
+      # print("correct label preds ", correct_label_preds)
+      # print("n corr label preds ", n_correct_label_preds.numpy())
+      # input()
+      # print("corre labels ", correct_labels)
+      # print("top k preds ", top_k_label_predictions)
+      # input()
+      corr_in_topk_unmasked = tf.expand_dims(
+        tf.reduce_any(correct_labels == tf.cast(top_k_label_predictions, tf.int64), axis=1), 1
+      )
+      # print("corr in topk unmasked ", corr_in_topk_unmasked)
+      corr_in_topk = tf.boolean_mask(corr_in_topk_unmasked, pad_mask)
+      # print("corr in topk ", corr_in_topk)
+      n_corr_in_topk = np.sum(corr_in_topk)
+      # print("n corr in topk ", n_corr_in_topk)
+      # input()
       correct_predictions_dict["clp"] = correct_label_preds
       correct_predictions_dict["n_clp"] = n_correct_label_preds.numpy()
+      correct_predictions_dict["n_clp_topk"] = n_corr_in_topk
       # input("press to cont.")
 
     return correct_predictions_dict
@@ -375,6 +395,8 @@ class BaseParser(ABC):
     if correct_predictions_dict["n_clp"] is not None:
       stats["n_clp"] += correct_predictions_dict["n_clp"]
       l = correct_predictions_dict["clp"]
+    if self._top_k > 1:
+      stats["n_clp_topk"] += correct_predictions_dict["n_clp_topk"]
 
     # Tokens where both head and label predictions are correct.
     if h is not None and l is not None:
@@ -475,6 +497,9 @@ class BaseParser(ABC):
 
         # Get the predicted label indices from the label scores, tensor of shape (batch_size*seq_len, 1)
         label_preds = self._flatten(tf.argmax(label_scores, axis=2))
+        if self._top_k > 1:
+          _, top_k_label_preds = tf.math.top_k(label_scores, k=5)
+          top_k_label_preds = self._flatten(top_k_label_preds, outer_dim=top_k_label_preds.shape[2])
 
         # Flatten the label scores to (batch_size*seq_len, n_classes) (i.e. 340, 36).
         label_scores = self._flatten(label_scores, outer_dim=label_scores.shape[2])
@@ -521,6 +546,7 @@ class BaseParser(ABC):
       losses["labels"] = label_loss
       correct["labels"] = correct_labels
       predictions["labels"] = label_preds
+      predictions["top_k_labels"] = top_k_label_preds if self._top_k > 1 else None
 
     return predictions, losses, correct, pad_mask
 
@@ -571,6 +597,7 @@ class BaseParser(ABC):
           correct_heads=correct["heads"] if "heads" in self._predict else None,
           label_predictions=predictions["labels"] if "labels" in self._predict else None,
           correct_labels=correct["labels"] if "labels" in self._predict else None,
+          top_k_label_predictions=predictions["top_k_labels"],
           pad_mask=pad_mask
          )
 
@@ -677,6 +704,9 @@ class BaseParser(ABC):
       if "labels" in self._predict:
         # Get label predictions and correct labels
         label_preds = self._flatten(tf.argmax(label_scores, 2))
+        if self._top_k > 1:
+          _, top_k_label_preds = tf.math.top_k(label_scores, k=5)
+          top_k_label_preds = self._flatten(top_k_label_preds, outer_dim=top_k_label_preds.shape[2])
         correct_labels = self._flatten(example["dep_labels"])
         label_accuracy.update_state(correct_labels, label_preds)
 
@@ -685,6 +715,7 @@ class BaseParser(ABC):
         correct_heads=correct_heads if "heads" in self._predict else None,
         label_predictions=label_preds  if "labels" in self._predict else None,
         correct_labels=correct_labels  if "labels" in self._predict else None,
+        top_k_label_predictions=top_k_label_preds if self._top_k > 1 else None,
       )
       self._update_correct_prediction_stats(correct_predictions_dict,
                                             example["words"].shape[1],

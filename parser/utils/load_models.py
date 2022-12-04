@@ -4,9 +4,9 @@
 import os
 from util.nn import nn_utils
 from input import embeddor, preprocessor
-from parser.nn import label_first_parser
-from parser.nn import layer_utils
-from parser.nn import bilstm_labeler
+from parser.dep.lfp import label_first_parser
+from parser.utils import layer_utils
+# from parser.nn import bilstm_labeler
 
 def load_word_embeddings():
   embeddings = nn_utils.load_embeddings()

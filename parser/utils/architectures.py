@@ -8,7 +8,7 @@ import tensorflow as tf
 
 from tensorflow.keras import layers
 from input import embeddor
-from parser.nn import layer_utils
+from parser.utils import layer_utils
 
 from typing import List
 

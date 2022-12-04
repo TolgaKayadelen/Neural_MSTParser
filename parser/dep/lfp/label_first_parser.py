@@ -1,10 +1,10 @@
 
 import tensorflow as tf
-from parser.nn import base_parser, architectures
+from parser import base_parser
+from parser.utils import architectures, layer_utils
 from proto import metrics_pb2
 from input import embeddor
 from tensorflow.keras import layers, metrics, losses, optimizers
-from parser.nn import layer_utils
 
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
@@ -111,6 +111,7 @@ class LabelFirstParsingModel(tf.keras.Model):
     self._null_label = tf.constant(0)
 
     assert(not("labels" in self.predict and self.use_dep_labels)), "Can't use dep_labels both as feature and label!"
+    logging.info(f"Using dep labels as feature: {self.use_dep_labels}")
 
     self.word_embeddings = layer_utils.EmbeddingLayer(
       pretrained=word_embeddings,

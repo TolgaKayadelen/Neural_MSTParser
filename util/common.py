@@ -6,7 +6,6 @@ import sys
 import os
 from copy import deepcopy
 from data.treebank import sentence_pb2
-from learner import featureset_pb2
 from util import reader
 from google.protobuf import text_format
 
@@ -290,21 +289,6 @@ def PPrintTextProto(message):
     print(text_format.MessageToString(message, as_utf8=True))
 
 
-# type: weights util
-def CompareWeights(weights1, weights2):
-    """Utility function prints comparison of two weights dicts."""
-    weights1_ = featureset_pb2.FeatureSet()
-    weights2_ = featureset_pb2.FeatureSet()
-
-    for name in weights1.keys():
-        for value in weights1[name].keys():
-            weights1_.feature.add(name=name, value=value, weight=weights1[name][value])
-
-    for name in weights2.keys():
-        for value in weights2[name].keys():
-            weights2_.feature.add(name=name, value=value, weight=weights2[name][value])
-
-    print(zip(list(weights1_.feature), list(weights2_.feature)))
 
 # type: weights util
 def ValidateAveragingArcPer(unaveraged, accumulated, averaged, iters):
@@ -349,27 +333,6 @@ def GetFeatureWeights(weights, features):
     """
     return [weights[f.name][f.value] for f in features.feature]
 
-# type: featureset proto util
-def SortFeatures(featureset, key="weight"):
-    if key == "weight":
-      sort_key = lambda f : f.weight
-    elif key == "name":
-      sort_key = lambda f : f.name
-    elif key == "value":
-      sort_key = lambda f : f.value
-    else:
-      sys.exit("Invalid sort key!!")
-    unsorted_list = []
-    for feature in featureset.feature:
-        unsorted_list.append(feature)
-    sorted_list = sorted(unsorted_list, key=sort_key, reverse=True)
-    sorted_featureset = featureset_pb2.FeatureSet()
-    for f in sorted_list:
-        sorted_featureset.feature.add(name=f.name, value=f.value, weight=f.weight)
-    del sorted_list
-    del unsorted_list
-    featureset.CopyFrom(sorted_featureset)
-    return featureset
 
 # type: featureset proto util
 def TopFeatures(featureset, n):

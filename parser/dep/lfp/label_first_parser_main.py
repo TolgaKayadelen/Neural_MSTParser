@@ -2,8 +2,8 @@ import logging
 import numpy as np
 import datetime
 
-from parser.nn import load_models
-from parser.nn.label_first_parser import LabelFirstParser
+from parser.utils import load_models
+from parser.dep.lfp.label_first_parser import LabelFirstParser
 from util import writer
 from util.nn import nn_utils
 
@@ -34,10 +34,10 @@ if __name__ == "__main__":
                                       "morph",
                                       # "category",
                                       # "heads",
-                                      #"dep_labels"
+                                      # "dep_labels"
                                       ],
                             log_dir=log_dir,
-                            test_every=5,
+                            test_every=3,
                             model_name=parser_model_name,
                             one_hot_labels=False)
 
@@ -62,7 +62,7 @@ if __name__ == "__main__":
   # get the data
   train_treebank= "tr_boun-ud-train-random500.pbtxt"
 
-  test_treebank = "tr_boun-ud-test-random50.pbtxt"
+  test_treebank = "tr_boun-ud-test-random2.pbtxt"
   train_dataset, _, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
                                                       batch_size=50,

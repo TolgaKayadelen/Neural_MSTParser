@@ -66,7 +66,7 @@ class Agent():
     self.epsilon_decay = 0.95
 
   def _load_parser(self, path, parser_name):
-    # Finally load the parser.
+    # Load the pretrained sequential parser.
     parser = sequential_parser_exp.SequentialParser(
       word_embeddings=self.prep.word_embeddings,
       predict=["heads"],
@@ -78,6 +78,7 @@ class Agent():
     return parser
 
   def _set_up_env(self):
+    """Sets up the environment state model to have the same shared layer weights with the pretrained parser."""
     label_feature = next(
       (f for f in self.prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
     env = rl_env.State(
@@ -115,6 +116,7 @@ class Agent():
     return env
 
   def _label_network(self):
+    """The label network is a linear model whose loss value is a root mean squared error."""
     model = tf.keras.Sequential()
     model.add(tf.keras.Input(shape=(None, 512)))
     # model.add(layers.Dense(128, activation="relu", name="dense1"))
@@ -124,7 +126,7 @@ class Agent():
     model.summary()
     return model
 
-
+  # TODO: this code should probably just change altogether.
   def _episode_reward(self, total_tokens, total_rewards):
     """Given total tokens and totak rewards collected in an episode, returns the episode reward.
 

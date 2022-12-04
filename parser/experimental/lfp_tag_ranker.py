@@ -43,8 +43,10 @@ def _enumerated_tensor(_tensor):
   # input("press")
   return _enumerated_tensor
 
+
+# TODO: Document this better, and provide option for the user to feed in the tags to be left gold.
 class LFPTagRanker(base_parser.BaseParser):
-  """A label first parser predicts labels before predicting heads."""
+  """The tag ranker can be used to understand leaving which tags as gold has more positive impact on parsing."""
 
   @property
   def _optimizer(self):

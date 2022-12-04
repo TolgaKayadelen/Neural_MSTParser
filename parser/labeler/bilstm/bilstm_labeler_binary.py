@@ -1,3 +1,6 @@
+"""The binary bilstm labeler learns to predict one label at a time, e.g. it only learns to predict roots."""
+
+
 import os
 import logging
 import tensorflow as tf
@@ -17,7 +20,7 @@ Embeddings = embeddor.Embeddings
 Dataset = tf.data.Dataset
 
 class BiLSTMLabelerBinary(base_parser.BaseParser):
-  """A binary class bi-lstm labeler that can be used for any kind of sequence labeling tasks."""
+  """A binary class bi-lstm labeler."""
   @property
   def _optimizer(self):
     return tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
@@ -98,6 +101,7 @@ class BiLSTMLabelerBinary(base_parser.BaseParser):
     """
     masked_labels = []
     for vector in dep_labels:
+      # only keep the root label as gold
       if any(self._label_index_to_name(index.numpy()) == "root" for index in vector):
         print(list(self._label_index_to_name(index.numpy()) for index in vector))
         tag_index = self._label_name_to_index("root")
@@ -125,8 +129,6 @@ class BiLSTMLabelerBinary(base_parser.BaseParser):
       labels_flat = tf.reshape(labels, (labels.shape[0]*labels.shape[1], 1))
       print("preds-flat", preds_flat)
       print("labels-flat ", labels_flat)
-      input()
-
       input()
       grads = tape.gradient(loss, self.model.trainable_weights)
 

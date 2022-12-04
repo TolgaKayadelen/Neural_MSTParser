@@ -1,3 +1,7 @@
+"""In this experimental version of the parser, we first train a coarse labeler and at the end of training,
+we only keep labels where the labeler is confident on its precision. We train the parser based on only
+these labels afterwards."""
+
 
 import tensorflow as tf
 import numpy as np

@@ -1,8 +1,23 @@
+"""The RL environment is a model that shares the same word, pos embedding and lstm weights with the
+pretrained parser.
+
+The aim of this rl_env is to take input tokens and return their lstm encoded representations. We need such
+a model separately so that the State vector is always the same and not updated within iterations.
+
+The set_up_env() function in agent.py makes sure that the shared layers have the same weights and
+the these layers are not trainable in the State model.
+
+TODO: You'll probably deprecate this and replace with the state.py
+"""
+
+
 import tensorflow as tf
 from input import embeddor
 
 from parser.nn import layer_utils
 
+
+# TODO: the state representation for DQN will change and will be more feature/context dependent.
 class State(tf.keras.Model):
   def __init__(self, *, word_embeddings: embeddor.Embeddings,
                name="State",
