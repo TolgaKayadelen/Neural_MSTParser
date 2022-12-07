@@ -23,6 +23,8 @@ message Evaluation {
   optional LabeledAttachmentRecall labeled_attachment_recall = 6;
   // typed labeled attachment f1 with this model.
   optional LabeledAttachmentMetrics labeled_attachment_metrics = 7;
+  // label accuracy (without heads)
+  optional float label_accuracy = 8;
 }
 
 message TypedUas {

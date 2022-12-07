@@ -10,7 +10,9 @@ from util.nn import nn_utils
 if __name__ == "__main__":
   # use_pretrained_weights_from_labeler = True
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-  log_dir = "debug/label_first_parser/" + current_time
+  parser_model_name = "top_k_labels_experiment"
+  log_dir = f"debug/label_first_parser/{parser_model_name}/{current_time}"
+
   language = "tr"
   if language == "tr":
     word_embeddings = load_models.load_word_embeddings()
@@ -22,7 +24,7 @@ if __name__ == "__main__":
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
 
-  parser_model_name = "nnn"
+
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
                             language=language,
                             n_output_classes=label_feature.n_values,
@@ -38,6 +40,7 @@ if __name__ == "__main__":
                                       ],
                             log_dir=log_dir,
                             test_every=3,
+                            top_k=5,
                             model_name=parser_model_name,
                             one_hot_labels=False)
 
@@ -62,7 +65,7 @@ if __name__ == "__main__":
   # get the data
   train_treebank= "tr_boun-ud-train-random500.pbtxt"
 
-  test_treebank = "tr_boun-ud-test-random2.pbtxt"
+  test_treebank = "tr_boun-ud-test-random50.pbtxt"
   train_dataset, _, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
                                                       batch_size=50,
@@ -72,7 +75,7 @@ if __name__ == "__main__":
   # for batch in train_dataset:
   #   print(batch)
   # input()
-  metrics = parser.train(dataset=train_dataset, epochs=75, test_data=test_dataset)
+  metrics = parser.train(dataset=train_dataset, epochs=100, test_data=test_dataset)
   print(metrics)
   writer.write_proto_as_text(metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
   # nn_utils.plot_metrics(name=parser_model_name, metrics=metrics)

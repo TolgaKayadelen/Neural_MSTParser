@@ -26,7 +26,6 @@ import datetime
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
 from proto import evaluation_pb2
-from util import common
 from util import reader
 from tagset.reader import LabelReader
 from typing import Dict
@@ -96,6 +95,7 @@ class Evaluator:
     else:
       raise ValueError("Invalid value for self.test!!")
     self.metrics = ["uas_total", "las_total", "typed_uas",
+                    "label_accuracy",
                     "labeled_attachment_precision",
 				            "labeled_attachment_recall",
                     "labeled_attachment_metrics", "all"]
@@ -135,6 +135,7 @@ class Evaluator:
     evaluation = evaluation_pb2.Evaluation()
     evaluation.uas_total = self.uas_total
     evaluation.las_total = self.las_total
+    evaluation.label_accuracy = self.label_accuracy
         
     for label in self.typed_uas.keys():
       evaluation.typed_uas.uas.add(
@@ -390,11 +391,14 @@ class Evaluator:
     labeled_attachment_metrics = labeled_attachment_metrics[cols]
     labeled_attachment_metrics.fillna(0, inplace=True)
     return labeled_attachment_metrics
-  
-  @property
-  def labels_conf_matrix(self):
-    """Creates a labels confusion matrix. The labels confusion matrix is based
-    on the labels for the gold and the test tokens (without heads)."""
+
+  def compute_label_accuracy(self, confusion_matrix=True):
+    """Computes label accuracy and optionally creates a label confusion matrix.
+
+    The label accuracy is based on the labels for the gold and the test tokens (without heads).
+
+    Returns label confusion matrix and label accuracy.
+    """
     def get_token_labels(sentence_list):
       labels = []
       for sent in sentence_list:
@@ -405,8 +409,18 @@ class Evaluator:
                                              name="gold_labels")
     test_labels = pd.Series(get_token_labels(self.test_sentences),
                                              name="test_labels")
-    return pd.crosstab(gold_labels, test_labels, rownames=['Gold Labels'],
-                       colnames=['Test Labels'], margins=True)
+    assert len(gold_labels) == len(test_labels), "Length of gold and test labels must match!!"
+    ls = 0
+    for gold, test in zip(gold_labels, test_labels):
+      if gold == test:
+        ls += 1
+    label_accuracy = ls / len(gold_labels)
+    if not confusion_matrix:
+      return label_accuracy
+    confusion_matrix = pd.crosstab(gold_labels, test_labels, rownames=['Gold Labels'],
+                                   colnames=['Test Labels'], margins=True)
+    self.label_accuracy = label_accuracy
+    return label_accuracy, confusion_matrix
     
   
   @property
@@ -431,14 +445,16 @@ class Evaluator:
     if "all" in requested_metrics:
       results["uas_total"] = self.uas_total
       results["las_total"] = self.las_total
+      label_accuracy, label_confusion_matrix = self.compute_label_accuracy(confusion_matrix=True)
+      results["label_accuracy"] = label_accuracy
+      results["label_confusion_matrix"] = label_confusion_matrix
       results["eval_matrix"] = self.evaluation_matrix
-      results["label_confusion_matrix"] = self.labels_conf_matrix
       results["eval_proto"] = self.evaluation
       results["label_prediction_metrics"] = self.label_prediction_metrics
       logging.info("Label Prediction Metrics")
       print(f"{self.label_prediction_metrics}\n\n\n")
       logging.info(f"Label Prediction Confusion Matrix:")
-      print(f"{self.labels_conf_matrix}\n\n\n")
+      print(f"{label_confusion_matrix}\n\n\n")
       logging.info("Labeled Attachment Evaluation Matrix:")
       print(f"{self.evaluation_matrix}\n\n\n")
       logging.info(f"Evaluation Proto:")
@@ -451,6 +467,8 @@ class Evaluator:
       if "typed_uas" in requested_metrics:
         results["typed_uas"] = pd.Series(self.typed_uas).rename("uas",
                                          inplace=True).round(2)
+      if "label_accuracy" in requested_metrics:
+        results["label_accuracy"] = self.compute_label_accuracy(confusion_matrix=False)
       if  "labeled_attachment_precision" in requested_metrics:
         results["labeled_attachment_precision"] = self.labeled_attachment_prec
       if "labeled_attachment_recall" in requested_metrics:
@@ -462,6 +480,7 @@ class Evaluator:
     if self.write_results:
       if self.model_name:
         output_file_name = self.model_name +"_eval_results.txt"
+
       else:
         current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         output_file_name = f"{current_time}_eval_results"

@@ -2,19 +2,21 @@ import os
 import logging
 import tensorflow as tf
 
-from parser.nn import base_parser, architectures
+from parser import base_parser
+from parser.utils import layer_utils
 from proto import metrics_pb2
 from tensorflow.keras import layers, metrics, losses, optimizers
 from typing import Dict, Tuple
+from input import embeddor
 
 Dataset = tf.data.Dataset
+Embeddings = embeddor.Embeddings
 
 class BiLSTMLabeler(base_parser.BaseParser):
   """A bi-lstm labeler that can be used for any kind of sequence labeling tasks."""
   @property
   def _optimizer(self):
     return tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
-
 
   def _training_metrics(self):
     return {
@@ -59,17 +61,16 @@ class BiLSTMLabeler(base_parser.BaseParser):
   def _parsing_model(self, model_name):
     super()._parsing_model(model_name)
     print(f"""Using features pos: {self._use_pos}, morph: {self._use_morph}""")
-    model = architectures.LSTMLabelingModel(
+    model = LSTMLabelingModel(
       n_output_classes=self._n_output_classes,
       word_embeddings=self.word_embeddings,
       name=model_name,
       use_pos=self._use_pos,
       use_morph=self._use_morph,
-      return_lstm_output=True,
+      return_lstm_output=False,
     )
     model(inputs=self.inputs)
     return model
-
 
   def train_step(self, *,
                  words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
@@ -96,16 +97,18 @@ class BiLSTMLabeler(base_parser.BaseParser):
       raise ValueError("Cannot predict heads using dependency labeler.")
 
     predictions, correct, losses = {}, {}, {}
+    pad_mask = self._flatten((words != 0))
     with tf.GradientTape() as tape:
-      scores, lstm_output = self.model({"words": words, "pos": pos, "morph": morph,
-                                       "labels": dep_labels}, training=True)
-      label_scores = scores["labels"]
+      label_scores, lstm_output = self.model({"words": words, "pos": pos, "morph": morph,
+                                              "labels": dep_labels}, training=True)
       # print("label scores ", label_scores)
-      # print("concat ", lstm_output)
       # input("press to continue.")
-      pad_mask = self._flatten((words != 0))
       # Get the predicted label indices from the label scores, tensor of shape (batch_size*seq_len, 1)
       label_preds = self._flatten(tf.argmax(label_scores, axis=2))
+      if self._top_k > 1:
+        _, top_k_label_preds = tf.math.top_k(label_scores, k=5)
+        top_k_label_preds = self._flatten(top_k_label_preds, outer_dim=top_k_label_preds.shape[2])
+
       # Flatten the label scores to (batch_size*seq_len, n_classes) (i.e. 340, 36).
       label_scores = self._flatten(label_scores, outer_dim=label_scores.shape[2])
       # Flatten the correct labels to the shape (batch_size*seq_len, 1) (i.e. 340,1)
@@ -125,9 +128,9 @@ class BiLSTMLabeler(base_parser.BaseParser):
     losses["labels"] = label_loss
     correct["labels"] = correct_labels
     predictions["labels"] = label_preds
+    predictions["top_k_labels"] = top_k_label_preds if self._top_k > 1 else None
 
     return predictions, losses, correct, pad_mask
-
 
   def test(self, *, dataset: Dataset):
     """Tests the performance of this parser on some dataset."""
@@ -140,15 +143,19 @@ class BiLSTMLabeler(base_parser.BaseParser):
 
     # We traverse the test dataset not batch by batch, but example by example.
     for example in dataset:
-      scores, _ = self.parse(example)
+      scores = self.parse(example)
       label_scores = scores["labels"]
       label_preds = self._flatten(tf.argmax(label_scores, 2))
+      if self._top_k > 1:
+        _, top_k_label_preds = tf.math.top_k(label_scores, k=5)
+        top_k_label_preds = self._flatten(top_k_label_preds, outer_dim=top_k_label_preds.shape[2])
       correct_labels = self._flatten(example["dep_labels"])
       label_accuracy.update_state(correct_labels, label_preds)
 
       correct_predictions_dict = self._correct_predictions(
         label_predictions=label_preds,
         correct_labels=correct_labels,
+        top_k_label_predictions=top_k_label_preds if self._top_k > 1 else None
       )
       self._update_correct_prediction_stats(correct_predictions_dict,
                                             example["words"].shape[1],
@@ -175,13 +182,81 @@ class BiLSTMLabeler(base_parser.BaseParser):
     """
     words, pos, morph, dep_labels = (example["words"], example["pos"],
                                      example["morph"], example["dep_labels"])
-    if self.model.return_lstm_output:
-      scores, lstm_output = self.model({"words": words, "pos": pos,
-                            "morph": morph, "labels": dep_labels}, training=False)
-      return scores, lstm_output
+
+    label_scores, lstm_output = self.model({"words": words, "pos": pos,
+                                             "morph": morph, "labels": dep_labels}, training=False)
+
+    return {"labels": label_scores,  "edges": None}
+
+
+
+### The Keras Model
+
+class LSTMLabelingModel(tf.keras.Model):
+  """A standalone bidirectional LSTM labeler."""
+  def __init__(self, *,
+               word_embeddings: Embeddings,
+               n_units: int = 256,
+               n_output_classes: int,
+               use_pos=True,
+               use_morph=True,
+               return_lstm_output=True,
+               name="LSTM_Labeler"):
+    super(LSTMLabelingModel, self).__init__(name=name)
+    self.use_pos = use_pos
+    self.use_morph = use_morph
+    self.word_embeddings = layer_utils.EmbeddingLayer(
+      pretrained=word_embeddings, name="word_embeddings"
+    )
+    self.return_lstm_output = return_lstm_output
+    if self.use_pos:
+      self.pos_embeddings = layer_utils.EmbeddingLayer(
+        input_dim=37, output_dim=32,
+        name="pos_embeddings",
+        trainable=True)
+    self.concatenate = layers.Concatenate(name="concat")
+    self.lstm_block = layer_utils.LSTMBlock(n_units=n_units,
+                                            dropout_rate=0.3,
+                                            name="lstm_block"
+                                            )
+    # Because in the loss function we have from_logits=True, we don't use the
+    # param 'activation=softmax' in the layer. The loss function applies softmax to the
+    # raw probabilites and then applies crossentropy.
+    self.labels = layers.Dense(units=n_output_classes, name="labels")
+
+  def call(self, inputs):
+    """Forward pass.
+    Args:
+      inputs: Dict[str, tf.keras.Input]. This consist of
+        words: Tensor of shape (batch_size, seq_len)
+        pos: Tensor of shape (batch_size, seq_len)
+        morph: Tensor of shape (batch_size, seq_len, 66)
+      The boolean values set up during the initiation of the model determines
+      which one of these features to use or not.
+    Returns:
+      A dict which contains:
+        label_scores: [batch_size, seq_len, n_labels] label preds for tokens (i.e. 10, 34, 36)
+    """
+
+    word_inputs = inputs["words"]
+    word_features = self.word_embeddings(word_inputs)
+    concat_list = [word_features]
+    if self.use_pos:
+      pos_inputs = inputs["pos"]
+      pos_features = self.pos_embeddings(pos_inputs)
+      concat_list.append(pos_features)
+    if self.use_morph:
+      morph_inputs = inputs["morph"]
+      concat_list.append(morph_inputs)
+
+    if len(concat_list) > 1:
+      concat = self.concatenate(concat_list)
+      sentence_repr = self.lstm_block(concat)
+      labels = self.labels(sentence_repr)
     else:
-      scores,  = self.model({"words": words, "pos": pos,
-                             "morph": morph, "labels": dep_labels}, training=False)
-      return scores, None
-
-
+      sentence_repr = self.lstm_block(word_features)
+      labels = self.labels(sentence_repr)
+    if self.return_lstm_output:
+      return labels, sentence_repr
+    else:
+      return labels, None

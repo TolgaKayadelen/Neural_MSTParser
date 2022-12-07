@@ -43,7 +43,7 @@ def load_labeler(labeler_name, prep, path=None):
                                          n_output_classes=label_feature.n_values,
                                          predict=["labels"],
                                          features=["words", "pos", "morph"],
-                                         model_name="dependency_labeler")
+                                         model_name=labeler_name)
   labeler.load_weights(name=labeler_name, path=path)
   return labeler, label_feature
 

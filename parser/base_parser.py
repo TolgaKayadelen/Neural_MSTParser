@@ -48,7 +48,7 @@ class BaseParser(ABC):
                model_name: str,
                log_dir = None,
                test_every: int = 5,
-               top_k: int = 5,
+               top_k: int = 1,
                one_hot_labels=False):
 
     self.language = language
@@ -423,6 +423,8 @@ class BaseParser(ABC):
       _metrics[metric_suffix("uas")] = self.uas(stats["n_chp"], stats["n_tokens"])
     if "labels" in self._predict:
       _metrics[metric_suffix("ls")] = self.ls(stats["n_clp"], stats["n_tokens"])
+      if self._top_k > 1:
+        _metrics[metric_suffix("ls_topk")] = self.ls(stats["n_clp_topk"], stats["n_tokens"])
     if "heads" in self._predict and "labels" in self._predict:
       _metrics[metric_suffix("las")] = self.las(stats["n_chlp"], stats["n_tokens"])
     return _metrics
