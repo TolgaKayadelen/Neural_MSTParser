@@ -12,7 +12,7 @@ from parser.utils import load_models
 
 if __name__ == "__main__":
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-  labeler_model_name = "bilstm_labeler_topk"
+  labeler_model_name = "bilstm_labeler_topk_new_setup_test"
   log_dir = f"debug/bilstm_labeler/{labeler_model_name}/{current_time}"
 
 
@@ -28,40 +28,38 @@ if __name__ == "__main__":
                          features=["words", "pos", "morph"],
                          model_name=labeler_model_name,
                          log_dir=log_dir,
-                         top_k=5,
+                         top_k=False,
+                         k=5,
                          test_every=5)
 
-  # LOADING A PRETRAINED PARSER AND PARSING WITH THAT.
+  """
+  # UNCOMMENT TO LOAD A PRETRAINED PARSER AND PARSE WITH THAT.
   parser.load_weights(name="bilstm_labeler_topk") # uncomment
   for w in parser.model.weights:
     print(type(w))
   print(parser.model.weights[-2])
   weights = parser.model.get_weights() # Uncomment
   # print("weights are ", weights)
-  input("press to cont.")
   for layer in parser.model.layers:
-    print(f"layer name {layer.name}, trainable {layer.trainable}")
+    # print(f"layer name {layer.name}, trainable {layer.trainable}")
     if layer.name == "word_embeddings":
-      print("working the labels layer")
-      input("press to cont.")
       trainable_weights = layer.trainable_weights
-      print("word embedding trainable weights ", trainable_weights)
+      # print("word embedding trainable weights ", trainable_weights)
   # print(tf.math.reduce_sum(trainable_weights[0], axis=0))
   print("parser ", parser)
-  input("press to cont.")
+  """
 
-  train_treebank= "tr_boun-ud-train.pbtxt"
-  test_treebank = "tr_boun-ud-test.pbtxt"
+  train_treebank= "tr_boun-ud-train-random500.pbtxt"
+  test_treebank = "tr_boun-ud-test-random10.pbtxt"
   train_dataset, _, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
-                                                      batch_size=200,
+                                                      batch_size=5,
                                                       test_treebank=test_treebank,
                                                       type="pbtxt")
 
-  metrics = parser.train(dataset=train_dataset, epochs=100, test_data=test_dataset)
+  metrics = parser.train(dataset=train_dataset, epochs=10, test_data=test_dataset)
   print(metrics)
-  writer.write_proto_as_text(metrics,
-                             f"./model/nn/plot/{parser.model_name}_metrics.pbtxt")
-  # nn_utils.plot_metrics(name=parser.model_name, metrics=metrics)
-  parser.save_weights()
-  logging.info(f"{parser.model_name} results written")
+  # writer.write_proto_as_text(metrics,
+  #                            f"./model/nn/plot/{parser.model_name}_metrics.pbtxt")
+  # parser.save_weights()
+  # logging.info(f"{parser.model_name} results written")

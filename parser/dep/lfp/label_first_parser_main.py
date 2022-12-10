@@ -10,7 +10,11 @@ from util.nn import nn_utils
 if __name__ == "__main__":
   # use_pretrained_weights_from_labeler = True
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-  parser_model_name = "top_k_labels_experiment"
+  parser_model_name = "label_first_gold_morph_and_labels"
+  logging.info(f"Parser model name is {parser_model_name}")
+  model_name_check = input("Did you remember to set the model name properly: y/n?")
+  if model_name_check != "y":
+    raise ValueError("Model name is not set properly! Please set your model name and restart!")
   log_dir = f"debug/label_first_parser/{parser_model_name}/{current_time}"
 
   language = "tr"
@@ -19,7 +23,9 @@ if __name__ == "__main__":
   else:
     word_embeddings=None
 
-  prep = load_models.load_preprocessor(word_embeddings=word_embeddings, language=language)
+  prep = load_models.load_preprocessor(word_embeddings=word_embeddings, language=language,
+  #                                     one_hot_features=["dep_labels"]
+                                       )
 
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
@@ -29,18 +35,17 @@ if __name__ == "__main__":
                             language=language,
                             n_output_classes=label_feature.n_values,
                             predict=["heads",
-                                     "labels"
+                                     # "labels"
                                      ],
                             features=["words",
-                                      "pos",
+                                      # "pos",
                                       "morph",
                                       # "category",
                                       # "heads",
-                                      # "dep_labels"
+                                      "dep_labels"
                                       ],
                             log_dir=log_dir,
-                            test_every=3,
-                            top_k=5,
+                            test_every=5,
                             model_name=parser_model_name,
                             one_hot_labels=False)
 
@@ -63,12 +68,12 @@ if __name__ == "__main__":
 
 
   # get the data
-  train_treebank= "tr_boun-ud-train-random500.pbtxt"
+  train_treebank= "tr_boun-ud-train.pbtxt"
 
-  test_treebank = "tr_boun-ud-test-random50.pbtxt"
+  test_treebank = "tr_boun-ud-test.pbtxt"
   train_dataset, _, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
-                                                      batch_size=50,
+                                                      batch_size=250,
                                                       test_treebank=test_treebank,
                                                       type="pbtxt",
                                                       language=language)

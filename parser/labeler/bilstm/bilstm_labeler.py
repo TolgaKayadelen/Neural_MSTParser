@@ -105,8 +105,8 @@ class BiLSTMLabeler(base_parser.BaseParser):
       # input("press to continue.")
       # Get the predicted label indices from the label scores, tensor of shape (batch_size*seq_len, 1)
       label_preds = self._flatten(tf.argmax(label_scores, axis=2))
-      if self._top_k > 1:
-        _, top_k_label_preds = tf.math.top_k(label_scores, k=5)
+      if self._top_k:
+        _, top_k_label_preds = tf.math.top_k(label_scores, k=self._k)
         top_k_label_preds = self._flatten(top_k_label_preds, outer_dim=top_k_label_preds.shape[2])
 
       # Flatten the label scores to (batch_size*seq_len, n_classes) (i.e. 340, 36).
@@ -128,7 +128,7 @@ class BiLSTMLabeler(base_parser.BaseParser):
     losses["labels"] = label_loss
     correct["labels"] = correct_labels
     predictions["labels"] = label_preds
-    predictions["top_k_labels"] = top_k_label_preds if self._top_k > 1 else None
+    predictions["top_k_labels"] = top_k_label_preds if self._top_k else None
 
     return predictions, losses, correct, pad_mask
 
@@ -146,8 +146,8 @@ class BiLSTMLabeler(base_parser.BaseParser):
       scores = self.parse(example)
       label_scores = scores["labels"]
       label_preds = self._flatten(tf.argmax(label_scores, 2))
-      if self._top_k > 1:
-        _, top_k_label_preds = tf.math.top_k(label_scores, k=5)
+      if self._top_k:
+        _, top_k_label_preds = tf.math.top_k(label_scores, k=self._k)
         top_k_label_preds = self._flatten(top_k_label_preds, outer_dim=top_k_label_preds.shape[2])
       correct_labels = self._flatten(example["dep_labels"])
       label_accuracy.update_state(correct_labels, label_preds)
@@ -155,7 +155,7 @@ class BiLSTMLabeler(base_parser.BaseParser):
       correct_predictions_dict = self._correct_predictions(
         label_predictions=label_preds,
         correct_labels=correct_labels,
-        top_k_label_predictions=top_k_label_preds if self._top_k > 1 else None
+        top_k_label_predictions=top_k_label_preds if self._top_k else None
       )
       self._update_correct_prediction_stats(correct_predictions_dict,
                                             example["words"].shape[1],

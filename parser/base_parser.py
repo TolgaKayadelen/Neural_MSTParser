@@ -48,7 +48,8 @@ class BaseParser(ABC):
                model_name: str,
                log_dir = None,
                test_every: int = 5,
-               top_k: int = 1,
+               top_k: bool = False,
+               k: int = 5,
                one_hot_labels=False):
 
     self.language = language
@@ -62,6 +63,10 @@ class BaseParser(ABC):
     self.features = features
 
     self.one_hot_labels = one_hot_labels
+
+    self._top_k = top_k
+
+    self._k = k
 
     self.model_name = model_name
 
@@ -78,9 +83,11 @@ class BaseParser(ABC):
     self._test_every = test_every
     logging.info(f"Testing every {self._test_every}")
 
-    self._top_k = top_k
-
     self._log_dir = log_dir
+
+    if top_k and k <= 1:
+      raise ValueError(f"k has to be greater than 1 if top_k is True. Received k = {k}")
+
 
     if self._log_dir:
       self.loss_summary_writer = tf.summary.create_file_writer(log_dir + "/loss")
@@ -299,25 +306,23 @@ class BaseParser(ABC):
       # print("pad mask ", pad_mask)
       correct_label_preds = tf.boolean_mask(label_predictions == correct_labels, pad_mask)
       n_correct_label_preds = tf.math.reduce_sum(tf.cast(correct_label_preds, tf.int32))
-      # print("correct label preds ", correct_label_preds)
-      # print("n corr label preds ", n_correct_label_preds.numpy())
-      # input()
-      # print("corre labels ", correct_labels)
-      # print("top k preds ", top_k_label_predictions)
-      # input()
-      corr_in_topk_unmasked = tf.expand_dims(
-        tf.reduce_any(correct_labels == tf.cast(top_k_label_predictions, tf.int64), axis=1), 1
-      )
-      # print("corr in topk unmasked ", corr_in_topk_unmasked)
-      corr_in_topk = tf.boolean_mask(corr_in_topk_unmasked, pad_mask)
-      # print("corr in topk ", corr_in_topk)
-      n_corr_in_topk = np.sum(corr_in_topk)
-      # print("n corr in topk ", n_corr_in_topk)
-      # input()
+
       correct_predictions_dict["clp"] = correct_label_preds
       correct_predictions_dict["n_clp"] = n_correct_label_preds.numpy()
-      correct_predictions_dict["n_clp_topk"] = n_corr_in_topk
-      # input("press to cont.")
+
+      if self._top_k:
+        # check whether correct labels appears in the top k predictions.
+        corr_in_topk_unmasked = tf.expand_dims(
+          tf.reduce_any(correct_labels == tf.cast(top_k_label_predictions, tf.int64), axis=1), 1
+        )
+        # print("corr in topk unmasked ", corr_in_topk_unmasked)
+        corr_in_topk = tf.boolean_mask(corr_in_topk_unmasked, pad_mask)
+        # print("corr in topk ", corr_in_topk)
+        n_corr_in_topk = np.sum(corr_in_topk)
+        # print("n corr in topk ", n_corr_in_topk)
+        # input()
+        correct_predictions_dict["n_clp_topk"] = n_corr_in_topk
+        # input("press to cont.")
 
     return correct_predictions_dict
 
@@ -395,7 +400,7 @@ class BaseParser(ABC):
     if correct_predictions_dict["n_clp"] is not None:
       stats["n_clp"] += correct_predictions_dict["n_clp"]
       l = correct_predictions_dict["clp"]
-    if self._top_k > 1:
+    if self._top_k:
       stats["n_clp_topk"] += correct_predictions_dict["n_clp_topk"]
 
     # Tokens where both head and label predictions are correct.
@@ -423,7 +428,7 @@ class BaseParser(ABC):
       _metrics[metric_suffix("uas")] = self.uas(stats["n_chp"], stats["n_tokens"])
     if "labels" in self._predict:
       _metrics[metric_suffix("ls")] = self.ls(stats["n_clp"], stats["n_tokens"])
-      if self._top_k > 1:
+      if self._top_k:
         _metrics[metric_suffix("ls_topk")] = self.ls(stats["n_clp_topk"], stats["n_tokens"])
     if "heads" in self._predict and "labels" in self._predict:
       _metrics[metric_suffix("las")] = self.las(stats["n_chlp"], stats["n_tokens"])
@@ -499,8 +504,9 @@ class BaseParser(ABC):
 
         # Get the predicted label indices from the label scores, tensor of shape (batch_size*seq_len, 1)
         label_preds = self._flatten(tf.argmax(label_scores, axis=2))
-        if self._top_k > 1:
-          _, top_k_label_preds = tf.math.top_k(label_scores, k=5)
+
+        if self._top_k:
+          _, top_k_label_preds = tf.math.top_k(label_scores, k=self._k)
           top_k_label_preds = self._flatten(top_k_label_preds, outer_dim=top_k_label_preds.shape[2])
 
         # Flatten the label scores to (batch_size*seq_len, n_classes) (i.e. 340, 36).
@@ -548,7 +554,7 @@ class BaseParser(ABC):
       losses["labels"] = label_loss
       correct["labels"] = correct_labels
       predictions["labels"] = label_preds
-      predictions["top_k_labels"] = top_k_label_preds if self._top_k > 1 else None
+      predictions["top_k_labels"] = top_k_label_preds if self._top_k else None
 
     return predictions, losses, correct, pad_mask
 
@@ -599,7 +605,7 @@ class BaseParser(ABC):
           correct_heads=correct["heads"] if "heads" in self._predict else None,
           label_predictions=predictions["labels"] if "labels" in self._predict else None,
           correct_labels=correct["labels"] if "labels" in self._predict else None,
-          top_k_label_predictions=predictions["top_k_labels"],
+          top_k_label_predictions=predictions["top_k_labels"] if "labels" in self._predict else None,
           pad_mask=pad_mask
          )
 
@@ -706,8 +712,8 @@ class BaseParser(ABC):
       if "labels" in self._predict:
         # Get label predictions and correct labels
         label_preds = self._flatten(tf.argmax(label_scores, 2))
-        if self._top_k > 1:
-          _, top_k_label_preds = tf.math.top_k(label_scores, k=5)
+        if self._top_k:
+          _, top_k_label_preds = tf.math.top_k(label_scores, k=self._k)
           top_k_label_preds = self._flatten(top_k_label_preds, outer_dim=top_k_label_preds.shape[2])
         correct_labels = self._flatten(example["dep_labels"])
         label_accuracy.update_state(correct_labels, label_preds)
@@ -717,7 +723,7 @@ class BaseParser(ABC):
         correct_heads=correct_heads if "heads" in self._predict else None,
         label_predictions=label_preds  if "labels" in self._predict else None,
         correct_labels=correct_labels  if "labels" in self._predict else None,
-        top_k_label_predictions=top_k_label_preds if self._top_k > 1 else None,
+        top_k_label_predictions=top_k_label_preds if self._top_k else None,
       )
       self._update_correct_prediction_stats(correct_predictions_dict,
                                             example["words"].shape[1],
@@ -772,6 +778,7 @@ class BaseParser(ABC):
     logging.info(f"Loaded model from model named: {name} in: {_MODEL_DIR}")
     load_status.assert_consumed()
 
+  # TODO: handle the case when dep_label features are one_hot.
   def parse_and_save(self, dataset: Dataset):
     """Parses a set of sentences with this parser and saves the gold and predicted outputs to a directory."""
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")

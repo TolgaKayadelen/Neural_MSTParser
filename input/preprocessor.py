@@ -88,7 +88,7 @@ class Preprocessor:
                word_embeddings: Embeddings = None,
                features: List[str],
                labels: List[str],
-               one_hot_features: List[str] =  [],
+               one_hot_features: List[str] =  [], # sometimes we might want dep_labels feature to be onehot.
                head_padding_value=0,
                language="tr"):
     """Preprocessor prepares input datasets for TF models to consume."""

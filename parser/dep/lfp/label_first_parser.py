@@ -179,10 +179,12 @@ class LabelFirstParsingModel(tf.keras.Model):
       label_inputs = inputs["labels"]
       if not self.one_hot_labels:
         label_features = self.label_embeddings(label_inputs)
-        # print("label featires ", label_features)
+        # print("label features ", label_features)
         # input()
         concat_list.append(label_features)
       else:
+        # print("label inputs ", label_inputs)
+        # input()
         concat_list.append(label_inputs)
     if len(concat_list) > 1:
       sentence_repr = self.concatenate(concat_list)
