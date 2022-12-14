@@ -1,9 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 
 # Binaries
-
-
-
 py_binary(
     name = "label_first_parser_exp_main",
     srcs = ["label_first_parser_exp_main.py"],

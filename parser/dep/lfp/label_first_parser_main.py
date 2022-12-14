@@ -80,9 +80,9 @@ if __name__ == "__main__":
   # for batch in train_dataset:
   #   print(batch)
   # input()
-  metrics = parser.train(dataset=train_dataset, epochs=100, test_data=test_dataset)
+  metrics = parser.train(dataset=train_dataset, epochs=75, test_data=test_dataset)
   print(metrics)
   writer.write_proto_as_text(metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
   # nn_utils.plot_metrics(name=parser_model_name, metrics=metrics)
-  # parser.save_weights()
-  # logging.info("weights saved!")
+  parser.save_weights()
+  logging.info("weights saved!")

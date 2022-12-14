@@ -35,6 +35,13 @@ py_proto_library(
 )
 
 py_proto_library(
+    name = "ranker_data_py_pb2",
+    srcs = ["ranker_data_.proto"],
+    protoc = "@com_google_protobuf//:protoc",
+    default_runtime = "@com_google_protobuf//:protobuf_python",
+)
+
+py_proto_library(
 	name = "evaluation_py_pb2",
 	srcs = ["evaluation.proto"],
   deps = [

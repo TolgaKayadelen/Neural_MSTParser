@@ -1,0 +1,25 @@
+
+// Protocol buffer specification for features. 
+
+syntax = "proto2";
+
+package ranker;
+
+message Feature {
+	optional string word = 1;
+	optional string pos = 2;
+	optional string category = 3;
+	optional string lemma = 4;
+	repeated Morphology morphology = 5;
+	optional string label = 6;
+	optional int32 distance = 7;
+	repeated Feature previous_token = 8;
+	repeated Feature next_token = 9;
+
+}
+
+message Morphology {
+	optional string name = 1;
+	optional string value = 2;
+}
+
