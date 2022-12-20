@@ -42,8 +42,7 @@ class FeatureExtractor:
       return feature
 
     def get_features(self, token, sentence, n_prev, n_next):
-        """Return the values for the features in the featureset for head and child tokens.
-
+        """Extracts features for a token.
         Args:
             sentence: sentence_pb2.Sentence object.
             token: sentence_pb2.Token, the head token.

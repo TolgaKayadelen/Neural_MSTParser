@@ -3,7 +3,7 @@
 
 syntax = "proto2";
 
-import "proto/feature.proto";
+import "ranker/feature.proto";
 
 package proto;
 
@@ -15,12 +15,12 @@ message RankerDatapoint {
   // the word of the token
   optional string token = 1;
   // the token id in the embedding layer.
-  optional int32 token_id = 2;
+  optional int32 word = 2;
   // the top_k label hypothesis for this token. These represent the actions to be scored/ranked.
   // They come from the labeler.
   repeated Hypothesis hypotheses = 3;
   // the context features of the token. These are used while ranking the label hypothesis.
-  optional proto.Feature features = 4;
+  optional ranker.Feature features = 4;
 }
 
 message Hypothesis {
