@@ -29,7 +29,7 @@ class FeatureExtractor:
 
     def _get_surrounding_token_features(self, current_index, distance, sentence):
       feature = feature_pb2.Feature()
-      token = sentence.token[current_index+distance]
+      token = sentence[current_index+distance]
       if distance < 0 and token.index > current_index:
         raise IndexError(f"Index {current_index+distance} out of reach with current token index {current_index}")
       feature.word = token.word
@@ -44,7 +44,7 @@ class FeatureExtractor:
     def get_features(self, token, sentence, n_prev, n_next):
         """Extracts features for a token.
         Args:
-            sentence: sentence_pb2.Sentence object.
+            sentence: the list of tokens in the sentence.
             token: sentence_pb2.Token, the head token.
             n_prev: int, number of previous tokens to extract features from
             n_next: int, number of next tokens to extract features from
@@ -52,6 +52,8 @@ class FeatureExtractor:
             featureset: featureset_pb2.FeatureSet(), a proto of feature names and values.
             Note that this doesn't return any weight for the features.
         """
+        if n_prev > 0:
+          raise ValueError("n_prev cannot be positive!")
         feature = feature_pb2.Feature()
         feature.word = token.word
         feature.pos = token.pos

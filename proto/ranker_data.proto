@@ -13,9 +13,9 @@ message RankerDataset {
 
 message RankerDatapoint {
   // the word of the token
-  optional string token = 1;
-  // the token id in the embedding layer.
-  optional int32 word = 2;
+  optional string word = 1;
+  // the word id in the embedding layer.
+  optional int32 word_id = 2;
   // the top_k label hypothesis for this token. These represent the actions to be scored/ranked.
   // They come from the labeler.
   repeated Hypothesis hypotheses = 3;

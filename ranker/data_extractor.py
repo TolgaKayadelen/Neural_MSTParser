@@ -1,4 +1,5 @@
 
+import os
 import logging
 
 import tensorflow as tf
@@ -8,10 +9,13 @@ from math import log
 from parser.dep.lfp.label_first_parser import LabelFirstParser
 from parser.labeler.bilstm.bilstm_labeler import BiLSTMLabeler
 from parser.utils import load_models
-from ranker import feature_pb2
+from ranker import feature_extractor
 from proto import ranker_data_pb2
 from tagset.dep_labels import dep_label_enum_pb2 as dep_label_tags
-from util import writer
+from util import reader, writer
+
+_DATA_DIR = "./data/UDv29/test/tr"
+_feature_extractor = feature_extractor.FeatureExtractor()
 
 def _enumerated_tensor(_tensor):
   """Converts a 2D tensor to its enumerated version."""
@@ -134,12 +138,12 @@ def reward_for_hypothesis(label, gold_label, head_score):
   # print("reward is ", reward)
   return reward
 
-def ranker_datapoint(words, tokens, gold_labels, top_k_labels, head_scores):
+def ranker_datapoint(word_ids, gold_labels, tokens, top_k_labels, head_scores):
   """Creates a list of ranker datapoints from a sentence.
   Args:
-    words: the words (embedding ids) in the sentence.
-    tokens: the tokens (string) in the sentence.
+    word_ids: the words (embedding ids) in the sentence.
     gold_labels: the gold dependency label for each word.
+    tokens = list of token_pb2.token objects in this sentence
     top_k_labels: the top k label predictions for each token.
     head_scores: the attachment score with the parser for each of the top k labels.
 
@@ -147,26 +151,33 @@ def ranker_datapoint(words, tokens, gold_labels, top_k_labels, head_scores):
     a list of ranker_pb2.RankerDatapoint() objects.
   """
   datapoints = []
-  for i, word in enumerate(words[0]):
+  for i, word in enumerate(word_ids[0]):
     dp = ranker_data_pb2.RankerDatapoint()
 
-    word = words[:, i][0]
-    print("word ", word)
+    word_id = word_ids[:, i][0]
+    print("word_id", word_id)
 
-    token = tokens[:, i][0]
-    print("token ", token)
+    # word = words[:, i][0]
+    token = tokens[i]
+    # print("word ", word)
+    word = token.word
+    print("word ", word)
+    print("token proto ", token)
     input()
 
 
     top_k_for_token = top_k_labels[i, :]
     print("top k for this token ", top_k_for_token)
 
+
     gold_label = gold_labels[:, i][0]
     print("gold label ", gold_label)
     print("head scores for this token with each top k labels", head_scores[i])
+    input()
 
-    dp.token = tf.keras.backend.get_value(token)
+    dp.word_id = tf.keras.backend.get_value(word_id)
     dp.word = tf.keras.backend.get_value(word)
+    dp.features.CopyFrom(_feature_extractor.get_features(token, tokens, n_prev=-2, n_next=2))
     for k in range(top_k_labels.shape[1]):
       hypothesis_k = tf.keras.backend.get_value(top_k_for_token[k])
       hypothesis = dp.hypotheses.add()
@@ -175,10 +186,11 @@ def ranker_datapoint(words, tokens, gold_labels, top_k_labels, head_scores):
       hypothesis.rank = k+1
       hypothesis.reward = reward_for_hypothesis(hypothesis.label_id, gold_label, head_scores[i][k])
     print("ranker datapoint ", dp)
+    input()
     datapoints.append(dp)
   return datapoints
 
-def generate_dataset_for_ranker(*, labeler, parser, dataset, beam_search=False):
+def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, beam_search=False):
   """Generates a training dataset for the reranker.
   Args:
     labeler: A pretrained labeler.
@@ -186,6 +198,9 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, beam_search=False):
     dataset: The dataset to generate the training dataset from. A tf.data.Dataset object.
   """
   ranker_dataset = ranker_data_pb2.RankerDataset()
+  treebank = reader.ReadTreebankTextProto(os.path.join(_DATA_DIR, treebank_path))
+  sentences = {sentence.sent_id:sentence.token for sentence in treebank.sentence}
+  # print("sentences ", sentences)
 
   total_tokens = 0
   gold_correct = 0
@@ -194,7 +209,7 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, beam_search=False):
 
 
   # TODO: Receive the treebank as pbtxt input.
-  # Hast as sent_id: sentence_pb2.
+  # Hash as sent_id: sentence_pb2.
   # Then for example in dataset, from example["sent_id"], retrieve the sentence from treebank.
   for example in dataset:
     # pass inputs through labeler to get top_k outputs
@@ -209,7 +224,6 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, beam_search=False):
     print("correct labels ", correct_labels)
     correct_in_topk = tf.reduce_any(correct_labels == top_k_labels, axis=1)
     # print("corr in topk ", correct_in_topk)
-    input()
     total_tokens += example["heads"].shape[1]
 
     # Get the head accuracy scores using the gold labels as input. This is just for bookkeeping later.
@@ -221,7 +235,11 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, beam_search=False):
     gold_correct += accuracy_with_gold_labels
     gold_acc = gold_correct / total_tokens
 
-    logging.info(f"Sentence ID: {example['sent_id'][0][0]}, Tokens: {example['tokens']}")
+    sent_id = tf.keras.backend.get_value(example['sent_id'][0][0])
+    tokens = sentences[sent_id.decode("utf-8")]
+    logging.info(f"Sentence ID: {sent_id}, Tokens: {example['tokens']}")
+    # logging.info(f"Token protos {tokens}")
+    # input()
 
     # for each k in top_k label outputs, pass them through parser to get parser outputs
     k_best_head_scores = []
@@ -259,8 +277,7 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, beam_search=False):
     print("k best head scores ", k_best_head_scores)
     input()
 
-    ranker_dps = ranker_datapoint(example["words"], example["tokens"],
-                                  example["dep_labels"], top_k_labels,
+    ranker_dps = ranker_datapoint(example["words"], example["dep_labels"], tokens, top_k_labels,
                                   tf.convert_to_tensor(k_best_head_scores))
     for dp in ranker_dps:
       datapoint = ranker_dataset.datapoint.add()
@@ -333,5 +350,7 @@ if __name__== "__main__":
     batch_size=1,
     type="pbtxt",
   )
-  ranker_dataset = generate_dataset_for_ranker(labeler=labeler, parser=parser, dataset=test_dataset)
+  ranker_dataset = generate_dataset_for_ranker(labeler=labeler, parser=parser,
+                                               treebank_path="tr_boun-ud-test-ranker.pbtxt",
+                                               dataset=test_dataset)
   writer.write_proto_as_text(ranker_dataset, "./ranker/train_data.pbtxt")

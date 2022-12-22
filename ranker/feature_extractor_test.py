@@ -26,7 +26,9 @@ class FeatureExtractorTest(unittest.TestCase):
     def test_get_features(self):
         print("Running test_get_feetures..")
         token = self.test_sentence_tr.token[5]
-        features = self.extractor.get_features(token, self.test_sentence_tr, n_prev=-2, n_next=2)
+        features = self.extractor.get_features(token, self.test_sentence_tr.token, n_prev=-2, n_next=2)
+        # print("features ", features)
+        # input()
         expected_features = text_format.Parse("""
                                         word: "ettiği"
                                         pos: "Verb"
