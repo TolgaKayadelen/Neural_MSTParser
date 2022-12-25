@@ -5,6 +5,7 @@
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
 from proto import metrics_pb2
+from proto import ranker_data_pb2
 from google.protobuf import text_format
 import argparse
 import logging
@@ -38,6 +39,11 @@ def ReadConllX(path):
     logging.debug("Read %d sentences!" % sentence_counter)
     fi.close()
     return sentence_list
+
+def ReadRankerTextProto(path):
+    """Read proto text formatted RankerDataset message from path."""
+    file_content = _ReadFile(path)
+    return text_format.Parse(file_content, ranker_data_pb2.RankerDataset())
 
 
 def ReadSentenceTextProto(path):
@@ -110,10 +116,11 @@ def _ReadFile(path):
 
 
 def main(args):
-    sentence_list = ReadConllX(args.input_file)
-    for line in sentence_list[2]:
-        print(line)
-        
+    # sentence_list = ReadConllX(args.input_file)
+    # for line in sentence_list[2]:
+    #     print(line)
+    ranker_data = ReadRankerTextProto(args.input_file)
+    print(ranker_data)
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

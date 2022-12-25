@@ -6,16 +6,6 @@ py_library(
     srcs = ["writer.py"],
 )
 
-py_library(
-    name = "reader",
-    srcs = ["reader.py"],
-	deps = [
-	  "//data/treebank:sentence_py_pb2",
-	  "//data/treebank:treebank_py_pb2",
-      "//proto:metrics_py_pb2",
-	],
-)
-
 # Binaries.
 py_binary(
 	name = "common",
@@ -25,6 +15,18 @@ py_binary(
 	  ":reader"
 	],
 )
+
+py_binary(
+    name = "reader",
+    srcs = ["reader.py"],
+	deps = [
+	  "//data/treebank:sentence_py_pb2",
+	  "//data/treebank:treebank_py_pb2",
+      "//proto:metrics_py_pb2",
+      "//proto:ranker_data_py_pb2",
+	],
+)
+
 
 py_binary(
 	name = "converter",

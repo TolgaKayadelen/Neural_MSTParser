@@ -55,14 +55,3 @@ py_proto_library(
 	protoc = "@com_google_protobuf//:protoc",
 	default_runtime = "@com_google_protobuf//:protobuf_python",
 )
-
-# Binaries
-py_binary(
-  name = "proto_test",
-  srcs = ["proto_test.py"],
-  deps = [
-    ":metrics_py_pb2",
-    "//util/nn:nn_utils",
-    "//util:reader",
-  ],
-)

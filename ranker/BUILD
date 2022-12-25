@@ -35,6 +35,18 @@ py_binary(
     ],
 )
 
+py_binary(
+    name = "ranker_preprocessor",
+    srcs = ["ranker_preprocessor.py"],
+    deps = [
+        "//input:preprocessor",
+        "//input:embeddor",
+        "//util:reader",
+        "//util:writer",
+        "//util/nn:nn_utils",
+    ]
+)
+
 
 # Libraries.
 py_library(
