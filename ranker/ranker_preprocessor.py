@@ -25,6 +25,7 @@ _CASE_VALUES = {"abl": 0, "acc": 1, "dat": 2, "equ": 3, "gen": 4, "ins": 5, "loc
 _PERSON_VALUES = {"1": 0, "2": 1, "3": 2}
 _VOICE_VALUES = {"cau": 0, "pass": 1, "rcp": 2, "rfl": 3}
 _VERBFORM_VALUES = {"conv": 0, "part": 1, "vnoun": 2}
+_MORPHOLOGY = {"case": _CASE_VALUES, "person": _PERSON_VALUES, "voice": _VOICE_VALUES, "verbform": _VERBFORM_VALUES}
 
 class SequenceFeature:
   """A sequence feature is a map from a feature name to a list of int values."""
@@ -59,48 +60,57 @@ class RankerPreprocessor(preprocessor.Preprocessor):
 
 
   def make_tf_example(self, datapoint) -> tf.train.Example:
-    example = tf.train.Example()
-    features = example.features
-    next_token_ids = self.numericalize(values=[t.word for t in datapoint.features.next_token],
-                                       mapping=self.feature_mappings["words"])
-    prev_token_ids = self.numericalize(values=[t.word for t in datapoint.features.previous_token],
-                                       mapping=self.feature_mappings["words"])
-    next_token_pos_ids = self.numericalize(values=[t.pos for t in datapoint.features.next_token],
-                                           mapping=self.feature_mappings["pos"])
-    prev_token_pos_ids = self.numericalize(values=[t.pos for t in datapoint.features.previous_token],
-                                           mapping=self.feature_mappings["pos"])
+    # Create a tf example for each hypothesis
+    tf_examples = []
+    for hypothesis in datapoint.hypotheses:
+      example = tf.train.Example()
+      features = example.features
+      features.feature["hypo_label"].bytes_list.CopyFrom(self._bytes_feature([hypothesis.label.encode("utf-8")]))
+      features.feature["hypo_label_id"].int64_list.CopyFrom(self._int_feature([hypothesis.label_id]))
+      features.feature["hypo_rank"].int64_list.CopyFrom(self._int_feature([hypothesis.rank]))
+      features.feature["hypo_reward"].float_list.CopyFrom(self._float_feature([hypothesis.reward]))
 
-    features.feature["word_id"].int64_list.CopyFrom(self._int_feature([datapoint.word_id]))
-    features.feature["pos_id"].int64_list.CopyFrom(self._int_feature(
-      self.numericalize(values=[datapoint.features.pos], mapping=self.feature_mappings["pos"])))
-    features.feature["next_token_ids"].int64_list.CopyFrom(self._int_feature(next_token_ids))
-    features.feature["prev_token_ids"].int64_list.CopyFrom(self._int_feature(prev_token_ids))
-    features.feature["next_token_pos_ids"].int64_list.CopyFrom(self._int_feature(next_token_pos_ids))
-    features.feature["prev_token_pos_ids"].int64_list.CopyFrom(self._int_feature(prev_token_pos_ids))
-    features.feature["hypotheses"].int64_list.CopyFrom(self._int_feature([h.label_id for h in datapoint.hypotheses]))
 
-    if datapoint.features.morphology:
+      next_token_ids = self.numericalize(values=[t.word for t in datapoint.features.next_token],
+                                         mapping=self.feature_mappings["words"])
+      prev_token_ids = self.numericalize(values=[t.word for t in datapoint.features.previous_token],
+                                         mapping=self.feature_mappings["words"])
+      next_token_pos_ids = self.numericalize(values=[t.pos for t in datapoint.features.next_token],
+                                             mapping=self.feature_mappings["pos"])
+      prev_token_pos_ids = self.numericalize(values=[t.pos for t in datapoint.features.previous_token],
+                                             mapping=self.feature_mappings["pos"])
+
+      features.feature["word_id"].int64_list.CopyFrom(self._int_feature([datapoint.word_id]))
+      features.feature["pos_id"].int64_list.CopyFrom(self._int_feature(
+        self.numericalize(values=[datapoint.features.pos], mapping=self.feature_mappings["pos"])))
+      features.feature["next_token_ids"].int64_list.CopyFrom(self._int_feature(next_token_ids))
+      features.feature["prev_token_ids"].int64_list.CopyFrom(self._int_feature(prev_token_ids))
+      features.feature["next_token_pos_ids"].int64_list.CopyFrom(self._int_feature(next_token_pos_ids))
+      features.feature["prev_token_pos_ids"].int64_list.CopyFrom(self._int_feature(prev_token_pos_ids))
       for feat in ["case", "voice", "person", "verbform"]:
-        features.feature[feat].float_list.CopyFrom(
-          self._float_feature(self._morph_feature(datapoint.features.morphology, feat)))
+        morph_vector= self._morph_feature(datapoint.features.morphology, feat)
+        if morph_vector is not None:
+          features.feature[feat].float_list.CopyFrom(self._float_feature(morph_vector))
+        else:
+          features.feature[feat].float_list.CopyFrom(self._float_feature(np.zeros(len(_MORPHOLOGY[feat]))))
+      features.feature["word_string"].bytes_list.CopyFrom(self._bytes_feature([datapoint.word.encode("utf-8")]))
 
-    features.feature["word_strings"].bytes_list.CopyFrom(self._bytes_feature([datapoint.word.encode("utf-8")]))
-    features.feature["hypotheses_strings"].bytes_list.CopyFrom(
-      self._bytes_feature([h.label.encode("utf-8") for h in datapoint.hypotheses]))
-
-    # next_token_vectors, prev_token_vectors = [], []
-    # for token in  datapoint.features.next_token:
+      # next_token_vectors, prev_token_vectors = [], []
+      # for token in  datapoint.features.next_token:
       # next_token_vectors.extend(self._morph_vector(token))
-    # for token in datapoint.features.previous_token:
+      # for token in datapoint.features.previous_token:
       # prev_token_vectors.extend(self._morph_vector(token))
-    # features.feature["next_token_morph_ids"].float_list.CopyFrom(self._float_feature(next_token_vectors))
-    # features.feature["prev_token_morph_ids"].float_list.CopyFrom(self._float_feature(prev_token_vectors))
-
+      # features.feature["next_token_morph_ids"].float_list.CopyFrom(self._float_feature(next_token_vectors))
+      # features.feature["prev_token_morph_ids"].float_list.CopyFrom(self._float_feature(prev_token_vectors))
+      # print(example)
+      tf_examples.append(example)
+      # input()
+    return tf_examples
 
   def make_tf_examples(self, *, datapoints) -> List[Example]:
     tf_examples = []
     for datapoint in datapoints.datapoint:
-      tf_examples.append(self.make_tf_example(datapoint))
+      tf_examples.extend(self.make_tf_example(datapoint))
     return tf_examples
 
   def _morph_vector(self, token):
@@ -112,21 +122,17 @@ class RankerPreprocessor(preprocessor.Preprocessor):
 
   def _morph_feature(self, morphology, morph):
     """Returns case, voice, person or verbform features"""
-    if morph == "case":
-      morph_dict = _CASE_VALUES
-    elif morph == "voice":
-      morph_dict = _VOICE_VALUES
-    elif morph == "person":
-      morph_dict = _PERSON_VALUES
-    elif morph == "verbform":
-      morph_dict = _VERBFORM_VALUES
-    else:
-      raise ValueError(f"Cannot extract morph feature for {morph}")
+    if morphology is None:
+      return
+    try:
+      morph_dict = _MORPHOLOGY[morph]
+    except KeyError:
+      logging.error(f"Feat {morph} not found in supported morphology features.")
+      return
     for morpheme in morphology:
       if morpheme.name == morph:
         one_hot = tf.one_hot(indices=morph_dict[morpheme.value], depth=len(morph_dict))
         return tf.keras.backend.get_value(one_hot)
-
 
   @staticmethod
   def _float_feature(values):
@@ -147,13 +153,70 @@ class RankerPreprocessor(preprocessor.Preprocessor):
     return int_list
 
 
-def main(data):
-  embeddings = nn_utils.load_embeddings()
-  word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
-  ranker_prep = RankerPreprocessor(word_embeddings=word_embeddings, data_path=data)
-  ranker_prep.make_tf_examples(datapoints=ranker_prep.train_data)
+def read_dataset_from_tfrecords(records: str) -> Dataset:
 
+  def _parse_tf_records(record):
+    var_len_features = ["next_token_ids", "next_token_pos_ids", "prev_token_ids", "prev_token_pos_ids"]
+    return_dict = {}
+    feature_description = {
+      "word_id": tf.io.FixedLenFeature([], tf.int64),
+      "hypo_label_id": tf.io.FixedLenFeature([], tf.int64),
+      "hypo_rank": tf.io.FixedLenFeature([], tf.int64),
+      "hypo_reward": tf.io.FixedLenFeature([], tf.float32),
+      "pos_id": tf.io.FixedLenFeature([], tf.int64),
+      "case": tf.io.FixedLenFeature([8], tf.float32),
+      "person": tf.io.FixedLenFeature([3], tf.float32),
+      "voice": tf.io.FixedLenFeature([4], tf.float32),
+      "verbform": tf.io.FixedLenFeature([3], tf.float32),
+      "word_string": tf.io.FixedLenFeature([], tf.string),
+      "next_token_ids": tf.io.VarLenFeature(dtype=tf.int64),
+      "next_token_pos_ids": tf.io.VarLenFeature(dtype=tf.int64),
+      "prev_token_ids": tf.io.VarLenFeature(dtype=tf.int64),
+      "prev_token_pos_ids": tf.io.VarLenFeature(dtype=tf.int64),
+    }
+
+    parsed_example = tf.io.parse_example(record, feature_description)
+    for key in feature_description.keys():
+      if key in var_len_features:
+        return_dict[key] = tf.sparse.to_dense(parsed_example[key])
+      else:
+        print("key ", key)
+        return_dict[key] = parsed_example[key]
+    return return_dict
+
+  padded_shapes = {"word_id": [], "hypo_label_id": [], "hypo_rank": [], "hypo_reward": [],
+                   "pos_id": [], "word_string": [], "next_token_ids": [2],
+                   "next_token_pos_ids": [2], "prev_token_ids": [2], "prev_token_pos_ids": [2],
+                   "case": [8],
+                   "person": [3], "voice": [4],
+                   "verbform": [3]
+                   }
+
+  raw_dataset = tf.data.TFRecordDataset([records])
+  dataset = raw_dataset.map(_parse_tf_records).padded_batch(batch_size=5,
+                                                            padded_shapes=padded_shapes)
+  return dataset
+
+
+def main(data):
+  # embeddings = nn_utils.load_embeddings()
+  # word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
+  # ranker_prep = RankerPreprocessor(word_embeddings=word_embeddings, data_path=data)
+  # tf_examples = ranker_prep.make_tf_examples(datapoints=ranker_prep.train_data)
+  # ranker_prep.write_tf_records(examples=tf_examples, path=os.path.join(_DATA_DIR, "ranker_train_data_rio"))
+  # writer.write_protolist_as_text(tf_examples, path=os.path.join(_DATA_DIR, "ranker_train_data.pbtxt"))
+  # logging.info(f"{len(tf_examples)} examples written to {_DATA_DIR}")
+
+  # read dataset
+  # ranker_prep = RankerPreprocessor(data_path=None)
+  dataset = read_dataset_from_tfrecords(records=os.path.join(_DATA_DIR, 'ranker_train_data_rio.tfrecords'))
+  for batch in dataset:
+    print(batch)
+  # for data in dataset:
+  #   print(data)
+    # print(data["next_token_pos_ids"])
+    input()
 
 if __name__ == "__main__":
-  data = "train_data.pbtxt"
+  data = "train_datapoints.pbtxt"
   main(data)
