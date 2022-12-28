@@ -1,7 +1,6 @@
 """Preprocessor module that creates tf.data.Dataset for the ranker"""
 
 import os
-import itertools
 import tensorflow as tf
 import numpy as np
 
@@ -19,8 +18,8 @@ Dataset = tf.data.Dataset
 Example = tf.train.Example
 
 # _DATA_DIR = "./data/UDv29/test/tr"
-_DATA_DIR = "./ranker"
-
+_RANKER_DATA_DIR = "./ranker/data"
+_DATA_DIR = "./data/ "
 _CASE_VALUES = {"abl": 0, "acc": 1, "dat": 2, "equ": 3, "gen": 4, "ins": 5, "loc": 6, "nom": 7}
 _PERSON_VALUES = {"1": 0, "2": 1, "3": 2}
 _VOICE_VALUES = {"cau": 0, "pass": 1, "rcp": 2, "rfl": 3}
@@ -55,9 +54,7 @@ class RankerPreprocessor(preprocessor.Preprocessor):
 
   @property
   def train_data(self):
-    return reader.ReadRankerTextProto(os.path.join(_DATA_DIR, self.data_path))
-
-
+    return reader.ReadRankerTextProto(os.path.join(_RANKER_DATA_DIR, self.data_path))
 
   def make_tf_example(self, datapoint) -> tf.train.Example:
     # Create a tf example for each hypothesis
@@ -113,6 +110,110 @@ class RankerPreprocessor(preprocessor.Preprocessor):
       tf_examples.extend(self.make_tf_example(datapoint))
     return tf_examples
 
+  def make_dataset_from_generator(self, *, datapoints, batch_size=5) -> Dataset:
+    hypothesis_datapoint_map = []
+    for datapoint in datapoints.datapoint:
+      hypothesis_datapoint_map.extend([(h, datapoint) for h in datapoint.hypotheses])
+    generator = lambda : self._example_generator(hypothesis_datapoint_map)
+
+    output_shapes = {
+      "word_id": [],
+      "hypo_label": [],
+      "hypo_label_id": [],
+      "hypo_rank": [],
+      "hypo_reward": [],
+      "pos_id": [],
+      "case": [8],
+      "person": [3],
+      "voice": [4],
+      "verbform": [3],
+      "word_string": [],
+      "next_token_ids": [None],
+      "next_token_pos_ids": [None],
+      "prev_token_ids": [None],
+      "prev_token_pos_ids": [None],
+    }
+    output_types = {
+      "word_id": tf.int64,
+      "hypo_label": tf.string,
+      "hypo_label_id": tf.int64,
+      "hypo_rank": tf.int64,
+      "hypo_reward": tf.float32,
+      "pos_id": tf.int64,
+      "case": tf.float32,
+      "person": tf.float32,
+      "voice": tf.float32,
+      "verbform": tf.float32,
+      "word_string": tf.string,
+      "next_token_ids": tf.int64,
+      "next_token_pos_ids": tf.int64,
+      "prev_token_ids": tf.int64,
+      "prev_token_pos_ids": tf.int64,
+    }
+    padded_shapes = {
+      "word_id": [],
+      "hypo_label": [],
+      "hypo_label_id": [],
+      "hypo_rank": [],
+      "hypo_reward": [],
+      "pos_id": [],
+      "word_string": [],
+      "next_token_ids": [2],
+      "next_token_pos_ids": [2],
+      "prev_token_ids": [2],
+      "prev_token_pos_ids": [2],
+      "case": [8],
+      "person": [3],
+      "voice": [4],
+      "verbform": [3]
+     }
+    dataset = tf.data.Dataset.from_generator(generator,
+                                             output_shapes=output_shapes,
+                                             output_types=output_types)
+
+    dataset = dataset.padded_batch(batch_size, padded_shapes=padded_shapes)
+    for batch in dataset:
+      print(batch)
+      input()
+
+  def _example_generator(self, datapoints):
+    print(f"Total datapoints {len(datapoints)}")
+    yield_dict = {}
+    for datapoint in datapoints:
+      hypothesis, datapoint = datapoint
+      yield_dict["word_id"]=datapoint.word_id
+      yield_dict["hypo_label"]=hypothesis.label.encode("utf-8")
+      yield_dict["hypo_label_id"]=hypothesis.label_id
+      yield_dict["hypo_rank"]=hypothesis.rank
+      yield_dict["hypo_reward"]=hypothesis.reward
+      yield_dict["pos_id"]=self.numericalize(
+        values=[datapoint.features.pos], mapping=self.feature_mappings["pos"]
+      )[0]
+      yield_dict["word_string"]=datapoint.word.encode("utf-8")
+      yield_dict["next_token_ids"] = self.numericalize(
+        values=[t.word for t in datapoint.features.next_token],
+        mapping=self.feature_mappings["words"])
+      yield_dict["prev_token_ids"] = self.numericalize(
+        values=[t.word for t in datapoint.features.previous_token],
+        mapping=self.feature_mappings["words"])
+      yield_dict["next_token_pos_ids"]=self.numericalize(
+        values=[t.pos for t in datapoint.features.next_token],
+        mapping=self.feature_mappings["pos"]
+      )
+      yield_dict["prev_token_pos_ids"]=self.numericalize(
+        values=[t.pos for t in datapoint.features.previous_token],
+        mapping=self.feature_mappings["pos"]
+      )
+      for feat in ["case", "voice", "person", "verbform"]:
+        morph_vector = self._morph_feature(datapoint.features.morphology, feat)
+        if morph_vector is not None:
+          yield_dict[feat] = morph_vector
+        else:
+          yield_dict[feat] = np.zeros(len(_MORPHOLOGY[feat]))
+      print("yield dict ", yield_dict)
+      input()
+      yield yield_dict
+
   def _morph_vector(self, token):
     morph_vector = np.zeros(len(self.feature_mappings["morph"]), dtype=float)
     tags = morph_tags.from_token(token=token)
@@ -153,7 +254,7 @@ class RankerPreprocessor(preprocessor.Preprocessor):
     return int_list
 
 
-def read_dataset_from_tfrecords(records: str) -> Dataset:
+def read_dataset_from_tfrecords(records: str, batch_size: int = 5) -> Dataset:
 
   def _parse_tf_records(record):
     var_len_features = ["next_token_ids", "next_token_pos_ids", "prev_token_ids", "prev_token_pos_ids"]
@@ -180,7 +281,7 @@ def read_dataset_from_tfrecords(records: str) -> Dataset:
       if key in var_len_features:
         return_dict[key] = tf.sparse.to_dense(parsed_example[key])
       else:
-        print("key ", key)
+        # print("key ", key)
         return_dict[key] = parsed_example[key]
     return return_dict
 
@@ -193,30 +294,30 @@ def read_dataset_from_tfrecords(records: str) -> Dataset:
                    }
 
   raw_dataset = tf.data.TFRecordDataset([records])
-  dataset = raw_dataset.map(_parse_tf_records).padded_batch(batch_size=5,
+  dataset = raw_dataset.map(_parse_tf_records).padded_batch(batch_size=batch_size,
                                                             padded_shapes=padded_shapes)
   return dataset
 
 
 def main(data):
-  # embeddings = nn_utils.load_embeddings()
-  # word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
-  # ranker_prep = RankerPreprocessor(word_embeddings=word_embeddings, data_path=data)
+  embeddings = nn_utils.load_embeddings()
+  word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
+  ranker_prep = RankerPreprocessor(word_embeddings=word_embeddings, data_path=data)
+  ranker_prep.make_dataset_from_generator(datapoints=ranker_prep.train_data)
   # tf_examples = ranker_prep.make_tf_examples(datapoints=ranker_prep.train_data)
-  # ranker_prep.write_tf_records(examples=tf_examples, path=os.path.join(_DATA_DIR, "ranker_train_data_rio"))
-  # writer.write_protolist_as_text(tf_examples, path=os.path.join(_DATA_DIR, "ranker_train_data.pbtxt"))
-  # logging.info(f"{len(tf_examples)} examples written to {_DATA_DIR}")
+  # ranker_prep.write_tf_records(examples=tf_examples, path=os.path.join(_RANKER_DATA_DIR, "tr_boun-ud-dev-ranker-data-rio"))
+  # writer.write_protolist_as_text(tf_examples, path=os.path.join(_RANKER_DATA_DIR, "tr_boun-ud-dev-ranker-data-rio.pbtxt"))
+  # logging.info(f"{len(tf_examples)} examples written to {_RANKER_DATA_DIR}")
 
   # read dataset
   # ranker_prep = RankerPreprocessor(data_path=None)
-  dataset = read_dataset_from_tfrecords(records=os.path.join(_DATA_DIR, 'ranker_train_data_rio.tfrecords'))
-  for batch in dataset:
-    print(batch)
+  # dataset = read_dataset_from_tfrecords(records=os.path.join(_DATA_DIR, 'ranker_train_data_rio.tfrecords'))
+  # for batch in dataset:
+  #   print(batch)
   # for data in dataset:
   #   print(data)
     # print(data["next_token_pos_ids"])
-    input()
 
 if __name__ == "__main__":
-  data = "train_datapoints.pbtxt"
+  data = "tr_boun-ud-dev-ranker-datapoint.pbtxt"
   main(data)

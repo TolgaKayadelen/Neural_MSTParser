@@ -1,3 +1,4 @@
+"""Extracts datapoint protos for the reranker."""
 
 import os
 import logging
@@ -14,7 +15,8 @@ from proto import ranker_data_pb2
 from tagset.dep_labels import dep_label_enum_pb2 as dep_label_tags
 from util import reader, writer
 
-_DATA_DIR = "./data/UDv29/test/tr"
+_DATA_DIR = "./data/UDv29/dev/tr"
+_RANKER_DATA_DIR = "./ranker/data"
 _feature_extractor = feature_extractor.FeatureExtractor()
 
 def _enumerated_tensor(_tensor):
@@ -155,25 +157,25 @@ def ranker_datapoint(word_ids, gold_labels, tokens, top_k_labels, head_scores):
     dp = ranker_data_pb2.RankerDatapoint()
 
     word_id = word_ids[:, i][0]
-    print("word_id", word_id)
+    # print("word_id", word_id)
 
     # word = words[:, i][0]
     token = tokens[i]
     # print("word ", word)
     word = token.word
-    print("word ", word)
-    print("token proto ", token)
-    input()
+    # print("word ", word)
+    # print("token proto ", token)
+    # input()
 
 
     top_k_for_token = top_k_labels[i, :]
-    print("top k for this token ", top_k_for_token)
+    # print("top k for this token ", top_k_for_token)
 
 
     gold_label = gold_labels[:, i][0]
-    print("gold label ", gold_label)
-    print("head scores for this token with each top k labels", head_scores[i])
-    input()
+    # print("gold label ", gold_label)
+    # print("head scores for this token with each top k labels", head_scores[i])
+    # input()
 
     dp.word_id = tf.keras.backend.get_value(word_id)
     dp.word = tf.keras.backend.get_value(word)
@@ -185,8 +187,8 @@ def ranker_datapoint(word_ids, gold_labels, tokens, top_k_labels, head_scores):
       hypothesis.label_id = hypothesis_k
       hypothesis.rank = k+1
       hypothesis.reward = reward_for_hypothesis(hypothesis.label_id, gold_label, head_scores[i][k])
-    print("ranker datapoint ", dp)
-    input()
+    # print("ranker datapoint ", dp)
+    # input()
     datapoints.append(dp)
   return datapoints
 
@@ -206,25 +208,25 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, beam
   gold_correct = 0
   top1_correct = 0
   beam_correct = 0
-
-
-  # TODO: Receive the treebank as pbtxt input.
-  # Hash as sent_id: sentence_pb2.
-  # Then for example in dataset, from example["sent_id"], retrieve the sentence from treebank.
+  counter = 0
   for example in dataset:
+    counter += 1
+    if counter % 100 == 0:
+      print(f"processing sentence {counter}")
     # pass inputs through labeler to get top_k outputs
     label_scores, _ = labeler.model({"words": example["words"], "pos": example["pos"], "morph": example["morph"]})
     top_scores, top_k_labels  = tf.math.top_k(label_scores, k=5)
     top_k_labels = parser._flatten(top_k_labels, outer_dim=top_k_labels.shape[2])
     top_k_labels = tf.cast(top_k_labels, tf.int64)
     # print("top k scores ", top_scores)
-    print("Top k labels ", top_k_labels)
+    # print("Top k labels ", top_k_labels)
     correct_labels = example["dep_labels"]
     correct_labels = parser._flatten(correct_labels)
-    print("correct labels ", correct_labels)
+    # print("correct labels ", correct_labels)
     correct_in_topk = tf.reduce_any(correct_labels == top_k_labels, axis=1)
     # print("corr in topk ", correct_in_topk)
     total_tokens += example["heads"].shape[1]
+    # input()
 
     # Get the head accuracy scores using the gold labels as input. This is just for bookkeeping later.
     scores_with_gold = parser.model({"words": example["words"], "morph": example["morph"],
@@ -237,7 +239,7 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, beam
 
     sent_id = tf.keras.backend.get_value(example['sent_id'][0][0])
     tokens = sentences[sent_id.decode("utf-8")]
-    logging.info(f"Sentence ID: {sent_id}, Tokens: {example['tokens']}")
+    # logging.info(f"Sentence ID: {sent_id}, Tokens: {example['tokens']}")
     # logging.info(f"Token protos {tokens}")
     # input()
 
@@ -245,25 +247,22 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, beam
     k_best_head_scores = []
     for i in range(top_k_labels.shape[1]):
       top_i = tf.expand_dims(top_k_labels[:, i], 0)
-      print("top {} labels: {:>}".format(i+1, str(top_i)))
-      print("gold labels : {:>11}".format(str(example["dep_labels"])))
-      print("\n\n")
-
+      # print("top {} labels: {:>}".format(i+1, str(top_i)))
+      # print("gold labels : {:>11}".format(str(example["dep_labels"])))
       scores_with_i = parser.model({"words": example["words"], "morph": example["morph"],
                                     "labels": top_i}, training=False)
       headscores_with_i = scores_with_i["edges"]
       heads_with_i = tf.argmax(headscores_with_i, axis=2)
-
-      print("heads with top {}           : {:>10}".format(i+1, str(heads_with_i)))
-      print("correct heads              : {:>10}".format(str(example["heads"])))
-      print("heads with gold            : {:>10}".format(str(heads_with_gold)))
-      print("\n\n")
-
+      # print("heads with top {}           : {:>10}".format(i+1, str(heads_with_i)))
+      # print("correct heads              : {:>10}".format(str(example["heads"])))
+      # print("heads with gold            : {:>10}".format(str(heads_with_gold)))
+      # print("\n\n")
       correct_preds_with_i = (heads_with_i == example["heads"])
-      print("correct preds with top {}   : {:>10}".format(i+1, str(correct_preds_with_i)))
+      # print("correct preds with top {}   : {:>10}".format(i+1, str(correct_preds_with_i)))
 
       accuracy_with_top_i = np.sum(correct_preds_with_i)
-      print("accuracy with top {}        : {:>10}".format(i+1, accuracy_with_top_i))
+      # print("accuracy with top {}        : {:>10}".format(i+1, accuracy_with_top_i))
+      # input()
 
       # Keep records of accuracy with top label hypotheses. Again this is for later comparison only.
       if i == 0:
@@ -274,8 +273,8 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, beam
       
     # Convert k_best head scores to float and transpose them to a shape that can be used to generate data.
     k_best_head_scores = np.squeeze(np.array(k_best_head_scores).astype(float)).transpose()
-    print("k best head scores ", k_best_head_scores)
-    input()
+    # print("k best head scores ", k_best_head_scores)
+    # input()
 
     ranker_dps = ranker_datapoint(example["words"], example["dep_labels"], tokens, top_k_labels,
                                   tf.convert_to_tensor(k_best_head_scores))
@@ -294,8 +293,8 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, beam
       print("beam acc ", beam_acc)
       print("top1 acc ", top1_acc)
 
-    print("Ranker Dataset ", ranker_dataset)
-    input()
+    # print("Ranker Dataset ", ranker_dataset)
+    # input()
   
   return ranker_dataset
 
@@ -311,7 +310,8 @@ def compute_performance_with_beam_search(k_best_head_scores, top_k_labels, parse
 
   # Select labels from top_k labels based on results of the beam search.
   # then parse with them to see what's the head accuracy.
-  # TODO: implement logic to determine both head and label accuracy with the beam labels.
+  # TODO: implement logic to determine both head and label accuracy with the beam labels,
+  # TODO: currently it only computes head accuracy and doesn't factor in head accuracy.
   # TODO: and select the k-best beam label sequence based on las > uas > ls.
   for i, sequence in enumerate(best_sequences):
     # print("seq is ", sequence)
@@ -344,13 +344,18 @@ if __name__== "__main__":
   labeler=load_labeler(prep, n_output_classes, labeler_model_name)
   parser=load_parser(prep, n_output_classes, parser_model_name)
   # get inputs
-  _, _, test_dataset = load_models.load_data(
+  train_dataset, dev_dataset, test_dataset = load_models.load_data(
     preprocessor=prep,
-    test_treebank="tr_boun-ud-test-ranker.pbtxt",
-    batch_size=1,
+    dev_treebank="tr_boun-ud-dev.pbtxt",
+    dev_batch_size=1,
     type="pbtxt",
   )
+  # for batch in dev_dataset:
+  #   print(batch)
+    # input()
   ranker_dataset = generate_dataset_for_ranker(labeler=labeler, parser=parser,
-                                               treebank_path="tr_boun-ud-test-ranker.pbtxt",
-                                               dataset=test_dataset)
-  writer.write_proto_as_text(ranker_dataset, "./ranker/train_data.pbtxt")
+                                               treebank_path="tr_boun-ud-dev.pbtxt",
+                                               dataset=dev_dataset)
+
+  writer.write_proto_as_text(ranker_dataset, "./ranker/data/tr_boun-ud-test-ranker-datapoint.pbtxt")
+  logging.info("Ranker dataset written to //ranker/data/tr_boun-ud-test-ranker-datapoint.pbtxt ")
