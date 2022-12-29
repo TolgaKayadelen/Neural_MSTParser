@@ -20,14 +20,14 @@ py_binary(
 )
 
 py_binary(
-    name = "data_extractor",
-    srcs = ["data_extractor.py"],
+    name = "datapoint_generator",
+    srcs = ["datapoint_generator.py"],
     deps = [
         "//parser:nn_parser_lib",
         "//parser/dep/lfp:label_first_parser",
         "//parser/labeler/bilstm:bilstm_labeler",
         "//parser/utils:load_models",
-        "//ranker:feature_extractor",
+        "//ranker/preprocessing:feature_extractor",
         "//proto:ranker_data_py_pb2",
         "//tagset/dep_labels:dep_label_enum_py_pb2",
         "//util:writer",

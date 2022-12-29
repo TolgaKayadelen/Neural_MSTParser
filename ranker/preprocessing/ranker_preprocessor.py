@@ -1,4 +1,4 @@
-"""Preprocessor module that creates tf.data.Dataset for the ranker"""
+"""Preprocessor module that creates tf.data.Dataset for the ranker from a set of datapoints."""
 
 import os
 import tensorflow as tf
@@ -44,17 +44,11 @@ class RankerPreprocessor(preprocessor.Preprocessor):
   """Prepares training data for ranker as tf.examples"""
 
   def __init__(self, *, word_embeddings: Embeddings = None,
-               features: List[str] = ["words", "pos", "morph", "dep_labels"],
-               data_path: str):
+               features: List[str] = ["words", "pos", "morph", "dep_labels"]):
     super(RankerPreprocessor, self).__init__(word_embeddings=word_embeddings,
                                              features=features,
                                              labels=[])
-    self.data_path = data_path
     self.feature_mappings = self.get_index_mappings_for_features(self.features)
-
-  @property
-  def train_data(self):
-    return reader.ReadRankerTextProto(os.path.join(_RANKER_DATA_DIR, self.data_path))
 
   def make_tf_example(self, datapoint) -> tf.train.Example:
     # Create a tf example for each hypothesis
@@ -110,6 +104,10 @@ class RankerPreprocessor(preprocessor.Preprocessor):
       tf_examples.extend(self.make_tf_example(datapoint))
     return tf_examples
 
+  # NOTE:
+  #
+  # We keep the batch_size 5 because each hypothesis is a feature example. Therefore, 5 feature examples
+  # correspond to the label ranks for a single token.
   def make_dataset_from_generator(self, *, datapoints, batch_size=5) -> Dataset:
     hypothesis_datapoint_map = []
     for datapoint in datapoints.datapoint:
@@ -172,9 +170,10 @@ class RankerPreprocessor(preprocessor.Preprocessor):
                                              output_types=output_types)
 
     dataset = dataset.padded_batch(batch_size, padded_shapes=padded_shapes)
-    for batch in dataset:
-      print(batch)
-      input()
+    # for batch in dataset:
+    #   print(batch)
+    #   input()
+    return dataset
 
   def _example_generator(self, datapoints):
     print(f"Total datapoints {len(datapoints)}")
@@ -210,8 +209,8 @@ class RankerPreprocessor(preprocessor.Preprocessor):
           yield_dict[feat] = morph_vector
         else:
           yield_dict[feat] = np.zeros(len(_MORPHOLOGY[feat]))
-      print("yield dict ", yield_dict)
-      input()
+      # print("yield dict ", yield_dict)
+      # input()
       yield yield_dict
 
   def _morph_vector(self, token):
@@ -302,20 +301,24 @@ def read_dataset_from_tfrecords(records: str, batch_size: int = 5) -> Dataset:
 def main(data):
   embeddings = nn_utils.load_embeddings()
   word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
-  ranker_prep = RankerPreprocessor(word_embeddings=word_embeddings, data_path=data)
-  ranker_prep.make_dataset_from_generator(datapoints=ranker_prep.train_data)
-  # tf_examples = ranker_prep.make_tf_examples(datapoints=ranker_prep.train_data)
+  ranker_prep = RankerPreprocessor(word_embeddings=word_embeddings)
+  # ranker_datapoints=reader.ReadRankerTextProto(os.path.join(_RANKER_DATA_DIR, data))
+  # dataset = ranker_prep.make_dataset_from_generator(datapoints=ranker_datapoints)
+  # tf_examples = ranker_prep.make_tf_examples(datapoints=ranker_datapoints)
   # ranker_prep.write_tf_records(examples=tf_examples, path=os.path.join(_RANKER_DATA_DIR, "tr_boun-ud-dev-ranker-data-rio"))
   # writer.write_protolist_as_text(tf_examples, path=os.path.join(_RANKER_DATA_DIR, "tr_boun-ud-dev-ranker-data-rio.pbtxt"))
   # logging.info(f"{len(tf_examples)} examples written to {_RANKER_DATA_DIR}")
 
   # read dataset
-  # ranker_prep = RankerPreprocessor(data_path=None)
-  # dataset = read_dataset_from_tfrecords(records=os.path.join(_DATA_DIR, 'ranker_train_data_rio.tfrecords'))
-  # for batch in dataset:
-  #   print(batch)
+  dataset = read_dataset_from_tfrecords(
+    records=os.path.join(_RANKER_DATA_DIR, 'tr_boun-ud-dev-ranker-data-rio.tfrecords'),
+    batch_size=5)
+  for batch in dataset:
+    print(batch)
+    input()
   # for data in dataset:
-  #   print(data)
+  #  print(data)
+  #  input()
     # print(data["next_token_pos_ids"])
 
 if __name__ == "__main__":

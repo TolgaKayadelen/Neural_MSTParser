@@ -1,4 +1,4 @@
-"""Extracts datapoint protos for the reranker."""
+"""Extracts datapoint protos for the reranker from treebanks."""
 
 import os
 import logging
@@ -10,7 +10,7 @@ from math import log
 from parser.dep.lfp.label_first_parser import LabelFirstParser
 from parser.labeler.bilstm.bilstm_labeler import BiLSTMLabeler
 from parser.utils import load_models
-from ranker import feature_extractor
+from ranker.preprocessing import feature_extractor
 from proto import ranker_data_pb2
 from tagset.dep_labels import dep_label_enum_pb2 as dep_label_tags
 from util import reader, writer
@@ -123,20 +123,20 @@ def reward_for_hypothesis(label, gold_label, head_score):
   """
   # print(f"hypothesis label: {label}, gold label: {gold_label}, head score: {head_score}")
   label_correct = False
-  reward = 0
+  reward = 1
   if label == gold_label:
     label_correct = True
   if head_score == 1:
     reward += 1.0
     if label == gold_label:
-      reward += 1.0             # when both edge and label is correct, reward is 2.
+      reward += 1.0             # when both edge and label is correct, reward is 3.
     else:
-      reward -= 1.0             # when edge is correct but label is not, reward equals 0.
+      reward -= 1.0             # when edge is correct but label is not, reward equals 1.
   else:
     if label == gold_label:
-      reward += 1.0             # when edge is false but label correct, reward is 1.
+      reward += 1.0             # when edge is false but label correct, reward is 2.
     else:
-      reward -= 1.0             # if both edge and label is false, reward -1.
+      reward -= 1.0             # if both edge and label is false, reward 0.
   # print("reward is ", reward)
   return reward
 
@@ -197,7 +197,7 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, beam
   Args:
     labeler: A pretrained labeler.
     parser: A pretrained parser.
-    dataset: The dataset to generate the training dataset from. A tf.data.Dataset object.
+    dataset: The treebank to generate the training dataset from. A tf.data.Datase object.
   """
   ranker_dataset = ranker_data_pb2.RankerDataset()
   treebank = reader.ReadTreebankTextProto(os.path.join(_DATA_DIR, treebank_path))
@@ -357,5 +357,5 @@ if __name__== "__main__":
                                                treebank_path="tr_boun-ud-dev.pbtxt",
                                                dataset=dev_dataset)
 
-  writer.write_proto_as_text(ranker_dataset, "./ranker/data/tr_boun-ud-test-ranker-datapoint.pbtxt")
-  logging.info("Ranker dataset written to //ranker/data/tr_boun-ud-test-ranker-datapoint.pbtxt ")
+  writer.write_proto_as_text(ranker_dataset, "./ranker/data/tr_boun-ud-dev-ranker-datapoint.pbtxt")
+  logging.info("Ranker dataset written to //ranker/data/tr_boun-ud-dev-ranker-datapoint.pbtxt ")

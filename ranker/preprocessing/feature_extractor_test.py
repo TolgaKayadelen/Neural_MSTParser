@@ -7,8 +7,8 @@ import unittest
 from data.treebank import sentence_pb2
 from google.protobuf import text_format
 
-from ranker import feature_pb2
-from ranker.feature_extractor import FeatureExtractor
+from ranker.preprocessing import feature_pb2
+from ranker.preprocessing.feature_extractor import FeatureExtractor
 
 from util import reader
 from util import common

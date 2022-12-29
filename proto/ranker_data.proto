@@ -3,7 +3,7 @@
 
 syntax = "proto2";
 
-import "ranker/feature.proto";
+import "ranker/preprocessing/feature.proto";
 
 package proto;
 

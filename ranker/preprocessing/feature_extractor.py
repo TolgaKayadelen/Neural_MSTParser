@@ -6,17 +6,7 @@ Feature representation is inspired from:
 McDonald, R., Crammer, K., Pereira, F. (2006). Online Large-Margin Training of Dependency Parsers.
 
 """
-import argparse
-import os
-
-import sys
-
-
-from google.protobuf import text_format
-from util import reader
-from util import common
-
-from ranker import feature_pb2
+from ranker.preprocessing import feature_pb2
 from data.treebank import sentence_pb2
 
 import logging

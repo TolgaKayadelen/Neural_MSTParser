@@ -40,7 +40,7 @@ py_proto_library(
     protoc = "@com_google_protobuf//:protoc",
     default_runtime = "@com_google_protobuf//:protobuf_python",
     deps = [
-        "//ranker:feature_py_pb2",
+        "//ranker/preprocessing:feature_py_pb2",
     ]
 )
 
