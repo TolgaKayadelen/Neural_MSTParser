@@ -55,9 +55,7 @@ class Ranker:
     if not pos_embeddings:
       raise NameError("Labeler doesn't have a layer named pos_embeddings.")
 
-    label_ranker = LabelRankerModel(word_embeddings=self.word_embeddings,
-                                    pos_embedding_weights=pos_embedding_weights,
-                                    label_embedding_weights=label_embedding_weights)
+    label_ranker = LabelRankerModel(word_embeddings=self.word_embeddings)
     label_ranker.pos_embeddings.set_weights(pos_embedding_weights)
     label_ranker.pos_embeddings.trainable=False
     label_ranker.label_embeddings.set_weights(label_embedding_weights)
@@ -78,49 +76,26 @@ class Ranker:
 
   def train(self, dataset, epochs, test_data, test_every, save_every=None):
     logging.info("Ranker training started.")
+    total_epochs = int(epochs / test_every)
     losses = []
     if test_data:
       baseline, _, _, _ = rank_eval.rank_accuracy(test_data)
       print("Baseline on test data: ", baseline)
       # input()
-    # for batch in dataset:
-    #  print(batch["hypo_reward"])
-
     self.label_ranker.compile(optimizer=tf.keras.optimizers.Adagrad(0.1))
-    self.label_ranker.fit(dataset, epochs=epochs)
-    """
-    for epoch in range(1, epochs+1):
-      logging.info(f"\n\n{'->' * 12} Training Epoch: {epoch} {'<-' * 12}\n\n")
-      for step, batch in enumerate(dataset):
-        rewards = batch["hypo_reward"]
-        print("rewards ", rewards)
-        input()
-        rewards = tf.expand_dims(rewards, 0)
-        print("rewards ", rewards)
-        input()
-        scores, loss = self.train_step(batch, rewards)
-        print("loss ", loss)
-        input()
-        losses.append(loss)
-      print("step ", step)
-      print("Epoch loss ", tf.reduce_mean(losses))
-      if epoch % test_every == 0 or epoch == epochs:
-        test_rank_acc = self.test(test_data)
-        print("test_rank_acc ", test_rank_acc)
+    for epoch in range(total_epochs):
+      history = self.train_step(dataset, test_every)
+      test_acc = self.test(test_data)
+      print("Test acc ", test_acc)
+      # keep_training = input("Continue training: y/n ?")
+      # if keep_training == "n":
+      #   break
+    return history
 
-  def train_step(self, inputs, rewards):
-    # print("rewards ", rewards)
-    with tf.GradientTape() as tape:
-      scores = self.label_ranker(inputs)
-      print("scores ", scores)
-      scores = tf.reshape(scores, shape=(1,5))
-      print("scores ", scores)
-      input()
-      loss = self._loss_fn(rewards, scores)
-    grads = tape.gradient(loss, self.label_ranker.trainable_weights)
-    self._optimizer.apply_gradients(zip(grads, self.label_ranker.trainable_weights))
-    return scores, loss
-    """
+  def train_step(self, dataset, test_every):
+    for i in range(test_every):
+      history = self.label_ranker.fit(dataset, epochs=1)
+    return history
 
   def test(self, test_data: RankerDataset):
     print("Testing on test dataset")
@@ -133,7 +108,7 @@ class Ranker:
       ranks = example["hypo_reward"]
       top_ranking_hypothesis = np.argmax(ranks)
       # print(ranks, top_ranking_hypothesis)
-      # input()
+
       scores = self.label_ranker(example, training=False)
       # print("scores ", scores)
       top_scoring_hypothesis = np.argmax(scores)
@@ -162,9 +137,7 @@ class Ranker:
 class LabelRankerModel(tfrs.Model):
   def __init__(self, *,
                word_embeddings: Embeddings,
-               pos_embedding_weights,
-               label_embedding_weights,
-               name="label_ranker"):
+               name="label_ranker_hinge_loss"):
     super(LabelRankerModel, self).__init__(name=name)
 
     self.word_embeddings = layer_utils.EmbeddingLayer(
@@ -283,8 +256,10 @@ if __name__ == "__main__":
   parser_model_name="label_first_gold_morph_and_labels"
   ranker = Ranker(labeler_model_name=labeler_model_name, parser_model_name=parser_model_name)
 
-  ranker.train(dataset=dataset, epochs=1000, test_every=10, test_data=test_data)
+  history = ranker.train(dataset=dataset, epochs=100, test_data=test_data, test_every=10)
   ranker.save_weights()
+  for k, v in history.history.items():
+    print(k, v)
   # word_embeddings = load_models.load_word_embeddings()
   # prep = load_models.load_preprocessor(word_embeddings=word_embeddings)
   # label_feature = next(
