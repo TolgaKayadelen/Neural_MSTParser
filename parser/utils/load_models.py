@@ -6,7 +6,7 @@ from util.nn import nn_utils
 from input import embeddor, preprocessor
 from parser.dep.lfp import label_first_parser
 from parser.utils import layer_utils
-# from parser.nn import bilstm_labeler
+from parser.labeler.bilstm import bilstm_labeler
 
 def load_word_embeddings():
   embeddings = nn_utils.load_embeddings()
@@ -35,7 +35,7 @@ def load_preprocessor(*, word_embeddings=None, head_padding_value=0, one_hot_fea
   return prep
 
 
-def load_labeler(labeler_name, prep, path=None):
+def load_labeler(labeler_name, prep):
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"),
     None)
@@ -43,21 +43,34 @@ def load_labeler(labeler_name, prep, path=None):
                                          n_output_classes=label_feature.n_values,
                                          predict=["labels"],
                                          features=["words", "pos", "morph"],
-                                         model_name=labeler_name)
-  labeler.load_weights(name=labeler_name, path=path)
-  return labeler, label_feature
+                                         model_name=labeler_name,
+                                         top_k=True,
+                                         k=5,
+                                         test_every=0)
+  labeler.load_weights(name=labeler_name)
+  print("labeler ", labeler)
+  return labeler
 
 
-def load_parser(parser_name, prep, path=None):
+def load_parser(parser_name, prep, test_every=0, one_hot_labels=False):
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"),
     None)
   parser = label_first_parser.LabelFirstParser(word_embeddings=prep.word_embeddings,
                                                n_output_classes=label_feature.n_values,
-                                               predict=["heads"],
-                                               features=["words", "pos", "morph", "heads", "dep_labels"],
-                                               model_name="label_first_parser")
-  parser.load_weights(name=parser_name, path=path)
+                                               predict=["heads"
+                                                        # labels
+                                                        ],
+                                               features=["words",
+                                                         # "pos",
+                                                         "morph",
+                                                         # "heads",
+                                                         "dep_labels"],
+                                               test_every=test_every,
+                                               model_name=parser_name,
+                                               one_hot_labels=one_hot_labels)
+  parser.load_weights(name=parser_name)
+  print("parser ", parser)
   return parser
 
 

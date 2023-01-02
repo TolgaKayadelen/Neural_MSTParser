@@ -100,7 +100,11 @@ class RankerPreprocessor(preprocessor.Preprocessor):
 
   def make_tf_examples(self, *, datapoints) -> List[Example]:
     tf_examples = []
+    counter = 0
     for datapoint in datapoints.datapoint:
+      counter += 1
+      if counter % 250 == 0:
+        print(f"processing datapoiint {counter}")
       tf_examples.extend(self.make_tf_example(datapoint))
     return tf_examples
 
@@ -110,7 +114,7 @@ class RankerPreprocessor(preprocessor.Preprocessor):
   # correspond to the label ranks for a single token.
   def make_dataset_from_generator(self, *, datapoints, batch_size=5) -> Dataset:
     hypothesis_datapoint_map = []
-    for datapoint in datapoints.datapoint:
+    for datapoint in datapoints:
       hypothesis_datapoint_map.extend([(h, datapoint) for h in datapoint.hypotheses])
     generator = lambda : self._example_generator(hypothesis_datapoint_map)
 
@@ -302,25 +306,26 @@ def main(data):
   embeddings = nn_utils.load_embeddings()
   word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
   ranker_prep = RankerPreprocessor(word_embeddings=word_embeddings)
-  # ranker_datapoints=reader.ReadRankerTextProto(os.path.join(_RANKER_DATA_DIR, data))
-  # dataset = ranker_prep.make_dataset_from_generator(datapoints=ranker_datapoints)
-  # tf_examples = ranker_prep.make_tf_examples(datapoints=ranker_datapoints)
-  # ranker_prep.write_tf_records(examples=tf_examples, path=os.path.join(_RANKER_DATA_DIR, "tr_boun-ud-dev-ranker-data-rio"))
-  # writer.write_protolist_as_text(tf_examples, path=os.path.join(_RANKER_DATA_DIR, "tr_boun-ud-dev-ranker-data-rio.pbtxt"))
-  # logging.info(f"{len(tf_examples)} examples written to {_RANKER_DATA_DIR}")
+  ranker_dataset=reader.ReadRankerTextProto(os.path.join(_RANKER_DATA_DIR, data))
+  # datapoints = ranker_dataset.datapoint
+  # dataset = ranker_prep.make_dataset_from_generator(datapoints=datapoints)
+  tf_examples = ranker_prep.make_tf_examples(datapoints=ranker_dataset)
+  ranker_prep.write_tf_records(examples=tf_examples, path=os.path.join(_RANKER_DATA_DIR, "tr_boun-ud-train-ranker-data-rio"))
+  # writer.write_protolist_as_text(tf_examples, path=os.path.join(_RANKER_DATA_DIR, "tr_boun-ud-train-ranker-data-rio.pbtxt"))
+  logging.info(f"{len(tf_examples)} examples written to {_RANKER_DATA_DIR}")
 
   # read dataset
-  dataset = read_dataset_from_tfrecords(
-    records=os.path.join(_RANKER_DATA_DIR, 'tr_boun-ud-dev-ranker-data-rio.tfrecords'),
-    batch_size=5)
-  for batch in dataset:
-    print(batch)
-    input()
+  # dataset = read_dataset_from_tfrecords(
+  #   records=os.path.join(_RANKER_DATA_DIR, 'tr_boun-ud-train-ranker-data-rio.tfrecords'),
+  #   batch_size=5)
+  # for batch in dataset:
+  #   print(batch)
+  #   input()
   # for data in dataset:
   #  print(data)
   #  input()
     # print(data["next_token_pos_ids"])
 
 if __name__ == "__main__":
-  data = "tr_boun-ud-dev-ranker-datapoint.pbtxt"
+  data = "tr_boun-ud-train-ranker-datapoint.pbtxt"
   main(data)

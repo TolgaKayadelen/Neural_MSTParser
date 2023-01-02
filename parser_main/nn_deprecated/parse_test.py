@@ -10,7 +10,7 @@ from input import preprocessor
 
 from parser.nn import label_first_parser as lfp
 from parser.nn import biaffine_parser as bfp
-from parser_main.nn import parse
+from parser_main.nn_deprecated import parse
 
 from util import reader
 from util.nn import nn_utils

@@ -12,7 +12,7 @@ import sys
 
 from input import preprocessor
 from input import embeddor
-from parser_main.nn import parse
+from parser_main.nn_deprecated import parse
 import numpy as np
 import tensorflow as tf
 

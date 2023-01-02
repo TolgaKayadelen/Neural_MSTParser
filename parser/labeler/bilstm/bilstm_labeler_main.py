@@ -52,10 +52,10 @@ if __name__ == "__main__":
   train_treebank= "tr_boun-ud-train-random500.pbtxt"
   test_treebank = "tr_boun-ud-test-random10.pbtxt"
   train_dataset, _, test_dataset = load_models.load_data(preprocessor=prep,
-                                                      train_treebank=train_treebank,
-                                                      batch_size=5,
-                                                      test_treebank=test_treebank,
-                                                      type="pbtxt")
+                                                         train_treebank=train_treebank,
+                                                         batch_size=5,
+                                                         test_treebank=test_treebank,
+                                                         type="pbtxt")
 
   metrics = parser.train(dataset=train_dataset, epochs=10, test_data=test_dataset)
   print(metrics)

@@ -5,7 +5,6 @@ py_binary(
     srcs = ["model.py"],
     deps = [
         "//ranker/preprocessing:ranker_preprocessor",
-        "//ranker/preprocessing:datapoint_generator",
         "//parser/utils:load_models",
         "//parser/utils:layer_utils",
         "//proto:ranker_data_py_pb2",
@@ -13,6 +12,5 @@ py_binary(
         "//input:embeddor",
         "//util:writer",
         "//util:reader",
-        "//util/nn:nn_utils"
     ],
 )

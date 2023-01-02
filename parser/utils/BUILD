@@ -32,5 +32,6 @@ py_library(
     deps = [
     "//parser:nn_parser_lib",
     "//parser/dep/lfp:label_first_parser",
+    "//parser/labeler/bilstm:bilstm_labeler",
   ],
 )

@@ -50,7 +50,9 @@ class Embeddings:
         index_to_vector[idx, :] = np.zeros(shape=(self.embedding_dim,))
       elif token == "-oov-":
         # randomly initialize
-        index_to_vector[idx, :] = np.random.randn(self.embedding_dim,)
+        # index_to_vector[idx, :] = np.random.randn(self.embedding_dim,)
+        # initialize as ones
+        index_to_vector[idx, :] = np.ones(shape=(self.embedding_dim,))
       else:
         index_to_vector[idx, :] = matrix[token]
         # print(matrix[token])

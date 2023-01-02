@@ -15,8 +15,6 @@ from proto import ranker_data_pb2
 from tagset.dep_labels import dep_label_enum_pb2 as dep_label_tags
 from util import reader, writer
 
-_DATA_DIR = "./data/UDv29/dev/tr"
-_RANKER_DATA_DIR = "./ranker/data"
 _feature_extractor = feature_extractor.FeatureExtractor()
 
 def _enumerated_tensor(_tensor):
@@ -70,43 +68,6 @@ def beam_search_decoder(data, k=2):
     # select k best
     sequences = ordered[:k]
   return sequences
-
-def load_labeler(prep, n_output_classes, labeler_model_name):
-  labeler = BiLSTMLabeler(word_embeddings=prep.word_embeddings,
-                          n_output_classes=n_output_classes,
-                          predict=["labels"],
-                          features=["words", "pos", "morph"],
-                          model_name=labeler_model_name,
-                          top_k=True,
-                          k=5,
-                          test_every=0)
-  labeler.load_weights(name=labeler_model_name) # uncomment
-  for layer in labeler.model.layers:
-    print(f"layer name {layer.name}, trainable {layer.trainable}")
-  print("labeler ", labeler)
-  return labeler
-
-def load_parser(prep, n_output_classes, parser_model_name):
-  parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
-                            n_output_classes=n_output_classes,
-                            predict=["heads",
-                                     # "labels"
-                                     ],
-                            features=["words",
-                                      # "pos",
-                                      "morph",
-                                      # "category",
-                                      # "heads",
-                                      "dep_labels"
-                                      ],
-                            test_every=0,
-                            model_name=parser_model_name,
-                            one_hot_labels=False)
-  parser.load_weights(name=parser_model_name)
-  for layer in parser.model.layers:
-    print(f"layer name {layer.name}, trainable {layer.trainable}")
-  print("parser ", parser)
-  return parser
 
 def reward_for_hypothesis(label, gold_label, head_score):
   """Computes reward for a label hypothesis.
@@ -200,7 +161,7 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, beam
     dataset: The treebank to generate the training dataset from. A tf.data.Datase object.
   """
   ranker_dataset = ranker_data_pb2.RankerDataset()
-  treebank = reader.ReadTreebankTextProto(os.path.join(_DATA_DIR, treebank_path))
+  treebank = reader.ReadTreebankTextProto(treebank_path)
   sentences = {sentence.sent_id:sentence.token for sentence in treebank.sentence}
   # print("sentences ", sentences)
 
@@ -228,6 +189,12 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, beam
     total_tokens += example["heads"].shape[1]
     # input()
 
+    sent_id = tf.keras.backend.get_value(example['sent_id'][0][0])
+    tokens = sentences[sent_id.decode("utf-8")]
+    # logging.info(f"Sentence ID: {sent_id}, Tokens: {example['tokens']}")
+    # logging.info(f"Token protos {tokens}")
+    # input()
+
     # Get the head accuracy scores using the gold labels as input. This is just for bookkeeping later.
     scores_with_gold = parser.model({"words": example["words"], "morph": example["morph"],
                                      "labels": example["dep_labels"]}, training=False)
@@ -236,12 +203,6 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, beam
     accuracy_with_gold_labels = np.sum(heads_with_gold == example["heads"])
     gold_correct += accuracy_with_gold_labels
     gold_acc = gold_correct / total_tokens
-
-    sent_id = tf.keras.backend.get_value(example['sent_id'][0][0])
-    tokens = sentences[sent_id.decode("utf-8")]
-    # logging.info(f"Sentence ID: {sent_id}, Tokens: {example['tokens']}")
-    # logging.info(f"Token protos {tokens}")
-    # input()
 
     # for each k in top_k label outputs, pass them through parser to get parser outputs
     k_best_head_scores = []
@@ -334,28 +295,31 @@ def compute_performance_with_beam_search(k_best_head_scores, top_k_labels, parse
   return beam_correct
 
 if __name__== "__main__":
+  _data_dir = "./data/UDv29/train/tr"
+  _ranker_data_dir = "./ranker/data"
+  _treebank_name = "tr_boun-ud-train-random5.pbtxt"
   labeler_model_name="bilstm_labeler_topk"
   parser_model_name="label_first_gold_morph_and_labels"
+
   word_embeddings = load_models.load_word_embeddings()
   prep = load_models.load_preprocessor(word_embeddings=word_embeddings)
-  label_feature = next(
-    (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
-  n_output_classes=label_feature.n_values
-  labeler=load_labeler(prep, n_output_classes, labeler_model_name)
-  parser=load_parser(prep, n_output_classes, parser_model_name)
+  labeler=load_models.load_labeler(labeler_name=labeler_model_name, prep=prep)
+  parser=load_models.load_parser(parser_name=parser_model_name, prep=prep)
+
   # get inputs
   train_dataset, dev_dataset, test_dataset = load_models.load_data(
     preprocessor=prep,
-    dev_treebank="tr_boun-ud-dev.pbtxt",
-    dev_batch_size=1,
+    train_treebank=_treebank_name,
+    batch_size=1,
     type="pbtxt",
   )
   # for batch in dev_dataset:
   #   print(batch)
     # input()
+  treebank_path = os.path.join(_data_dir, _treebank_name)
   ranker_dataset = generate_dataset_for_ranker(labeler=labeler, parser=parser,
-                                               treebank_path="tr_boun-ud-dev.pbtxt",
-                                               dataset=dev_dataset)
+                                               treebank_path=treebank_path,
+                                               dataset=train_dataset)
 
-  writer.write_proto_as_text(ranker_dataset, "./ranker/data/tr_boun-ud-dev-ranker-datapoint.pbtxt")
-  logging.info("Ranker dataset written to //ranker/data/tr_boun-ud-dev-ranker-datapoint.pbtxt ")
+  writer.write_proto_as_text(ranker_dataset, "./ranker/data/tr_boun-ud-train-ranker-test.pbtxt")
+  logging.info("Ranker dataset written to //ranker/data/tr_boun-ud-train-ranker-test.pbtxt ")

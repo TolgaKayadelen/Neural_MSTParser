@@ -21,6 +21,10 @@ message RankerDatapoint {
   repeated Hypothesis hypotheses = 3;
   // the context features of the token. These are used while ranking the label hypothesis.
   optional ranker.Feature features = 4;
+  // the sentence id this datapoint is coming from
+  optional string sent_id = 5;
+  // the token index in the sentence id that this datapoint is coming from
+  optional int32 token_index = 6;
 }
 
 message Hypothesis {

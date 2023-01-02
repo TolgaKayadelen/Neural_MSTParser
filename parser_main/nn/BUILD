@@ -1,39 +1,18 @@
 package(default_visibility = ["//visibility:public"])
 
-
 py_binary(
-	name = "main",
-	srcs = ["main.py"],
-  deps = [
-    "//parser/nn:nn_parser_lib",
-    "//parser/nn:label_first_parser",
-    "//parser/nn:label_first_parser2",
-    "//parser/nn:label_first_parser_joint_loss",
-    "//parser/nn:biaffine_parser",
-    "//parser/nn:seq2seq_labeler",
-    "//parser/nn:seq2lstm_labeler",
-    "//parser/nn:bilstm_labeler",
-    ":parse",
-  ],
+    name="parse_and_eval",
+    srcs = ["parse_and_eval.py"],
+    deps = [
+        "//eval:evaluate",
+        "//parser/utils:load_models",
+        "//proto:ranker_data_py_pb2",
+        "//ranker/preprocessing:feature_extractor",
+        "//ranker/preprocessing:ranker_preprocessor",
+        "//ranker/training:model",
+        "//tagset/dep_labels:dep_label_enum_py_pb2",
+        "//util:reader",
+        "//util:writer",
+    ]
 )
 
-py_library(
-	name = "parse",
-	srcs = ["parse.py"],
-  deps = [
-    "//parser/nn:nn_parser_lib",
-    "//util:common",
-    "//tagset:reader",
-    "//eval:evaluate",
-  ],
-)
-
-py_test(
-  name = "parse_test",
-  srcs = ["parse_test.py"],
-  deps = [
-    ":parse",
-    "//parser/nn:label_first_parser",
-    "//parser/nn:biaffine_parser",
-  ],
-)

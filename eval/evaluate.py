@@ -74,7 +74,7 @@ f1 = lambda recall, precision: 2 * (recall * precision) / (recall + precision)
 
 class Evaluator:
   """The evaluator module."""
-  def __init__(self, gold, test, write_results, model_name=None):
+  def __init__(self, gold, test, write_results, model_name=None, write_dir=None):
     """
     Initializes this evaluator with a gold and test treebank.
     Args:
@@ -101,6 +101,10 @@ class Evaluator:
                     "labeled_attachment_metrics", "all"]
     self.write_results = write_results
     self.model_name = model_name
+    if write_dir is None:
+      self.write_dir = _EVAL_DIR
+    else:
+      self.write_dir = write_dir
   
   @property
   def gold_and_test(self):
@@ -484,7 +488,7 @@ class Evaluator:
       else:
         current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         output_file_name = f"{current_time}_eval_results"
-      with open(os.path.join(_EVAL_DIR, output_file_name), "w") as f:
+      with open(os.path.join(self.write_dir, output_file_name), "w") as f:
         for key in results.keys():
           f.write(key)
           f.write("\n")
