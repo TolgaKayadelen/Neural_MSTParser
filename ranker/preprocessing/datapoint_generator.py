@@ -84,20 +84,20 @@ def reward_for_hypothesis(label, gold_label, head_score):
   """
   # print(f"hypothesis label: {label}, gold label: {gold_label}, head score: {head_score}")
   label_correct = False
-  reward = 1
+  reward = 100
   if label == gold_label:
     label_correct = True
   if head_score == 1:
-    reward += 1.0
+    reward += 100.0
     if label == gold_label:
-      reward += 1.0             # when both edge and label is correct, reward is 3.
+      reward += 100.0             # when both edge and label is correct, reward is 3.
     else:
-      reward -= 1.0             # when edge is correct but label is not, reward equals 1.
+      reward -= 100.0             # when edge is correct but label is not, reward equals 1.
   else:
     if label == gold_label:
-      reward += 1.0             # when edge is false but label correct, reward is 2.
+      reward += 100.0             # when edge is false but label correct, reward is 2.
     else:
-      reward -= 1.0             # if both edge and label is false, reward 0.
+      reward -= 100.0             # if both edge and label is false, reward 0.
   # print("reward is ", reward)
   return reward
 
@@ -297,7 +297,7 @@ def compute_performance_with_beam_search(k_best_head_scores, top_k_labels, parse
 if __name__== "__main__":
   _data_dir = "./data/UDv29/train/tr"
   _ranker_data_dir = "./ranker/data"
-  _treebank_name = "tr_boun-ud-train-random5.pbtxt"
+  _treebank_name = "tr_boun-ud-train.pbtxt"
   labeler_model_name="bilstm_labeler_topk"
   parser_model_name="label_first_gold_morph_and_labels"
 
@@ -321,5 +321,5 @@ if __name__== "__main__":
                                                treebank_path=treebank_path,
                                                dataset=train_dataset)
 
-  writer.write_proto_as_text(ranker_dataset, "./ranker/data/tr_boun-ud-train-ranker-test.pbtxt")
-  logging.info("Ranker dataset written to //ranker/data/tr_boun-ud-train-ranker-test.pbtxt ")
+  writer.write_proto_as_text(ranker_dataset, "./ranker/data/tr_boun-ud-train-dp-r100.pbtxt")
+  logging.info("Ranker dataset written to //ranker/data/tr_boun-ud-train-dp-r100.pbtxt ")

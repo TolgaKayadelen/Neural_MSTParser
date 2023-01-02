@@ -73,7 +73,7 @@ if __name__ == "__main__":
   test_treebank = "tr_boun-ud-test.pbtxt"
   train_dataset, _, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
-                                                      batch_size=250,
+                                                      batch_size=25,
                                                       test_treebank=test_treebank,
                                                       type="pbtxt",
                                                       language=language)

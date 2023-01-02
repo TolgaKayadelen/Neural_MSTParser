@@ -112,7 +112,7 @@ class RankerPreprocessor(preprocessor.Preprocessor):
   #
   # We keep the batch_size 5 because each hypothesis is a feature example. Therefore, 5 feature examples
   # correspond to the label ranks for a single token.
-  def make_dataset_from_generator(self, *, datapoints, batch_size=5) -> Dataset:
+  def make_dataset_from_generator(self, datapoints, batch_size=5) -> Dataset:
     hypothesis_datapoint_map = []
     for datapoint in datapoints:
       hypothesis_datapoint_map.extend([(h, datapoint) for h in datapoint.hypotheses])

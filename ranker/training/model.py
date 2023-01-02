@@ -19,6 +19,7 @@ Embeddings = embeddor.Embeddings
 RankerDataset = ranker_data_pb2.RankerDataset
 
 _MODEL_DIR = "./ranker/models"
+_RANKER_DATA_DIR = "./ranker/data"
 
 class Ranker:
 
@@ -126,7 +127,7 @@ class Ranker:
     How many times is the does the labeler manage to predict the top scoring hypothesis correctly.
     """
     logging.info("Testing on test dataset")
-    test_dataset = self._ranker_prep.make_dataset_from_generator(datapoints=test_data)
+    test_dataset = self._ranker_prep.make_dataset_from_generator(datapoints=test_data.datapoint)
     example_counter = 0
     test_rank_correct = 0
     for example in test_dataset:
@@ -275,14 +276,22 @@ def compare_labeler_to_ranker(ranker, test_data: RankerDataset):
 
 
 def main(args):
-  train_data_path = "./ranker/data/tr_boun-ud-train-ranker-data-rio.tfrecords"
-  # train_data_path = "./ranker/ranker_train_data_rio.tfrecords"
+  # train_data_path = "./ranker/data/tr_boun-ud-train-ranker-data-rio.tfrecords"
+  # dataset = ranker_preprocessor.read_dataset_from_tfrecords(train_data_path, batch_size=5)
+
+  train_proto_path = "./ranker/data/tr_boun-ud-dev-dp-r100.pbtxt"
+  train_ranker_dataset = reader.ReadRankerTextProto(train_proto_path)
+
+
   test_data_path = "./ranker/data/tr_boun-ud-test-ranker-datapoint.pbtxt"
   test_data = reader.ReadRankerTextProto(path=test_data_path)
-  dataset = ranker_preprocessor.read_dataset_from_tfrecords(train_data_path, batch_size=5)
+
+
   labeler_model_name="bilstm_labeler_topk"
   parser_model_name="label_first_gold_morph_and_labels"
   word_embeddings = load_models.load_word_embeddings()
+  ranker_prep = ranker_preprocessor.RankerPreprocessor(word_embeddings=word_embeddings)
+  dataset = ranker_prep.make_dataset_from_generator(train_ranker_dataset.datapoint)
   if args.load:
     ranker = Ranker(labeler_model_name=labeler_model_name,
                     parser_model_name=parser_model_name,
@@ -342,7 +351,7 @@ if __name__ == "__main__":
                       help="The name of the model.")
   parser.add_argument("--epochs",
                       type=int,
-                      default=10,
+                      default=30,
                       help="Trains a new model.")
   parser.add_argument("--test_every",
                       type=int,
