@@ -35,7 +35,7 @@ def load_preprocessor(*, word_embeddings=None, head_padding_value=0, one_hot_fea
   return prep
 
 
-def load_labeler(labeler_name, prep):
+def load_labeler(labeler_name, prep, k=5):
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"),
     None)
@@ -45,27 +45,22 @@ def load_labeler(labeler_name, prep):
                                          features=["words", "pos", "morph"],
                                          model_name=labeler_name,
                                          top_k=True,
-                                         k=5,
+                                         k=k,
                                          test_every=0)
   labeler.load_weights(name=labeler_name)
   print("labeler ", labeler)
   return labeler
 
-
-def load_parser(parser_name, prep, test_every=0, one_hot_labels=False):
+# The predict and features lists are configured to load "label_first_parser_gold_morph_labels"
+def load_parser(parser_name, prep, test_every=0, one_hot_labels=False,
+                predict=["heads"], features=["words", "morph", "dep_labels"]):
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"),
     None)
   parser = label_first_parser.LabelFirstParser(word_embeddings=prep.word_embeddings,
                                                n_output_classes=label_feature.n_values,
-                                               predict=["heads"
-                                                        # labels
-                                                        ],
-                                               features=["words",
-                                                         # "pos",
-                                                         "morph",
-                                                         # "heads",
-                                                         "dep_labels"],
+                                               predict=predict,
+                                               features=features,
                                                test_every=test_every,
                                                model_name=parser_name,
                                                one_hot_labels=one_hot_labels)

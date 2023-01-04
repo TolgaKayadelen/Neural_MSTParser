@@ -69,15 +69,66 @@ def beam_search_decoder(data, k=2):
     sequences = ordered[:k]
   return sequences
 
+
+
+def reward_for_hypothesis_prioritize_edges(label, gold_label, head_score):
+  """Computes reward for a label hypothesis. This reward function prioritizes edges over labels.
+
+    The reward ranges between -1 and 2, such that:
+
+      If head_correct and label_correct: reward = 3
+      If head_correct and label_false: reward = 2
+      If head_false and label_correct: reward = 1
+      If head_false and label_false: reward = 0
+
+  Returns:
+    reward: float.
+  """
+  # print(f"hypothesis label: {label}, gold label: {gold_label}, head score: {head_score}")
+  label_correct = False
+  reward = 10.0
+  if label == gold_label:
+    label_correct = True
+  if head_score == 1:
+    reward += 10.0
+    if label == gold_label:
+      reward += 10.0             # when both edge and label is correct, reward is 3.
+    else:
+      reward -= 0.0             # when edge is correct but label is not, reward equals 2.
+  else:
+    if label == gold_label:
+      reward += 0.0             # when edge is false but label correct, reward is 2.
+    else:
+      reward -= 10.0             # if both edge and label is false, reward 0.
+  # print("reward is ", reward)
+  return reward
+
+
+def reward_for_hypothesis_only_edges(label, gold_label, head_score):
+  """Computes reward for a label hypothesis. This reward function only considers edges..
+
+      If head_correct: reward = 10
+      Else: reward = -10
+
+  Returns:
+    reward: float.
+  """
+  # print(f"hypothesis label: {label}, gold label: {gold_label}, head score: {head_score}")
+
+  reward = 0.0
+  if head_score == 1:
+    reward += 1.0
+  return reward
+
 def reward_for_hypothesis(label, gold_label, head_score):
   """Computes reward for a label hypothesis.
 
     The reward ranges between -1 and 2, such that:
 
-      If head_correct and label_correct: reward = 2
-      If head_correct and label_false: reward = 0
-      If head_false and label_correct: reward = 1
-      If head_false and label_false: reward = -1
+      If head_correct and label_correct: reward = 3
+      If head_correct and label_false: reward = 1
+      If head_false and label_correct: reward = 2
+      If head_false and label_false: reward = 0
 
   Returns:
     reward: float.
@@ -147,13 +198,13 @@ def ranker_datapoint(word_ids, gold_labels, tokens, top_k_labels, head_scores):
       hypothesis.label = dep_label_tags.Tag.Name(hypothesis_k)
       hypothesis.label_id = hypothesis_k
       hypothesis.rank = k+1
-      hypothesis.reward = reward_for_hypothesis(hypothesis.label_id, gold_label, head_scores[i][k])
+      hypothesis.reward = reward_for_hypothesis_only_edges(hypothesis.label_id, gold_label, head_scores[i][k])
     # print("ranker datapoint ", dp)
     # input()
     datapoints.append(dp)
   return datapoints
 
-def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, beam_search=False):
+def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, k=5, beam_search=False):
   """Generates a training dataset for the reranker.
   Args:
     labeler: A pretrained labeler.
@@ -175,8 +226,9 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, beam
     if counter % 100 == 0:
       print(f"processing sentence {counter}")
     # pass inputs through labeler to get top_k outputs
-    label_scores, _ = labeler.model({"words": example["words"], "pos": example["pos"], "morph": example["morph"]})
-    top_scores, top_k_labels  = tf.math.top_k(label_scores, k=5)
+    scores = labeler.model({"words": example["words"], "pos": example["pos"], "morph": example["morph"]})
+    label_scores = scores["labels"]
+    top_scores, top_k_labels  = tf.math.top_k(label_scores, k=k)
     top_k_labels = parser._flatten(top_k_labels, outer_dim=top_k_labels.shape[2])
     top_k_labels = tf.cast(top_k_labels, tf.int64)
     # print("top k scores ", top_scores)
@@ -295,22 +347,25 @@ def compute_performance_with_beam_search(k_best_head_scores, top_k_labels, parse
   return beam_correct
 
 if __name__== "__main__":
-  _data_dir = "./data/UDv29/train/tr"
+  _data_dir = "./data/UDv29/dev/tr"
   _ranker_data_dir = "./ranker/data"
-  _treebank_name = "tr_boun-ud-train.pbtxt"
+  _treebank_name = "tr_boun-ud-dev.pbtxt"
+
   labeler_model_name="bilstm_labeler_topk"
   parser_model_name="label_first_gold_morph_and_labels"
 
   word_embeddings = load_models.load_word_embeddings()
   prep = load_models.load_preprocessor(word_embeddings=word_embeddings)
   labeler=load_models.load_labeler(labeler_name=labeler_model_name, prep=prep)
+  # labeler=load_models.load_parser(labeler_model_name, predict=["heads", "labels"],
+  #                                 features=["words", "pos", "morph"], prep=prep)
   parser=load_models.load_parser(parser_name=parser_model_name, prep=prep)
 
   # get inputs
   train_dataset, dev_dataset, test_dataset = load_models.load_data(
     preprocessor=prep,
-    train_treebank=_treebank_name,
-    batch_size=1,
+    dev_treebank=_treebank_name,
+    dev_batch_size=1,
     type="pbtxt",
   )
   # for batch in dev_dataset:
@@ -319,7 +374,8 @@ if __name__== "__main__":
   treebank_path = os.path.join(_data_dir, _treebank_name)
   ranker_dataset = generate_dataset_for_ranker(labeler=labeler, parser=parser,
                                                treebank_path=treebank_path,
-                                               dataset=train_dataset)
+                                               dataset=dev_dataset,
+                                               k=20)
 
-  writer.write_proto_as_text(ranker_dataset, "./ranker/data/tr_boun-ud-train-dp-r100.pbtxt")
-  logging.info("Ranker dataset written to //ranker/data/tr_boun-ud-train-dp-r100.pbtxt ")
+  writer.write_proto_as_text(ranker_dataset, "./ranker/data/tr_boun-ud-dev-k20-only-edges-dp.pbtxt")
+  logging.info("Ranker dataset written to //ranker/data/tr_boun-ud-dev-k20-only-edges-dp.pbtxt ")

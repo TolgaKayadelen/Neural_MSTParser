@@ -99,16 +99,17 @@ class Ranker:
           np.testing.assert_allclose(a, b)
     return label_ranker
 
-  def train(self, dataset, epochs, test_data, test_every, save_every=None):
+  def train(self, dataset, iters, test_data, test_every, save_every=None):
     logging.info("Ranker training started.")
     if test_data:
       baseline = self.get_labeler_baseline(test_data)
       logging.info(f"Baseline on test data: {baseline}")
     ada = tf.keras.optimizers.Adagrad(learning_rate=tf.Variable(0.1))
     self.label_ranker.compile(optimizer=ada)
-    for epoch in range(epochs):
+    for iter in range(iters):
+      print("training iter ", iter)
       history = self.label_ranker.fit(dataset, epochs=1)
-      if test_data and test_every > 0 and epochs % test_every == 0:
+      if test_data and test_every > 0 and iters % test_every == 0:
         test_acc = self.test(test_data)
         logging.info("Test accuracy ", test_acc)
       # keep_training = input("Continue training: y/n ?")
@@ -213,7 +214,8 @@ class LabelRankerModel(tfrs.Model):
                                activation="relu")
     self.dense8 = layers.Dense(1, name="output")
     self.task = tfrs.tasks.Ranking(
-      loss=tfr.keras.losses.PairwiseHingeLoss(),
+      # loss=tfr.keras.losses.PairwiseHingeLoss(),
+      loss=tf.keras.losses.MeanSquaredError(),
       metrics=[
         tfr.keras.metrics.NDCGMetric(name="ndcg_metric"),
         tf.keras.metrics.RootMeanSquaredError()
@@ -279,7 +281,7 @@ def main(args):
   # train_data_path = "./ranker/data/tr_boun-ud-train-ranker-data-rio.tfrecords"
   # dataset = ranker_preprocessor.read_dataset_from_tfrecords(train_data_path, batch_size=5)
 
-  train_proto_path = "./ranker/data/tr_boun-ud-dev-dp-r100.pbtxt"
+  train_proto_path = "./ranker/data/tr_boun-ud-dev-k20-only-edges-dp.pbtxt"
   train_ranker_dataset = reader.ReadRankerTextProto(train_proto_path)
 
 
@@ -291,7 +293,11 @@ def main(args):
   parser_model_name="label_first_gold_morph_and_labels"
   word_embeddings = load_models.load_word_embeddings()
   ranker_prep = ranker_preprocessor.RankerPreprocessor(word_embeddings=word_embeddings)
-  dataset = ranker_prep.make_dataset_from_generator(train_ranker_dataset.datapoint)
+  dataset = ranker_prep.make_dataset_from_generator(train_ranker_dataset.datapoint, batch_size=200)
+  # for example in dataset:
+  #   print(example)
+  #   input()
+  #   break
   if args.load:
     ranker = Ranker(labeler_model_name=labeler_model_name,
                     parser_model_name=parser_model_name,
@@ -308,7 +314,7 @@ def main(args):
                     word_embeddings=word_embeddings,
                     name=args.name)
     print(ranker.label_ranker)
-    history = ranker.train(dataset=dataset, epochs=args.epochs , test_data=test_data, test_every=args.test_every)
+    history = ranker.train(dataset=dataset, iters=args.epochs , test_data=test_data, test_every=args.test_every)
     ranker.save_weights()
   # for k, v in history.history.items():
   #   print(k, v)
@@ -351,11 +357,11 @@ if __name__ == "__main__":
                       help="The name of the model.")
   parser.add_argument("--epochs",
                       type=int,
-                      default=30,
+                      default=100,
                       help="Trains a new model.")
   parser.add_argument("--test_every",
                       type=int,
-                      default=5,
+                      default=0,
                       help="Trains a new model.")
   args = parser.parse_args()
   main(args)

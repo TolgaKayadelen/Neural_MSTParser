@@ -29,14 +29,14 @@ Sentence = sentence_pb2.Sentence
 
 _CURRENT_TIME = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 _EVAL_PATH = "./eval/eval_data/ranker_based_parser"
-_DATA_DIR = "./data/UDv29/test/tr"
+_DATA_DIR = "./data/UDv29/dev/tr"
 
 _feature_extractor = feature_extractor.FeatureExtractor()
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 class RankerBasedDependencyParser:
-  def __init__(self, word_embeddings, labeler_name, parser_name, ranker_name, treebank_name):
+  def __init__(self, word_embeddings, labeler_name, parser_name, ranker_name, treebank_name, k):
     self.preprocessor = load_models.load_preprocessor(word_embeddings=word_embeddings)
     self.labeler = load_models.load_labeler(labeler_name=labeler_name,
                                             prep=self.preprocessor)
@@ -50,17 +50,23 @@ class RankerBasedDependencyParser:
     self.treebank_dataset =  self._get_dataset_from_treebank(treebank_name)
     self.eval_dir = os.path.join(_EVAL_PATH, _CURRENT_TIME)
     os.mkdir(self.eval_dir)
+    self.k = k
 
   def _get_dataset_from_treebank(self, treebank_name):
-    _, _, test_treebank_dataset = load_models.load_data(preprocessor=self.preprocessor,
-                                                        test_treebank=treebank_name,
+    _, dev_treebank_dataset, test_treebank_dataset = load_models.load_data(
+                                                        preprocessor=self.preprocessor,
+                                                        dev_treebank=treebank_name,
+                                                        test_treebank=None,
+                                                        dev_batch_size=1,
                                                         test_batch_size=1)
-    return test_treebank_dataset
+
+    return dev_treebank_dataset
 
   def _get_topk_labels(self, example):
-    label_scores, _ = self.labeler.model({"words": example["words"],
-                                          "pos": example["pos"], "morph": example["morph"]})
-    top_scores, top_k_labels  = tf.math.top_k(label_scores, k=5)
+    scores = self.labeler.model({"words": example["words"],
+                                  "pos": example["pos"], "morph": example["morph"]})
+    label_scores = scores["labels"]
+    top_scores, top_k_labels  = tf.math.top_k(label_scores, k=self.k)
     top_k_labels = self.labeler._flatten(top_k_labels, outer_dim=top_k_labels.shape[2])
     return tf.cast(top_k_labels, tf.int64)
 
@@ -84,6 +90,10 @@ class RankerBasedDependencyParser:
       token = tokens[i]
       word = token.word
       top_k_for_token = top_k_labels[i, :]
+      # print("original data")
+      # print("word ", word)
+      # print("top k labels for word ", top_k_for_token)
+      # input()
       dp.word_id = tf.keras.backend.get_value(word_id)
       dp.word = tf.keras.backend.get_value(word)
       dp.features.CopyFrom(_feature_extractor.get_features(token, sentence.token, n_prev=-2, n_next=2))
@@ -105,17 +115,19 @@ class RankerBasedDependencyParser:
       :param datapoints: a list of Datapoint objects.
       :return: reranked label predictions.
     """
-    # We need to make datasets of batch size 5 so that each token and their 5 hypothesis are captured.
+    # We need to make datasets of batch size k so that each token and their k hypothesis are captured.
     reranked_labels = []
-    dataset = self.ranker_prep.make_dataset_from_generator(datapoints=datapoints, batch_size=5)
+    dataset = self.ranker_prep.make_dataset_from_generator(datapoints=datapoints, batch_size=self.k)
     for example in dataset:
-      # print("example ", example)
+      # print("word ", example["word_string"][0])
       scores = self.ranker.label_ranker(example, training=False)
       # print("scores ", scores)
       top_scoring_hypothesis = np.argmax(scores)
       label = tf.keras.backend.get_value(example["hypo_label_id"][top_scoring_hypothesis])
       # print("top scoring hypothesis ", top_scoring_hypothesis)
       # print("top scoring label ", label)
+      # label_name = tf.keras.backend.get_value(example["hypo_label"][top_scoring_hypothesis])
+      # print("top scoring label name ", label_name)
       # input()
       reranked_labels.append(label)
     return tf.convert_to_tensor(reranked_labels)
@@ -150,6 +162,7 @@ class RankerBasedDependencyParser:
       # print("top k label hypo ", top_k_label_hypo)
       # print("top labels ", top1_labels)
       # print("top 1 labels from scores ", labeler._flatten(tf.argmax(label_scores, 2)))
+      # input()
 
       sent_id = tf.keras.backend.get_value(example["sent_id"][0][0])
       # print("sent id ", sent_id)
@@ -242,7 +255,8 @@ def main(args):
                                        labeler_name=args.labeler_name,
                                        parser_name=args.parser_name,
                                        ranker_name=args.ranker_name,
-                                       treebank_name=args.treebank_name)
+                                       treebank_name=args.treebank_name,
+                                       k=5)
 
   gold_name, parsed_no_ranker_name, parsed_w_ranker_name = parser.parse_and_save()
   gold = parser.read_treebank(gold_name)
@@ -271,10 +285,10 @@ if __name__ == "__main__":
                       help="Pretrained labeler to load.")
   parser.add_argument("--ranker_name",
                       type=str,
-                      default="label_ranker_hinge_loss11",
+                      default="k20-edge-only-mse-error",
                       help="Pretrained ranker model name to load.")
   parser.add_argument("--treebank_name",
                       type=str,
-                      default="tr_boun-ud-test.pbtxt")
+                      default="tr_boun-ud-dev.pbtxt")
   args = parser.parse_args()
   main(args)

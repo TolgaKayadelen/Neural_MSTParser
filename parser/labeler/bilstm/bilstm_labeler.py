@@ -99,8 +99,8 @@ class BiLSTMLabeler(base_parser.BaseParser):
     predictions, correct, losses = {}, {}, {}
     pad_mask = self._flatten((words != 0))
     with tf.GradientTape() as tape:
-      label_scores, lstm_output = self.model({"words": words, "pos": pos, "morph": morph,
-                                              "labels": dep_labels}, training=True)
+      scores = self.model({"words": words, "pos": pos, "morph": morph, "labels": dep_labels}, training=True)
+      label_scores = scores["labels"]
       # print("label scores ", label_scores)
       # input("press to continue.")
       # Get the predicted label indices from the label scores, tensor of shape (batch_size*seq_len, 1)
@@ -183,10 +183,10 @@ class BiLSTMLabeler(base_parser.BaseParser):
     words, pos, morph, dep_labels = (example["words"], example["pos"],
                                      example["morph"], example["dep_labels"])
 
-    label_scores, lstm_output = self.model({"words": words, "pos": pos,
-                                             "morph": morph, "labels": dep_labels}, training=False)
+    scores = self.model({"words": words, "pos": pos, "morph": morph,
+                         "labels": dep_labels}, training=False)
 
-    return {"labels": label_scores,  "edges": None}
+    return {"labels": scores["labels"],  "edges": None}
 
 
 
@@ -256,7 +256,4 @@ class LSTMLabelingModel(tf.keras.Model):
     else:
       sentence_repr = self.lstm_block(word_features)
       labels = self.labels(sentence_repr)
-    if self.return_lstm_output:
-      return labels, sentence_repr
-    else:
-      return labels, None
+    return {"labels": labels,  "edges": None}
