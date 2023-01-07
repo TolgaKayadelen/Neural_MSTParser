@@ -29,7 +29,7 @@ Sentence = sentence_pb2.Sentence
 
 _CURRENT_TIME = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 _EVAL_PATH = "./eval/eval_data/ranker_based_parser"
-_DATA_DIR = "./data/UDv29/dev/tr"
+_DATA_DIR = "./data/UDv29/test/tr"
 
 _feature_extractor = feature_extractor.FeatureExtractor()
 
@@ -55,12 +55,12 @@ class RankerBasedDependencyParser:
   def _get_dataset_from_treebank(self, treebank_name):
     _, dev_treebank_dataset, test_treebank_dataset = load_models.load_data(
                                                         preprocessor=self.preprocessor,
-                                                        dev_treebank=treebank_name,
-                                                        test_treebank=None,
+                                                        dev_treebank=None,
+                                                        test_treebank=treebank_name,
                                                         dev_batch_size=1,
                                                         test_batch_size=1)
 
-    return dev_treebank_dataset
+    return test_treebank_dataset
 
   def _get_topk_labels(self, example):
     scores = self.labeler.model({"words": example["words"],
@@ -256,7 +256,7 @@ def main(args):
                                        parser_name=args.parser_name,
                                        ranker_name=args.ranker_name,
                                        treebank_name=args.treebank_name,
-                                       k=5)
+                                       k=10)
 
   gold_name, parsed_no_ranker_name, parsed_w_ranker_name = parser.parse_and_save()
   gold = parser.read_treebank(gold_name)
@@ -281,7 +281,8 @@ if __name__ == "__main__":
                       help="Pretrained parser to load.")
   parser.add_argument("--labeler_name",
                       type=str,
-                      default="bilstm_labeler_topk",
+                      # default="bilstm_labeler_topk",
+                      default="bilstm_labeler_topk_dev_treebank",
                       help="Pretrained labeler to load.")
   parser.add_argument("--ranker_name",
                       type=str,
@@ -289,6 +290,6 @@ if __name__ == "__main__":
                       help="Pretrained ranker model name to load.")
   parser.add_argument("--treebank_name",
                       type=str,
-                      default="tr_boun-ud-dev.pbtxt")
+                      default="tr_boun-ud-test.pbtxt")
   args = parser.parse_args()
   main(args)

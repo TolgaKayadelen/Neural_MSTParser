@@ -152,13 +152,13 @@ def reward_for_hypothesis(label, gold_label, head_score):
   # print("reward is ", reward)
   return reward
 
-def ranker_datapoint(word_ids, gold_labels, tokens, top_k_labels, head_scores):
+def ranker_datapoint(word_ids, gold_labels, tokens, k_labels, head_scores):
   """Creates a list of ranker datapoints from a sentence.
   Args:
     word_ids: the words (embedding ids) in the sentence.
     gold_labels: the gold dependency label for each word.
     tokens = list of token_pb2.token objects in this sentence
-    top_k_labels: the top k label predictions for each token.
+    k_labels: the top k label predictions for each token or random
     head_scores: the attachment score with the parser for each of the top k labels.
 
   Returns:
@@ -180,7 +180,7 @@ def ranker_datapoint(word_ids, gold_labels, tokens, top_k_labels, head_scores):
     # input()
 
 
-    top_k_for_token = top_k_labels[i, :]
+    top_k_for_token = k_labels[i, :]
     # print("top k for this token ", top_k_for_token)
 
 
@@ -192,7 +192,7 @@ def ranker_datapoint(word_ids, gold_labels, tokens, top_k_labels, head_scores):
     dp.word_id = tf.keras.backend.get_value(word_id)
     dp.word = tf.keras.backend.get_value(word)
     dp.features.CopyFrom(_feature_extractor.get_features(token, tokens, n_prev=-2, n_next=2))
-    for k in range(top_k_labels.shape[1]):
+    for k in range(k_labels.shape[1]):
       hypothesis_k = tf.keras.backend.get_value(top_k_for_token[k])
       hypothesis = dp.hypotheses.add()
       hypothesis.label = dep_label_tags.Tag.Name(hypothesis_k)
@@ -204,7 +204,7 @@ def ranker_datapoint(word_ids, gold_labels, tokens, top_k_labels, head_scores):
     datapoints.append(dp)
   return datapoints
 
-def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, k=5, beam_search=False):
+def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, k=5, random=False, beam_search=False):
   """Generates a training dataset for the reranker.
   Args:
     labeler: A pretrained labeler.
@@ -233,6 +233,12 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, k=5,
     top_k_labels = tf.cast(top_k_labels, tf.int64)
     # print("top k scores ", top_scores)
     # print("Top k labels ", top_k_labels)
+    # input()
+    if random:
+      seq_len = label_scores.shape[1]
+      random_labels = tf.random.uniform(shape=(seq_len, k), minval=1, maxval=43, dtype=tf.int64)
+      # print("random labels ", random_labels)
+      # input()
     correct_labels = example["dep_labels"]
     correct_labels = parser._flatten(correct_labels)
     # print("correct labels ", correct_labels)
@@ -289,7 +295,13 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, k=5,
     # print("k best head scores ", k_best_head_scores)
     # input()
 
-    ranker_dps = ranker_datapoint(example["words"], example["dep_labels"], tokens, top_k_labels,
+    if random:
+      k_labels = random_labels
+    else:
+      k_labels = top_k_labels
+    # print("k labels ", k_labels)
+    # input()
+    ranker_dps = ranker_datapoint(example["words"], example["dep_labels"], tokens, k_labels,
                                   tf.convert_to_tensor(k_best_head_scores))
     for dp in ranker_dps:
       datapoint = ranker_dataset.datapoint.add()
@@ -375,7 +387,8 @@ if __name__== "__main__":
   ranker_dataset = generate_dataset_for_ranker(labeler=labeler, parser=parser,
                                                treebank_path=treebank_path,
                                                dataset=dev_dataset,
-                                               k=20)
+                                               k=20,
+                                               random=True)
 
-  writer.write_proto_as_text(ranker_dataset, "./ranker/data/tr_boun-ud-dev-k20-only-edges-dp.pbtxt")
-  logging.info("Ranker dataset written to //ranker/data/tr_boun-ud-dev-k20-only-edges-dp.pbtxt ")
+  writer.write_proto_as_text(ranker_dataset, "./ranker/data/tr_boun-ud-dev-k20-only-edges-random-dp.pbtxt")
+  logging.info("Ranker dataset written to //ranker/data/tr_boun-ud-dev-k20-only-edges-random-dp.pbtxt ")
