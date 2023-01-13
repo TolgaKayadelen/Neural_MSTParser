@@ -231,14 +231,14 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, k=5,
     top_scores, top_k_labels  = tf.math.top_k(label_scores, k=k)
     top_k_labels = parser._flatten(top_k_labels, outer_dim=top_k_labels.shape[2])
     top_k_labels = tf.cast(top_k_labels, tf.int64)
-    # print("top k scores ", top_scores)
-    # print("Top k labels ", top_k_labels)
-    # input()
+    print("top k scores ", top_scores)
+    print("Top k labels ", top_k_labels)
+    input()
     if random:
       seq_len = label_scores.shape[1]
       random_labels = tf.random.uniform(shape=(seq_len, k), minval=1, maxval=43, dtype=tf.int64)
-      # print("random labels ", random_labels)
-      # input()
+      print("random labels ", random_labels)
+      input()
     correct_labels = example["dep_labels"]
     correct_labels = parser._flatten(correct_labels)
     # print("correct labels ", correct_labels)
@@ -263,6 +263,8 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, k=5,
     gold_acc = gold_correct / total_tokens
 
     # for each k in top_k label outputs, pass them through parser to get parser outputs
+    # TODO: you need to make sure that here, only the label for one token at a time is random or from topk
+    # TODO: and the other tokens are coming from top1 interp of the labeler.
     k_best_head_scores = []
     for i in range(top_k_labels.shape[1]):
       top_i = tf.expand_dims(top_k_labels[:, i], 0)
@@ -299,8 +301,8 @@ def generate_dataset_for_ranker(*, labeler, parser, dataset, treebank_path, k=5,
       k_labels = random_labels
     else:
       k_labels = top_k_labels
-    # print("k labels ", k_labels)
-    # input()
+    print("k labels ", k_labels)
+    input()
     ranker_dps = ranker_datapoint(example["words"], example["dep_labels"], tokens, k_labels,
                                   tf.convert_to_tensor(k_best_head_scores))
     for dp in ranker_dps:
@@ -359,9 +361,9 @@ def compute_performance_with_beam_search(k_best_head_scores, top_k_labels, parse
   return beam_correct
 
 if __name__== "__main__":
-  _data_dir = "./data/UDv29/dev/tr"
+  _data_dir = "./data/UDv29/train/tr"
   _ranker_data_dir = "./ranker/data"
-  _treebank_name = "tr_boun-ud-dev.pbtxt"
+  _treebank_name = "tr_boun-ud-train.pbtxt"
 
   labeler_model_name="bilstm_labeler_topk"
   parser_model_name="label_first_gold_morph_and_labels"
@@ -376,8 +378,8 @@ if __name__== "__main__":
   # get inputs
   train_dataset, dev_dataset, test_dataset = load_models.load_data(
     preprocessor=prep,
-    dev_treebank=_treebank_name,
-    dev_batch_size=1,
+    train_treebank=_treebank_name,
+    batch_size=1,
     type="pbtxt",
   )
   # for batch in dev_dataset:
@@ -386,9 +388,9 @@ if __name__== "__main__":
   treebank_path = os.path.join(_data_dir, _treebank_name)
   ranker_dataset = generate_dataset_for_ranker(labeler=labeler, parser=parser,
                                                treebank_path=treebank_path,
-                                               dataset=dev_dataset,
-                                               k=20,
-                                               random=True)
+                                               dataset=train_dataset,
+                                               k=10,
+                                               random=False)
 
-  writer.write_proto_as_text(ranker_dataset, "./ranker/data/tr_boun-ud-dev-k20-only-edges-random-dp.pbtxt")
-  logging.info("Ranker dataset written to //ranker/data/tr_boun-ud-dev-k20-only-edges-random-dp.pbtxt ")
+  writer.write_proto_as_text(ranker_dataset, "./ranker/data/tr_boun-ud-train-k10-only-edges-random-dp.pbtxt")
+  logging.info("Ranker dataset written to //ranker/data/tr_boun-ud-train-k10-only-edges-random-dp.pbtxt ")
