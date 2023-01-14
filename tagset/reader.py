@@ -22,7 +22,7 @@ _TAGS_TO_REPLACE = {'SEMICOLON': ":", 'COMMA': ",", 'DOT': ".", 'LRB': "-LRB-", 
 
 class LabelReader:
   """The label reader returns a dict of label:index pairs."""
-  def __init__(self, tagset, language, reverse):
+  def __init__(self, tagset, language="tr", reverse=False):
     self._tagset = tagset
     self._language = language
     self._reverse = reverse

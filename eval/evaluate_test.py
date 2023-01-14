@@ -33,7 +33,7 @@ class EvaluateTest(unittest.TestCase):
     def setUp(self):
         self.gold_data = _read_parser_test_data("eval_data_gold")
         self.test_data = _read_parser_test_data("eval_data_test")
-        self.evaluator = evaluate.Evaluator(self.gold_data, self.test_data)
+        self.evaluator = evaluate.Evaluator(self.gold_data, self.test_data, write_results=False)
    
     def test_label_counts(self):
         print("Running test label_counts..")

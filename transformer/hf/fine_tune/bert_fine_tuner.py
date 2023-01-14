@@ -200,10 +200,10 @@ def main():
   # region Argument Parsing
   parser = HfArgumentParser((ModelArguments, DataTrainingArguments, TFTrainingArguments))
   model_args, data_args, training_args = parser.parse_args_into_dataclasses()
-  training_args.num_train_epochs = 1
+  # training_args.num_train_epochs = 1
 
-  print("training args ", training_args)
-  input("training args")
+  # print("training args ", training_args)
+  # input("training args")
 
   # Sending telemetry. Tracking the example usage helps us better allocate resources to maintain them. The
   # information sent is the one passed as arguments along with your Python/PyTorch versions.
@@ -416,7 +416,7 @@ def main():
     # htps://huggingface.co/docs/transformers/main/en/main_classes/model#transformers.TFPreTrainedModel.prepare_tf_dataset
     # https://huggingface.co/docs/datasets/main/en/package_reference/main_classes#datasets.Dataset.to_tf_dataset
 
-    # TODO: this is what you change.
+
     tf_train_dataset = model.prepare_tf_dataset(
       train_dataset,
       collate_fn=collate_fn,

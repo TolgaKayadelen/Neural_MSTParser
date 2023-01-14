@@ -38,11 +38,11 @@ _EVAL_DIR="./eval/eval_data"
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-# label_to_enum = LabelReader.get_labels("dep_labels").labels
+label_reader = LabelReader.get_labels("dep_labels")
 # print("label to enum ", label_to_enum)
 
 def _label_name_to_index(label_name):
-  return dep_label_tags.Tag.Value(label_name)
+  return label_reader.vtoi(label_name)
 
 def evaluate_parser(args, print_results=False):
   """Function to evaluate the dependency parser output on gold data.

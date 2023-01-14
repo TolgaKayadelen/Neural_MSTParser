@@ -17,6 +17,7 @@ py_test(
 	srcs = ["evaluate_test.py"],
 	deps = [
 		":evaluate",
+		"//util:common",
 	],
 	data = [
 		"//data/testdata:parser_main",
