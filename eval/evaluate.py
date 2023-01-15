@@ -33,9 +33,6 @@ from google.protobuf import text_format
 from tagset.dep_labels import dep_label_enum_pb2 as dep_label_tags
 
 import logging
-
-_EVAL_DIR="./eval/eval_data"
-
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 label_reader = LabelReader.get_labels("dep_labels")
@@ -101,10 +98,7 @@ class Evaluator:
                     "labeled_attachment_metrics", "all"]
     self.write_results = write_results
     self.model_name = model_name
-    if write_dir is None:
-      self.write_dir = _EVAL_DIR
-    else:
-      self.write_dir = write_dir
+    self.write_dir = write_dir
   
   @property
   def gold_and_test(self):
@@ -259,6 +253,8 @@ class Evaluator:
     uas = 0.0
     
     for gold_sent, test_sent in self.gold_and_test:
+      # print(gold_sent.sent_id, test_sent.sent_id)
+      # input()
       gold_heads = [tok.selected_head.address for tok in gold_sent.token[1:]]
       # print("gold heads ", gold_heads)
       pred_heads = [tok.selected_head.address for tok in test_sent.token[1:]]
@@ -503,16 +499,17 @@ def _read_file(path):
     read = f.read()
   return read
 
-def _read_parser_test_data(basename):
-  path = os.path.join(_EVAL_DIR, "{}.pbtxt".format(basename))
+def _read_parser_test_data(basename, eval_dir):
+  path = os.path.join(eval_dir, "{}.pbtxt".format(basename))
   return text_format.Parse(_read_file(path), treebank_pb2.Treebank())
 
 
 def main(args):
-  gold_data = _read_parser_test_data(args.gold_data)
-  test_data = _read_parser_test_data(args.test_data)
+  gold_data = _read_parser_test_data(args.gold_data, args.eval_dir)
+  test_data = _read_parser_test_data(args.test_data, args.eval_dir)
   model_name = os.path.basename(args.test_data)
-  evaluator = Evaluator(gold_data, test_data, args.write_results, model_name)
+  evaluator = Evaluator(gold_data, test_data, args.write_results, model_name,
+                        write_dir=args.eval_dir)
   results = evaluator.evaluate(args.metrics)
 
 
@@ -530,6 +527,10 @@ if __name__ == "__main__":
                       choices=["uas_total", "las_total", "typed_uas",
                                "typed_las_prec", "typed_las_recall", "typed_las_f1",
                                "all"])
+  parser.add_argument("--eval_dir",
+                      type=str,
+                      default="./eval/eval_data",
+                      help="Eval dir to read treebanks from.")
 
   args = parser.parse_args()
   main(args)

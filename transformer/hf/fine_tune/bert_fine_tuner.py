@@ -13,6 +13,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# Usage
+# bazel-bin/transformer/hf/bert_fine_tuner --model_name_or_path bert-base-multilingual-uncased
+# --output_dir ./transformer/hf/pretrained
+
 """
 Fine-tuning a 🤗 Transformers model on token classification tasks (NER, POS, CHUNKS) relying on the accelerate library
 without using a Trainer.
@@ -200,7 +205,7 @@ def main():
   # region Argument Parsing
   parser = HfArgumentParser((ModelArguments, DataTrainingArguments, TFTrainingArguments))
   model_args, data_args, training_args = parser.parse_args_into_dataclasses()
-  # training_args.num_train_epochs = 1
+  training_args.num_train_epochs = 6
 
   # print("training args ", training_args)
   # input("training args")
