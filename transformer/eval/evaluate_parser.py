@@ -1,7 +1,7 @@
 """A Parser eval script.
 
 This script can be used when you have a treebank that is labeled with a labeler, and the head tags
-are not predicted (gold). You can then pass this treebank from the lfp-parser using the predicted
+are not predicted (gold). You can then pass this treebank through the lfp-parser using the predicted
 dependency labels and predict head.
 
 You need to have the original (gold) treebank with gold heads and labels and the version
@@ -23,7 +23,7 @@ from data.treebank import treebank_pb2
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230115-155634-iter3"
+_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230117-093948-multilingual-cased"
 
 class ParserEval:
   """Parses a treebank that has already predicted labels and evals uas/las."""

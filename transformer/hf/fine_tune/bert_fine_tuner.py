@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # Usage
-# bazel-bin/transformer/hf/bert_fine_tuner --model_name_or_path bert-base-multilingual-uncased
+# bazel-bin/transformer/hf/bert_fine_tuner --model_name_or_path bert-base-multilingual-cased
 # --output_dir ./transformer/hf/pretrained
 
 """
@@ -70,10 +70,12 @@ class ModelArguments:
     metadata={"help": "Path to pretrained model or model identifier from huggingface.co/models"}
   )
   config_name: Optional[str] = field(
-    default=None, metadata={"help": "Pretrained config name or path if not the same as model_name"}
+    default=None,
+    metadata={"help": "Pretrained config name or path if not the same as model_name"}
   )
   tokenizer_name: Optional[str] = field(
-    default=None, metadata={"help": "Pretrained tokenizer name or path if not the same as model_name"}
+    default=None,
+    metadata={"help": "Pretrained tokenizer name or path if not the same as model_name"}
   )
   cache_dir: Optional[str] = field(
     default=None,
@@ -199,16 +201,18 @@ class DataTrainingArguments:
     self.task_name = self.task_name.lower()
 
 # endregion
-
+### START MAIN CODE ###
 
 def main():
   # region Argument Parsing
   parser = HfArgumentParser((ModelArguments, DataTrainingArguments, TFTrainingArguments))
   model_args, data_args, training_args = parser.parse_args_into_dataclasses()
-  training_args.num_train_epochs = 6
+  # training_args.num_train_epochs = 6
 
-  # print("training args ", training_args)
-  # input("training args")
+  print("training args ",
+        training_args.strategy.scope(),
+        training_args.seed)
+  input("training args")
 
   # Sending telemetry. Tracking the example usage helps us better allocate resources to maintain them. The
   # information sent is the one passed as arguments along with your Python/PyTorch versions.
@@ -245,9 +249,7 @@ def main():
     #   print(raw_datasets["validation"][i])
     #   input()
 
-  # See more about loading any type of standard or custom dataset (from files, python dict, pandas DataFrame, etc) at
   # https://huggingface.co/docs/datasets/loading_datasets.html.
-
   if raw_datasets["train"] is not None:
     column_names = raw_datasets["train"].column_names
     features = raw_datasets["train"].features
@@ -287,6 +289,7 @@ def main():
   # download model & vocab.
   if model_args.config_name:
     config = AutoConfig.from_pretrained(model_args.config_name, num_labels=num_labels)
+  # This is the one that exectures as so the config is the same as model name.
   elif model_args.model_name_or_path:
     config = AutoConfig.from_pretrained(model_args.model_name_or_path, num_labels=num_labels)
   else:
@@ -311,7 +314,6 @@ def main():
   padding = "max_length" if data_args.pad_to_max_length else False
 
   # Tokenize all texts and align the labels with them.
-
   def tokenize_and_align_labels(examples):
     tokenized_inputs = tokenizer(
       examples[text_column_name],
@@ -420,8 +422,6 @@ def main():
     # For more info see the docs:
     # htps://huggingface.co/docs/transformers/main/en/main_classes/model#transformers.TFPreTrainedModel.prepare_tf_dataset
     # https://huggingface.co/docs/datasets/main/en/package_reference/main_classes#datasets.Dataset.to_tf_dataset
-
-
     tf_train_dataset = model.prepare_tf_dataset(
       train_dataset,
       collate_fn=collate_fn,
@@ -435,7 +435,6 @@ def main():
       batch_size=total_eval_batch_size,
       shuffle=False,
     ).with_options(dataset_options)
-
     # endregion
 
     # region Optimizer, loss and compilation
@@ -553,7 +552,6 @@ def main():
     # If you have variable batch sizes (i.e. not using pad_to_max_length), then
     # this bit might fail on TF < 2.8 because TF can't concatenate outputs of varying seq
     # length from predict().
-
     try:
       predictions = model.predict(tf_eval_dataset, batch_size=training_args.per_device_eval_batch_size)["logits"]
     except tf.python.framework.errors_impl.InvalidArgumentError:

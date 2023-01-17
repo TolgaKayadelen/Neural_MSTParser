@@ -11,6 +11,7 @@ if __name__ == "__main__":
   # use_pretrained_weights_from_labeler = True
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
   parser_model_name = "label_first_gold_morph_and_labels"
+  # parser_model_name = "label_first_only_gold_labels"
   logging.info(f"Parser model name is {parser_model_name}")
   model_name_check = input("Did you remember to set the model name properly: y/n?")
   if model_name_check != "y":
@@ -29,7 +30,6 @@ if __name__ == "__main__":
 
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"), None)
-
 
   parser = LabelFirstParser(word_embeddings=prep.word_embeddings,
                             language=language,
@@ -73,7 +73,7 @@ if __name__ == "__main__":
   test_treebank = "tr_boun-ud-test.pbtxt"
   train_dataset, _, test_dataset = load_models.load_data(preprocessor=prep,
                                                       train_treebank=train_treebank,
-                                                      batch_size=25,
+                                                      batch_size=250,
                                                       test_treebank=test_treebank,
                                                       type="pbtxt",
                                                       language=language)

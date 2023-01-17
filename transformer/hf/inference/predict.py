@@ -21,7 +21,7 @@ _data_dir = "./data/UDv29/test/tr"
 _test_data_pbtxt = "tr_boun-ud-test.pbtxt"
 
 class BertInferencePipeline:
-  def __init__(self, model_path, tokenizer_name="bert-base-multilingual-uncased"):
+  def __init__(self, model_path, tokenizer_name="bert-base-multilingual-cased"):
     self.model = TFAutoModelForTokenClassification.from_pretrained(model_path)
     self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name, use_fast=True)
     self.n_tokens  = 0.0
@@ -49,7 +49,7 @@ class BertInferencePipeline:
         aligned_labels.append(label)
         prev_word_index = word_idx
 
-    print("aligned labels ", aligned_labels)
+    # print("aligned labels ", aligned_labels)
     assert len(aligned_labels)  == len(gold_labels), "Mismatch in number of labels"
     # input()
     return aligned_labels
@@ -152,8 +152,8 @@ class BertInferencePipeline:
 
 
 if __name__ == "__main__":
-  pipeline = BertInferencePipeline(model_path="./transformer/hf/pretrained/iter3",
-                                   tokenizer_name="bert-base-multilingual-uncased")
+  pipeline = BertInferencePipeline(model_path="./transformer/hf/pretrained/multilingual-cased",
+                                   tokenizer_name="bert-base-multilingual-cased")
   gold_trb_path, labeled_trb_path = pipeline.predict_labels()
   gold = reader.ReadTreebankTextProto(gold_trb_path)
   labeled = reader.ReadTreebankTextProto(labeled_trb_path)
