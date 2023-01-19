@@ -36,9 +36,9 @@ if __name__ == "__main__":
   parser = BertLabelFirstParser(name=parser_model_name, log_dir=log_dir,
                                 num_labels=num_labels,
                                 test_every=5,
-                                pretrained_bert_model_path="./transformer/hf/pretrained/inheritance_test/bert")
+                                pretrained_bert_model_path="./transformer/hf/pretrained/bert-based-parsing/bert")
   parser.load(name="bert_label_first_parser",
-              path="./transformer/hf/pretrained/inheritance_test")
+              path="./transformer/hf/pretrained/bert-based-parsing")
 
 
   # get the data

@@ -11,7 +11,7 @@ from datasets import load_dataset, disable_caching
 from tensorflow.keras import layers, metrics, losses, optimizers
 from transformers import AutoConfig, AutoTokenizer, TFAutoModelForTokenClassification, DataCollatorForTokenClassification
 from transformers import create_optimizer, set_seed
-
+from transformers import DataCollatorWithPadding
 from parser import base_parser
 from parser.utils import layer_utils
 from util import reader
@@ -27,6 +27,7 @@ disable_caching()
 tokenizer=AutoTokenizer.from_pretrained("bert-base-multilingual-cased", use_fast=True)
 collate_fn = DataCollatorForTokenClassification(tokenizer=tokenizer, return_tensors='tf')
 
+
 raw_dataset = load_dataset("./transformer/hf/dataset/hf_data_loader.py")
 features = raw_dataset["train"].features
 label_list = features["dep_labels"].feature.names
@@ -36,18 +37,22 @@ print("label to id ", label_to_id)
 
 def tokenize_and_align_labels(examples):
   tokenized_inputs = tokenizer(examples["tokens"],
-                               max_length=False, padding=False,
-                               truncation=True, is_split_into_words=True)
+                               max_length=False,
+                               padding=False,
+                               truncation=True,
+                               is_split_into_words=True)
   # print("tokenized inputs ", tokenized_inputs)
   # input()
   labels = []
-  word_indexes = []
+  words = []
   for i, label in enumerate(examples["dep_labels"]):
     # print("i ", i, "label ", label)
     # print("words ", examples["tokens"][i])
     # input()
     word_ids = tokenized_inputs.word_ids(batch_index=i)
     # print("word ids ", word_ids)
+
+    # print("word indexes ", word_indexes)
     # input()
     previous_word_idx = None
     label_ids = []
@@ -71,10 +76,14 @@ def tokenize_and_align_labels(examples):
         # label_ids.append(label_to_id[label[word_idx]])
         label_ids.append(-100)
       previous_word_idx = word_idx
-
+    word_ids = [i if i != None else -100 for i in word_ids]
     labels.append(label_ids)
-    # print("label ids ", label_ids)
+    words.append(word_ids)
+    # print("labels ", labels)
+    # print("words ", words)
+    # input()
   tokenized_inputs["labels"] = labels
+  tokenized_inputs["words"] = words
   # print("tokenized inputs ", tokenized_inputs)
   # input()
   return tokenized_inputs
@@ -90,7 +99,8 @@ class BertLabelFirstParser:
                bert_model_name="bert-base-multilingual-cased",
                pretrained_bert_model_path=None,
                log_dir=None,
-               test_every: int = 5):
+               test_every: int = 5,
+               train_batch_size: int = 1):
     if pretrained_bert_model_path is not None:
       self.bert_model=transformers.TFAutoModelForTokenClassification.from_pretrained(pretrained_bert_model_path)
     else:
@@ -105,6 +115,7 @@ class BertLabelFirstParser:
     self.model = self._parsing_model(model_name=name)
     self.metrics = collections.Counter()
     self.output_dir = "./transformer/hf/pretrained/inheritance_test"
+    self.train_batch_size=train_batch_size
     set_seed(42)
 
 
@@ -187,40 +198,132 @@ class BertLabelFirstParser:
     processed_dataset = raw_dataset.map(
       tokenize_and_align_labels,
       batched=True,
-      remove_columns=raw_dataset["train"].column_names,
+      # remove_columns=raw_dataset["train"].column_names,
       desc="Running tokenizer on dataset")
     return processed_dataset
 
   def _to_tf_dataset(self, train_dataset, validation_dataset):
     dataset_options = tf.data.Options()
     dataset_options.experimental_distribute.auto_shard_policy = tf.data.experimental.AutoShardPolicy.OFF
+    """
     tf_train_dataset = self.bert_model.prepare_tf_dataset(
       train_dataset,
       collate_fn=collate_fn,
-      batch_size=20,
+      batch_size=self.train_batch_size,
       shuffle=True,
     ).with_options(dataset_options)
+    """
 
+    tf_train_dataset = train_dataset.to_tf_dataset(
+      columns=["input_ids", "token_type_ids", "attention_mask"],
+      label_cols=["labels"],
+      shuffle=True,
+      batch_size=self.train_batch_size,
+      collate_fn=collate_fn,
+    ).with_options(dataset_options)
+
+    """
     tf_validation_dataset = self.bert_model.prepare_tf_dataset(
       validation_dataset,
       collate_fn=collate_fn,
       batch_size=10,
       shuffle=False,
     ).with_options(dataset_options)
+    """
+
+    tf_validation_dataset = validation_dataset.to_tf_dataset(
+      columns = ["input_ids", "token_type_ids", "attention_mask"],
+      label_cols = ["labels"],
+      shuffle=False,
+      batch_size=self.train_batch_size,
+      collate_fn=collate_fn,
+    ).with_options(dataset_options)
 
     return tf_train_dataset, tf_validation_dataset
 
+  def make_dataset_from_generator(self, processed_dataset, batch_size):
+    generator = lambda: self._example_generator(processed_dataset)
+    output_shapes = {
+      "sent_id" : [None],
+      "tokens": [None],
+      "dep_labels": [None],
+      "input_ids": [None],
+      "token_type_ids": [None],
+      "attention_mask": [None],
+      "words": [None]
+    }
+    padded_shapes = {
+      "sent_id" : [None],
+      "tokens": [None],
+      "dep_labels": [None],
+      "input_ids": [None],
+      "token_type_ids": [None],
+      "attention_mask": [None],
+      "words": [None]
+    }
+    output_types = {
+      "sent_id" : tf.string,
+      "tokens": tf.string,
+      "dep_labels": tf.int64,
+      "input_ids": tf.int64,
+      "token_type_ids": tf.int64,
+      "attention_mask": tf.int64,
+      "words": tf.int64
+    }
+
+    _padding_values = {
+      "sent_id" : tf.constant("-pad-", dtype=tf.string),
+      "tokens": tf.constant("-pad-", dtype=tf.string),
+      "dep_labels": tf.constant(0, dtype=tf.int64),
+      "input_ids": tf.constant(0, dtype=tf.int64),
+      "token_type_ids": tf.constant(0, dtype=tf.int64),
+      "attention_mask": tf.constant(0, dtype=tf.int64),
+      "words": tf.constant(-100, dtype=tf.int64),
+    }
+    dataset = tf.data.Dataset.from_generator(generator,
+                                             output_shapes=output_shapes,
+                                             output_types=output_types)
+    dataset = dataset.padded_batch(batch_size,
+                                   padded_shapes=padded_shapes,
+                                   padding_values=_padding_values)
+    return dataset
+
+  def _example_generator(self, processed_dataset):
+    yield_dict = {}
+    for example in processed_dataset:
+      # making sure sent_id, original words and original labels match the size
+      # of the tokenized ones.
+      yield_dict["sent_id"] = [example["sent_id"]] * len(example["input_ids"])
+      diff_len = len(example["input_ids"]) - len(example["tokens"])
+      example["tokens"].extend(["-pad-"] * diff_len)
+      example["dep_labels"].extend([0] * diff_len)
+      yield_dict["tokens"] = example["tokens"]
+      yield_dict["dep_labels"] = example["dep_labels"]
+      yield_dict["input_ids"] = example["input_ids"]
+      yield_dict["token_type_ids"] = example["token_type_ids"]
+      yield_dict["attention_mask"] = example["attention_mask"]
+      yield_dict["words"] = example["words"]
+
+      yield yield_dict
+
   def train(self, epochs):
     processed_dataset = self._process_dataset()
-    tf_train_dataset, tf_validation_dataset = self._to_tf_dataset(processed_dataset["train"],
-                                                                  processed_dataset["validation"])
-    print(len(tf_train_dataset))
-    # input()
+    for example in processed_dataset["train"]:
+      print("example ", example)
+      input()
+      break
+    # tf_train_dataset, tf_validation_dataset = self._to_tf_dataset(processed_dataset["train"],
+    #                                                               processed_dataset["validation"])
+    # tf_train_dataset = processed_dataset["train"].with_format("tf")
+    tf_train_dataset = self.make_dataset_from_generator(processed_dataset["train"], batch_size=2)
+    for example in tf_train_dataset:
+      print(example)
+      input()
     loss = CustomNonPaddingTokenLoss()
-    # for example in tf_train_dataset:
-    #   print(example)
-    #   input()
-    #   break
+    for example in tf_train_dataset:
+      print(example)
+      input()
+      break
     # for example in tf_validation_dataset:
     #   print(example)
     #   input()
@@ -242,7 +345,11 @@ class BertLabelFirstParser:
      for step, batch in enumerate(tf_train_dataset):
        with tf.GradientTape() as tape:
           inputs, labels = batch
-          # print("labels ", labels)
+          print("labels ", labels)
+          input()
+          inputs["labels"] = labels
+          print("inputs ", inputs)
+          input()
           predictions = self.model(inputs)
           logits = predictions.logits
           # print("logits ", logits)
@@ -277,7 +384,6 @@ class BertLabelFirstParser:
   def test(self, test_set):
     for example in test_set:
       inputs, labels = example
-      # print("labels ", labels)
       predictions = self.model(inputs, training=False)
       logits = predictions.logits
       # print("logits ", logits)
@@ -354,8 +460,28 @@ class BertLabelFirstParsingModel(tf.keras.Model):
 
 
   def call(self, inputs):
+
     """Forward pass."""
-    predictions = self.bert_model(**inputs)
+    input_ids = inputs["input_ids"]
+    attention_mask = inputs["attention_mask"]
+    token_type_ids=inputs["token_type_ids"]
+    labels = inputs["labels"]
+    predictions = self.bert_model(input_ids, attention_mask, token_type_ids)
+    logits = predictions.logits
+    # print("logits ", logits)
+    preds = tf.argmax(logits, -1)
+    # preds_flat = tf.expand_dims(tf.reshape(preds, shape=(preds.shape[0]*preds.shape[1])), 0)
+    print("preds ", preds)
+    # labels_flat = tf.expand_dims(tf.reshape(labels, shape=(labels.shape[0]*labels.shape[1])), 0)
+    print("labels ", labels)
+    # input()
+    true_preds = [[
+      p.numpy() for (p, l) in zip(pred, label) if l != -100] for (pred, label) in zip(preds, labels)]
+    print("true preds ",  true_preds)
+    maxlen = max(len(l) for l in true_preds)
+    true_preds = tf.convert_to_tensor([l+(maxlen-len(l))*[0] for l in true_preds], dtype=tf.int64)
+    print("true preds ", true_preds)
+    input()
     return predictions
     """
     concat_list = []
