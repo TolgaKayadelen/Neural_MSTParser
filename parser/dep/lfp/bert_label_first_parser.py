@@ -1,9 +1,13 @@
 """This is a seq2seq transformer label first parsing model based on pretrained BERT."""
+import os
+import collections
 import datasets
+import datetime
 import tensorflow as tf
+import numpy as np
 import transformers
 
-from datasets import load_dataset
+from datasets import load_dataset, disable_caching
 from tensorflow.keras import layers, metrics, losses, optimizers
 from transformers import AutoConfig, AutoTokenizer, TFAutoModelForTokenClassification, DataCollatorForTokenClassification
 from transformers import create_optimizer, set_seed
@@ -16,6 +20,8 @@ import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 from typing import List
+
+disable_caching()
 
 
 tokenizer=AutoTokenizer.from_pretrained("bert-base-multilingual-cased", use_fast=True)
@@ -35,6 +41,7 @@ def tokenize_and_align_labels(examples):
   # print("tokenized inputs ", tokenized_inputs)
   # input()
   labels = []
+  word_indexes = []
   for i, label in enumerate(examples["dep_labels"]):
     # print("i ", i, "label ", label)
     # print("words ", examples["tokens"][i])
@@ -61,7 +68,8 @@ def tokenize_and_align_labels(examples):
       # For the other tokens in a word, we set the label to either the current label or -100, depending on
       # the label_all_tokens flag.
       else:
-        label_ids.append(label_to_id[label[word_idx]])
+        # label_ids.append(label_to_id[label[word_idx]])
+        label_ids.append(-100)
       previous_word_idx = word_idx
 
     labels.append(label_ids)
@@ -75,23 +83,30 @@ def tokenize_and_align_labels(examples):
 class BertLabelFirstParser:
   """A label first parser predicts labels before predicting heads."""
   def __init__(self, *,
-               name:str = "Bert_Based_Label_First_Parsing_Model",
+               name:str = "bert_lfp_parser",
                num_labels: int,
                language="tr",
                features=["pos", "morph", "dep_labels"],
                bert_model_name="bert-base-multilingual-cased",
+               pretrained_bert_model_path=None,
                log_dir=None,
                test_every: int = 5):
-    self.bert_config = AutoConfig.from_pretrained(bert_model_name, num_labels=num_labels)
-    self.bert_model = transformers.TFAutoModelForTokenClassification.from_pretrained(
-      bert_model_name, config=self.bert_config)
+    if pretrained_bert_model_path is not None:
+      self.bert_model=transformers.TFAutoModelForTokenClassification.from_pretrained(pretrained_bert_model_path)
+    else:
+      self.bert_config = AutoConfig.from_pretrained(bert_model_name, num_labels=num_labels)
+      self.bert_model = transformers.TFAutoModelForTokenClassification.from_pretrained(
+        bert_model_name, config=self.bert_config)
     # self.raw_dataset = load_dataset("./transformer/hf/dataset/hf_data_loader.py")
     self._use_pos = "pos" in features
     self._use_morph = "morph" in features
     self._use_dep_labels = "dep_labels" in features
     # self.label_to_id = self._get_label_to_id()
     self.model = self._parsing_model(model_name=name)
+    self.metrics = collections.Counter()
+    self.output_dir = "./transformer/hf/pretrained/inheritance_test"
     set_seed(42)
+
 
 
   @property
@@ -168,14 +183,12 @@ class BertLabelFirstParser:
     # model(inputs=self.inputs)
     return model
 
-
   def _process_dataset(self):
     processed_dataset = raw_dataset.map(
       tokenize_and_align_labels,
       batched=True,
       remove_columns=raw_dataset["train"].column_names,
       desc="Running tokenizer on dataset")
-
     return processed_dataset
 
   def _to_tf_dataset(self, train_dataset, validation_dataset):
@@ -184,14 +197,14 @@ class BertLabelFirstParser:
     tf_train_dataset = self.bert_model.prepare_tf_dataset(
       train_dataset,
       collate_fn=collate_fn,
-      batch_size=8,
+      batch_size=20,
       shuffle=True,
     ).with_options(dataset_options)
 
     tf_validation_dataset = self.bert_model.prepare_tf_dataset(
       validation_dataset,
       collate_fn=collate_fn,
-      batch_size=8,
+      batch_size=10,
       shuffle=False,
     ).with_options(dataset_options)
 
@@ -201,11 +214,17 @@ class BertLabelFirstParser:
     processed_dataset = self._process_dataset()
     tf_train_dataset, tf_validation_dataset = self._to_tf_dataset(processed_dataset["train"],
                                                                   processed_dataset["validation"])
-    for example in tf_train_dataset:
-      print(example)
-      y = input()
-      if y == "c":
-        break
+    print(len(tf_train_dataset))
+    # input()
+    loss = CustomNonPaddingTokenLoss()
+    # for example in tf_train_dataset:
+    #   print(example)
+    #   input()
+    #   break
+    # for example in tf_validation_dataset:
+    #   print(example)
+    #   input()
+    #   break
     num_train_steps = int(len(tf_train_dataset)) * epochs
     optimizer, lr_schedule = create_optimizer(
       init_lr=5e-05,
@@ -215,13 +234,88 @@ class BertLabelFirstParser:
       adam_beta2=0.999,
       adam_epsilon=1e-08,
       weight_decay_rate=0.0,
-      adam_global_clipnorm=1.0
-    )
-    self.model.compile(optimizer=optimizer)
-    print(self.model)
-    input()
-    self.model.fit(tf_train_dataset, validation_data=tf_validation_dataset,
-                   epochs=epochs)
+      adam_global_clipnorm=1.0)
+    for epoch in range(epochs):
+     for k, v in self.metrics.items():
+       self.metrics[k] = 0.0
+     epoch_loss = 0.0
+     for step, batch in enumerate(tf_train_dataset):
+       with tf.GradientTape() as tape:
+          inputs, labels = batch
+          # print("labels ", labels)
+          predictions = self.model(inputs)
+          logits = predictions.logits
+          # print("logits ", logits)
+          # input()
+          loss_value = loss(labels, logits)
+          epoch_loss += loss_value
+          if step > 0:
+            print("step ", step)
+            loss_avg = epoch_loss / step
+            print(f"Running Loss ", loss_avg)
+
+       grads = tape.gradient(loss_value, self.model.trainable_weights)
+       optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
+    logging.info(f"End of epoch {epoch}. Saving models.")
+
+    # Saving
+    self.save()
+    # self.model.bert_model.save_pretrained(self.output_dir)
+    # path = os.path.join(self.output_dir, self.model.name)
+    # os.mkdir(path)
+    # self.model.save_weights(os.path.join(path, self.model.name), save_format="tf")
+    # logging.info(f"Saved model to  {path}")
+
+    # self.test(tf_validation_dataset)
+
+  def _flatten(self, _tensor):
+    """The tensor should be a 2D tensor of shape batch_size, n_dim.
+      Returns a tensor of shape (batch_size*n_dim, 1)"""
+    reshaped = tf.reshape(_tensor, shape=(_tensor.shape[0]*_tensor.shape[1]))
+    return reshaped
+
+  def test(self, test_set):
+    for example in test_set:
+      inputs, labels = example
+      # print("labels ", labels)
+      predictions = self.model(inputs, training=False)
+      logits = predictions.logits
+      # print("logits ", logits)
+      preds = tf.argmax(logits, -1)
+      # print("preds ", preds)
+      # input()
+      true_preds = np.array([
+        p.numpy() for (p, l) in zip(self._flatten(preds), self._flatten(labels)) if l != -100])
+      # print("true preds ", true_preds)
+      true_labels = np.array([
+        l.numpy() for (p, l) in zip(self._flatten(preds), self._flatten(labels)) if l != -100])
+      # print("true labels ", true_labels)
+      # input()
+      assert len(true_labels) == len(true_preds), "Fatal: Token mismatch!"
+      n_tokens = len(true_labels)
+      self.metrics["n_tokens"] += n_tokens
+      n_accurate_labels = np.sum(true_preds == true_labels)
+      # print("n accurate labels ", n_accurate_labels)
+      self.metrics["n_accurate_labels"] += n_accurate_labels
+      self.metrics["accuracy"] = self.metrics["n_accurate_labels"] / self.metrics["n_tokens"]
+      print("accuracy ", self.metrics["accuracy"])
+      # input()
+    print(self.metrics)
+
+  def load(self, *, name: str, path):
+    """Loads a pretrained model weights."""
+    path = os.path.join(path, name)
+    load_status = self.model.load_weights(os.path.join(path, name))
+    logging.info(f"Loaded model from model named: {name} in: {path}")
+    load_status.assert_consumed()
+
+  def save(self):
+    current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    save_dir = os.path.join(self.output_dir, current_time)
+    os.mkdir(save_dir)
+    self.model.bert_model.save_pretrained(os.path.join(save_dir, "bert"))
+    self.model.save_weights(os.path.join(save_dir, self.model.name), save_format="tf")
+    logging.info(f"Saved model to  {save_dir}")
 
 
 class BertLabelFirstParsingModel(tf.keras.Model):
@@ -239,13 +333,14 @@ class BertLabelFirstParsingModel(tf.keras.Model):
     self.use_morph = use_morph
 
     self.pretrained_pos_embeddings = layer_utils.EmbeddingLayer(input_dim=37,
-                                                                output_dim=32, name="pos_embeddings",
-                                                                trainable=True)
+                                                                output_dim=32,
+                                                                name="pos_embeddings",
+                                                                trainable=False)
 
     self.pretrained_label_embeddings = layer_utils.EmbeddingLayer(input_dim=43,
                                                                   output_dim=50,
                                                                   name="label_embeddings",
-                                                                  trainable=True)
+                                                                  trainable=False)
 
     self.concatenate = layers.Concatenate(name="concat")
 
@@ -257,22 +352,11 @@ class BertLabelFirstParsingModel(tf.keras.Model):
                                                  name="dep_mlp")
     self.edge_scorer = layer_utils.EdgeScorer(n_units=256, name="edge_scorer")
 
-  def call(self, inputs, training=True): # inputs = Dict[str, tf.keras.Input]
-    """Forward pass.
-    Args:
-      inputs: Dict[str, tf.keras.Input]. This consist of
-        words: Tensor of shape (batch_size, seq_len)
-        pos: Tensor of shape (batch_size, seq_len)
-        morph: Tensor of shape (batch_size, seq_len, 66)
-        dep_labels: Tensor of shape (batch_size, seq_len)
-      The boolean values set up during the initiation of the model determines
-      which one of these features to use or not.
-    Returns:
-      A dict which conteins:
-        edge_scores: [batch_size, seq_len, seq_len] head preds for all tokens (i.e. 10, 34, 34)
-        label_scores: [batch_size, seq_len, n_labels] label preds for tokens (i.e. 10, 34, 36)
-    """
-    pass
+
+  def call(self, inputs):
+    """Forward pass."""
+    predictions = self.bert_model(**inputs)
+    return predictions
     """
     concat_list = []
     print(inputs["tokens"])
@@ -308,3 +392,28 @@ class BertLabelFirstParsingModel(tf.keras.Model):
     edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
     return {"edges": edge_scores}
     """
+
+class CustomNonPaddingTokenLoss(tf.keras.losses.Loss):
+  def __init__(self, name="custom_lfp_loss"):
+    super().__init__(name=name)
+    self.ignore_index = -100
+
+  def call(self, y_true, y_pred):
+    # print("labels before ", y_true)
+    mask = tf.cast((y_true != self.ignore_index), dtype=tf.int64)
+    # print("mask ", mask)
+    y_true = y_true * mask
+    # print("labels after ", y_true)
+    loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(
+      from_logits=True, reduction=tf.keras.losses.Reduction.NONE
+    )
+    # input()
+    loss = loss_fn(y_true, y_pred)
+    # print("loss before ", loss)
+    mask = tf.cast(mask, tf.float32)
+    loss = loss * mask
+    # print("loss after ", loss)
+    loss_value = tf.reduce_sum(loss) / tf.reduce_sum(mask)
+    # print("loss value ", loss_value)
+    # input()
+    return loss_value

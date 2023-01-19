@@ -33,7 +33,12 @@ if __name__ == "__main__":
   num_labels = label_feature.n_values
   print(f"num labels {num_labels}")
 
-  parser = BertLabelFirstParser(name=parser_model_name, log_dir=log_dir, num_labels=num_labels, test_every=5)
+  parser = BertLabelFirstParser(name=parser_model_name, log_dir=log_dir,
+                                num_labels=num_labels,
+                                test_every=5,
+                                pretrained_bert_model_path="./transformer/hf/pretrained/inheritance_test/bert")
+  parser.load(name="bert_label_first_parser",
+              path="./transformer/hf/pretrained/inheritance_test")
 
 
   # get the data
@@ -49,8 +54,8 @@ if __name__ == "__main__":
   # for batch in train_dataset:
   #   print(batch)
   # input()
-  metrics = parser.train(epochs=3)
-  print(metrics)
-  writer.write_proto_as_text(metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
+  parser.train(epochs=1)
+  # print(metrics)
+  # writer.write_proto_as_text(metrics, f"./model/nn/plot/final/{parser_model_name}_metrics.pbtxt")
   # parser.save_weights()
   # logging.info("weights saved!")
