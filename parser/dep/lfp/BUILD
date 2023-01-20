@@ -34,5 +34,6 @@ py_library(
   deps = [
     "//parser:base_parser",
     "//parser:nn_parser_lib",
+    "//tagset:reader",
   ],
 )

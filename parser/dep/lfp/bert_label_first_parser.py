@@ -14,21 +14,19 @@ from transformers import create_optimizer, set_seed
 from transformers import DataCollatorWithPadding
 from parser import base_parser
 from parser.utils import layer_utils
+from tagset.reader import LabelReader as label_reader
 from util import reader
+
 
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
 from typing import List
 
-disable_caching()
-
+# disable_caching()
 
 tokenizer=AutoTokenizer.from_pretrained("bert-base-multilingual-cased", use_fast=True)
-collate_fn = DataCollatorForTokenClassification(tokenizer=tokenizer, return_tensors='tf')
-
-
-raw_dataset = load_dataset("./transformer/hf/dataset/hf_data_loader.py")
+raw_dataset = load_dataset("./transformer/hf/dataset/boun_hf_data_loader.py")
 features = raw_dataset["train"].features
 label_list = features["dep_labels"].feature.names
 label_to_id = {i: i for i in range(len(label_list))}
@@ -115,6 +113,7 @@ class BertLabelFirstParser:
     self.metrics = collections.Counter()
     self.output_dir = "./transformer/hf/pretrained/inheritance_test"
     self.train_batch_size=train_batch_size
+    self.pos_reader = label_reader.get_labels("pos", "tr")
     set_seed(42)
 
 
@@ -205,39 +204,51 @@ class BertLabelFirstParser:
     output_shapes = {
       "sent_id" : [None],
       "tokens": [None],
+      "pos": [None],
+      "heads": [None],
       "dep_labels": [None],
       "input_ids": [None],
       "token_type_ids": [None],
       "attention_mask": [None],
-      "words": [None]
+      "words": [None],
+      "labels": [None]
     }
     padded_shapes = {
       "sent_id" : [None],
       "tokens": [None],
+      "pos": [None],
+      "heads": [None],
       "dep_labels": [None],
       "input_ids": [None],
       "token_type_ids": [None],
       "attention_mask": [None],
-      "words": [None]
+      "words": [None],
+      "labels": [None]
     }
     output_types = {
       "sent_id" : tf.string,
       "tokens": tf.string,
+      "pos": tf.int64,
+      "heads": tf.int64,
       "dep_labels": tf.int64,
       "input_ids": tf.int64,
       "token_type_ids": tf.int64,
       "attention_mask": tf.int64,
-      "words": tf.int64
+      "words": tf.int64,
+      "labels": tf.int64
     }
 
     _padding_values = {
       "sent_id" : tf.constant("-pad-", dtype=tf.string),
       "tokens": tf.constant("-pad-", dtype=tf.string),
+      "pos": tf.constant(0, dtype=tf.int64),
+      "heads": tf.constant(-100, dtype=tf.int64),
       "dep_labels": tf.constant(0, dtype=tf.int64),
       "input_ids": tf.constant(0, dtype=tf.int64),
       "token_type_ids": tf.constant(0, dtype=tf.int64),
       "attention_mask": tf.constant(0, dtype=tf.int64),
       "words": tf.constant(-100, dtype=tf.int64),
+      "labels": tf.constant(-100, dtype=tf.int64)
     }
     dataset = tf.data.Dataset.from_generator(generator,
                                              output_shapes=output_shapes,
@@ -256,12 +267,18 @@ class BertLabelFirstParser:
       diff_len = len(example["input_ids"]) - len(example["tokens"])
       example["tokens"].extend(["-pad-"] * diff_len)
       example["dep_labels"].extend([0] * diff_len)
+      example["pos"].extend(["-pad-"] * diff_len)
+      example["pos"] = [self.pos_reader.vtoi(pos) for pos in example["pos"]]
+      example["heads"].extend([-100] * diff_len)
       yield_dict["tokens"] = example["tokens"]
       yield_dict["dep_labels"] = example["dep_labels"]
+      yield_dict["pos"] = example["pos"]
+      yield_dict["heads"] = example["heads"]
       yield_dict["input_ids"] = example["input_ids"]
       yield_dict["token_type_ids"] = example["token_type_ids"]
       yield_dict["attention_mask"] = example["attention_mask"]
       yield_dict["words"] = example["words"]
+      yield_dict["labels"] = example["labels"]
 
       yield yield_dict
 
@@ -271,6 +288,7 @@ class BertLabelFirstParser:
       print("example ", example)
       input()
       break
+
     # tf_train_dataset, tf_validation_dataset = self._to_tf_dataset(processed_dataset["train"],
     #                                                               processed_dataset["validation"])
     # tf_train_dataset = processed_dataset["train"].with_format("tf")

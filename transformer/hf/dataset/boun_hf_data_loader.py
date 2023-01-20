@@ -6,7 +6,7 @@ import datasets
 import logging
 from copy import deepcopy
 
-_DESCRIPTION = """Dependency labels from boun treebank."""
+_DESCRIPTION = """Boun dependency treebank"""
 _DATA_DIR = "./data/UDv29/languages/Turkish/BOUN"
 _TRAINING_FILE = "tr_boun-ud-train.conllu"
 _DEV_FILE = "tr_boun-ud-dev.conllu"
@@ -54,6 +54,8 @@ def convert_to_dict(sentence_list):
   """
   for sentence in sentence_list:
     tokens = []
+    pos = []
+    heads = []
     dep_labels = []
     for line in sentence:
       if line.startswith('# newdoc'):
@@ -97,27 +99,32 @@ def convert_to_dict(sentence_list):
         continue
       values = [item.strip() for item in line.split("\t")]
       tokens.append(values[1])
+      pos.append(values[4])
+      heads.append(values[6])
       dep_labels.append(values[7])
     yield {
       "sent_id": sent_id,
       "tokens": tokens,
+      "pos": pos,
+      "heads": heads,
       "dep_labels": dep_labels,
     }
 
-class BounDepLabelConfig(datasets.BuilderConfig):
+class BounTreebankConfig(datasets.BuilderConfig):
   """BuilderConfig for BounDepLabels"""
 
   def __init__(self, **kwargs):
-    """BuilderConfig for BounDepLabels.
+    """BuilderConfig for BounTreebank.
     Args:
       **kwargs: keyword arguments forwarded to super.
     """
-    super(BounDepLabelConfig, self).__init__(**kwargs)
+    super(BounTreebankConfig, self).__init__(**kwargs)
 
 
-class BounDepLabels(datasets.GeneratorBasedBuilder):
+class BounTreebank(datasets.GeneratorBasedBuilder):
     BUILDER_CONFIGS = [
-      BounDepLabelConfig(name="BounDepLabels", version=datasets.Version("1.0.0"), description="Boun Dependency Labels"),
+      BounTreebankConfig(name="BounTreebank", version=datasets.Version("1.0.0"),
+                         description="Boun Dependency Treebank"),
     ]
     def _info(self):
       return datasets.DatasetInfo(
@@ -126,6 +133,8 @@ class BounDepLabels(datasets.GeneratorBasedBuilder):
           {
             "sent_id": datasets.Value("string"),
             "tokens": datasets.Sequence(datasets.Value("string")),
+            "pos": datasets.Sequence(datasets.Value("string")),
+            "heads": datasets.Sequence(datasets.Value("int32")),
             "dep_labels": datasets.Sequence(
               datasets.features.ClassLabel(
                 names=[
@@ -199,6 +208,8 @@ class BounDepLabels(datasets.GeneratorBasedBuilder):
       key = 0
       for sentence in sentence_list:
         tokens = []
+        pos = []
+        heads = []
         dep_labels = []
         key += 1
         for line in sentence:
@@ -243,16 +254,21 @@ class BounDepLabels(datasets.GeneratorBasedBuilder):
             continue
           values = [item.strip() for item in line.split("\t")]
           tokens.append(values[1])
+          pos.append(values[4])
+          heads.append(values[6])
           dep_labels.append(values[7])
         yield key, {
           "sent_id": sent_id,
           "tokens": tokens,
+          "pos": pos,
+          "heads": heads,
           "dep_labels": dep_labels,
         }
 
 
 # if __name__ == "__main__":
 #   sentence_list = read_conllx(os.path.join(_DATA_DIR, _DEV_FILE))
-#   for sentence in convert_to_dict(sentence_list):
+#   converted = convert_to_dict(sentence_list)
+#   for sentence in converted:
 #     print(sentence)
-#     input()
+#      input()
