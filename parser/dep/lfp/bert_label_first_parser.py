@@ -107,7 +107,6 @@ class BertLabelFirstParser:
       self.bert_config = AutoConfig.from_pretrained(bert_model_name, num_labels=num_labels)
       self.bert_model = transformers.TFAutoModelForTokenClassification.from_pretrained(
         bert_model_name, config=self.bert_config)
-    # self.raw_dataset = load_dataset("./transformer/hf/dataset/hf_data_loader.py")
     self._use_pos = "pos" in features
     self._use_morph = "morph" in features
     self._use_dep_labels = "dep_labels" in features
@@ -198,48 +197,8 @@ class BertLabelFirstParser:
     processed_dataset = raw_dataset.map(
       tokenize_and_align_labels,
       batched=True,
-      # remove_columns=raw_dataset["train"].column_names,
       desc="Running tokenizer on dataset")
     return processed_dataset
-
-  def _to_tf_dataset(self, train_dataset, validation_dataset):
-    dataset_options = tf.data.Options()
-    dataset_options.experimental_distribute.auto_shard_policy = tf.data.experimental.AutoShardPolicy.OFF
-    """
-    tf_train_dataset = self.bert_model.prepare_tf_dataset(
-      train_dataset,
-      collate_fn=collate_fn,
-      batch_size=self.train_batch_size,
-      shuffle=True,
-    ).with_options(dataset_options)
-    """
-
-    tf_train_dataset = train_dataset.to_tf_dataset(
-      columns=["input_ids", "token_type_ids", "attention_mask"],
-      label_cols=["labels"],
-      shuffle=True,
-      batch_size=self.train_batch_size,
-      collate_fn=collate_fn,
-    ).with_options(dataset_options)
-
-    """
-    tf_validation_dataset = self.bert_model.prepare_tf_dataset(
-      validation_dataset,
-      collate_fn=collate_fn,
-      batch_size=10,
-      shuffle=False,
-    ).with_options(dataset_options)
-    """
-
-    tf_validation_dataset = validation_dataset.to_tf_dataset(
-      columns = ["input_ids", "token_type_ids", "attention_mask"],
-      label_cols = ["labels"],
-      shuffle=False,
-      batch_size=self.train_batch_size,
-      collate_fn=collate_fn,
-    ).with_options(dataset_options)
-
-    return tf_train_dataset, tf_validation_dataset
 
   def make_dataset_from_generator(self, processed_dataset, batch_size):
     generator = lambda: self._example_generator(processed_dataset)
@@ -320,10 +279,6 @@ class BertLabelFirstParser:
       print(example)
       input()
     loss = CustomNonPaddingTokenLoss()
-    for example in tf_train_dataset:
-      print(example)
-      input()
-      break
     # for example in tf_validation_dataset:
     #   print(example)
     #   input()
