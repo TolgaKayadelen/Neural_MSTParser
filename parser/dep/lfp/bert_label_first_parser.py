@@ -98,7 +98,9 @@ class BertLabelFirstParser:
                pretrained_bert_model_path=None,
                log_dir=None,
                test_every: int = 5,
-               train_batch_size: int = 1):
+               label_embedding_weights = None,
+               pos_embeddings_weights = None,
+               train_batch_size: int = 2):
     if pretrained_bert_model_path is not None:
       self.bert_model=transformers.TFAutoModelForTokenClassification.from_pretrained(pretrained_bert_model_path)
     else:
@@ -108,50 +110,20 @@ class BertLabelFirstParser:
     self._use_pos = "pos" in features
     self._use_morph = "morph" in features
     self._use_dep_labels = "dep_labels" in features
-    # self.label_to_id = self._get_label_to_id()
-    self.model = self._parsing_model(model_name=name)
     self.metrics = collections.Counter()
-    self.output_dir = "./transformer/hf/pretrained/inheritance_test"
+    self.output_dir = "./transformer/hf/pretrained/bert-based-parsing"
     self.train_batch_size=train_batch_size
     self.pos_reader = label_reader.get_labels("pos", "tr")
+    # Setting up the model.
+    self.model = self._parsing_model(model_name=name)
+    self.model.pretrained_label_embeddings.set_weights(label_embedding_weights)
+    self.model.pretrained_label_embeddings.trainable = False
+    self.model.pretrained_pos_embeddings.set_weights(pos_embeddings_weights)
+    self.model.pretrained_pos_embeddings.trainable = False
+    logging.info(f"Installed label embeddings, trainable {self.model.pretrained_label_embeddings.trainable}")
+    logging.info(f"Installed pos embeddings, trainable {self.model.pretrained_pos_embeddings.trainable}")
+    input()
     set_seed(42)
-
-
-
-  @property
-  def _optimizer(self):
-    return tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
-
-  def _training_metrics(self):
-    return {
-      "heads": metrics.SparseCategoricalAccuracy(),
-      "labels": metrics.SparseCategoricalAccuracy()
-    }
-
-  @property
-  def _head_loss_function(self):
-    """Returns loss per token for head prediction.
-    As we use the SparseCategoricalCrossentropy function, we expect the target labels
-    to be provided as integers indexing the correct labels rather than one hot vectors.
-    For details, refer to:
-    https://www.tensorflow.org/api_docs/python/tf/keras/losses/SparseCategoricalCrossentropy
-    """
-    return losses.SparseCategoricalCrossentropy(from_logits=True,
-                                                reduction=tf.keras.losses.Reduction.NONE)
-
-  @property
-  def _label_loss_function(self):
-    """Returns loss per token for label prediction.
-
-    As we use the SparseCategoricalCrossentropy function, we expect the target labels to be
-    to be provided as integers indexing the correct labels rather than one hot vectors. The predictions
-    should be keeping the probs as float values for each label per token.
-
-    For details, refer to:
-    https://www.tensorflow.org/api_docs/python/tf/keras/losses/SparseCategoricalCrossentropy"""
-
-    return losses.SparseCategoricalCrossentropy(from_logits=True,
-                                                reduction=tf.keras.losses.Reduction.NONE)
 
   @property
   def inputs(self):
@@ -168,13 +140,6 @@ class BertLabelFirstParser:
     input_dict["tokens"] = token_inputs
     return input_dict
 
-  # def _get_label_to_id(self):
-  #  features = self.raw_dataset["train"].features
-  #  label_list = features["dep_labels"].feature.names
-    # No need to convert the labels since they are already ints.
-  #  label_to_id = {i: i for i in range(len(label_list))}
-  #  return label_to_id
-
   def _n_words_in_batch(self, words, pad_mask=None):
     words_reshaped = tf.reshape(words, shape=pad_mask.shape)
     return len(tf.boolean_mask(words_reshaped, pad_mask))
@@ -186,8 +151,7 @@ class BertLabelFirstParser:
       name=model_name,
       use_pos=self._use_pos,
       use_morph=self._use_morph,
-      bert_model=self.bert_model,
-
+      bert_model=self.bert_model
     )
     # model(inputs=self.inputs)
     return model
@@ -284,24 +248,19 @@ class BertLabelFirstParser:
 
   def train(self, epochs):
     processed_dataset = self._process_dataset()
-    for example in processed_dataset["train"]:
-      print("example ", example)
-      input()
-      break
-
-    # tf_train_dataset, tf_validation_dataset = self._to_tf_dataset(processed_dataset["train"],
-    #                                                               processed_dataset["validation"])
-    # tf_train_dataset = processed_dataset["train"].with_format("tf")
-    tf_train_dataset = self.make_dataset_from_generator(processed_dataset["train"], batch_size=2)
-    for example in tf_train_dataset:
-      print(example)
-      input()
-    loss = CustomNonPaddingTokenLoss()
-    # for example in tf_validation_dataset:
-    #   print(example)
+    dataset_length = len(processed_dataset["train"])
+    print("Train Dataset Size: ", dataset_length)
+    # for example in processed_dataset["train"]:
+    #   print("example ", example)
     #   input()
     #   break
-    num_train_steps = int(len(tf_train_dataset)) * epochs
+    tf_train_dataset = self.make_dataset_from_generator(processed_dataset["train"],
+                                                        batch_size=self.train_batch_size)
+    # for example in tf_train_dataset:
+    #   print(example)
+    #   input()
+    loss = CustomNonPaddingTokenLoss()
+    num_train_steps = dataset_length * epochs
     optimizer, lr_schedule = create_optimizer(
       init_lr=5e-05,
       num_train_steps=num_train_steps,
@@ -317,23 +276,18 @@ class BertLabelFirstParser:
      epoch_loss = 0.0
      for step, batch in enumerate(tf_train_dataset):
        with tf.GradientTape() as tape:
-          inputs, labels = batch
+          labels = batch["labels"]
           print("labels ", labels)
-          input()
-          inputs["labels"] = labels
-          print("inputs ", inputs)
-          input()
-          predictions = self.model(inputs)
+          predictions = self.model(batch)
           logits = predictions.logits
-          # print("logits ", logits)
-          # input()
+          print("logits ", logits)
+          input()
           loss_value = loss(labels, logits)
           epoch_loss += loss_value
           if step > 0:
             print("step ", step)
             loss_avg = epoch_loss / step
             print(f"Running Loss ", loss_avg)
-
        grads = tape.gradient(loss_value, self.model.trainable_weights)
        optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
     logging.info(f"End of epoch {epoch}. Saving models.")
@@ -403,7 +357,7 @@ class BertLabelFirstParsingModel(tf.keras.Model):
                name="Bert_Based_Label_First_Parsing_Model",
                bert_model,
                use_pos:bool = True,
-               use_morph:bool=True,
+               use_morph:bool=False,
                ):
     super(BertLabelFirstParsingModel, self).__init__(name=name)
 
@@ -439,53 +393,31 @@ class BertLabelFirstParsingModel(tf.keras.Model):
     attention_mask = inputs["attention_mask"]
     token_type_ids=inputs["token_type_ids"]
     labels = inputs["labels"]
-    predictions = self.bert_model(input_ids, attention_mask, token_type_ids)
-    logits = predictions.logits
+    print("inputs ids ", input_ids, "attention mask ", attention_mask, "token_type_ids ", token_type_ids)
+    input()
+    label_predictions = self.bert_model(input_ids=input_ids,
+                                        attention_mask=attention_mask,
+                                        token_type_ids=token_type_ids)
+    logits = label_predictions.logits
     # print("logits ", logits)
-    preds = tf.argmax(logits, -1)
+    label_preds = tf.argmax(logits, -1)
     # preds_flat = tf.expand_dims(tf.reshape(preds, shape=(preds.shape[0]*preds.shape[1])), 0)
-    print("preds ", preds)
+    print("label_preds ", label_preds)
     # labels_flat = tf.expand_dims(tf.reshape(labels, shape=(labels.shape[0]*labels.shape[1])), 0)
     print("labels ", labels)
     # input()
     true_preds = [[
-      p.numpy() for (p, l) in zip(pred, label) if l != -100] for (pred, label) in zip(preds, labels)]
+      p.numpy() for (p, l) in zip(pred, label) if l != -100] for (pred, label) in zip(label_preds, labels)]
     print("true preds ",  true_preds)
-    maxlen = max(len(l) for l in true_preds)
-    true_preds = tf.convert_to_tensor([l+(maxlen-len(l))*[0] for l in true_preds], dtype=tf.int64)
+    padded_len = inputs["dep_labels"].shape[1]
+    print("padded length ", padded_len)
+    true_preds = tf.convert_to_tensor([l+(padded_len-len(l))*[0] for l in true_preds], dtype=tf.int64)
     print("true preds ", true_preds)
+    print("dep labels ", inputs["dep_labels"])
+    print("words ",  inputs["words"])
     input()
-    return predictions
+    return label_predictions
     """
-    concat_list = []
-    print(inputs["tokens"])
-    input()
-    tokenized = self.tokenizer(inputs["tokens"], is_split_into_words=True, return_tensors='tf')
-    print("tokenized ", tokenized)
-    input()
-    input_ids, attn_mask = tokenized["input_ids"], tokenized["attention_mask"]
-    print("input ids ", input_ids)
-    print("attention mask ", attn_mask)
-    outputs = self.bert(input_ids, attn_mask, training=training)
-    print("outputs ", outputs)
-    input()
-    unaligned_labels = tf.argmax(outputs.logits, -1)
-    print("unaligned labels ", unaligned_labels)
-    input()
-    # label_preds = self._align_labels()
-    # label_embeddings = self.label_embeddings(label_preds)
-    # concat_list.append(label_embeddings)
-    if self.use_pos:
-      pos_inputs = inputs["pos"]
-      pos_features = self.pos_embeddings(pos_inputs)
-      concat_list.append(pos_features)
-    if self.use_morph:
-      morph_inputs = inputs["morph"]
-      concat_list.append(morph_inputs)
-    if len(concat_list) > 1:
-      encoding_for_parse = self.concatenate(concat_list)
-      # print("sentence repr ", sentence_repr)
-
     h_arc_head = self.head_perceptron(encoding_for_parse)
     h_arc_dep = self.dep_perceptron(encoding_for_parse)
     edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)

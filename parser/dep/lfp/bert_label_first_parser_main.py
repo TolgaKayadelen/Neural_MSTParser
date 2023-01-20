@@ -1,5 +1,9 @@
+
+import sys
 import logging
 import datetime
+
+import numpy as np
 
 from input import preprocessor
 from parser.utils import load_models
@@ -9,8 +13,13 @@ from util import writer
 
 
 if __name__ == "__main__":
-  # use_pretrained_weights_from_labeler = True
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+  label_embedding_weights = load_models.load_layer_weights("label_embeddings_weights")
+  print(f"Loaded label embedding weights from pretrained with shape: {label_embedding_weights.shape}")
+  pos_embeddings_weights = load_models.load_layer_weights("pos_embeddings_weights")
+  print(f"Loaded pos embedding weights from pretrained with shape {pos_embeddings_weights.shape}")
+  input()
+
   parser_model_name = "bert_label_first_parser"
 
   logging.info(f"Parser model name is {parser_model_name}")
@@ -36,6 +45,8 @@ if __name__ == "__main__":
   parser = BertLabelFirstParser(name=parser_model_name, log_dir=log_dir,
                                 num_labels=num_labels,
                                 test_every=5,
+                                label_embedding_weights=label_embedding_weights,
+                                pos_embeddings_weights=pos_embeddings_weights,
                                 pretrained_bert_model_path="./transformer/hf/pretrained/bert-based-parsing/bert")
   parser.load(name="bert_label_first_parser",
               path="./transformer/hf/pretrained/bert-based-parsing")
