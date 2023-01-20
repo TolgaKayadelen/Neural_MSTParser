@@ -122,7 +122,7 @@ class BertLabelFirstParser:
     self.model.pretrained_pos_embeddings.trainable = False
     logging.info(f"Installed label embeddings, trainable {self.model.pretrained_label_embeddings.trainable}")
     logging.info(f"Installed pos embeddings, trainable {self.model.pretrained_pos_embeddings.trainable}")
-    input()
+    # input()
     set_seed(42)
 
   @property
@@ -259,7 +259,8 @@ class BertLabelFirstParser:
     # for example in tf_train_dataset:
     #   print(example)
     #   input()
-    loss = CustomNonPaddingTokenLoss()
+    label_loss = CustomNonPaddingTokenLoss(name="lfp_label_loss", ignore_index=-100)
+    head_loss = CustomNonPaddingTokenLoss(name="lfp_head_loss", ignore_index=-100)
     num_train_steps = dataset_length * epochs
     optimizer, lr_schedule = create_optimizer(
       init_lr=5e-05,
@@ -276,14 +277,24 @@ class BertLabelFirstParser:
      epoch_loss = 0.0
      for step, batch in enumerate(tf_train_dataset):
        with tf.GradientTape() as tape:
-          labels = batch["labels"]
-          print("labels ", labels)
-          predictions = self.model(batch)
-          logits = predictions.logits
-          print("logits ", logits)
+
+          scores = self.model(batch)
+          edge_scores, label_scores = scores["edges"], scores["labels"]
+          print("label scores ", label_scores )
+          print("edge scores ", edge_scores)
           input()
-          loss_value = loss(labels, logits)
-          epoch_loss += loss_value
+          labels = batch["labels"]
+          print("correct labels ", labels)
+          heads = batch["heads"]
+          print("correct heads ", heads)
+          input()
+
+          label_loss_value = label_loss(labels, label_scores)
+          print("label loss value ", label_loss_value)
+          head_loss_value = head_loss(heads, edge_scores)
+          print("head loss value ", head_loss_value)
+          input()
+          epoch_loss += label_loss_value
           if step > 0:
             print("step ", step)
             loss_avg = epoch_loss / step
@@ -398,9 +409,10 @@ class BertLabelFirstParsingModel(tf.keras.Model):
     label_predictions = self.bert_model(input_ids=input_ids,
                                         attention_mask=attention_mask,
                                         token_type_ids=token_type_ids)
-    logits = label_predictions.logits
-    # print("logits ", logits)
-    label_preds = tf.argmax(logits, -1)
+    label_scores = label_predictions.logits
+    print("label_sscores ", label_scores)
+    input()
+    label_preds = tf.argmax(label_scores, axis=2)
     # preds_flat = tf.expand_dims(tf.reshape(preds, shape=(preds.shape[0]*preds.shape[1])), 0)
     print("label_preds ", label_preds)
     # labels_flat = tf.expand_dims(tf.reshape(labels, shape=(labels.shape[0]*labels.shape[1])), 0)
@@ -409,6 +421,7 @@ class BertLabelFirstParsingModel(tf.keras.Model):
     true_preds = [[
       p.numpy() for (p, l) in zip(pred, label) if l != -100] for (pred, label) in zip(label_preds, labels)]
     print("true preds ",  true_preds)
+    input()
     padded_len = inputs["dep_labels"].shape[1]
     print("padded length ", padded_len)
     true_preds = tf.convert_to_tensor([l+(padded_len-len(l))*[0] for l in true_preds], dtype=tf.int64)
@@ -416,35 +429,40 @@ class BertLabelFirstParsingModel(tf.keras.Model):
     print("dep labels ", inputs["dep_labels"])
     print("words ",  inputs["words"])
     input()
-    return label_predictions
-    """
-    h_arc_head = self.head_perceptron(encoding_for_parse)
-    h_arc_dep = self.dep_perceptron(encoding_for_parse)
+    embedded_preds = self.pretrained_label_embeddings(true_preds)
+    print("embedded preds ", embedded_preds)
+    h_arc_head = self.head_perceptron(embedded_preds)
+    h_arc_dep = self.dep_perceptron(embedded_preds)
     edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
-    return {"edges": edge_scores}
-    """
+    head_preds = tf.argmax(edge_scores, axis=2)
+    print("head preds ", head_preds)
+    print("heads ", inputs["heads"])
+    input()
+    return {"edges": edge_scores, "labels": label_scores}
+
+
 
 class CustomNonPaddingTokenLoss(tf.keras.losses.Loss):
-  def __init__(self, name="custom_lfp_loss"):
+  def __init__(self, name="custom_lfp_loss", ignore_index=-100):
     super().__init__(name=name)
-    self.ignore_index = -100
+    self.ignore_index = ignore_index
 
   def call(self, y_true, y_pred):
-    # print("labels before ", y_true)
+    print("labels before ", y_true)
     mask = tf.cast((y_true != self.ignore_index), dtype=tf.int64)
-    # print("mask ", mask)
+    print("mask ", mask)
     y_true = y_true * mask
-    # print("labels after ", y_true)
+    print("labels after ", y_true)
     loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(
       from_logits=True, reduction=tf.keras.losses.Reduction.NONE
     )
-    # input()
+    input()
     loss = loss_fn(y_true, y_pred)
-    # print("loss before ", loss)
+    print("loss before ", loss)
     mask = tf.cast(mask, tf.float32)
     loss = loss * mask
-    # print("loss after ", loss)
+    print("loss after ", loss)
     loss_value = tf.reduce_sum(loss) / tf.reduce_sum(mask)
-    # print("loss value ", loss_value)
-    # input()
+    print("loss value ", loss_value)
+    input()
     return loss_value

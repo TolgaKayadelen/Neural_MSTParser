@@ -18,7 +18,7 @@ if __name__ == "__main__":
   print(f"Loaded label embedding weights from pretrained with shape: {label_embedding_weights.shape}")
   pos_embeddings_weights = load_models.load_layer_weights("pos_embeddings_weights")
   print(f"Loaded pos embedding weights from pretrained with shape {pos_embeddings_weights.shape}")
-  input()
+  # input()
 
   parser_model_name = "bert_label_first_parser"
 
