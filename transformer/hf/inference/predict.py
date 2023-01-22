@@ -152,7 +152,7 @@ class BertInferencePipeline:
 
 
 if __name__ == "__main__":
-  pipeline = BertInferencePipeline(model_path="./transformer/hf/pretrained/inheritance_test/20230119-145854/bert",
+  pipeline = BertInferencePipeline(model_path="./transformer/hf/pretrained/bert-lfp-parser/20230122-060042/bert",
                                    tokenizer_name="bert-base-multilingual-cased")
   gold_trb_path, labeled_trb_path = pipeline.predict_labels()
   gold = reader.ReadTreebankTextProto(gold_trb_path)

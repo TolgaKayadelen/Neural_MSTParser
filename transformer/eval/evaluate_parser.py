@@ -9,13 +9,13 @@ of the same treebank where only the labels are predicted but heads were not.
 """
 
 import os
-import argparse
 import collections
 import logging
 
 import tensorflow as tf
 import numpy as np
 
+from eval import evaluate
 from parser.utils import load_models
 from util import reader, writer
 from tagset.reader import LabelReader as label_reader
@@ -23,7 +23,7 @@ from data.treebank import treebank_pb2
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230119-124254-bert"
+_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230122-101504-bert"
 
 class ParserEval:
   """Parses a treebank that has already predicted labels and evals uas/las."""
@@ -232,4 +232,10 @@ if __name__ == "__main__":
     gold_treebank_name = "gold_test_treebank.pbtxt"
   )
   results = eval.evaluate()
-  print(f"Eval results {results}")
+  gold_trb = reader.ReadTreebankTextProto(os.path.join(_DATA_DIR, "gold_test_treebank.pbtxt"))
+  parsed_and_labeled_trb = reader.ReadTreebankTextProto(os.path.join(_DATA_DIR,
+                                                                     "parsed_and_labeled_test_treebank.pbtxt"))
+  evaluator = evaluate.Evaluator(gold_trb, parsed_and_labeled_trb,
+                                 write_results=True,
+                                 write_dir=_DATA_DIR)
+  evaluator.evaluate("all")
