@@ -2,6 +2,7 @@
 # weights are shared between them.
 
 import os
+import pickle
 import numpy as np
 
 from util.nn import nn_utils
@@ -152,7 +153,6 @@ def load_data(*, preprocessor: preprocessor.Preprocessor,
     raise ValueError("Invalid data type requested.")
 
   return train_dataset, dev_dataset, test_dataset
-
 
 def load_layer_weights(weights_file):
   """Loads a pretrained layer weights file (extension .npy) from weights dir."""

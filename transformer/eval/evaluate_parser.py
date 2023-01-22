@@ -61,11 +61,11 @@ class ParserEval:
     test_results = parser.test(dataset=test_dataset)
     print("Test results ", test_results)
 
-  def  correct_predictions(self, *,
-                           head_predictions=None,
-                           correct_heads=None,
-                           label_predictions=None,
-                           correct_labels=None,):
+  def correct_predictions(self, *,
+                          head_predictions=None,
+                          correct_heads=None,
+                          label_predictions=None,
+                          correct_labels=None):
     """Computes correctly predicted edges and labels and relevant stats for them."""
     correct_predictions_dict = {"chp": None, "n_chp": None, "clp": None, "n_clp": None,
                                 "n_clp_topk": None}

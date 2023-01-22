@@ -25,6 +25,6 @@ def export(*, pretrained_model_name, layer_name, model_type):
 
 
 if __name__ == "__main__":
-  export(pretrained_model_name="bilstm_labeler_topk",
-         layer_name="pos_embeddings",
-         model_type="labeler") # the mdoel type can be labeler or parser.
+  export(pretrained_model_name="label_first_gold_morph_and_labels",
+         layer_name="edge_scorer",
+         model_type="parser") # the mdoel type can be labeler or parser.

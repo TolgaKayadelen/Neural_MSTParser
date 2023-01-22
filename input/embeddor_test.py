@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """Tests for the preprocessor."""
+import pickle
 
 import unittest
-from input import embeddor 
-from google.protobuf import text_format
+from input import embeddor
 from util.nn import nn_utils
 
 import logging
@@ -27,6 +27,16 @@ class EmbeddorTest(unittest.TestCase):
     self.assertTrue(self.word_embeddings.stoi(token="Kerem") == 119951)
     print(self.word_embeddings.itos(idx=1))
     print("Passed!")
+
+  def test_loading_indexes(self):
+    print("Running test loading indices..")
+    with open('./input/token_to_index_dictionary.pkl', 'rb') as f:
+      loaded_dict = pickle.load(f)
+      self.assertTrue(loaded_dict["Kerem"] == 119951)
+      print(loaded_dict["1936"]) #11674
+      print(loaded_dict["Adeta"]) #30510
+    print("Passed!")
+
 
 if __name__ == "__main__":
   unittest.main()

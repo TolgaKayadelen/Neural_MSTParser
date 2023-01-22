@@ -19,6 +19,7 @@ if __name__ == "__main__":
   pos_embeddings_weights = load_models.load_layer_weights("pos_embeddings_weights")
   print(f"Loaded pos embedding weights from pretrained with shape {pos_embeddings_weights.shape}")
   # input()
+  word_embeddings = load_models.load_word_embeddings()
 
   parser_model_name = "bert_label_first_parser"
 
@@ -42,14 +43,17 @@ if __name__ == "__main__":
   num_labels = label_feature.n_values
   print(f"num labels {num_labels}")
 
-  parser = BertLabelFirstParser(name=parser_model_name, log_dir=log_dir,
+  parser = BertLabelFirstParser(name=parser_model_name,
+                                word_embeddings=word_embeddings,
+                                log_dir=log_dir,
                                 num_labels=num_labels,
                                 test_every=5,
                                 label_embedding_weights=label_embedding_weights,
                                 pos_embeddings_weights=pos_embeddings_weights,
-                                pretrained_bert_model_path="./transformer/hf/pretrained/bert-based-parsing/bert")
-  parser.load(name="bert_label_first_parser",
-              path="./transformer/hf/pretrained/bert-based-parsing")
+                                # pretrained_bert_model_path="./transformer/hf/pretrained/bert-lfp-parser/20230122-060042/bert",
+                                # load_pretrained="./transformer/hf/pretrained/bert-lfp-parser/20230122-060042"
+                                )
+
 
 
   # get the data

@@ -2,6 +2,7 @@
 
 import re
 import os
+import pickle
 import datasets
 import logging
 from copy import deepcopy
@@ -12,6 +13,14 @@ _TRAINING_FILE = "tr_boun-ud-train.conllu"
 _DEV_FILE = "tr_boun-ud-dev.conllu"
 _TEST_FILE ="tr_boun-ud-test.conllu"
 
+replace_dict = {
+  "Postp": "PostP",
+  "PcAbl": "PCAbl",
+  "Adv": "Adverb",
+}
+def load_embedding_indexes():
+  with open('./transformer/hf/dataset/token_to_index_dictionary.pkl', 'rb') as f:
+    return pickle.load(f)
 
 def read_conllx(path):
   """Read treebank from a file where sentences are in conll-X format.
@@ -52,8 +61,10 @@ def convert_to_dict(sentence_list):
       sentence mapped to a defaultdict.
       metadata: the text and the id of the sentence.
   """
+  token_to_index = load_embedding_indexes()
   for sentence in sentence_list:
     tokens = []
+    token_ids = []
     pos = []
     heads = []
     dep_labels = []
@@ -99,12 +110,21 @@ def convert_to_dict(sentence_list):
         continue
       values = [item.strip() for item in line.split("\t")]
       tokens.append(values[1])
-      pos.append(values[4])
+      try:
+        token_ids.append(token_to_index[values[1]])
+      except KeyError:
+        print("token ", values[1])
+        token_ids.append(1)
+      if values[4] in ["Postp", "PcAbl", "Adv"]:
+        pos.append(replace_dict[values[4]])
+      else:
+        pos.append(values[4])
       heads.append(values[6])
       dep_labels.append(values[7])
     yield {
       "sent_id": sent_id,
       "tokens": tokens,
+      "token_ids": token_ids,
       "pos": pos,
       "heads": heads,
       "dep_labels": dep_labels,
@@ -133,6 +153,7 @@ class BounTreebank(datasets.GeneratorBasedBuilder):
           {
             "sent_id": datasets.Value("string"),
             "tokens": datasets.Sequence(datasets.Value("string")),
+            "token_ids": datasets.Sequence(datasets.Value("int32")),
             "pos": datasets.Sequence(datasets.Value("string")),
             "heads": datasets.Sequence(datasets.Value("int32")),
             "dep_labels": datasets.Sequence(
@@ -204,10 +225,12 @@ class BounTreebank(datasets.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath):
       logging.info(f"Generating examples from {filepath}")
+      token_to_index = load_embedding_indexes()
       sentence_list = read_conllx(filepath)
       key = 0
       for sentence in sentence_list:
         tokens = []
+        token_ids = []
         pos = []
         heads = []
         dep_labels = []
@@ -254,21 +277,28 @@ class BounTreebank(datasets.GeneratorBasedBuilder):
             continue
           values = [item.strip() for item in line.split("\t")]
           tokens.append(values[1])
-          pos.append(values[4])
+          try:
+            token_ids.append(token_to_index[values[1]])
+          except KeyError:
+            token_ids.append(1)
+          if values[4] in ["Postp", "PcAbl", "Adv"]:
+            pos.append(replace_dict[values[4]])
+          else:
+            pos.append(values[4])
           heads.append(values[6])
           dep_labels.append(values[7])
         yield key, {
           "sent_id": sent_id,
           "tokens": tokens,
+          "token_ids": token_ids,
           "pos": pos,
           "heads": heads,
           "dep_labels": dep_labels,
         }
 
-
 # if __name__ == "__main__":
 #   sentence_list = read_conllx(os.path.join(_DATA_DIR, _DEV_FILE))
 #   converted = convert_to_dict(sentence_list)
-#   for sentence in converted:
-#     print(sentence)
-#      input()
+#  for sentence in converted:
+#    print(sentence)
+#    input()
