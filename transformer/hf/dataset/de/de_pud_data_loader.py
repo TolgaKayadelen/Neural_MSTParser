@@ -7,20 +7,14 @@ import datasets
 import logging
 from copy import deepcopy
 
-_DESCRIPTION = """Boun dependency treebank"""
-_DATA_DIR = "./data/UDv29/languages/Turkish/BOUN"
-_TRAINING_FILE = "tr_boun-ud-train.conllu"
-_DEV_FILE = "tr_boun-ud-dev.conllu"
-_TEST_FILE ="tr_boun-ud-test.conllu"
+_DESCRIPTION = """German PUD treebank"""
+_DATA_DIR = "./data/UDv29/languages/German/UD_German-PUD"
+_TEST_FILE ="de_pud-ud-test.conllu"
 
+# The german training data doesn't have an obl:tmod tag, so we change it to obl.
 replace_dict = {
-  "Postp": "PostP",
-  "PcAbl": "PCAbl",
-  "Adv": "Adverb",
+  "obl:tmod": "obl", "flat:name": "flat",
 }
-def load_embedding_indexes():
-  with open('./transformer/hf/dataset/token_to_index_dictionary.pkl', 'rb') as f:
-    return pickle.load(f)
 
 def read_conllx(path):
   """Read treebank from a file where sentences are in conll-X format.
@@ -61,11 +55,8 @@ def convert_to_dict(sentence_list):
       sentence mapped to a defaultdict.
       metadata: the text and the id of the sentence.
   """
-  token_to_index = load_embedding_indexes()
   for sentence in sentence_list:
     tokens = []
-    token_ids = []
-    pos = []
     heads = []
     dep_labels = []
     for line in sentence:
@@ -110,27 +101,19 @@ def convert_to_dict(sentence_list):
         continue
       values = [item.strip() for item in line.split("\t")]
       tokens.append(values[1])
-      try:
-        token_ids.append(token_to_index[values[1]])
-      except KeyError:
-        print("token ", values[1])
-        token_ids.append(1)
-      if values[4] in ["Postp", "PcAbl", "Adv"]:
-        pos.append(replace_dict[values[4]])
-      else:
-        pos.append(values[4])
       heads.append(values[6])
-      dep_labels.append(values[7])
+      if values[7] in ["obl:tmod"]:
+        dep_labels.append(replace_dict[values[7]])
+      else:
+        dep_labels.append(values[7])
     yield {
       "sent_id": sent_id,
       "tokens": tokens,
-      "token_ids": token_ids,
-      "pos": pos,
       "heads": heads,
       "dep_labels": dep_labels,
     }
 
-class BounTreebankConfig(datasets.BuilderConfig):
+class GermanPUDTreebankConfig(datasets.BuilderConfig):
   """BuilderConfig for BounDepLabels"""
 
   def __init__(self, **kwargs):
@@ -138,13 +121,13 @@ class BounTreebankConfig(datasets.BuilderConfig):
     Args:
       **kwargs: keyword arguments forwarded to super.
     """
-    super(BounTreebankConfig, self).__init__(**kwargs)
+    super(GermanPUDTreebankConfig, self).__init__(**kwargs)
 
 
-class BounTreebank(datasets.GeneratorBasedBuilder):
+class GermanPUDTreebank(datasets.GeneratorBasedBuilder):
     BUILDER_CONFIGS = [
-      BounTreebankConfig(name="BounTreebank", version=datasets.Version("1.0.0"),
-                         description="Boun Dependency Treebank"),
+      GermanPUDTreebankConfig(name="GermanPUDTreebank", version=datasets.Version("1.0.0"),
+                              description="German PUD Dependency Treebank"),
     ]
     def _info(self):
       return datasets.DatasetInfo(
@@ -153,54 +136,56 @@ class BounTreebank(datasets.GeneratorBasedBuilder):
           {
             "sent_id": datasets.Value("string"),
             "tokens": datasets.Sequence(datasets.Value("string")),
-            "token_ids": datasets.Sequence(datasets.Value("int32")),
-            "pos": datasets.Sequence(datasets.Value("string")),
             "heads": datasets.Sequence(datasets.Value("int32")),
             "dep_labels": datasets.Sequence(
               datasets.features.ClassLabel(
                 names=[
                   'TOP',
-                  'acl',
-                  'advcl',
-                  'advmod',
-                  'advmod:emph',
-                  'amod',
-                  'appos',
-                  'aux',
-                  'aux:q',
-                  'case',
-                  'cc',
-                  'cc:preconj',
-                  'ccomp',
-                  'clf',
-                  'compound',
-                  'compound:lvc',
-                  'compound:redup',
-                  'conj',
-                  'cop',
-                  'csubj',
-                  'dep',
-                  'det',
-                  'discourse',
-                  'dislocated',
-                  'fixed',
-                  'flat',
-                  'goeswith',
-                  'iobj',
-                  'list',
-                  'mark',
-                  'nmod',
-                  'nmod:poss',
-                  'nsubj',
-                  'nummod',
-                  'obj',
-                  'obl',
-                  'orphan',
-                  'parataxis',
-                  'punct',
-                  'root',
-                  'vocative',
-                  'xcomp',
+                  "acl",
+                  "acl:relcl",
+                  "advcl",
+                  "advmod",
+                  "amod",
+                  "appos",
+                  "aux",
+                  "aux:pass",
+                  "case",
+                  "cc",
+                  "cc:preconj",
+                  "ccomp",
+                  "compound",
+                  "compound:prt",
+                  "conj",
+                  "cop",
+                  "csubj",
+                  "csubj:pass",
+                  "dep",
+                  "det",
+                  "det:poss",
+                  "discourse",
+                  "expl",
+                  "expl:pv",
+                  "fixed",
+                  "flat",
+                  "goeswith",
+                  "iobj",
+                  "mark",
+                  "nmod",
+                  "nmod:poss",
+                  "nsubj",
+                  "nsubj:pass",
+                  "nummod",
+                  "obj",
+                  "obl",
+                  "obl:agent",
+                  "obl:arg",
+                  "orphan",
+                  "parataxis",
+                  "punct",
+                  "reparandum",
+                  "root",
+                  "vocative",
+                  "xcomp",
                 ]
               )
             ),
@@ -212,26 +197,19 @@ class BounTreebank(datasets.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
       """Returns split generators"""
       datafiles = {
-        "train": os.path.join(_DATA_DIR, _TRAINING_FILE),
-        "dev": os.path.join(_DATA_DIR, _DEV_FILE),
         "test": os.path.join(_DATA_DIR, _TEST_FILE),
       }
 
       return [
-        datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": datafiles["train"]}),
-        datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": datafiles["dev"]}),
         datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": datafiles["test"]}),
       ]
 
     def _generate_examples(self, filepath):
       logging.info(f"Generating examples from {filepath}")
-      token_to_index = load_embedding_indexes()
       sentence_list = read_conllx(filepath)
       key = 0
       for sentence in sentence_list:
         tokens = []
-        token_ids = []
-        pos = []
         heads = []
         dep_labels = []
         key += 1
@@ -277,28 +255,21 @@ class BounTreebank(datasets.GeneratorBasedBuilder):
             continue
           values = [item.strip() for item in line.split("\t")]
           tokens.append(values[1])
-          try:
-            token_ids.append(token_to_index[values[1]])
-          except KeyError:
-            token_ids.append(1)
-          if values[4] in ["Postp", "PcAbl", "Adv"]:
-            pos.append(replace_dict[values[4]])
-          else:
-            pos.append(values[4])
           heads.append(values[6])
-          dep_labels.append(values[7])
+          if values[7] in ["obl:tmod", "flat:name"]:
+            dep_labels.append(replace_dict[values[7]])
+          else:
+            dep_labels.append(values[7])
         yield key, {
           "sent_id": sent_id,
           "tokens": tokens,
-          "token_ids": token_ids,
-          "pos": pos,
           "heads": heads,
           "dep_labels": dep_labels,
         }
 
-# if __name__ == "__main__":
-#   sentence_list = read_conllx(os.path.join(_DATA_DIR, _DEV_FILE))
-#   converted = convert_to_dict(sentence_list)
-#  for sentence in converted:
-#    print(sentence)
-#    input()
+if __name__ == "__main__":
+  sentence_list = read_conllx(os.path.join(_DATA_DIR, _TEST_FILE))
+  converted = convert_to_dict(sentence_list)
+  for sentence in converted:
+    print(sentence)
+    input()

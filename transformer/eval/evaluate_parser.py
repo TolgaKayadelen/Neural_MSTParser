@@ -23,7 +23,7 @@ from data.treebank import treebank_pb2
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230122-101504-bert"
+_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230123-003122-bert"
 
 class ParserEval:
   """Parses a treebank that has already predicted labels and evals uas/las."""
@@ -226,7 +226,7 @@ class ParserEval:
 
 if __name__ == "__main__":
   eval = ParserEval(
-    parser_name="label_first_gold_morph_and_labels",
+    parser_name="label_first_predicted_head_gold_labels_only",
     # This is the treebank where the labels are parsed with the Bert finetuned model (iter6)
     labeled_treebank_name = "labeled_test_treebank.pbtxt",
     gold_treebank_name = "gold_test_treebank.pbtxt"

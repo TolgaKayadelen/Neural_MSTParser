@@ -2,7 +2,7 @@
 # weights are shared between them.
 
 import os
-import pickle
+import json
 import numpy as np
 
 from util.nn import nn_utils
@@ -16,6 +16,9 @@ def load_word_embeddings():
   word_embeddings = embeddor.Embeddings(name="word2vec", matrix=embeddings)
   return word_embeddings
 
+def load_pickled_embeddings(language):
+  with open(f'./embeddings/{language}/{language}_embeddings.json', 'rb') as f:
+    return json.load(f)
 
 def load_preprocessor(*, word_embeddings=None, head_padding_value=0, one_hot_features=[], language="tr"):
   if language == "tr":
@@ -54,9 +57,28 @@ def load_labeler(labeler_name, prep, k=5):
   print("labeler ", labeler)
   return labeler
 
+"""
 # The predict and features lists are configured to load "label_first_parser_gold_morph_labels"
 def load_parser(parser_name, prep, test_every=0, one_hot_labels=False,
                 predict=["heads"], features=["words", "morph", "dep_labels"]):
+  label_feature = next(
+    (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"),
+    None)
+  parser = label_first_parser.LabelFirstParser(word_embeddings=prep.word_embeddings,
+                                               n_output_classes=label_feature.n_values,
+                                               predict=predict,
+                                               features=features,
+                                               test_every=test_every,
+                                               model_name=parser_name,
+                                               one_hot_labels=one_hot_labels)
+  parser.load_weights(name=parser_name)
+  print("parser ", parser)
+  return parser
+"""
+
+# The predict and features lists are configured to load "label_first_predicted_head_gold_labels_only"
+def load_parser(parser_name, prep, test_every=0, one_hot_labels=False,
+                predict=["heads"], features=["words", "dep_labels"]):
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"),
     None)

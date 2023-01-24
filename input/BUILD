@@ -36,5 +36,6 @@ py_test(
 	srcs = ["embeddor_test.py"],
 	deps = [
 		":preprocessor",
+		"//parser/utils:load_models",
 	],
 )

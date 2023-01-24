@@ -21,8 +21,9 @@ class SanityCheck(Enum):
 
 class Embeddings:
   """Class to initialize embeddings from a pretrained embedding matrix."""
-  def __init__(self, *, name:str, matrix):
+  def __init__(self, *, name:str, matrix, type="word2vec"):
     self.name = name
+    self.type = type
     self.vocab = matrix
     self.vocab_size = len(self.vocab)
     self.embedding_dim = matrix
@@ -54,7 +55,10 @@ class Embeddings:
         # initialize as ones
         index_to_vector[idx, :] = np.ones(shape=(self.embedding_dim,))
       else:
-        index_to_vector[idx, :] = matrix[token]
+        if self.type == "word2vec":
+          index_to_vector[idx, :] = matrix[token]
+        else:
+          index_to_vector[idx, :] = np.array(matrix[token], dtype=np.float32)
         # print(matrix[token])
     return index_to_vector
   
@@ -83,7 +87,10 @@ class Embeddings:
     print("Setting up the vocabulary")
     vocab = []
     vocab.extend(["-pad-", "-oov-"])
-    vocab.extend(sorted(set(matrix.wv.vocab.keys())))
+    if self.type == "word2vec":
+      vocab.extend(sorted(set(matrix.wv.vocab.keys())))
+    else:
+      vocab.extend(matrix.keys())
     self._vocab = vocab
   
   @property
@@ -93,32 +100,67 @@ class Embeddings:
   @embedding_dim.setter
   def embedding_dim(self, matrix):
     print("Setting embedding dimension")
-    random_token = random.choice(self.vocab)
-    self._embedding_dim = matrix[random_token].shape[0]
+    random_token = random.choice(self.vocab[2:])
+    if self.type == "word2vec":
+      self._embedding_dim = matrix[random_token].shape[0]
+    else:
+      self._embedding_dim = len(matrix[random_token])
   
   @property
   def sanity_check(self) -> SanityCheck:
     print("Running sanity checks on the created embeddings")
-    random_token = random.choice(self.vocab)
+    random_token = random.choice(self.vocab[2:])
     random_tok_idx = self.stoi(token=random_token)
-    if not len(self.token_to_vector.wv.vocab.keys()) == self.vocab_size - 2:
+    print(type(self.index_to_vector[random_tok_idx]))
+    if not type(self.index_to_vector[random_tok_idx]) == np.ndarray:
       return SanityCheck.FAIL
+    if self.type == "word2vec":
+      if not len(self.token_to_vector.wv.vocab.keys()) == self.vocab_size - 2:
+        return SanityCheck.FAIL
+    else:
+      if not len(self.token_to_vector.keys()) == self.vocab_size - 2:
+        print("failed 1")
+        return SanityCheck.FAIL
     if not self.vocab[0] == "-pad-" and self.vocab[1] == "-oov-":
+      print("failed 2")
       return SanityCheck.FAIL
     if not self.stoi(token=random_token) == self.token_to_index[random_token]:
+      print("failed 3")
       return SanityCheck.FAIL
     if not self.itos(idx=random_tok_idx) == self.index_to_token[random_tok_idx]:
+      print("failed 4")
       return SanityCheck.FAIL
-    if not (self.token_to_vector[random_token] == self.index_to_vector[
-      random_tok_idx]).all():
-      return SanityCheck.FAIL
+    if self.type == "word2vec":
+      if not (self.token_to_vector[random_token] == self.index_to_vector[
+        random_tok_idx]).all():
+        print("failed 5")
+        return SanityCheck.FAIL
+      else:
+        if not (np.array(self.token_to_vector[random_token], dtype=np.float32) == self.index_to_vector[
+          random_tok_idx]).all():
+          print("failed 5")
+          return SanityCheck.FAIL
     if not (self.itov(idx=random_tok_idx) == self.index_to_vector[
       random_tok_idx]).all():
+      print("failed 6")
       return SanityCheck.FAIL
-    if not (self.token_to_vector[self.itos(idx=random_tok_idx)
-      ] == self.token_to_vector[random_token]).all():
-      return SanityCheck.FAIL
-    if not (self.index_to_vector[self.stoi(token=random_token)
-      ] == self.token_to_vector[random_token]).all():
-      return SanityCheck.FAIL
+    if self.type == "word2vec":
+      if not (self.token_to_vector[self.itos(idx=random_tok_idx)] == self.token_to_vector[random_token]).all():
+        print("failed 7")
+        return SanityCheck.FAIL
+    else:
+      elem1 = np.array(self.token_to_vector[self.itos(idx=random_tok_idx)], dtype=np.float32)
+      elem2 = np.array(self.token_to_vector[random_token], dtype=np.float32)
+      if not (elem1 == elem2).all():
+        print("failed 7")
+        return SanityCheck.FAIL
+    if self.type == "word2vec":
+      if not (self.index_to_vector[self.stoi(token=random_token)] == self.token_to_vector[random_token]).all():
+        print("failed 8")
+        return SanityCheck.FAIL
+    else:
+      np_t_to_v_random_token = np.array(self.token_to_vector[random_token], dtype=np.float32)
+      if not np.allclose(self.index_to_vector[self.stoi(token=random_token)], np_t_to_v_random_token):
+        print("failed 8")
+        return SanityCheck.FAIL
     return SanityCheck.PASS

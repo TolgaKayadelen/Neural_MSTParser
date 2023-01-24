@@ -212,6 +212,8 @@ class Converter:
               continue
             if line.startswith("# orig"):
               continue
+            if line.startswith("# text_en"):
+              continue
             if line.startswith("# sent_id"):
                 metadata["sent_id"] = line.split("=")[1].strip()
                 continue

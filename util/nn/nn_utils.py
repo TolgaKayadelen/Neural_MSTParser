@@ -1,4 +1,6 @@
+import io
 import os
+import json
 import gensim
 import matplotlib.pyplot as plt
 import numpy as np
@@ -170,12 +172,75 @@ def create_class_weight(labels_dict, mu=0.9):
     class_weight[key] = score if score > 1.0 else 1.0
   return class_weight
 
+def generate_multilingual_embeddings(language):
+  dir = f"./embeddings/{language}"
+  file = os.path.join(dir, f"cc.{language}.300.vec")
+  print("file ", file)
+  fin = io.open(file, 'r', encoding='utf-8', newline='\n', errors='ignore')
+  # n, d = map(int, fin.readline().split())
+  data = {}
+  counter = 0
+  for line in fin:
+    counter += 1
+    tokens = line.rstrip().split(' ')
+    if counter == 1:
+      print(tokens[0])
+      continue
+    data[tokens[0]] = tokens[1:]
+    if counter % 10000 == 0:
+      print(counter)
+    if counter == 500000:
+      break
+  json_file = os.path.join(dir, f"{language}_embeddings.json")
+  with open(json_file, 'w') as f:
+    # Pickle the 'data' dictionary using the highest protocol available.
+    json.dump(data, f)
+  return data
+
+def load_pickled_embeddings(language):
+  with open(f'./embeddings/{language}/{language}_embeddings.json', 'rb') as f:
+    return json.load(f)
+
+def compute_embedding_occurence(language="fi",
+                                filepath="./data/UDv29/languages/Finnish/UD_Finnish-TDT/fi_tdt-ud-train.txt"):
+  matrix = load_pickled_embeddings(language=language)
+  keys = matrix.keys()
+  total_keys = len(keys)
+  print("total keys ", total_keys)
+  fi = open(filepath, "r")
+  lines = fi.readlines()
+  n_found, n_found_unique, n_unique, n_words = 0, 0, 0, 0
+  found_words, unique_words = [], []
+  for line in lines:
+    words = line.split()
+    for word in words:
+      n_words += 1
+      word = word.strip(".,'")
+      if not word in unique_words:
+        unique_words.append(word)
+        n_unique += 1
+      if word in keys:
+        print("word found ", word)
+        n_found += 1
+        if not word in found_words:
+          found_words.append(word)
+          n_found_unique += 1
+  print("total words ", n_words)
+  print("total found ", n_found)
+  print("total unique ", n_unique)
+  print("total found unique ", n_found_unique)
+  print("ratio found words ", n_found / n_words)
+  print("ratio unique words that are found ", n_found_unique / n_unique)
 
 if __name__ == "__main__":
-  trb = reader.ReadTreebankTextProto(
-    "data/testdata/propbank/propbank_ud_testdata_proto.pbtxt"
-  )
-  sentence = trb.sentence[1]
-  annotate_bio_spans(sentence)
+  # generate_multilingual_embeddings("en")
+  compute_embedding_occurence()
+  #trb = reader.ReadTreebankTextProto(
+  #  "data/testdata/propbank/propbank_ud_testdata_proto.pbtxt"
+  #)
+  #sentence = trb.sentence[1]
+  #annotate_bio_spans(sentence)
 
+  # print(words)
+  # print(np.array(matrix["und"], dtype=np.float32))
 
