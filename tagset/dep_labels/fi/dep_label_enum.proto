@@ -1,0 +1,53 @@
+syntax = "proto2";
+
+package tagset.dep_labels.fi;
+
+enum Tag {
+  UNKNOWN_LABEL = 0;
+  acl = 1;
+  acl_relcl = 2;
+  advcl = 3;
+  advmod = 4;
+  amod = 5;
+  appos = 6;
+  aux = 7;
+  aux_pass = 8;
+  case = 9;
+  cc = 10;
+  cc_preconj = 11;
+  ccomp = 12;
+  compound = 13;
+  compound_nn = 14;
+  compound_prt = 15;
+  conj = 16;
+  cop = 17;
+  cop_own = 18;
+  csubj = 19;
+  csubj_cop = 20;
+  dep = 21;
+  det = 22;
+  discourse = 23;
+  fixed = 24;
+  flat = 25;
+  flat_foreign = 26;
+  flat_name = 27;
+  goeswith = 28;
+  mark = 29;
+  nmod = 30;
+  nmod_gobj = 31;
+  nmod_gsubj = 32;
+  nmod_poss = 33;
+  nsubj = 34;
+  nsubj_cop = 35;
+  nummod = 36;
+  obj = 37;
+  obl = 38;
+  orphan = 39;
+  parataxis = 40;
+  punct = 41;
+  root = 42;
+  vocative = 43;
+  xcomp = 44;
+  xcomp_ds = 45;
+  TOP = 46;
+}

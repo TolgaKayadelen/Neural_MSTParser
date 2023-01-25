@@ -35,3 +35,8 @@ py_library(
     "//parser/labeler/bilstm:bilstm_labeler",
   ],
 )
+
+py_library(
+  name = "pos_tag_to_id",
+  srcs = ["pos_tag_to_id.py"],
+)

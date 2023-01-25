@@ -50,6 +50,7 @@ class BaseParser(ABC):
                test_every: int = 5,
                top_k: bool = False,
                k: int = 5,
+               pos_embedding_vocab_size=37,
                one_hot_labels=False):
 
     self.language = language
@@ -61,6 +62,8 @@ class BaseParser(ABC):
     self._predict = predict
 
     self.features = features
+
+    self.pos_embedding_vocab_size=pos_embedding_vocab_size
 
     self.one_hot_labels = one_hot_labels
 
@@ -572,6 +575,7 @@ class BaseParser(ABC):
       training_results: logs of scores and losses at the end of training.
     """
     logging.info("Training started")
+    early_stop_after_epochs = 0
     for epoch in range(1, epochs+1):
       test_results_for_epoch = None
 
@@ -678,12 +682,16 @@ class BaseParser(ABC):
         loss_metrics=loss_results_for_epoch,
         test_metrics=test_results_for_epoch,
       )
-      if epoch % (self._test_every * 2) == 0 and epoch > 100:
-        c = input("continue training")
-        if c == "yes" or c == "y":
-          print("continuing for 10 more epochs")
+      if training_results_for_epoch["uas"] > 0.99 or training_results_for_epoch["ls"] > 0.99:
+        if early_stop_after_epochs == 0:
+          c = input("continue training: y/n")
+          if c == "yes" or c == "y":
+            print("continuing for 5 more epochs")
+            early_stop_after_epochs = 5
+          else:
+            break
         else:
-          break
+          early_stop_after_epochs -= 1
     # At the end of training, parse the data with the learned weights and save it as proto.
     self.parse_and_save(test_data)
     return self._metrics
@@ -747,10 +755,11 @@ class BaseParser(ABC):
         edges: Tensor of shape (1, seq_len, seq_len)
         labels: Tensor of shape (1, seq_len, n_labels)
     """
-    words, pos, morph, dep_labels = (example["words"], example["pos"],
-                                     example["morph"], example["dep_labels"])
-    scores = self.model({"words": words, "pos": pos,
-                         "morph": morph, "labels": dep_labels}, training=False)
+    words, pos, dep_labels = (example["words"], example["pos"],
+                              example["dep_labels"])
+    morph = example["morph"] if "morph" in example.keys() else None
+    scores = self.model({"words": words, "pos": pos, "morph": morph,
+                         "labels": dep_labels}, training=False)
     return scores
 
   def save_weights(self, suffix: int=0):
@@ -778,7 +787,6 @@ class BaseParser(ABC):
     logging.info(f"Loaded model from model named: {name} in: {_MODEL_DIR}")
     load_status.assert_consumed()
 
-  # TODO: handle the case when dep_label features are one_hot.
   def parse_and_save(self, dataset: Dataset):
     """Parses a set of sentences with this parser and saves the gold and predicted outputs to a directory."""
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -791,18 +799,15 @@ class BaseParser(ABC):
     for example in dataset:
       gold_sentence_pb2 = gold_treebank.sentence.add()
       parsed_sentence_pb2 = parsed_treebank.sentence.add()
-      sent_id, tokens, dep_labels, heads, pos, category = (example["sent_id"], example["tokens"],
-                                                           example["dep_labels"], example["heads"],
-                                                           example["pos"], example["category"])
+      sent_id, tokens, dep_labels, heads = (example["sent_id"], example["tokens"],
+                                            example["dep_labels"], example["heads"])
       # first populate gold treebank with the gold annotations
       index = 0
       # print("gold labels ", dep_labels)
-      for token, dep_label, head, pos_tag, category_tag in zip(tokens[0], dep_labels[0], heads[0], pos[0], category[0]):
+      for token, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
         gold_sentence_pb2.sent_id = sent_id[0][0].numpy()
         token = gold_sentence_pb2.token.add(
           word=tf.keras.backend.get_value(token),
-          category=self._cat_index_to_name(tf.keras.backend.get_value(category_tag)),
-          pos=self._pos_index_to_name(tf.keras.backend.get_value(pos_tag)),
           label=self._label_index_to_name(tf.keras.backend.get_value(dep_label)),
           index=index)
         token.selected_head.address=tf.keras.backend.get_value(head)
@@ -821,12 +826,10 @@ class BaseParser(ABC):
       index = 0
       # print("test labels ", dep_labels)
       # input()
-      for token, dep_label, head, pos_tag, category_tag in zip(tokens[0], dep_labels[0], heads[0], pos[0], category[0]):
+      for token, dep_label, head, pos_tag, category_tag in zip(tokens[0], dep_labels[0], heads[0]):
         parsed_sentence_pb2.sent_id = sent_id[0][0].numpy()
         token = parsed_sentence_pb2.token.add(
           word=tf.keras.backend.get_value(token),
-          category=self._cat_index_to_name(tf.keras.backend.get_value(category_tag)),
-          pos=self._pos_index_to_name(tf.keras.backend.get_value(pos_tag)),
           label=self._label_index_to_name(tf.keras.backend.get_value(dep_label)),
           index=index)
         token.selected_head.address=tf.keras.backend.get_value(head)

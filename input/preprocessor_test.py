@@ -21,13 +21,14 @@ _PREPROCESSOR_DIR = os.path.join(_TESTDATA_DIR, "preprocessor")
 
 embeddings = nn_utils.load_embeddings()
 word_embeddings = Embeddings(name= "word2vec", matrix=embeddings)
+word_embedding_indexes = word_embeddings.token_to_index
 
 class PreprocessorTest(tf.test.TestCase):
   """Tests for the preprocessor."""
   def setUp(self):
     self.datapath = os.path.join(_PREPROCESSOR_DIR, "treebank_train_0_3.pbtxt")
     self.prep = preprocessor.Preprocessor(
-        word_embeddings=word_embeddings,
+        word_embedding_indexes=word_embedding_indexes,
         features=["words", "pos", "morph", "heads", "dep_labels"],
         labels=["heads", "dep_labels"],
         head_padding_value=0)

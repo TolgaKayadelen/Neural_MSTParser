@@ -4,7 +4,7 @@
 import os
 import json
 import numpy as np
-
+import sys
 from util.nn import nn_utils
 from input import embeddor, preprocessor
 from parser.dep.lfp import label_first_parser
@@ -18,26 +18,29 @@ def load_word_embeddings():
 
 def load_pickled_embeddings(language):
   with open(f'./embeddings/{language}/{language}_embeddings.json', 'rb') as f:
-    return json.load(f)
+    embeddings = json.load(f)
+  word_embeddings = embeddor.Embeddings(name=f"{language}_embeddings",
+                                        matrix=embeddings,
+                                        type="fasttext")
+  del embeddings
+  return word_embeddings
 
-def load_preprocessor(*, word_embeddings=None, head_padding_value=0, one_hot_features=[], language="tr"):
-  if language == "tr":
-    prep = preprocessor.Preprocessor(
-      word_embeddings=word_embeddings,
-      features=["words", "pos", "morph", "heads", "category", "dep_labels", "sent_id"],
-      labels=["heads"],
-      head_padding_value=head_padding_value,
-      one_hot_features=one_hot_features,
-      language=language,
-    )
-  elif language == "en":
-    prep = preprocessor.Preprocessor(
-      features=[ "words", "pos", "heads", "category", "dep_labels", "sent_id"],
-      labels=["heads"],
-      head_padding_value=head_padding_value,
-      one_hot_features=one_hot_features,
-      language=language,
-    )
+def load_preprocessor(*, word_embedding_indexes,
+                      language,
+                      features=["words", "pos"], # word, pos, morph
+                      pos_indexes=None,
+                      head_padding_value=0, one_hot_features=[]):
+  allow_list = ["words", "pos", "morph"]
+  assert set(features).issubset(allow_list), "Can use words, pos, or morph as features!"
+  prep = preprocessor.Preprocessor(
+    word_embedding_indexes=word_embedding_indexes,
+    pos_indexes=pos_indexes,
+    features=features,
+    labels=["heads"],
+    head_padding_value=head_padding_value,
+    one_hot_features=one_hot_features,
+    language=language,
+  )
   return prep
 
 
@@ -94,7 +97,8 @@ def load_parser(parser_name, prep, test_every=0, one_hot_labels=False,
   return parser
 
 
-def load_data(*, preprocessor: preprocessor.Preprocessor,
+def load_data(*,
+              preprocessor: preprocessor.Preprocessor,
               train_treebank: str = None,
               dev_treebank: str = None,
               test_treebank: str = None,

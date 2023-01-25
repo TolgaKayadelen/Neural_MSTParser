@@ -10,8 +10,6 @@ py_binary(
     ],
 )
 
-
-
 py_binary(
 	name = "seq_lstm_labeler_main",
 	srcs = ["seq_lstm_labeler_main.py"],
@@ -106,14 +104,13 @@ py_binary(
     ],
 )
 
-
-
 # Libraries
 py_library(
   name = "nn_parser_lib",
   deps = [
     "//parser/utils:layer_utils",
     "//parser/utils:architectures",
+    "//parser/utils:pos_tag_to_id",
     "//input:preprocessor",
     "//util/nn:nn_utils",
     "//util:writer",

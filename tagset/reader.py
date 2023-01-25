@@ -1,24 +1,32 @@
 from tagset.fine_pos import fine_tag_enum_pb2 as fine_tags
-from tagset.coarse_pos import coarse_tag_enum_pb2 as coarse_tags
 from tagset.dep_labels import dep_label_enum_pb2 as dep_labels
+from tagset.coarse_pos import coarse_tag_enum_pb2 as coarse_tags
 
-from tagset.fine_pos.en import fine_tag_enum_pb2 as fine_tags_en
-from tagset.coarse_pos.en import coarse_tag_enum_pb2 as coarse_tags_en
 from tagset.dep_labels.en import dep_label_enum_pb2 as dep_labels_en
+from tagset.dep_labels.de import dep_label_enum_pb2 as dep_labels_de
+from tagset.dep_labels.fi import dep_label_enum_pb2 as dep_labels_fi
+from tagset.dep_labels.zh import dep_label_enum_pb2 as dep_labels_zh
+
+
 from tagset.arg_str import semantic_role_enum_pb2 as srl
 from tagset.morphology import morph_tag_enum_pb2 as morph_tags
 
 
 _LANGUAGE_TO_TAG = {
-  "en": {"pos": fine_tags_en, "category": coarse_tags_en, "dep_labels": dep_labels_en},
-  "tr": {"pos": fine_tags, "category": coarse_tags, "dep_labels": dep_labels,
-         "srl": srl, "morph": morph_tags}
+  "en": {"dep_labels": dep_labels_en},
+  "de": {"dep_labels": dep_labels_de},
+  "fi": {"dep_labels": dep_labels_fi},
+  "zh": {"dep_labels": dep_labels_zh},
+  "tr": {"pos": fine_tags,
+         "category": coarse_tags,
+         "dep_labels": dep_labels,
+         "srl": srl,
+         "morph": morph_tags}
 }
 
 _TAGS_TO_REPLACE = {'SEMICOLON': ":", 'COMMA': ",", 'DOT': ".", 'LRB': "-LRB-", 'RRB': "-RRB-",
                     'PRP_DOLLAR': "PRP$", 'DOUBLE_QUOTE_ITALIC': "``",
                     'DOUBLE_QUOTE': "''", 'WP_DOLLAR': "WP$", 'DOLLAR': "$"}
-
 
 class LabelReader:
   """The label reader returns a dict of label:index pairs."""
@@ -39,8 +47,7 @@ class LabelReader:
   def vtoi(self, value: str):
     """Returns index given label value."""
     return self.labels[value]
-  
-  
+
   @property
   def labels(self):
     """Returns a dict of labels.
@@ -77,8 +84,7 @@ class LabelReader:
         labels_list.extend(["B-"+key, "I-"+key])
       labels_list.extend(["O", "V"])
       return {v: k for k, v in enumerate(labels_list)}
-  
-    
+
     if tags == srl:
       label_dict = _get_bio_tags_from_srl()
     else:
@@ -88,16 +94,43 @@ class LabelReader:
         # input()
         if key.startswith("UNKNOWN_"):
           continue
-        if key in {"advmod_emph", "aux_q", "compound_lvc",
-                   "compound_redup", "nmod_poss", "cc_preconj",
-                   "nsubj_pass", "aux_pass", "compound_prt", 'acl_relcl',
-                   'det_predet', 'obl_npmod', 'obl_tmod', 'nmod_tmod', 'csubj_pass',
-                   'nmod_npmod', 'flat_foreign'}:
+        if key in {"advmod_emph",
+                   "aux_q",
+                   "aux_pass",
+                   'acl_relcl',
+                   "compound_lvc",
+                   "compound_redup",
+                   "compound_ext",
+                   "compound_prt",
+                   "compound_nn",
+                   "csubj_pass",
+                   "csubj_cop",
+                   "cc_preconj",
+                   "cop_own",
+                   'det_predet',
+                   "det_poss",
+                   "discourse_sp",
+                   "expl_pv",
+                   'flat_name',
+                   'flat_foreign',
+                   'mark_rel',
+                   'mark_adv',
+                   "nsubj_pass",
+                   "nsubj_cop",
+                   "nmod_poss",
+                   'nmod_tmod',
+                   'nmod_npmod',
+                   "nmod_gobj",
+                   "nmod_gsubj",
+                   "obl_agent",
+                   'obl_npmod',
+                   'obl_tmod',
+                   'obl_patient',
+                   "xcomp_ds"}:
           label_dict[key.replace("_", ":")] = tags.Tag.Value(key)
         elif key in {'SEMICOLON', 'COMMA', 'DOT', 'LRB', 'RRB', 'PRP_DOLLAR', 'DOUBLE_QUOTE_ITALIC',
                      'DOUBLE_QUOTE', 'WP_DOLLAR', 'DOLLAR'}:
           label_dict[_TAGS_TO_REPLACE[key]] = tags.Tag.Value(key)
-
         else:
           label_dict[key] = tags.Tag.Value(key)
           # print(label_dict)

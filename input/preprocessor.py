@@ -85,18 +85,20 @@ class Preprocessor:
   """Prepares data as batched tf.Examples."""
 
   def __init__(self, *, 
-               word_embeddings: Embeddings = None,
+               word_embedding_indexes: Dict,
                features: List[str],
                labels: List[str],
+               pos_indexes=None,
                one_hot_features: List[str] =  [], # sometimes we might want dep_labels feature to be onehot.
                head_padding_value=0,
                language="tr"):
     """Preprocessor prepares input datasets for TF models to consume."""
     assert all(o_h_feat in features for o_h_feat in one_hot_features), "Features don't match"
 
-    if word_embeddings:
-      self.word_embeddings = word_embeddings
+    if word_embedding_indexes:
+      self.word_embedding_indexes = word_embedding_indexes
     # The features to use for training the parser.
+    self.pos_indexes = pos_indexes
     self.features = features
     self.language = language
     # The label feature; target feature to be predicted by the parser.
@@ -132,8 +134,8 @@ class Preprocessor:
     logging.info("Setting up sequence features.")
     sequence_features = {}
 
-    # Add a tokens feature (to hold word strings) and a sentence_id feature.
-    self.features.extend(["tokens", "sent_id"])
+    # Add a tokens, sent_id, heads and dep_labels as features.
+    self.features.extend(["tokens", "sent_id", "heads", "dep_labels"])
     for feat in self.features:
       if feat == "heads":
         sequence_features[feat] = SequenceFeature(name=feat, is_label=feat in self.labels)
@@ -161,24 +163,26 @@ class Preprocessor:
 
   def numericalize(self, *,
                    values: List[str],
-                   mapping: Union[Dict, Embeddings]) -> List[int]:
+                   mapping: Dict,
+                   feature_name: str) -> List[int]:
     """Returns numeric values (integers) for features based on a mapping.
     Args:
         values: the feature values, usually strings.
         mapping: A mapping that maps string values to integer to be used in NN.
+        feature_name: The name of the feature to generate indexes for.
     Returns:
       List of numeric values.
     """
     indices = []
-    if isinstance(mapping, Embeddings):
+    if feature_name == "words":
       for value in values:
         try:
-          indices.append(mapping.stoi(token=value))
+          indices.append(mapping[value])
         except KeyError:
-          indices.append(mapping.stoi(token="-oov-"))
+          indices.append(mapping["-oov-"])
       return indices
     # TODO: sort out these wrongly annotated values in the data.
-    elif isinstance(mapping, dict):
+    else:
       for value in values:
         try:
           indices.append(mapping[value])
@@ -198,8 +202,7 @@ class Preprocessor:
             logging.warning(f"Key error for value {value}")
             indices.append(mapping["-pad-"])
       return indices
-    else:
-      raise ValueError("Mapping should be a dict or an Embedding instance.")
+
   
   def get_index_mappings_for_features(self, feature_names: List[str]) -> Dict:
     "Returns a map dictionary for a feature based on predefined configs"
@@ -207,15 +210,19 @@ class Preprocessor:
     if "heads" in feature_names:
       logging.debug("No mappings for head feature.")
     if "words" in feature_names:
-      if self.word_embeddings:
-        mappings["words"] = self.word_embeddings
+      if self.word_embedding_indexes:
+        mappings["words"] = self.word_embedding_indexes
       else:
         embeddings = nn_utils.load_embeddings()
-        mappings["words"] = Embeddings(name="word2vec", matrix=embeddings)
+        word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
+        mappings["words"] = word_embeddings.token_to_index
     if "morph" in feature_names:
       mappings["morph"] = LabelReader.get_labels("morph", self.language).labels
     if "pos" in feature_names:
-      mappings["pos"] = LabelReader.get_labels("pos", self.language).labels
+      if self.pos_indexes is not None:
+        mappings["pos"] = self.pos_indexes
+      else:
+        mappings["pos"] = LabelReader.get_labels("pos", self.language).labels
     if "category" in feature_names:
       mappings["category"] = LabelReader.get_labels("category", self.language).labels
     if "dep_labels" in feature_names:
@@ -273,17 +280,20 @@ class Preprocessor:
       if "words" in self.features:
         word_indices = self.numericalize(
                           values=[token.word for token in sentence.token],
-                          mapping=feature_mappings["words"])
+                          mapping=feature_mappings["words"],
+                          feature_name="words")
         self.sequence_features_dict["words"].values = word_indices
       if "category" in self.features:
         cat_indices = self.numericalize(
                           values=[token.category for token in sentence.token],
-                          mapping=feature_mappings["category"])
+                          mapping=feature_mappings["category"],
+                          feature_name="category")
         self.sequence_features_dict["category"].values = cat_indices
       if "pos" in self.features:
         pos_indices = self.numericalize(
                           values=[token.pos for token in sentence.token],
-                          mapping=feature_mappings["pos"])
+                          mapping=feature_mappings["pos"],
+                          feature_name="pos")
         self.sequence_features_dict["pos"].values = pos_indices
       if "morph" in self.features:
         morph_features = []
@@ -292,7 +302,8 @@ class Preprocessor:
           tags = morph_tags.from_token(token=token)
           morph_indices = self.numericalize(
                           values=tags,
-                          mapping=feature_mappings["morph"])
+                          mapping=feature_mappings["morph"],
+                          feature_name="morph")
           # print(list(zip(tags, morph_indices)))
           # We put 1 to the indices for the active morphology features.
           np.put(morph_vector, morph_indices, [1])
@@ -303,7 +314,8 @@ class Preprocessor:
         sentence.token[0].label = "TOP" # workaround key errors
         dep_indices = self.numericalize(
                           values=[token.label for token in sentence.token],
-                          mapping=feature_mappings["dep_labels"])
+                          mapping=feature_mappings["dep_labels"],
+                          feature_name="dep_labels")
         self.sequence_features_dict["dep_labels"].values = dep_indices
       if "heads" in self.features:
         self.sequence_features_dict["heads"].values = [
@@ -450,15 +462,18 @@ class Preprocessor:
         if feature_name == "words":
           yield_dict[feature_name] = self.numericalize(
             values=[token.word for token in sentence.token],
-            mapping=feature_mappings["words"])
+            mapping=feature_mappings["words"],
+            feature_name=feature_name)
         if feature_name == "pos":
           yield_dict[feature_name] = self.numericalize(
             values=[token.pos for token in sentence.token],
-            mapping=feature_mappings["pos"])
+            mapping=feature_mappings["pos"],
+            feature_name=feature_name)
         if feature_name == "category":
           yield_dict[feature_name] = self.numericalize(
             values=[token.category for token in sentence.token],
-            mapping=feature_mappings["category"])
+            mapping=feature_mappings["category"],
+            feature_name=feature_name)
         if feature_name == "morph":
           morph_features = []
           for token in sentence.token:
@@ -466,7 +481,8 @@ class Preprocessor:
             tags = morph_tags.from_token(token=token)
             morph_indices = self.numericalize(
                             values=tags,
-                            mapping=feature_mappings["morph"]
+                            mapping=feature_mappings["morph"],
+                            feature_name=feature_name
             )
             np.put(morph_vector, morph_indices, [1])
             morph_features.append(morph_vector)
@@ -476,7 +492,8 @@ class Preprocessor:
           sentence.token[0].label = "TOP" # workaround key errors
           vectors = self.numericalize(
             values=[token.label for token in sentence.token],
-            mapping=feature_mappings["dep_labels"])
+            mapping=feature_mappings["dep_labels"],
+            feature_name=feature_name)
           if label_feature.one_hot is not None:
             yield_dict[feature_name] = label_feature.index_to_onehot(vectors)
           else:

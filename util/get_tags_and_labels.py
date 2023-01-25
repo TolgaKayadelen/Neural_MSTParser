@@ -1,27 +1,23 @@
 # -*- coding: utf-8 -*-
-
-"""Simply script to get all coarse and fine part of speech tags in the data.
-
+"""
+Simply script to get all coarse and fine part of speech tags in the data.
 Pass the data to read from the --data argument. The data can be a protobuf or
 pbtxt.
 
 """
-
 import argparse
 import os
-
+import sys
 import pandas as pd
 from util import reader
 from collections import defaultdict
-from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
-from google.protobuf import text_format
-from google.protobuf import json_format
+
 
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.DEBUG)
 
-def get_tags_and_labels(data, dict=False):
+def tags_to_ids(data, tagset=None, dict=False, print_dict=False):
     sentence_list = []
     coarse_tags = defaultdict(int)
     fine_tags = defaultdict(int)
@@ -33,7 +29,6 @@ def get_tags_and_labels(data, dict=False):
         treebank = reader.ReadTreebankProto(data)
     else:
         raise ValueError('Unsupported data type!!')
-
     if isinstance(treebank, treebank_pb2.Treebank):
         sentence_list = treebank.sentence
     for sentence in sentence_list:
@@ -47,17 +42,36 @@ def get_tags_and_labels(data, dict=False):
         coarse_tags = {key:index for index,key in enumerate(coarse)}
         fine_tags = {key:index for index,key in enumerate(fine)}
         labels = {key:index for index,key in enumerate(labels)}
-        print("COARSE TAGS")
-        for k, v in coarse_tags.items():
-            print(f"{k} = {v};")
-        print("\n\n")
-        print("FINE TAGS")
-        for k, v in fine_tags.items():
-            print(f"{k} = {v};")
-        print("\n\n")
-        print("LABELS")
-        for k, v in labels.items():
-            print(f"{k} = {v};")
+        if print_dict:
+            print("COARSE TAGS")
+            for k, v in coarse_tags.items():
+                print(f"{k} = {v};")
+            print("\n\n")
+            print("FINE TAGS")
+            keys = list(fine_tags.keys())
+            keys.sort()
+            index = 0
+            for k in keys:
+                print(f"{k} = {index};")
+                index += 1
+            print("\n\n")
+            print("LABELS")
+            keys = list(labels.keys())
+            keys.sort()
+            index=0
+            for k in keys:
+                print(f"{k} = {index};")
+                index+=1
+        if tagset == "pos":
+            return fine_tags
+        elif tagset == "coarse":
+            return coarse
+        elif tagset == "dep_labels":
+            return labels
+        elif tagset == "all":
+            return fine_tags, coarse, labels
+        else:
+            sys.exit("No tagset requested!")
     else:
         # labels = {v: k for k, v in labels.items()}
         print("labels: {}\n".format(pd.Series(labels).sort_values()))
@@ -72,8 +86,9 @@ def get_tags_and_labels(data, dict=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data", type=str, help="data to read",
-        default="./data/UDv29/train/tr/tr_boun-ud-train.pbtxt")
+    parser.add_argument("--data",
+                        type=str,
+                        help="data to read",
+                        default="./data/UDv29/train/tr/tr_boun-ud-train.pbtxt")
     args = parser.parse_args()
-    get_tags_and_labels(args.data)
-
+    fine_tags, coarse, labels = tags_to_ids(args.data, tagset="all", dict=True)

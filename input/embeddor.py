@@ -29,7 +29,7 @@ class Embeddings:
     self.embedding_dim = matrix
     self.token_to_index = self._token_to_index()
     self.index_to_token = self._index_to_token()
-    self.token_to_vector = matrix
+    self.token_to_vector = self._token_to_vector(matrix=matrix)
     self.index_to_vector = self._index_to_vector(matrix=matrix)
   
   def __str__(self):
@@ -41,7 +41,16 @@ class Embeddings:
     return {elem:ind for ind, elem in enumerate(self.vocab)}
   
   def _index_to_token(self) -> Dict[int, int]:
-    return {ind:elem for ind, elem in enumerate(self.vocab)}       
+    return {ind:elem for ind, elem in enumerate(self.vocab)}
+
+  def _token_to_vector(self, *, matrix) -> Dict:
+    token_to_vector = {}
+    if self.type != "word2vec":
+      for token in matrix.keys():
+        token_to_vector[token] = np.array(matrix[token], dtype=np.float32)
+      return token_to_vector
+    else:
+      return matrix
 
   def _index_to_vector(self, *, matrix) -> Array:
     index_to_vector = np.zeros(shape=(self.vocab_size, self.embedding_dim))
@@ -112,8 +121,10 @@ class Embeddings:
     random_token = random.choice(self.vocab[2:])
     random_tok_idx = self.stoi(token=random_token)
     print(type(self.index_to_vector[random_tok_idx]))
+
     if not type(self.index_to_vector[random_tok_idx]) == np.ndarray:
       return SanityCheck.FAIL
+
     if self.type == "word2vec":
       if not len(self.token_to_vector.wv.vocab.keys()) == self.vocab_size - 2:
         return SanityCheck.FAIL
@@ -121,15 +132,19 @@ class Embeddings:
       if not len(self.token_to_vector.keys()) == self.vocab_size - 2:
         print("failed 1")
         return SanityCheck.FAIL
+
     if not self.vocab[0] == "-pad-" and self.vocab[1] == "-oov-":
       print("failed 2")
       return SanityCheck.FAIL
+
     if not self.stoi(token=random_token) == self.token_to_index[random_token]:
       print("failed 3")
       return SanityCheck.FAIL
+
     if not self.itos(idx=random_tok_idx) == self.index_to_token[random_tok_idx]:
       print("failed 4")
       return SanityCheck.FAIL
+
     if self.type == "word2vec":
       if not (self.token_to_vector[random_token] == self.index_to_vector[
         random_tok_idx]).all():
@@ -140,10 +155,12 @@ class Embeddings:
           random_tok_idx]).all():
           print("failed 5")
           return SanityCheck.FAIL
+
     if not (self.itov(idx=random_tok_idx) == self.index_to_vector[
       random_tok_idx]).all():
       print("failed 6")
       return SanityCheck.FAIL
+
     if self.type == "word2vec":
       if not (self.token_to_vector[self.itos(idx=random_tok_idx)] == self.token_to_vector[random_token]).all():
         print("failed 7")
@@ -154,6 +171,7 @@ class Embeddings:
       if not (elem1 == elem2).all():
         print("failed 7")
         return SanityCheck.FAIL
+
     if self.type == "word2vec":
       if not (self.index_to_vector[self.stoi(token=random_token)] == self.token_to_vector[random_token]).all():
         print("failed 8")
@@ -163,4 +181,5 @@ class Embeddings:
       if not np.allclose(self.index_to_vector[self.stoi(token=random_token)], np_t_to_v_random_token):
         print("failed 8")
         return SanityCheck.FAIL
+
     return SanityCheck.PASS

@@ -160,9 +160,15 @@ _MORPH = {'abbr_yes': 1,
 class LabelReaderTest(parameterized.TestCase):
   """Tests for the label reader."""
   def test_read_tags(self):
-    print(LabelReader.get_labels("pos", "en").labels)
-    print(LabelReader.get_labels("category", "en").labels)
-    print(LabelReader.get_labels("dep_labels", "en").labels)
+    print("English Dep Labels: ", LabelReader.get_labels("dep_labels", "en").labels)
+    print()
+    print("German Dep Labels: ", LabelReader.get_labels("dep_labels", "de").labels)
+    print()
+    print("Finnish Dep Labels: ", LabelReader.get_labels("dep_labels", "fi").labels)
+    print()
+    print("Chinese Dep Labels: ", LabelReader.get_labels("dep_labels", "zh").labels)
+    print()
+    print("Turkish Dep Labels: ", LabelReader.get_labels("dep_labels", "tr").labels)
 
 
   @parameterized.named_parameters(
@@ -208,7 +214,7 @@ class LabelReaderTest(parameterized.TestCase):
         "language": "tr",
         "reverse": False,
         "expected_labels": _MORPH,
-      }
+      },
     ]
   )
   def test_read_labels(self, tagset, language, reverse, expected_labels):

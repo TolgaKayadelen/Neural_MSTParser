@@ -85,6 +85,7 @@ class LabelFirstParser(base_parser.BaseParser):
       use_pos=self._use_pos,
       use_morph=self._use_morph,
       use_dep_labels=self._use_dep_labels,
+      pos_embedding_vocab_size=self.pos_embedding_vocab_size,
       one_hot_labels=self.one_hot_labels,
     )
     model(inputs=self.inputs)
@@ -99,7 +100,8 @@ class LabelFirstParsingModel(tf.keras.Model):
                predict: List[str],
                use_pos:bool = True,
                use_morph:bool=True,
-               use_dep_labels:bool=False, # for cases where we predict only edges using dep labels as gold.
+               use_dep_labels:bool=False,
+               pos_embedding_vocab_size=37,
                one_hot_labels: False
                ):
     super(LabelFirstParsingModel, self).__init__(name=name)
@@ -120,7 +122,7 @@ class LabelFirstParsingModel(tf.keras.Model):
 
     if self.use_pos:
       self.pos_embeddings = layer_utils.EmbeddingLayer(
-        input_dim=37, output_dim=32,
+        input_dim=pos_embedding_vocab_size, output_dim=32,
         name="pos_embeddings",
         trainable=True)
 

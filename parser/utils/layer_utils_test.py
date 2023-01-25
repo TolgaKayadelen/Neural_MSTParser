@@ -2,12 +2,11 @@
 
 """Tests for the layer_utils module."""
 
-import unittest
 import logging
 
 import tensorflow as tf
 
-from parser.nn import layer_utils
+from parser.utils import layer_utils
 from input.embeddor import Embeddings
 from util.nn import nn_utils
 
@@ -44,4 +43,4 @@ class LayerUtilsTest(tf.test.TestCase):
     self.assertEqual(features.shape, (3, 32))
 
 if __name__ == "__main__":
-	tf.test.main()
+  tf.test.main()
