@@ -2,7 +2,8 @@ bazel-*
 data/UDv23
 data/UDv29
 debug/
-eval/
 data/testdata
 embeddings/
+ranker/data
+ranker/models
 .DS_S*
