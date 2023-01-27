@@ -326,7 +326,6 @@ class PropbankConverter(Converter):
     conll_df = pd.read_table(conll, sep="\t", quoting=3, header=None,
                             names=list(range(0,40)),
                             skip_blank_lines=False)
-    # TODO: turn this into a function decorator.
     return self._ChunkDataFrame(conll_df)
   
   def _ChunkDataFrame(self, df):
@@ -414,6 +413,8 @@ def main(args):
     conll_df_list = converter._ReadCoNLLDataFrame(converter._corpus)
     for df in conll_df_list:
       df = df.dropna(how='all').reset_index(drop=True)
+      print("df ", df)
+      input()
       cols = [0, 6]
       df = df.astype({c: int for c in cols})
       if not df.empty:

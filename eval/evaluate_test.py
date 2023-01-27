@@ -33,7 +33,7 @@ class EvaluateTest(unittest.TestCase):
     def setUp(self):
         self.gold_data = _read_parser_test_data("eval_data_gold")
         self.test_data = _read_parser_test_data("eval_data_test")
-        self.evaluator = evaluate.Evaluator(self.gold_data, self.test_data, write_results=False)
+        self.evaluator = evaluate.Evaluator(self.gold_data, self.test_data, language="en", write_results=False)
    
     def test_label_counts(self):
         print("Running test label_counts..")
@@ -52,12 +52,12 @@ class EvaluateTest(unittest.TestCase):
     
     def test_uas_total(self):
         print("Running test uas_total..")
-        self.assertEqual(round(self.evaluator.uas_total, 1), 85.7)
+        self.assertEqual(round(self.evaluator.uas_total, 2), 0.85)
         print("Passed!")
     
     def test_las_total(self):
         print("Running test las_total..")
-        self.assertEqual(round(self.evaluator.las_total, 1), 73.2)
+        self.assertEqual(round(self.evaluator.las_total, 2), 0.77)
         print("Passed!")
     
     def test_typed_uas(self):
@@ -106,8 +106,8 @@ class EvaluateTest(unittest.TestCase):
       results = self.evaluator.evaluate(["las_total", "uas_total"])
       uas = results["uas_total"]
       las = results["las_total"]
-      self.assertEqual(round(uas, 1), 85.7)
-      self.assertEqual(round(las, 1), 73.2)
+      self.assertEqual(round(uas, 2), 0.85)
+      self.assertEqual(round(las, 2), 0.77)
       print("Passed!")
     
     def test_labeled_attachment_metrics(self):
@@ -157,26 +157,8 @@ class EvaluateTest(unittest.TestCase):
         expected_metrics = expected_result.sort_index()
         self.assertTrue(expected_metrics.equals(self.evaluator.labeled_attachment_metrics))
         print("Passed!")
-    
-    def test_labels_confusion_matrix(self):
-        print("Running test labels_confusion_matrix..")
-        index = ["det", "nsubj", "obj", "pobj", "prep", "root", "All"]
-        cols = ["amod", "det", "nsubj", "obj", "pobj", "prep", "root", "All"]
-        expected_matrix = pd.DataFrame(
-            columns = cols,
-            index = index,
-            data = [
-                [1,1,0,1,0,0,0,3], #det
-                [0,0,2,0,0,0,0,2], #nsubj
-                [0,0,0,2,0,0,0,2], #obj
-                [0,0,0,0,1,0,0,1], #pobj
-                [0,0,0,0,0,1,0,1], #prep
-                [0,0,0,0,0,0,2,2], #root
-                [1,1,2,3,1,1,2,11] #all
-            ])
-        self.assertTrue(expected_matrix.equals(self.evaluator.labels_conf_matrix))
-        print("Passed!")
-    
+
+    # knwon broken due to pobj
     def test_evaluate(self):
         print("Running testEvaluate..")
         results = self.evaluator.evaluate("all")
@@ -346,6 +328,26 @@ class EvaluateTest(unittest.TestCase):
           }
         }""", evaluation_pb2.Evaluation())
         self.assertEqual(expected_proto, self.evaluator.evaluation)
+
+    # known_broken
+    def test_labels_confusion_matrix(self):
+        print("Running test labels_confusion_matrix..")
+        index = ["det", "nsubj", "obj", "pobj", "prep", "root", "All"]
+        cols = ["amod", "det", "nsubj", "obj", "pobj", "prep", "root", "All"]
+        expected_matrix = pd.DataFrame(
+            columns = cols,
+            index = index,
+            data = [
+                [1,1,0,1,0,0,0,3], #det
+                [0,0,2,0,0,0,0,2], #nsubj
+                [0,0,0,2,0,0,0,2], #obj
+                [0,0,0,0,1,0,0,1], #pobj
+                [0,0,0,0,0,1,0,1], #prep
+                [0,0,0,0,0,0,2,2], #root
+                [1,1,2,3,1,1,2,11] #all
+            ])
+        self.assertTrue(expected_matrix.equals(self.evaluator.labels_conf_matrix))
+        print("Passed!")
         
 if __name__ == "__main__":
 	unittest.main()

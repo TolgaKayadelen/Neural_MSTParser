@@ -22,6 +22,7 @@ from typing import List, Dict, Tuple
 from tagset.dep_labels import dep_label_enum_pb2 as dep_label_tags
 from tagset.fine_pos import fine_tag_enum_pb2 as pos_tags
 from tagset.coarse_pos import coarse_tag_enum_pb2 as category_tags
+from tagset import reader
 from util import writer
 from util.nn import nn_utils
 
@@ -87,6 +88,8 @@ class BaseParser(ABC):
     logging.info(f"Testing every {self._test_every}")
 
     self._log_dir = log_dir
+
+    self.label_reader = reader.LabelReader.get_labels("dep_labels", self.language)
 
     if top_k and k <= 1:
       raise ValueError(f"k has to be greater than 1 if top_k is True. Received k = {k}")
@@ -199,17 +202,6 @@ class BaseParser(ABC):
     return tf.reshape(_tensor, shape=(batch_size*seq_len, outer_dim))
 
   @staticmethod
-  def _label_index_to_name(label_index):
-    # print("label index ", label_index)
-    # input()
-    try:
-      name = dep_label_tags.Tag.Name(label_index[0])
-    except:
-      name = dep_label_tags.Tag.Name(label_index)
-      return name
-    raise ValueError(f"Argument {label_index} is not a valid type.")
-
-  @staticmethod
   def _label_name_to_index(label_name):
     return dep_label_tags.Tag.Value(label_name)
 
@@ -248,9 +240,19 @@ class BaseParser(ABC):
     # input("press")
     return _enumerated_tensor
 
-
   def __str__(self):
     return str(self.model.summary())
+
+  def _label_index_to_name(self, label_index):
+    # print("label index ", label_index)
+    # input()
+    try:
+      name = self.label_reader.itov(label_index[0])
+    except:
+      if type(label_index) != int:
+        label_index = int(label_index)
+      name = self.label_reader.itov(label_index)
+    return name
 
   def _metrics(self) -> Metrics:
     """Sets up metrics to track for this parser."""
@@ -804,7 +806,10 @@ class BaseParser(ABC):
       # first populate gold treebank with the gold annotations
       index = 0
       # print("gold labels ", dep_labels)
+      # input()
       for token, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
+        # print("token ", token, "dep label ", dep_label , "head ", head)
+        # input()
         gold_sentence_pb2.sent_id = sent_id[0][0].numpy()
         token = gold_sentence_pb2.token.add(
           word=tf.keras.backend.get_value(token),
@@ -826,7 +831,7 @@ class BaseParser(ABC):
       index = 0
       # print("test labels ", dep_labels)
       # input()
-      for token, dep_label, head, pos_tag, category_tag in zip(tokens[0], dep_labels[0], heads[0]):
+      for token, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
         parsed_sentence_pb2.sent_id = sent_id[0][0].numpy()
         token = parsed_sentence_pb2.token.add(
           word=tf.keras.backend.get_value(token),

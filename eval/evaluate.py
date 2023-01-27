@@ -35,11 +35,6 @@ from tagset.dep_labels import dep_label_enum_pb2 as dep_label_tags
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-label_reader = LabelReader.get_labels("dep_labels")
-# print("label to enum ", label_to_enum)
-
-def _label_name_to_index(label_name):
-  return label_reader.vtoi(label_name)
 
 def evaluate_parser(args, print_results=False):
   """Function to evaluate the dependency parser output on gold data.
@@ -71,7 +66,7 @@ f1 = lambda recall, precision: 2 * (recall * precision) / (recall + precision)
 
 class Evaluator:
   """The evaluator module."""
-  def __init__(self, gold, test, write_results, model_name=None, write_dir=None):
+  def __init__(self, gold, test, write_results, language="tr", model_name=None, write_dir=None):
     """
     Initializes this evaluator with a gold and test treebank.
     Args:
@@ -91,6 +86,8 @@ class Evaluator:
       self.test = test
     else:
       raise ValueError("Invalid value for self.test!!")
+    self.language=language
+    self.label_reader = LabelReader.get_labels("dep_labels", self.language)
     self.metrics = ["uas_total", "las_total", "typed_uas",
                     "label_accuracy",
                     "labeled_attachment_precision",
@@ -99,7 +96,12 @@ class Evaluator:
     self.write_results = write_results
     self.model_name = model_name
     self.write_dir = write_dir
-  
+
+
+
+  def _label_name_to_index(self, label_name):
+    return self.label_reader.vtoi(label_name)
+
   @property
   def gold_and_test(self):
     """Ensures that the sentences in gold and test side are ordered
@@ -137,23 +139,23 @@ class Evaluator:
         
     for label in self.typed_uas.keys():
       evaluation.typed_uas.uas.add(
-                              label=_label_name_to_index(label),
+                              label=self._label_name_to_index(label),
                               score=round(self.typed_uas[label],2)
                               )
     for label in self.labeled_attachment_prec.keys():
       evaluation.labeled_attachment_prec.prec.add(
-                              label=_label_name_to_index(label),
+                              label=self._label_name_to_index(label),
                               score=round(self.labeled_attachment_prec[label],2)
                               )
     for label in self.labeled_attachment_recall.keys():
       evaluation.labeled_attachment_recall.recall.add(
-                              label=_label_name_to_index(label),
+                              label=self._label_name_to_index(label),
                               score=round(self.labeled_attachment_recall[label], 2)
                               )
         
     for _, row in self.labeled_attachment_metrics.reset_index().iterrows():
       evaluation.labeled_attachment_metrics.labeled_attachment_metric.add(
-                              label=_label_name_to_index(row["index"]),
+                              label=self._label_name_to_index(row["index"]),
                               count=int(row["count"]),
                               prec=row["labeled_attachment_precision"],
                               recall=row["labeled_attachment_recall"],
@@ -251,38 +253,49 @@ class Evaluator:
   def uas_total(self) -> float:
     """Computes the total Unlabeled Attachement Score of the parser."""
     uas = 0.0
+    total_heads = 0
     
     for gold_sent, test_sent in self.gold_and_test:
       # print(gold_sent.sent_id, test_sent.sent_id)
       # input()
-      gold_heads = [tok.selected_head.address for tok in gold_sent.token[1:]]
+      gold_heads = [tok.selected_head.address for tok in gold_sent.token]
       # print("gold heads ", gold_heads)
-      pred_heads = [tok.selected_head.address for tok in test_sent.token[1:]]
+      total_heads += len(gold_heads)
+      # print("total heads ", total_heads)
+      # input()
+      pred_heads = [tok.selected_head.address for tok in test_sent.token]
       # print("test heads ", pred_heads)
       assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
       uas += sum(
-          gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
-    return uas / len(self.gold)
+        gh == ph for gh, ph in zip(gold_heads, pred_heads))
+      # print("uas ", uas)
+      # input()
+
+    return uas / total_heads # uas / len(self.gold)
         
   @property
   def las_total(self) -> float:
     """Computes Labeled Attachment Score."""
     las = 0.0
+    total_heads = 0
     assert len(self.test_labels) > 1, """Can't compute LAS:
                                          Test data doesn't have labels!"""
    
     for gold_sent, test_sent in self.gold_and_test:
       gold_heads = [
-        (tok.selected_head.address, tok.label) for tok in gold_sent.token[1:]
+        (tok.selected_head.address, tok.label) for tok in gold_sent.token
       ]
       pred_heads = [
-        (tok.selected_head.address, tok.label) for tok in test_sent.token[1:]
+        (tok.selected_head.address, tok.label) for tok in test_sent.token
       ]
+      total_heads += len(gold_heads)
       assert len(gold_heads) == len(pred_heads), "Tokenization mismatch!!"
       las +=  sum(
-          gh == ph for gh, ph in zip(gold_heads, pred_heads)) / len(gold_heads)
-    
-    return las / len(self.gold)
+        gh == ph for gh, ph in zip(gold_heads, pred_heads))
+    # print("las ", las)
+    # print("total heads ", total_heads)
+    # print("uas / total ", las/total_heads)
+    return las / total_heads
     
   @property
   def typed_uas(self) -> Dict:
@@ -419,6 +432,7 @@ class Evaluator:
       return label_accuracy
     confusion_matrix = pd.crosstab(gold_labels, test_labels, rownames=['Gold Labels'],
                                    colnames=['Test Labels'], margins=True)
+    self.labels_conf_matrix = confusion_matrix
     self.label_accuracy = label_accuracy
     return label_accuracy, confusion_matrix
     

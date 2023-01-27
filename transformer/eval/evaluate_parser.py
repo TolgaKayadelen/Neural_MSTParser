@@ -23,15 +23,17 @@ from data.treebank import treebank_pb2
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230123-003122-bert"
+_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230117-093948-multilingual-cased"
 
 class ParserEval:
   """Parses a treebank that has already predicted labels and evals uas/las."""
   def __init__(self, parser_name, labeled_treebank_name, gold_treebank_name):
     self.word_embeddings = load_models.load_word_embeddings()
-    self.preprocessor = load_models.load_preprocessor(word_embeddings=self.word_embeddings)
+    self.preprocessor = load_models.load_preprocessor(word_embedding_indexes=self.word_embeddings.token_to_index,
+                                                      language="tr")
     self.parser = load_models.load_parser(
       parser_name=parser_name,
+      word_embeddings=self.word_embeddings,
       prep=self.preprocessor)
     self.test_dataset = self.get_dataset(labeled_treebank_name)
     self.gold_treebank = reader.ReadTreebankTextProto(os.path.join(_DATA_DIR, gold_treebank_name))
