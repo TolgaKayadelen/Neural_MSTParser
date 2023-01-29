@@ -43,11 +43,12 @@ enum Tag {
   obj = 38;
   obl = 39;
   obl_patient = 40;
-  parataxis = 41;
-  punct = 42;
-  reparandum = 43;
-  root = 44;
-  vocative = 45;
-  xcomp = 46;
-  TOP = 47;
+  orphan = 41;
+  parataxis = 42;
+  punct = 43;
+  reparandum = 44;
+  root = 45;
+  vocative = 46;
+  xcomp = 47;
+  TOP = 48;
 }

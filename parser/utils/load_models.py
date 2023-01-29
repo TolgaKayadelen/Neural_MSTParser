@@ -30,8 +30,8 @@ def load_preprocessor(*, word_embedding_indexes,
                       features=["words", "pos"], # word, pos, morph
                       pos_indexes=None,
                       head_padding_value=0, one_hot_features=[]):
-  allow_list = ["words", "pos", "morph"]
-  assert set(features).issubset(allow_list), "Can use words, pos, or morph as features!"
+  allow_list = ["words", "pos", "morph", "dep_labels"]
+  assert set(features).issubset(allow_list), "Can use words, pos, morph, dep_labels as features!"
   prep = preprocessor.Preprocessor(
     word_embedding_indexes=word_embedding_indexes,
     pos_indexes=pos_indexes,

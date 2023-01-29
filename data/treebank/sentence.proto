@@ -52,6 +52,7 @@ message Token {
 	optional string label = 8;
 	optional int32 index = 9;
   optional string srl = 10;
+	optional int32 predicative = 11;
 	
 	// Morphology is represented as a list of name:value pairs.
 	message Morphology {

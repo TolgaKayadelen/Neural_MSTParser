@@ -13,16 +13,6 @@ _TRAINING_FILE = "zh_gsd-ud-train.conllu"
 _DEV_FILE = "zh_gsd-ud-dev.conllu"
 _TEST_FILE ="zh_gsd-ud-test.conllu"
 
-
-replace_dict = {
-  "obl:patient": "obl",
-  "obl:agent": "obl",
-  "obl:tmod": "obl",
-  "flat:name": "flat",
-  "flat:foreign": "flat",
-}
-
-
 def read_conllx(path):
   """Read treebank from a file where sentences are in conll-X format.
   Args:
@@ -109,10 +99,7 @@ def convert_to_dict(sentence_list):
       values = [item.strip() for item in line.split("\t")]
       tokens.append(values[1])
       heads.append(values[6])
-      if values[7] in ["obl:patient", "obl:agent", "obl:tmod"]:
-        dep_labels.append("obl")
-      else:
-        dep_labels.append(values[7])
+      dep_labels.append(values[7])
     yield {
       "sent_id": sent_id,
       "tokens": tokens,
@@ -152,6 +139,7 @@ class ChineseGSDTreebank(datasets.GeneratorBasedBuilder):
                   "acl:relcl",
                   "advcl",
                   "advmod",
+                  "obl:agent",
                   "amod",
                   "appos",
                   "aux",
@@ -171,8 +159,10 @@ class ChineseGSDTreebank(datasets.GeneratorBasedBuilder):
                   "discourse",
                   "discourse:sp",
                   "dislocated",
-                  "flat",
                   "fixed",
+                  "flat",
+                  "flat:foreign",
+                  "flat:name",
                   "iobj",
                   "mark",
                   "mark:adv",
@@ -184,6 +174,7 @@ class ChineseGSDTreebank(datasets.GeneratorBasedBuilder):
                   "nummod",
                   "obj",
                   "obl",
+                  "obl:patient",
                   "orphan",
                   "parataxis",
                   "punct",
@@ -265,10 +256,7 @@ class ChineseGSDTreebank(datasets.GeneratorBasedBuilder):
           values = [item.strip() for item in line.split("\t")]
           tokens.append(values[1])
           heads.append(values[6])
-          if values[7] in ["obl:patient", "obl:agent", "obl:tmod", "flat:name", "flat:foreign"]:
-            dep_labels.append(replace_dict[values[7]])
-          else:
-            dep_labels.append(values[7])
+          dep_labels.append(values[7])
         yield key, {
           "sent_id": sent_id,
           "tokens": tokens,

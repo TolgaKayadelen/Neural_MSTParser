@@ -23,7 +23,7 @@ if __name__ == "__main__":
                           predict=["heads", "labels"],
                           features=["words", "pos", "morph"],
                           model_name="biaffine_parser_boun",
-                          test_every=5)
+                          test_every=1)
 
   train_treebank= "tr_boun-ud-train.pbtxt"
   test_treebank = "tr_boun-ud-test.pbtxt"

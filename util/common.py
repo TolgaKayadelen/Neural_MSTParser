@@ -4,9 +4,11 @@
 
 import sys
 import os
+import datasets
 from copy import deepcopy
 from data.treebank import sentence_pb2
-from util import reader
+from data.treebank import treebank_pb2
+from util import reader, writer
 from google.protobuf import text_format
 
 import logging
@@ -347,9 +349,76 @@ def TopFeatures(featureset, n):
       # get head features.
       return featureset.feature[:n]
 
+
+def CopySentIds():
+    """Copy sent ids from hf dataset examples to pbtxt files."""
+    propbank_path = "./data/propbank/ud"
+    write_paths = {}
+    write_paths["train"] = os.path.join(propbank_path, "prp_train_with_spans_sentid.pbtxt")
+    write_paths["validation"] = os.path.join(propbank_path, "prp_dev_with_spans_sentid.pbtxt")
+    write_paths["test"] = os.path.join(propbank_path, "prp_test_with_spans_sentid.pbtxt")
+
+    treebanks = {}
+    dataset = datasets.load_dataset("./transformer/hf/dataset/tr/propbank_data_loader.py")
+    treebanks["train"] = reader.ReadTreebankTextProto("./data/propbank/ud/prp_train_with_spans.pbtxt")
+    treebanks["validation"] = reader.ReadTreebankTextProto("./data/propbank/ud/prp_dev_with_spans.pbtxt")
+    treebanks["test"] = reader.ReadTreebankTextProto("./data/propbank/ud/prp_test_with_spans.pbtxt")
+    sent_id_treebanks = {}
+    sent_id_treebanks["train"] = treebank_pb2.Treebank()
+    sent_id_treebanks["validation"] = treebank_pb2.Treebank()
+    sent_id_treebanks["test"] = treebank_pb2.Treebank()
+    for datatype in ["train", "validation", "test"]:
+        counter = 0
+        for example, sentence in zip(dataset[datatype], treebanks[datatype].sentence):
+            counter += 1
+            print("sentence ", counter)
+            example_words = example["tokens"]
+            print(example_words)
+            # input()
+            sentence_words = [token.word for token in sentence.token[1:]]
+            print(sentence_words)
+            assert(example_words == sentence_words), "Mismatch in sentences"
+            sentence.sent_id = example["sent_id"]
+            new_sentence = sent_id_treebanks[datatype].sentence.add()
+            new_sentence.CopyFrom(sentence)
+        writer.write_proto_as_text(sent_id_treebanks[datatype], write_paths[datatype])
+        # input()
+
+def CopySrlToTokens():
+    treebanks = {}
+    output_treebanks = {}
+    write_paths = {}
+    treebanks["train"] = reader.ReadTreebankTextProto(
+        "./data/propbank/ud/without_spans/prp_train_without_spans_sentid.pbtxt")
+    treebanks["dev"] = reader.ReadTreebankTextProto(
+        "./data/propbank/ud/without_spans/prp_dev_without_spans_sentid.pbtxt")
+    treebanks["test"] = reader.ReadTreebankTextProto(
+        "./data/propbank/ud/without_spans/prp_test_without_spans_sentid.pbtxt")
+    output_treebanks["train"] = treebank_pb2.Treebank()
+    output_treebanks["dev"] = treebank_pb2.Treebank()
+    output_treebanks["test"] = treebank_pb2.Treebank()
+    write_paths["train"] = "./data/propbank/ud/srl/train.pbtxt"
+    write_paths["dev"] = "./data/propbank/ud/srl/dev.pbtxt"
+    write_paths["test"] = "./data/propbank/ud/srl/test.pbtxt"
+    for datatype in ["train", "dev", "test"]:
+        sentences = treebanks[datatype].sentence
+        output_treebank = output_treebanks[datatype]
+        for sentence in sentences:
+            tokens = sentence.token
+            for token in tokens:
+                token.srl = "-0-"
+                token.predicative = 0
+            for arg_str in sentence.argument_structure:
+                tokens[arg_str.predicate_index].predicative = 1
+                for argument in arg_str.argument:
+                    token_index = argument.token_index[0]
+
+                    tokens[token_index].srl = argument.srl
+            new_sentence = output_treebank.sentence.add()
+            new_sentence.CopyFrom(sentence)
+        writer.write_proto_as_text(output_treebank, write_paths[datatype])
+
+
+
 if __name__ == "__main__":
-    sentence = reader.ReadSentenceTextProto("./data/testdata/generic/john_saw_mary.pbtxt")
-    token = sentence.token[2] # saw
-    assert token.word == "saw"
-    rightmost = GetRightMostChild(sentence, token)
-    print("rightmost child is {}".format(rightmost.word))
+    CopySrlToTokens()

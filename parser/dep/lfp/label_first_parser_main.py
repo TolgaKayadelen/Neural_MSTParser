@@ -17,11 +17,11 @@ from util.nn import nn_utils
 
 def main(args):
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-  parser_model_name = f"{args.language}_lfp_{current_time}"
+  parser_model_name = f"{args.language}_lfp_gold_labels_{current_time}"
   logging.info(f"Parser model name is {parser_model_name}")
-  # model_name_check = input("Are you happy with the model name: y/n?")
-  # if model_name_check != "y":
-  #   raise ValueError("Model name is not set properly!")
+  model_name_check = input("Are you happy with the model name: y/n?")
+  if model_name_check != "y":
+    raise ValueError("Model name is not set properly!")
   log_dir = f"debug/label_first_parser/{args.language}/{parser_model_name}"
   logging.info(f"Logging to {log_dir}")
 
@@ -41,6 +41,7 @@ def main(args):
       pos_embedding_vocab_size = 37 # for turkish.
   else:
     pos_to_id=None
+    pos_embedding_vocab_size=None
 
   # loading pretrained word embeddings
   logging.info(f"Loading word embeddings for {args.language}")

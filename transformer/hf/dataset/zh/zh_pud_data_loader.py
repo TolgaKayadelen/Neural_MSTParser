@@ -11,16 +11,6 @@ _DESCRIPTION = """Chinese PUD treebank"""
 _DATA_DIR = "./data/UDv29/languages/Chinese/UD_Chinese-PUD"
 _TEST_FILE ="zh_pud-ud-test.conllu"
 
-replace_dict = {
-  "obl:patient": "obl",
-  "obl:agent": "obl",
-  "obl:tmod": "obl",
-  "case:loc": "case",
-  "mark:prt": "mark",
-  "flat:name": "flat",
-  "flat:foreign": "flat",
-}
-
 
 def read_conllx(path):
   """Read treebank from a file where sentences are in conll-X format.
@@ -108,10 +98,7 @@ def convert_to_dict(sentence_list):
       values = [item.strip() for item in line.split("\t")]
       tokens.append(values[1])
       heads.append(values[6])
-      if values[7] in ["obl:patient", "obl:agent", "obl:tmod"]:
-        dep_labels.append("obl")
-      else:
-        dep_labels.append(values[7])
+      dep_labels.append(values[7])
     yield {
       "sent_id": sent_id,
       "tokens": tokens,
@@ -151,6 +138,7 @@ class ChinesePUDTreebank(datasets.GeneratorBasedBuilder):
                   "acl:relcl",
                   "advcl",
                   "advmod",
+                  "obl:agent",
                   "amod",
                   "appos",
                   "aux",
@@ -165,13 +153,15 @@ class ChinesePUDTreebank(datasets.GeneratorBasedBuilder):
                   "cop",
                   "csubj",
                   "csubj:pass",
-                  "det",
                   "dep",
+                  "det",
                   "discourse",
                   "discourse:sp",
                   "dislocated",
-                  "flat",
                   "fixed",
+                  "flat",
+                  "flat:foreign",
+                  "flat:name",
                   "iobj",
                   "mark",
                   "mark:adv",
@@ -183,6 +173,7 @@ class ChinesePUDTreebank(datasets.GeneratorBasedBuilder):
                   "nummod",
                   "obj",
                   "obl",
+                  "obl:patient",
                   "orphan",
                   "parataxis",
                   "punct",

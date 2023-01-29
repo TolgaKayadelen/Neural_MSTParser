@@ -135,7 +135,9 @@ class Preprocessor:
     sequence_features = {}
 
     # Add a tokens, sent_id, heads and dep_labels as features.
-    self.features.extend(["tokens", "sent_id", "heads", "dep_labels"])
+    self.features.extend(["tokens", "sent_id", "heads"])
+    if not "dep_labels" in self.features:
+      self.features.extend(["dep_labels"])
     for feat in self.features:
       if feat == "heads":
         sequence_features[feat] = SequenceFeature(name=feat, is_label=feat in self.labels)

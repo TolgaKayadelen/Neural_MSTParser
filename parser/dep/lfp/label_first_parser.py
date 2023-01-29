@@ -136,10 +136,16 @@ class LabelFirstParsingModel(tf.keras.Model):
       self.dep_labels = layers.Dense(units=n_dep_labels, name="labels")
     else:
       if self.use_dep_labels and not self.one_hot_labels:
+        # Turkish
         self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=43,
                                                            output_dim=50,
                                                            name="label_embeddings",
-                                                           trainable=True)
+                                                           trainable=False)
+        # English
+        # self.label_embeddings = layer_utils.EmbeddingLayer(input_dim=51,
+        #                                                   output_dim=100,
+        #                                                   name="label_embeddings",
+        #                                                   trainable=True)
 
 
     self.head_perceptron = layer_utils.Perceptron(n_units=256,

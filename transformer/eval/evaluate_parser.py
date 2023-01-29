@@ -23,7 +23,7 @@ from data.treebank import treebank_pb2
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230117-093948-multilingual-cased"
+_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230128-202656-multilingual-cased"
 
 class ParserEval:
   """Parses a treebank that has already predicted labels and evals uas/las."""

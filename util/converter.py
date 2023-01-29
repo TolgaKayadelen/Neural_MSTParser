@@ -319,8 +319,9 @@ class Converter:
 pd.options.display.max_columns = 100
 class PropbankConverter(Converter):
   """A special class for propbank conversion."""
-  def __init__(self, corpus):
+  def __init__(self, corpus, with_spans):
     super().__init__(corpus)
+    self.with_spans=with_spans
   
   def _ReadCoNLLDataFrame(self, conll):
     conll_df = pd.read_table(conll, sep="\t", quoting=3, header=None,
@@ -360,9 +361,15 @@ class PropbankConverter(Converter):
         selected_head=sentence_pb2.Head(
           address=row[6],
           arc_score=0.0),
-        label=row[7]
-        
       )
+      # print(token.word)
+      try:
+        token.label=row[7]
+      except TypeError:
+        print(sentence.text)
+        print(word)
+        print(row[7])
+        input()
       if not row[5] == "_":
         feats = row[5].split("|")
         for feat in feats:
@@ -394,12 +401,15 @@ class PropbankConverter(Converter):
             idx = df[srl_roles_column][df[srl_roles_column] == srl].index
             for id_ in idx:
               token_index = df.loc[id_, 0]
-              span_indices = nn_utils.get_argument_spans(
-                sentence,
-                token_index,
-                arg_str.predicate_index,
-                [])
-              argument_span = sorted(set([token_index] + span_indices))
+              if self.with_spans:
+                span_indices = nn_utils.get_argument_spans(
+                  sentence,
+                  token_index,
+                  arg_str.predicate_index,
+                  [])
+                argument_span = sorted(set([token_index] + span_indices))
+              else:
+                argument_span = [token_index]
               argument.token_index.extend(argument_span)
 
     # print(text_format.MessageToString(sentence, as_utf8=True))
@@ -408,13 +418,14 @@ class PropbankConverter(Converter):
 
 def main(args):
   if args.propbank:
-    converter = PropbankConverter(args.input_file)
+    logging.info("Converting with spans: ", args.with_spans)
+    converter = PropbankConverter(args.input_file, args.with_spans)
     sentence_protos = []
     conll_df_list = converter._ReadCoNLLDataFrame(converter._corpus)
     for df in conll_df_list:
       df = df.dropna(how='all').reset_index(drop=True)
-      print("df ", df)
-      input()
+      # print("df ", df)
+      # input()
       cols = [0, 6]
       df = df.astype({c: int for c in cols})
       if not df.empty:
@@ -451,5 +462,7 @@ if __name__ == "__main__":
                         help="whether sentence or treebank proto.", default="treebank")
     parser.add_argument("--propbank", type=bool,
                         help="whether to convert propbank.", default=False)
+    parser.add_argument("--with_spans", type=bool, default=False,
+                        help="if True, converts the treebank with argument spans.")
     args = parser.parse_args()
     main(args)

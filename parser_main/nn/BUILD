@@ -1,8 +1,8 @@
 package(default_visibility = ["//visibility:public"])
 
 py_binary(
-    name="parse_and_eval",
-    srcs = ["parse_and_eval.py"],
+    name="ranker_parse_and_eval",
+    srcs = ["ranker_parse_and_eval.py"],
     deps = [
         "//eval:evaluate",
         "//parser/utils:load_models",

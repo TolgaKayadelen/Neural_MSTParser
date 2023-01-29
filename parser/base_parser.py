@@ -594,8 +594,9 @@ class BaseParser(ABC):
 
       losses = collections.defaultdict(list)
       for step, batch in enumerate(dataset):
-        words, pos = batch["words"], batch["pos"]
+        words = batch["words"]
         dep_labels, heads = batch["dep_labels"], batch["heads"]
+        pos = batch["pos"] if "pos" in batch.keys() else None
         morph = batch["morph"] if "morph" in batch.keys() else None
 
         # Get loss values, predictions, and correct heads/labels for this training step.
@@ -757,8 +758,8 @@ class BaseParser(ABC):
         edges: Tensor of shape (1, seq_len, seq_len)
         labels: Tensor of shape (1, seq_len, n_labels)
     """
-    words, pos, dep_labels = (example["words"], example["pos"],
-                              example["dep_labels"])
+    words, dep_labels = (example["words"], example["dep_labels"])
+    pos = example["pos"] if "pos" in example.keys() else None
     morph = example["morph"] if "morph" in example.keys() else None
     scores = self.model({"words": words, "pos": pos, "morph": morph,
                          "labels": dep_labels}, training=False)

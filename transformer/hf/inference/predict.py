@@ -18,7 +18,7 @@ _CURRENT_TIME = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 _EVAL_DIR = "./transformer/eval/eval_data"
 
 _data_dir = "./data/UDv29/test/tr"
-_test_data_pbtxt = "tr_boun-ud-test.pbtxt"
+_test_data_pbtxt = "tr_pud-ud-test.pbtxt"
 
 class BertInferencePipeline:
   def __init__(self, model_path, tokenizer_name="bert-base-multilingual-cased"):
@@ -142,7 +142,7 @@ class BertInferencePipeline:
 
   @staticmethod
   def read_dataset():
-    dataset = datasets.load_dataset("./transformer/hf/dataset/hf_data_loader.py")
+    dataset = datasets.load_dataset("./transformer/hf/dataset/tr/pud_hf_data_loader.py")
     test_dataset = dataset["test"]
     test_treebank = reader.ReadTreebankTextProto(os.path.join(_data_dir, _test_data_pbtxt))
     # test_treebank_dict = {s.sent_id: s for s in test_treebank.sentence}
@@ -152,12 +152,12 @@ class BertInferencePipeline:
 
 
 if __name__ == "__main__":
-  pipeline = BertInferencePipeline(model_path="./transformer/hf/pretrained/bert-lfp-parser/20230122-060042/bert",
+  pipeline = BertInferencePipeline(model_path="./transformer/hf/pretrained/finetuned_labelers/multilingual-cased",
                                    tokenizer_name="bert-base-multilingual-cased")
   gold_trb_path, labeled_trb_path = pipeline.predict_labels()
   gold = reader.ReadTreebankTextProto(gold_trb_path)
   labeled = reader.ReadTreebankTextProto(labeled_trb_path)
-  evaluator = evaluate.Evaluator(gold, labeled,
+  evaluator = evaluate.Evaluator(gold, labeled, language="tr",
                                  write_results=True,
                                  write_dir=pipeline.eval_dir)
   evaluator.evaluate("all")
