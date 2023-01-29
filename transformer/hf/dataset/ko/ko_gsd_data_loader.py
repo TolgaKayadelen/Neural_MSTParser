@@ -7,9 +7,13 @@ import datasets
 import logging
 from copy import deepcopy
 
-_DESCRIPTION = """Chinese PUD treebank"""
-_DATA_DIR = "./data/UDv29/languages/Chinese/UD_Chinese-PUD"
-_TEST_FILE ="zh_pud-ud-test.conllu"
+_DESCRIPTION = """Korean GSD treebank"""
+_DATA_DIR = "./data/UDv29/languages/Korean/UD_Korean-GSD"
+_PUD_DIR = "./data/UDv29/languages/Korean/UD_Korean-PUD"
+_TRAINING_FILE = "ko_gsd-ud-train.conllu"
+_DEV_FILE = "ko_gsd-ud-dev.conllu"
+_TEST_FILE ="ko_gsd-ud-test.conllu"
+_PUD_FILE ="ko_pud-ud-test.conllu"
 
 
 def read_conllx(path):
@@ -106,7 +110,7 @@ def convert_to_dict(sentence_list):
       "dep_labels": dep_labels,
     }
 
-class ChinesePUDTreebankConfig(datasets.BuilderConfig):
+class KoreanGSDTreebankConfig(datasets.BuilderConfig):
   """BuilderConfig for BounDepLabels"""
 
   def __init__(self, **kwargs):
@@ -114,13 +118,13 @@ class ChinesePUDTreebankConfig(datasets.BuilderConfig):
     Args:
       **kwargs: keyword arguments forwarded to super.
     """
-    super(ChinesePUDTreebankConfig, self).__init__(**kwargs)
+    super(KoreanGSDTreebankConfig, self).__init__(**kwargs)
 
 
-class ChinesePUDTreebank(datasets.GeneratorBasedBuilder):
+class KoreanGSDTreebank(datasets.GeneratorBasedBuilder):
     BUILDER_CONFIGS = [
-      ChinesePUDTreebankConfig(name="ChinesePUDTreebank", version=datasets.Version("1.0.0"),
-                              description="Chinese PUD Dependency Treebank"),
+      KoreanGSDTreebankConfig(name="KoreanGSDTreebank", version=datasets.Version("1.0.0"),
+                              description="Korean GSD Dependency Treebank"),
     ]
     def _info(self):
       return datasets.DatasetInfo(
@@ -138,46 +142,38 @@ class ChinesePUDTreebank(datasets.GeneratorBasedBuilder):
                   "acl:relcl",
                   "advcl",
                   "advmod",
-                  "obl:agent",
                   "amod",
                   "appos",
                   "aux",
-                  "aux:pass",
                   "case",
                   "cc",
                   "ccomp",
-                  "clf",
                   "compound",
-                  "compound:ext",
+                  "compound:lvc",
                   "conj",
                   "cop",
                   "csubj",
                   "csubj:pass",
                   "dep",
                   "det",
+                  "det:poss",
                   "discourse",
-                  "discourse:sp",
-                  "dislocated",
                   "fixed",
                   "flat",
-                  "flat:foreign",
                   "flat:name",
+                  "goeswith",
                   "iobj",
                   "mark",
-                  "mark:adv",
-                  "mark:rel",
                   "nmod",
-                  "nmod:tmod",
+                  "nmod:poss",
                   "nsubj",
                   "nsubj:pass",
                   "nummod",
                   "obj",
                   "obl",
-                  "obl:patient",
+                  "obl:tmod",
                   "orphan",
-                  "parataxis",
                   "punct",
-                  "reparandum",
                   "root",
                   "vocative",
                   "xcomp",
@@ -192,10 +188,14 @@ class ChinesePUDTreebank(datasets.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
       """Returns split generators"""
       datafiles = {
-        "test": os.path.join(_DATA_DIR, _TEST_FILE),
+        "train": os.path.join(_DATA_DIR, _TRAINING_FILE),
+        "dev": os.path.join(_DATA_DIR, _DEV_FILE),
+        "test": os.path.join(_PUD_DIR, _PUD_FILE),
       }
 
       return [
+        datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": datafiles["train"]}),
+        datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": datafiles["dev"]}),
         datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": datafiles["test"]}),
       ]
 
@@ -241,6 +241,10 @@ class ChinesePUDTreebank(datasets.GeneratorBasedBuilder):
             continue
           if line.startswith("# text"):
             continue
+          if line.startswith("# translit"):
+            continue
+          if line.startswith("# ToDo"):
+            continue
           if line.startswith("# sent_id"):
             sent_id = line.split("=")[1].strip()
             continue
@@ -251,11 +255,7 @@ class ChinesePUDTreebank(datasets.GeneratorBasedBuilder):
           values = [item.strip() for item in line.split("\t")]
           tokens.append(values[1])
           heads.append(values[6])
-          if values[7] in ["obl:patient", "obl:agent", "obl:tmod",
-                           "case:loc", "mark:prt", "flat:name", "flat:foreign"]:
-            dep_labels.append(replace_dict[values[7]])
-          else:
-            dep_labels.append(values[7])
+          dep_labels.append(values[7])
         yield key, {
           "sent_id": sent_id,
           "tokens": tokens,
@@ -264,7 +264,7 @@ class ChinesePUDTreebank(datasets.GeneratorBasedBuilder):
         }
 
 if __name__ == "__main__":
-  sentence_list = read_conllx(os.path.join(_DATA_DIR, _TEST_FILE))
+  sentence_list = read_conllx(os.path.join(_DATA_DIR, _DEV_FILE))
   converted = convert_to_dict(sentence_list)
   for sentence in converted:
     print(sentence)

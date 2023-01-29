@@ -7,14 +7,14 @@ import datasets
 import logging
 from copy import deepcopy
 
-_DESCRIPTION = """German PUD treebank"""
-_DATA_DIR = "./data/UDv29/languages/German/UD_German-PUD"
-_TEST_FILE ="de_pud-ud-test.conllu"
+_DESCRIPTION = """Russian GSD treebank"""
+_DATA_DIR = "./data/UDv29/languages/Russian/UD_Russian-GSD"
+_PUD_DIR = "./data/UDv29/languages/Russian/UD_Russian-PUD"
+_TRAINING_FILE = "ru_gsd-ud-train.conllu"
+_DEV_FILE = "ru_gsd-ud-dev.conllu"
+_TEST_FILE ="ru_gsd-ud-test.conllu"
+_PUD_FILE ="ru_pud-ud-test.conllu"
 
-# The german training data doesn't have an obl:tmod tag, so we change it to obl.
-replace_dict = {
-  "obl:tmod": "obl", "flat:name": "flat",
-}
 
 def read_conllx(path):
   """Read treebank from a file where sentences are in conll-X format.
@@ -102,10 +102,7 @@ def convert_to_dict(sentence_list):
       values = [item.strip() for item in line.split("\t")]
       tokens.append(values[1])
       heads.append(values[6])
-      if values[7] in ["obl:tmod"]:
-        dep_labels.append(replace_dict[values[7]])
-      else:
-        dep_labels.append(values[7])
+      dep_labels.append(values[7])
     yield {
       "sent_id": sent_id,
       "tokens": tokens,
@@ -113,7 +110,7 @@ def convert_to_dict(sentence_list):
       "dep_labels": dep_labels,
     }
 
-class GermanPUDTreebankConfig(datasets.BuilderConfig):
+class RussianGSDTreebankConfig(datasets.BuilderConfig):
   """BuilderConfig for BounDepLabels"""
 
   def __init__(self, **kwargs):
@@ -121,13 +118,13 @@ class GermanPUDTreebankConfig(datasets.BuilderConfig):
     Args:
       **kwargs: keyword arguments forwarded to super.
     """
-    super(GermanPUDTreebankConfig, self).__init__(**kwargs)
+    super(RussianGSDTreebankConfig, self).__init__(**kwargs)
 
 
-class GermanPUDTreebank(datasets.GeneratorBasedBuilder):
+class RussianGSDTreebank(datasets.GeneratorBasedBuilder):
     BUILDER_CONFIGS = [
-      GermanPUDTreebankConfig(name="GermanPUDTreebank", version=datasets.Version("1.0.0"),
-                              description="German PUD Dependency Treebank"),
+      RussianGSDTreebankConfig(name="RussianGSDTreebank", version=datasets.Version("1.0.0"),
+                              description="Russian GSD Dependency Treebank"),
     ]
     def _info(self):
       return datasets.DatasetInfo(
@@ -151,38 +148,36 @@ class GermanPUDTreebank(datasets.GeneratorBasedBuilder):
                   "aux:pass",
                   "case",
                   "cc",
-                  "cc:preconj",
                   "ccomp",
                   "compound",
-                  "compound:prt",
                   "conj",
                   "cop",
                   "csubj",
-                  "csubj:pass",
                   "dep",
                   "det",
-                  "det:poss",
                   "discourse",
+                  "dislocated",
                   "expl",
-                  "expl:pv",
                   "fixed",
                   "flat",
+                  "flat:foreign",
+                  "flat:name",
                   "goeswith",
                   "iobj",
+                  "list",
                   "mark",
                   "nmod",
-                  "nmod:poss",
                   "nsubj",
                   "nsubj:pass",
                   "nummod",
+                  "nummod:entity",
+                  "nummod:gov",
                   "obj",
                   "obl",
                   "obl:agent",
-                  "obl:arg",
                   "orphan",
                   "parataxis",
                   "punct",
-                  "reparandum",
                   "root",
                   "vocative",
                   "xcomp",
@@ -197,10 +192,14 @@ class GermanPUDTreebank(datasets.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
       """Returns split generators"""
       datafiles = {
-        "test": os.path.join(_DATA_DIR, _TEST_FILE),
+        "train": os.path.join(_DATA_DIR, _TRAINING_FILE),
+        "dev": os.path.join(_DATA_DIR, _DEV_FILE),
+        "test": os.path.join(_PUD_DIR, _PUD_FILE),
       }
 
       return [
+        datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": datafiles["train"]}),
+        datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": datafiles["dev"]}),
         datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": datafiles["test"]}),
       ]
 
@@ -246,6 +245,8 @@ class GermanPUDTreebank(datasets.GeneratorBasedBuilder):
             continue
           if line.startswith("# text"):
             continue
+          if line.startswith("# english_text"):
+            continue
           if line.startswith("# sent_id"):
             sent_id = line.split("=")[1].strip()
             continue
@@ -256,10 +257,7 @@ class GermanPUDTreebank(datasets.GeneratorBasedBuilder):
           values = [item.strip() for item in line.split("\t")]
           tokens.append(values[1])
           heads.append(values[6])
-          if values[7] in ["obl:tmod", "flat:name"]:
-            dep_labels.append(replace_dict[values[7]])
-          else:
-            dep_labels.append(values[7])
+          dep_labels.append(values[7])
         yield key, {
           "sent_id": sent_id,
           "tokens": tokens,
@@ -268,7 +266,7 @@ class GermanPUDTreebank(datasets.GeneratorBasedBuilder):
         }
 
 if __name__ == "__main__":
-  sentence_list = read_conllx(os.path.join(_DATA_DIR, _TEST_FILE))
+  sentence_list = read_conllx(os.path.join(_DATA_DIR, _DEV_FILE))
   converted = convert_to_dict(sentence_list)
   for sentence in converted:
     print(sentence)

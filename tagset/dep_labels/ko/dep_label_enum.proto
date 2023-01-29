@@ -1,0 +1,47 @@
+syntax = "proto2";
+
+package tagset.dep_labels.ko;
+
+enum Tag {
+  UNKNOWN_LABEL = 0;
+  acl= 1;
+  acl_relcl= 2;
+  advcl= 3;
+  advmod= 4;
+  amod= 5;
+  appos= 6;
+  aux= 7;
+  case= 8;
+  cc= 9;
+  ccomp= 10;
+  compound= 11;
+  compound_lvc= 12;
+  conj= 13;
+  cop= 14;
+  csubj= 15;
+  csubj_pass= 16;
+  dep= 17;
+  det= 18;
+  det_poss= 19;
+  discourse= 20;
+  fixed= 21;
+  flat= 22;
+  flat_name= 23;
+  goeswith= 24;
+  iobj= 25;
+  mark= 26;
+  nmod= 27;
+  nmod_poss= 28;
+  nsubj= 29;
+  nsubj_pass= 30;
+  nummod= 31;
+  obj= 32;
+  obl= 33;
+  obl_tmod= 34;
+  orphan= 35;
+  punct= 36;
+  root= 37;
+  vocative= 38;
+  xcomp= 39;
+  TOP = 40;
+}

@@ -9,9 +9,11 @@ from copy import deepcopy
 
 _DESCRIPTION = """Finnish TDT treebank"""
 _DATA_DIR = "./data/UDv29/languages/Finnish/UD_Finnish-TDT"
+_PUD_DIR = "./data/UDv29/languages/Finnish/UD_Finnish-PUD"
 _TRAINING_FILE = "fi_tdt-ud-train.conllu"
 _DEV_FILE = "fi_tdt-ud-dev.conllu"
 _TEST_FILE ="fi_tdt-ud-test.conllu"
+_PUD_FILE ="fi_pud-ud-test.conllu"
 
 
 def read_conllx(path):
@@ -194,7 +196,7 @@ class FinnishTDTTreebank(datasets.GeneratorBasedBuilder):
       datafiles = {
         "train": os.path.join(_DATA_DIR, _TRAINING_FILE),
         "dev": os.path.join(_DATA_DIR, _DEV_FILE),
-        "test": os.path.join(_DATA_DIR, _TEST_FILE),
+        "test": os.path.join(_PUD_DIR, _PUD_FILE),
       }
 
       return [

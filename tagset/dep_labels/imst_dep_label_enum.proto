@@ -1,0 +1,42 @@
+syntax = "proto2";
+
+package tagset.dep_labels;
+
+// IMST-UD Dependency Labels.
+enum Tag {
+  UNKNOWN_LABEL = 0;
+  acl = 1;              // adjective clause
+  advcl = 2;            // adverbial clause
+  advmod = 3;           // adverbial modifier
+  advmod_emph = 4;      // adverbial modifier ??
+  amod = 5;             // adjective modifier
+  appos = 6;            // apposition
+  aux = 7;              // auxiliary
+  aux_q = 8;            // question auxiliary
+  case = 9;             // case
+  cc = 10;              // coordinating conjunction
+  ccomp = 11;           // complementizer clause
+  compound = 12;        // compound
+  compound_lvc = 13;    // light verb compound
+  compound_redup = 14;  // reduplicated compound
+  conj = 15;            // conjunction
+  cop = 16;             // copula
+  csubj = 17;           // clausal subject
+  dep = 18;             // dependent
+  det = 19;             // determiner
+  discourse = 20;       // discourse marker
+  fixed = 21;           // fixed
+  flat = 22;            // flat
+  mark = 23;            // complementizer
+  nmod = 24;            // nominal modifier
+  nmod_poss = 25;       // nominal modifier: ??
+  nsubj = 26;           // nominal subject
+  nummod = 27;          // numerical modification
+  obj = 28;             // direct object
+  obl = 29;             // oblique object
+  parataxis = 30;       // parataxis
+  punct = 31;           // punctuation
+  root = 32;            // root
+  vocative = 33;        // vocative
+  TOP = 34;             // dummy dep label for the top token.
+}

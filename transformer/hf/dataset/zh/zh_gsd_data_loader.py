@@ -12,6 +12,8 @@ _DATA_DIR = "./data/UDv29/languages/Chinese/UD_Chinese-GSD"
 _TRAINING_FILE = "zh_gsd-ud-train.conllu"
 _DEV_FILE = "zh_gsd-ud-dev.conllu"
 _TEST_FILE ="zh_gsd-ud-test.conllu"
+_PUD_DIR = "./data/UDv29/languages/Chinese/UD_Chinese-PUD"
+_PUD_FILE ="zh_pud-ud-test.conllu"
 
 def read_conllx(path):
   """Read treebank from a file where sentences are in conll-X format.
@@ -145,6 +147,7 @@ class ChineseGSDTreebank(datasets.GeneratorBasedBuilder):
                   "aux",
                   "aux:pass",
                   "case",
+                  "case:loc",
                   "cc",
                   "ccomp",
                   "clf",
@@ -166,6 +169,7 @@ class ChineseGSDTreebank(datasets.GeneratorBasedBuilder):
                   "iobj",
                   "mark",
                   "mark:adv",
+                  "mark:prt",
                   "mark:rel",
                   "nmod",
                   "nmod:tmod",
@@ -175,6 +179,7 @@ class ChineseGSDTreebank(datasets.GeneratorBasedBuilder):
                   "obj",
                   "obl",
                   "obl:patient",
+                  "obl:tmod",
                   "orphan",
                   "parataxis",
                   "punct",
@@ -195,7 +200,7 @@ class ChineseGSDTreebank(datasets.GeneratorBasedBuilder):
       datafiles = {
         "train": os.path.join(_DATA_DIR, _TRAINING_FILE),
         "dev": os.path.join(_DATA_DIR, _DEV_FILE),
-        "test": os.path.join(_DATA_DIR, _TEST_FILE),
+        "test": os.path.join(_PUD_DIR, _PUD_FILE),
       }
 
       return [

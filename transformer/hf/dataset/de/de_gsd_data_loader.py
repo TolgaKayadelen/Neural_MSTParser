@@ -9,9 +9,11 @@ from copy import deepcopy
 
 _DESCRIPTION = """German GSD treebank"""
 _DATA_DIR = "./data/UDv29/languages/German/UD_German-GSD"
+_PUD_DIR = "./data/UDv29/languages/German/UD_German-PUD"
 _TRAINING_FILE = "de_gsd-ud-train.conllu"
 _DEV_FILE = "de_gsd-ud-dev.conllu"
 _TEST_FILE ="de_gsd-ud-test.conllu"
+_PUD_FILE = "de_pud-ud-test.conllu"
 
 
 def read_conllx(path):
@@ -146,6 +148,7 @@ class GermanGSDTreebank(datasets.GeneratorBasedBuilder):
                   "aux:pass",
                   "case",
                   "cc",
+                  "cc:preconj",
                   "ccomp",
                   "compound",
                   "compound:prt",
@@ -161,6 +164,7 @@ class GermanGSDTreebank(datasets.GeneratorBasedBuilder):
                   "expl:pv",
                   "fixed",
                   "flat",
+                  "flat:name",
                   "goeswith",
                   "iobj",
                   "mark",
@@ -171,6 +175,7 @@ class GermanGSDTreebank(datasets.GeneratorBasedBuilder):
                   "nummod",
                   "obj",
                   "obl",
+                  "obl:tmod",
                   "obl:agent",
                   "obl:arg",
                   "orphan",
@@ -193,12 +198,14 @@ class GermanGSDTreebank(datasets.GeneratorBasedBuilder):
       datafiles = {
         "train": os.path.join(_DATA_DIR, _TRAINING_FILE),
         "dev": os.path.join(_DATA_DIR, _DEV_FILE),
-        "test": os.path.join(_DATA_DIR, _TEST_FILE),
+        # "test": os.path.join(_DATA_DIR, _TEST_FILE),
+        "test": os.path.join(_PUD_DIR, _PUD_FILE)
       }
 
       return [
         datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": datafiles["train"]}),
         datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": datafiles["dev"]}),
+        # datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": datafiles["test"]}),
         datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": datafiles["test"]}),
       ]
 
