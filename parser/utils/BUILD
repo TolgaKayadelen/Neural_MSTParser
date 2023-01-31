@@ -17,6 +17,16 @@ py_library(
   ],
 )
 
+py_binary(
+    name = "load_models",
+    srcs = ["load_models.py"],
+    deps = [
+    "//parser:nn_parser_lib",
+    "//parser/dep/lfp:label_first_parser",
+    "//parser/labeler/bilstm:bilstm_labeler",
+  ],
+)
+
 # Tests
 py_test(
   name = "layer_utils_test",
@@ -26,15 +36,15 @@ py_test(
   ],
 )
 
-py_library(
-    name = "load_models",
-    srcs = ["load_models.py"],
-    deps = [
-    "//parser:nn_parser_lib",
-    "//parser/dep/lfp:label_first_parser",
-    "//parser/labeler/bilstm:bilstm_labeler",
-  ],
-)
+# py_library(
+#     name = "load_models",
+#    srcs = ["load_models.py"],
+#    deps = [
+#    "//parser:nn_parser_lib",
+#    "//parser/dep/lfp:label_first_parser",
+#    "//parser/labeler/bilstm:bilstm_labeler",
+#  ],
+#)
 
 py_library(
   name = "pos_tag_to_id",

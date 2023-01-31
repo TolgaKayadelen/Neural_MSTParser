@@ -3,6 +3,7 @@
 
 import os
 import json
+import pickle
 import numpy as np
 import sys
 from util.nn import nn_utils
@@ -16,20 +17,14 @@ def load_word_embeddings():
   word_embeddings = embeddor.Embeddings(name="word2vec", matrix=embeddings)
   return word_embeddings
 
-def load_pickled_embeddings(language):
-  with open(f'./embeddings/{language}/{language}_embeddings.json', 'rb') as f:
-    embeddings = json.load(f)
-  word_embeddings = embeddor.Embeddings(name=f"{language}_embeddings",
-                                        matrix=embeddings,
-                                        type="fasttext")
-  del embeddings
-  return word_embeddings
 
 def load_preprocessor(*, word_embedding_indexes,
                       language,
                       features=["words", "pos"], # word, pos, morph
                       pos_indexes=None,
-                      head_padding_value=0, one_hot_features=[]):
+                      head_padding_value=0,
+                      one_hot_features=[],
+                      embedding_type="word2vec"):
   allow_list = ["words", "pos", "morph", "dep_labels"]
   assert set(features).issubset(allow_list), "Can use words, pos, morph, dep_labels as features!"
   prep = preprocessor.Preprocessor(
@@ -40,6 +35,7 @@ def load_preprocessor(*, word_embedding_indexes,
     head_padding_value=head_padding_value,
     one_hot_features=one_hot_features,
     language=language,
+    embedding_type=embedding_type
   )
   return prep
 
@@ -186,3 +182,42 @@ def load_layer_weights(weights_file):
   if not weights_file.endswith(".npy"):
     weights_file += ".npy"
   return np.load(os.path.join(weights_dir, weights_file))
+
+
+def load_i18n_embeddings(language="tr"):
+  file = f"./embeddings/{language}/{language}.vectors"
+  conll_token_to_index_dict = {"-pad-": 0, "-oov-": 1}
+  embed_matrix = {}
+  counter = 2
+  with open(file, "rb") as f:
+    for linenum, line in enumerate(f):
+      if linenum == 0:
+        continue
+      if linenum % 100000 == 0:
+        print(linenum)
+      line = line.strip().split()
+      if line:
+        embed_matrix[line[0]] = np.array(line[1:], dtype=np.float32)
+        conll_token_to_index_dict[line[0]] = counter
+        counter += 1
+    word_embeddings = embeddor.Embeddings(name=f"{language}_embeddings",
+                                          matrix=embed_matrix,
+                                          type="fasttext")
+    # print(word_embeddings.token_to_index)
+    # print(word_embeddings.vocab)
+    print(word_embeddings.sanity_check)
+    assert (word_embeddings.sanity_check != embeddor.SanityCheck.FAIL)
+    assert (word_embeddings.vocab[0] == "-pad-" and word_embeddings.vocab[1] == "-oov-")
+    pickle_save_file = f"./input/{language}_conll_token_to_index_dict.pkl"
+    with open(pickle_save_file, 'wb') as handle:
+      pickle.dump(conll_token_to_index_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    return word_embeddings
+
+
+def load_embedding_indexes():
+  with open('./transformer/hf/dataset/tr/token_to_index_dictionary.pkl', 'rb') as f:
+    loaded =  pickle.load(f)
+  return loaded
+
+if __name__ == "__main__":
+  load_i18n_embeddings()

@@ -91,7 +91,8 @@ class Preprocessor:
                pos_indexes=None,
                one_hot_features: List[str] =  [], # sometimes we might want dep_labels feature to be onehot.
                head_padding_value=0,
-               language="tr"):
+               language="tr",
+               embedding_type="word2vec"):
     """Preprocessor prepares input datasets for TF models to consume."""
     assert all(o_h_feat in features for o_h_feat in one_hot_features), "Features don't match"
 
@@ -109,6 +110,7 @@ class Preprocessor:
     self.sequence_features_dict = self._sequence_features_dict()
     # Padding value for the heads.
     self.head_padding_value = head_padding_value
+    self.embedding_type=embedding_type
 
   def prepare_sentence_protos(self, path: str):
     """Returns a list of sentence_pb2 formatted protocol buffer objects.
@@ -179,8 +181,16 @@ class Preprocessor:
     if feature_name == "words":
       for value in values:
         try:
-          indices.append(mapping[value])
+          if self.embedding_type == "word2vec":
+            indices.append(mapping[value])
+          elif self.embedding_type == "conll":
+            value = value.lower()
+            value = bytes(value, 'utf-8')
+            indices.append(mapping[value])
+          else:
+            raise ValueError("Invalid embedding type. Should be word2vec or conll.")
         except KeyError:
+          # print("key error in ", value)
           indices.append(mapping["-oov-"])
       return indices
     # TODO: sort out these wrongly annotated values in the data.
@@ -224,6 +234,7 @@ class Preprocessor:
       if self.pos_indexes is not None:
         mappings["pos"] = self.pos_indexes
       else:
+        logging.info(f"Reading POS labels for {self.language} from enum.")
         mappings["pos"] = LabelReader.get_labels("pos", self.language).labels
     if "category" in feature_names:
       mappings["category"] = LabelReader.get_labels("category", self.language).labels
@@ -503,6 +514,8 @@ class Preprocessor:
         if feature_name == "heads":
           yield_dict[feature_name] = [
             token.selected_head.address for token in sentence.token]
+      # print("yield dict ", yield_dict)
+      # input()
       yield yield_dict
 
 
