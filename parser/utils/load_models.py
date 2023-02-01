@@ -25,8 +25,10 @@ def load_preprocessor(*, word_embedding_indexes,
                       head_padding_value=0,
                       one_hot_features=[],
                       embedding_type="word2vec"):
-  allow_list = ["words", "pos", "morph", "dep_labels"]
-  assert set(features).issubset(allow_list), "Can use words, pos, morph, dep_labels as features!"
+  allow_list = ["words", "pos", "morph", "category", "dep_labels"]
+  print("features ", features)
+  input()
+  assert set(features).issubset(allow_list), "Can use words, pos, morph, category, dep_labels as features!"
   prep = preprocessor.Preprocessor(
     word_embedding_indexes=word_embedding_indexes,
     pos_indexes=pos_indexes,
@@ -78,6 +80,39 @@ def load_parser(parser_name, prep, test_every=0, one_hot_labels=False,
 # The predict and features lists are configured to load "label_first_predicted_head_gold_labels_only"
 def load_parser(parser_name, prep, word_embeddings, test_every=0, one_hot_labels=False,
                 predict=["heads"], features=["words", "dep_labels"]):
+  label_feature = next(
+    (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"),
+    None)
+  parser = label_first_parser.LabelFirstParser(word_embeddings=word_embeddings,
+                                               n_output_classes=label_feature.n_values,
+                                               predict=predict,
+                                               features=features,
+                                               test_every=test_every,
+                                               model_name=parser_name,
+                                               one_hot_labels=one_hot_labels)
+  parser.load_weights(name=parser_name)
+  print("parser ", parser)
+  return parser
+
+# This loads the parser named tr_lfp_gold_pos_and_labels_20230131_040723
+def load_pos_gold_parser(parser_name, prep, word_embeddings, test_every=0, one_hot_labels=False,
+                         predict=["heads"], features=["words", "pos", "dep_labels"]):
+  label_feature = next(
+    (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"),
+    None)
+  parser = label_first_parser.LabelFirstParser(word_embeddings=word_embeddings,
+                                               n_output_classes=label_feature.n_values,
+                                               predict=predict,
+                                               features=features,
+                                               test_every=test_every,
+                                               model_name=parser_name,
+                                               one_hot_labels=one_hot_labels)
+  parser.load_weights(name=parser_name)
+  print("parser ", parser)
+  return parser
+
+def load_category_gold_parser(parser_name, prep, word_embeddings, test_every=0, one_hot_labels=False,
+                              predict=["heads"], features=["words", "category", "dep_labels"]):
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"),
     None)
@@ -214,10 +249,30 @@ def load_i18n_embeddings(language="tr"):
     return word_embeddings
 
 
+def write_conll_token_to_index_dict(language="tr"):
+  file = f"./embeddings/{language}/{language}.vectors"
+  conll_token_to_index_dict = {"-pad-": 0, "-oov-": 1}
+  counter = 2
+  with open(file, "rb") as f:
+    for linenum, line in enumerate(f):
+      if linenum == 0:
+        continue
+      if linenum % 100000 == 0:
+        print(linenum)
+      line = line.strip().split()
+      if line:
+        # print("token ", line[0])
+        conll_token_to_index_dict[line[0]] = counter
+        counter += 1
+  pickle_save_file = f"./input/{language}_conll_token_to_index_dict.pkl"
+  with open(pickle_save_file, 'wb') as handle:
+    pickle.dump(conll_token_to_index_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
 def load_embedding_indexes():
   with open('./transformer/hf/dataset/tr/token_to_index_dictionary.pkl', 'rb') as f:
     loaded =  pickle.load(f)
   return loaded
 
 if __name__ == "__main__":
-  load_i18n_embeddings()
+  # load_i18n_embeddings()
+  write_conll_token_to_index_dict()

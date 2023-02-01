@@ -135,6 +135,7 @@ class BaseParser(ABC):
     """
     self._use_pos = "pos" in self.features
     self._use_morph = "morph" in self.features
+    self._use_category = "category" in self.features
     self._use_dep_labels = False
     if "dep_labels" in self.features:
       if "labels" in self._predict and not sequential:
@@ -451,7 +452,9 @@ class BaseParser(ABC):
 
   # @tf.function
   def train_step(self, *,
-                 words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
+                 words: tf.Tensor, pos: tf.Tensor,
+                 category: tf.Tensor,
+                 morph: tf.Tensor,
                  dep_labels: tf.Tensor, heads: tf.Tensor) -> Tuple[tf.Tensor, ...]:
     """Runs one training step.
     Args:
@@ -478,7 +481,9 @@ class BaseParser(ABC):
     with tf.GradientTape() as tape:
 
       # Head scores = (batch_size, seq_len, seq_len), Label scores = (batch_size, seq_len, n_labels)
-      scores = self.model({"words": words, "pos": pos, "morph": morph,
+      scores = self.model({"words": words, "pos": pos,
+                           "category": category,
+                           "morph": morph,
                            "labels": dep_labels}, training=True)
 
       head_scores, label_scores = scores["edges"], scores["labels"]
@@ -597,11 +602,13 @@ class BaseParser(ABC):
         words = batch["words"]
         dep_labels, heads = batch["dep_labels"], batch["heads"]
         pos = batch["pos"] if "pos" in batch.keys() else None
+        category = batch["category"] if "category" in batch.keys() else None
         morph = batch["morph"] if "morph" in batch.keys() else None
 
         # Get loss values, predictions, and correct heads/labels for this training step.
         predictions, batch_loss, correct, pad_mask = self.train_step(words=words,
                                                                      pos=pos,
+                                                                     category=category,
                                                                      morph=morph,
                                                                      dep_labels=dep_labels,
                                                                      heads=heads)
@@ -756,8 +763,11 @@ class BaseParser(ABC):
     """
     words, dep_labels = (example["words"], example["dep_labels"])
     pos = example["pos"] if "pos" in example.keys() else None
+    category = example["category"] if "category" in example.keys() else None
     morph = example["morph"] if "morph" in example.keys() else None
-    scores = self.model({"words": words, "pos": pos, "morph": morph,
+    scores = self.model({"words": words, "pos": pos,
+                         "category": category,
+                         "morph": morph,
                          "labels": dep_labels}, training=False)
     return scores
 

@@ -193,7 +193,6 @@ class Preprocessor:
           # print("key error in ", value)
           indices.append(mapping["-oov-"])
       return indices
-    # TODO: sort out these wrongly annotated values in the data.
     else:
       for value in values:
         try:
@@ -236,8 +235,11 @@ class Preprocessor:
       else:
         logging.info(f"Reading POS labels for {self.language} from enum.")
         mappings["pos"] = LabelReader.get_labels("pos", self.language).labels
+        # input()
     if "category" in feature_names:
       mappings["category"] = LabelReader.get_labels("category", self.language).labels
+      logging.info(f"Reading category labels for {self.language} from enum.")
+      # input()
     if "dep_labels" in feature_names:
       mappings["dep_labels"] = LabelReader.get_labels("dep_labels", self.language).labels
     if "srl" in feature_names:

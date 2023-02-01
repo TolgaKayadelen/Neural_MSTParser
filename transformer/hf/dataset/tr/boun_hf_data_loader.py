@@ -20,6 +20,7 @@ replace_dict = {
 }
 def load_embedding_indexes():
   with open('./transformer/hf/dataset/tr/token_to_index_dictionary.pkl', 'rb') as f:
+  # with open('./transformer/hf/dataset/tr/tr_conll_token_to_index_dict.pkl', 'rb') as f:
     return pickle.load(f)
 
 def read_conllx(path):

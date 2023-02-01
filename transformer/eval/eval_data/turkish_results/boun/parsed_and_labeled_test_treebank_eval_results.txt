@@ -1,0 +1,848 @@
+uas_total
+0.8048698629504503
+
+las_total
+0.7337331000898127
+
+label_accuracy
+0.8302604381976023
+
+label_confusion_matrix
+Test Labels     acl  advcl  advmod  advmod:emph  amod  appos  aux  aux:q  case   cc  cc:preconj  ccomp  clf  compound  ...  list  mark  nmod  nmod:poss  nsubj  nummod  obj   obl  parataxis  punct  root  vocative  xcomp    All
+Gold Labels                                                                                                            ...                                                                                                       
+acl             310      6       0            0     6      0    0      0     0    0           0      3    0         2  ...     0     0     1          2      1       0    0     6          0      0     4         0      0    349
+advcl             6    226       7            0     3      1    0      0     0    0           0      1    0         8  ...     0     0     2          1      2       0    5    11          0      0     7         0      0    298
+advmod            0      6     392            9    26      0    0      0    10    3           0      1    0         1  ...     0     0     0          3      6       0    2    56          0      1     1         0      0    531
+advmod:emph       0      0       0          143     0      0    1      0     0    2           0      0    0         0  ...     0     3     0          0      1       0    0     0          0      0     0         0      0    150
+amod              9      6      30            0   599      0    0      0     2    0           0      2    3         0  ...     0     0     5         25     13       2    9    32          0      3     6         0      0    772
+appos             0      0       0            0     0      9    0      0     0    0           0      0    0         0  ...     0     0     0          0      0       0    0     1          0      0     0         0      0     10
+aux               1      0       0            0     0      0   15      2     0    0           0      0    0         0  ...     0     0     0          1      0       0    0     0          0      0     3         0      0     23
+aux:q             0      0       0            0     0      0    0     34     0    0           0      0    0         0  ...     0     0     0          0      0       0    0     0          0      0     0         0      0     35
+case              0      0       3            0     3      0    0      0   290    0           0      0    0         0  ...     0     1     0          0      1       0    0     4          0      0     0         0      0    305
+cc                0      0       1            0     0      0    0      0     3  253           1      0    0         0  ...     0     0     0          0      0       0    0     0          0      0     1         0      0    260
+cc:preconj        0      0       1            0     0      0    0      0     0    0          14      0    0         0  ...     0     0     0          0      0       0    0     0          0      0     0         0      0     16
+ccomp             3      3       0            0     0      1    0      0     0    0           0    134    0         1  ...     0     0     0          0      0       0    7     9          1      1     2         1      0    174
+clf               0      0       0            0     2      0    0      0     0    0           0      0   10         0  ...     0     0     0          1      0       0    0     2          0      0     0         0      0     16
+compound          4      7       2            1    15      0    0      0     1   12           0      5    0        95  ...     0     0     2          6     11       0    4    14          0      0    21         0      0    229
+compound:lvc      1      6       0            0     0      0    1      0     0    0           0      0    0         5  ...     0     0     0          0      0       0    0     0          0      0     2         0      1    117
+compound:redup    0      2       1            0     2      0    0      0     0    0           0      1    0         4  ...     0     0     0          3      1       0    1     0          0      0     1         0      0     49
+conj             13     10       5            1    13      1    1      1     0    1           0      9    0        10  ...     0     0     2         18     14       1   20    23          3      0    38         0      1    671
+cop               0      1       0            1     0      0    0      1     0    0           0      0    0         0  ...     0     0     0          0      0       0    0     0          0      0     1         0      0    110
+csubj             0      0       0            0     1      0    0      0     0    0           0      4    0         1  ...     0     0     0          2      4       0    3     0          0      0     3         0      0     68
+det               0      1       2            0     5      0    0      0     0    1           0      0    0         0  ...     0     0     0          1      1       5    1     1          0      0     0         0      0    518
+discourse         0      0      10            0     2      0    0      0     0    3           0      0    0         0  ...     0     0     1          0      3       0    1     1          0      2     1         0      0     45
+dislocated        0      0       0            0     0      0    0      0     0    0           0      0    0         0  ...     0     0     0          0      0       0    0     0          2      0     0         0      0      3
+flat              0      0       0            0     1      0    0      0     0    0           0      0    0         0  ...     0     0     0         10      3       2    2     4          0      1     2         0      0    180
+iobj              0      0       0            0     0      0    0      0     0    0           0      0    0         0  ...     0     0     0          0      0       0    1    21          0      0     0         0      0     22
+list              0      0       0            0     0      0    0      0     0    0           0      0    0         0  ...     1     0     0          0      0       0    0     0          0      0     0         0      0      2
+mark              0      0       1            4     0      0    0      0     0    6           0      0    0         0  ...     0    11     0          0      0       0    0     0          0      0     0         0      0     22
+nmod              1     22       2            0    14      0    1      0     2    3           0      4    0         2  ...     0     0    27         12      8       0    7    28          0      0     3         0      0    147
+nmod:poss         5      1       1            0    26      0    0      0     1    0           0      3    0         4  ...     0     0     3        895     34       5   10    14          1      6     3         0      0   1040
+nsubj             2      3       5            0    11      0    1      0     1    0           0      0    0         3  ...     0     0     1         42    643       0   56    25          0      0    10         1      0    851
+nummod            0      0       3            0     9      0    0      0     0    0           0      0    0         0  ...     0     0     0          1      0     155    0     0          0      0     1         0      0    173
+obj               7      9       4            0     9      0    0      0     0    0           0     12    0         5  ...     0     0     3         12     36       0  527    65          0      1    11         0      2    739
+obl               3      6      24            0    12      1    0      0     5    0           0      4    1         6  ...     0     0     0         20     13       3   30   987          0      1    12         0      0   1150
+orphan            0      0       1            0     1      0    0      0     0    0           0      1    0         0  ...     0     0     0          0      0       0    0     0          0      0     0         0      0      3
+parataxis         1      0       0            0     0      4    0      0     0    0           0      0    0         0  ...     0     0     0          0      0       0    0     0         12      1     0         0      0     22
+punct             0      0       0            0     5      0    0      0     0    0           0      0    0         0  ...     0     0     0          1      4       0    1     1          0   1977     2         0      0   1993
+root              3      3       5            0     7      0    3      1     0    4           0      2    0        15  ...     0     0     2          2     11       0    6    21          0      3   853         0      0    979
+vocative          0      0       0            0     0      0    0      0     0    0           0      0    0         1  ...     0     0     0          0      3       0    0     0          0      0     0         1      0      9
+xcomp             0      0       0            0     1      0    0      0     0    0           0      0    0         0  ...     0     0     0          0      0       0    1     0          0      0     0         0     11     14
+All             369    318     500          159   773     17   23     39   315  288          15    186   14       163  ...     1    15    49       1058    813     173  694  1326         19   1997   988         3     15  12095
+
+[39 rows x 36 columns]
+
+eval_matrix
+                count   uas  l_a_prec  l_a_recall  l_a_f1
+acl               349  0.76      0.68        0.72   0.699
+advcl             298  0.62      0.53        0.56   0.545
+advmod            531  0.71      0.60        0.57   0.585
+advmod:emph       150  0.90      0.82        0.87   0.844
+amod              772  0.78      0.66        0.67   0.665
+appos              10  0.70      0.41        0.70   0.517
+aux                23  0.74      0.65        0.65   0.650
+aux:q              35  0.89      0.77        0.86   0.813
+case              305  0.87      0.83        0.86   0.845
+cc                260  0.75      0.67        0.75   0.708
+cc:preconj         16  0.56      0.60        0.56   0.579
+ccomp             174  0.87      0.69        0.74   0.714
+clf                16  0.75      0.64        0.56   0.597
+compound          229  0.53      0.56        0.40   0.467
+compound:lvc      117  0.86      0.77        0.81   0.789
+compound:redup     49  0.65      0.72        0.53   0.611
+conj              671  0.59      0.56        0.56   0.560
+cop               110  0.95      0.89        0.93   0.910
+csubj              68  0.76      0.58        0.65   0.613
+det               518  0.90      0.86        0.88   0.870
+discourse          45  0.58      0.37        0.22   0.276
+flat              180  0.84      0.80        0.83   0.815
+list                2  0.00      0.00        0.00   0.000
+mark               22  0.86      0.60        0.41   0.487
+nmod              147  0.61      0.49        0.16   0.241
+nmod:poss        1040  0.85      0.77        0.79   0.780
+nsubj             851  0.75      0.66        0.63   0.645
+nummod            173  0.82      0.73        0.73   0.730
+obj               739  0.80      0.69        0.64   0.664
+obl              1150  0.74      0.57        0.66   0.612
+parataxis          22  0.59      0.42        0.36   0.388
+punct            1993  0.75      0.74        0.74   0.740
+root              979  0.86      0.85        0.86   0.855
+vocative            9  0.56      0.00        0.00   0.000
+xcomp              14  0.86      0.67        0.71   0.689
+dislocated          3  0.00      0.00        0.00   0.000
+iobj               22  0.00      0.00        0.00   0.000
+orphan              3  0.00      0.00        0.00   0.000
+
+eval_proto
+uas_total: 0.8048698902130127
+las_total: 0.7337331175804138
+typed_uas {
+  uas {
+    label: acl
+    score: 0.7599999904632568
+  }
+  uas {
+    label: advcl
+    score: 0.6200000047683716
+  }
+  uas {
+    label: advmod
+    score: 0.7099999785423279
+  }
+  uas {
+    label: advmod_emph
+    score: 0.8999999761581421
+  }
+  uas {
+    label: amod
+    score: 0.7799999713897705
+  }
+  uas {
+    label: appos
+    score: 0.699999988079071
+  }
+  uas {
+    label: aux
+    score: 0.7400000095367432
+  }
+  uas {
+    label: aux_q
+    score: 0.8899999856948853
+  }
+  uas {
+    label: case
+    score: 0.8700000047683716
+  }
+  uas {
+    label: cc
+    score: 0.75
+  }
+  uas {
+    label: cc_preconj
+    score: 0.5600000023841858
+  }
+  uas {
+    label: ccomp
+    score: 0.8700000047683716
+  }
+  uas {
+    label: clf
+    score: 0.75
+  }
+  uas {
+    label: compound
+    score: 0.5299999713897705
+  }
+  uas {
+    label: compound_lvc
+    score: 0.8600000143051147
+  }
+  uas {
+    label: compound_redup
+    score: 0.6499999761581421
+  }
+  uas {
+    label: conj
+    score: 0.5899999737739563
+  }
+  uas {
+    label: cop
+    score: 0.949999988079071
+  }
+  uas {
+    label: csubj
+    score: 0.7599999904632568
+  }
+  uas {
+    label: det
+    score: 0.8999999761581421
+  }
+  uas {
+    label: discourse
+    score: 0.5799999833106995
+  }
+  uas {
+    label: flat
+    score: 0.8399999737739563
+  }
+  uas {
+    label: list
+    score: 0.0
+  }
+  uas {
+    label: mark
+    score: 0.8600000143051147
+  }
+  uas {
+    label: nmod
+    score: 0.6100000143051147
+  }
+  uas {
+    label: nmod_poss
+    score: 0.8500000238418579
+  }
+  uas {
+    label: nsubj
+    score: 0.75
+  }
+  uas {
+    label: nummod
+    score: 0.8199999928474426
+  }
+  uas {
+    label: obj
+    score: 0.800000011920929
+  }
+  uas {
+    label: obl
+    score: 0.7400000095367432
+  }
+  uas {
+    label: parataxis
+    score: 0.5899999737739563
+  }
+  uas {
+    label: punct
+    score: 0.75
+  }
+  uas {
+    label: root
+    score: 0.8600000143051147
+  }
+  uas {
+    label: vocative
+    score: 0.5600000023841858
+  }
+  uas {
+    label: xcomp
+    score: 0.8600000143051147
+  }
+}
+labeled_attachment_prec {
+  prec {
+    label: acl
+    score: 0.6800000071525574
+  }
+  prec {
+    label: advcl
+    score: 0.5299999713897705
+  }
+  prec {
+    label: advmod
+    score: 0.6000000238418579
+  }
+  prec {
+    label: advmod_emph
+    score: 0.8199999928474426
+  }
+  prec {
+    label: amod
+    score: 0.6600000262260437
+  }
+  prec {
+    label: appos
+    score: 0.4099999964237213
+  }
+  prec {
+    label: aux
+    score: 0.6499999761581421
+  }
+  prec {
+    label: aux_q
+    score: 0.7699999809265137
+  }
+  prec {
+    label: case
+    score: 0.8299999833106995
+  }
+  prec {
+    label: cc
+    score: 0.6700000166893005
+  }
+  prec {
+    label: cc_preconj
+    score: 0.6000000238418579
+  }
+  prec {
+    label: ccomp
+    score: 0.6899999976158142
+  }
+  prec {
+    label: clf
+    score: 0.6399999856948853
+  }
+  prec {
+    label: compound
+    score: 0.5600000023841858
+  }
+  prec {
+    label: compound_lvc
+    score: 0.7699999809265137
+  }
+  prec {
+    label: compound_redup
+    score: 0.7200000286102295
+  }
+  prec {
+    label: conj
+    score: 0.5600000023841858
+  }
+  prec {
+    label: cop
+    score: 0.8899999856948853
+  }
+  prec {
+    label: csubj
+    score: 0.5799999833106995
+  }
+  prec {
+    label: det
+    score: 0.8600000143051147
+  }
+  prec {
+    label: discourse
+    score: 0.3700000047683716
+  }
+  prec {
+    label: flat
+    score: 0.800000011920929
+  }
+  prec {
+    label: list
+    score: 0.0
+  }
+  prec {
+    label: mark
+    score: 0.6000000238418579
+  }
+  prec {
+    label: nmod
+    score: 0.49000000953674316
+  }
+  prec {
+    label: nmod_poss
+    score: 0.7699999809265137
+  }
+  prec {
+    label: nsubj
+    score: 0.6600000262260437
+  }
+  prec {
+    label: nummod
+    score: 0.7300000190734863
+  }
+  prec {
+    label: obj
+    score: 0.6899999976158142
+  }
+  prec {
+    label: obl
+    score: 0.5699999928474426
+  }
+  prec {
+    label: parataxis
+    score: 0.41999998688697815
+  }
+  prec {
+    label: punct
+    score: 0.7400000095367432
+  }
+  prec {
+    label: root
+    score: 0.8500000238418579
+  }
+  prec {
+    label: vocative
+    score: 0.0
+  }
+  prec {
+    label: xcomp
+    score: 0.6700000166893005
+  }
+}
+labeled_attachment_recall {
+  recall {
+    label: acl
+    score: 0.7200000286102295
+  }
+  recall {
+    label: advcl
+    score: 0.5600000023841858
+  }
+  recall {
+    label: advmod
+    score: 0.5699999928474426
+  }
+  recall {
+    label: advmod_emph
+    score: 0.8700000047683716
+  }
+  recall {
+    label: amod
+    score: 0.6700000166893005
+  }
+  recall {
+    label: appos
+    score: 0.699999988079071
+  }
+  recall {
+    label: aux
+    score: 0.6499999761581421
+  }
+  recall {
+    label: aux_q
+    score: 0.8600000143051147
+  }
+  recall {
+    label: case
+    score: 0.8600000143051147
+  }
+  recall {
+    label: cc
+    score: 0.75
+  }
+  recall {
+    label: cc_preconj
+    score: 0.5600000023841858
+  }
+  recall {
+    label: ccomp
+    score: 0.7400000095367432
+  }
+  recall {
+    label: clf
+    score: 0.5600000023841858
+  }
+  recall {
+    label: compound
+    score: 0.4000000059604645
+  }
+  recall {
+    label: compound_lvc
+    score: 0.8100000023841858
+  }
+  recall {
+    label: compound_redup
+    score: 0.5299999713897705
+  }
+  recall {
+    label: conj
+    score: 0.5600000023841858
+  }
+  recall {
+    label: cop
+    score: 0.9300000071525574
+  }
+  recall {
+    label: csubj
+    score: 0.6499999761581421
+  }
+  recall {
+    label: det
+    score: 0.8799999952316284
+  }
+  recall {
+    label: discourse
+    score: 0.2199999988079071
+  }
+  recall {
+    label: dislocated
+    score: 0.0
+  }
+  recall {
+    label: flat
+    score: 0.8299999833106995
+  }
+  recall {
+    label: iobj
+    score: 0.0
+  }
+  recall {
+    label: list
+    score: 0.0
+  }
+  recall {
+    label: mark
+    score: 0.4099999964237213
+  }
+  recall {
+    label: nmod
+    score: 0.1599999964237213
+  }
+  recall {
+    label: nmod_poss
+    score: 0.7900000214576721
+  }
+  recall {
+    label: nsubj
+    score: 0.6299999952316284
+  }
+  recall {
+    label: nummod
+    score: 0.7300000190734863
+  }
+  recall {
+    label: obj
+    score: 0.6399999856948853
+  }
+  recall {
+    label: obl
+    score: 0.6600000262260437
+  }
+  recall {
+    label: orphan
+    score: 0.0
+  }
+  recall {
+    label: parataxis
+    score: 0.36000001430511475
+  }
+  recall {
+    label: punct
+    score: 0.7400000095367432
+  }
+  recall {
+    label: root
+    score: 0.8600000143051147
+  }
+  recall {
+    label: vocative
+    score: 0.0
+  }
+  recall {
+    label: xcomp
+    score: 0.7099999785423279
+  }
+}
+labeled_attachment_metrics {
+  labeled_attachment_metric {
+    label: acl
+    count: 349
+    prec: 0.6800000071525574
+    recall: 0.7200000286102295
+    f1: 0.6990000009536743
+  }
+  labeled_attachment_metric {
+    label: advcl
+    count: 298
+    prec: 0.5299999713897705
+    recall: 0.5600000023841858
+    f1: 0.5450000166893005
+  }
+  labeled_attachment_metric {
+    label: advmod
+    count: 531
+    prec: 0.6000000238418579
+    recall: 0.5699999928474426
+    f1: 0.5849999785423279
+  }
+  labeled_attachment_metric {
+    label: advmod_emph
+    count: 150
+    prec: 0.8199999928474426
+    recall: 0.8700000047683716
+    f1: 0.843999981880188
+  }
+  labeled_attachment_metric {
+    label: amod
+    count: 772
+    prec: 0.6600000262260437
+    recall: 0.6700000166893005
+    f1: 0.6650000214576721
+  }
+  labeled_attachment_metric {
+    label: appos
+    count: 10
+    prec: 0.4099999964237213
+    recall: 0.699999988079071
+    f1: 0.5170000195503235
+  }
+  labeled_attachment_metric {
+    label: aux
+    count: 23
+    prec: 0.6499999761581421
+    recall: 0.6499999761581421
+    f1: 0.6499999761581421
+  }
+  labeled_attachment_metric {
+    label: aux_q
+    count: 35
+    prec: 0.7699999809265137
+    recall: 0.8600000143051147
+    f1: 0.8130000233650208
+  }
+  labeled_attachment_metric {
+    label: case
+    count: 305
+    prec: 0.8299999833106995
+    recall: 0.8600000143051147
+    f1: 0.8450000286102295
+  }
+  labeled_attachment_metric {
+    label: cc
+    count: 260
+    prec: 0.6700000166893005
+    recall: 0.75
+    f1: 0.7080000042915344
+  }
+  labeled_attachment_metric {
+    label: cc_preconj
+    count: 16
+    prec: 0.6000000238418579
+    recall: 0.5600000023841858
+    f1: 0.5789999961853027
+  }
+  labeled_attachment_metric {
+    label: ccomp
+    count: 174
+    prec: 0.6899999976158142
+    recall: 0.7400000095367432
+    f1: 0.7139999866485596
+  }
+  labeled_attachment_metric {
+    label: clf
+    count: 16
+    prec: 0.6399999856948853
+    recall: 0.5600000023841858
+    f1: 0.597000002861023
+  }
+  labeled_attachment_metric {
+    label: compound
+    count: 229
+    prec: 0.5600000023841858
+    recall: 0.4000000059604645
+    f1: 0.46700000762939453
+  }
+  labeled_attachment_metric {
+    label: compound_lvc
+    count: 117
+    prec: 0.7699999809265137
+    recall: 0.8100000023841858
+    f1: 0.7889999747276306
+  }
+  labeled_attachment_metric {
+    label: compound_redup
+    count: 49
+    prec: 0.7200000286102295
+    recall: 0.5299999713897705
+    f1: 0.6110000014305115
+  }
+  labeled_attachment_metric {
+    label: conj
+    count: 671
+    prec: 0.5600000023841858
+    recall: 0.5600000023841858
+    f1: 0.5600000023841858
+  }
+  labeled_attachment_metric {
+    label: cop
+    count: 110
+    prec: 0.8899999856948853
+    recall: 0.9300000071525574
+    f1: 0.9100000262260437
+  }
+  labeled_attachment_metric {
+    label: csubj
+    count: 68
+    prec: 0.5799999833106995
+    recall: 0.6499999761581421
+    f1: 0.6129999756813049
+  }
+  labeled_attachment_metric {
+    label: det
+    count: 518
+    prec: 0.8600000143051147
+    recall: 0.8799999952316284
+    f1: 0.8700000047683716
+  }
+  labeled_attachment_metric {
+    label: discourse
+    count: 45
+    prec: 0.3700000047683716
+    recall: 0.2199999988079071
+    f1: 0.2759999930858612
+  }
+  labeled_attachment_metric {
+    label: flat
+    count: 180
+    prec: 0.800000011920929
+    recall: 0.8299999833106995
+    f1: 0.8149999976158142
+  }
+  labeled_attachment_metric {
+    label: list
+    count: 2
+    prec: 0.0
+    recall: 0.0
+    f1: 0.0
+  }
+  labeled_attachment_metric {
+    label: mark
+    count: 22
+    prec: 0.6000000238418579
+    recall: 0.4099999964237213
+    f1: 0.4869999885559082
+  }
+  labeled_attachment_metric {
+    label: nmod
+    count: 147
+    prec: 0.49000000953674316
+    recall: 0.1599999964237213
+    f1: 0.2409999966621399
+  }
+  labeled_attachment_metric {
+    label: nmod_poss
+    count: 1040
+    prec: 0.7699999809265137
+    recall: 0.7900000214576721
+    f1: 0.7799999713897705
+  }
+  labeled_attachment_metric {
+    label: nsubj
+    count: 851
+    prec: 0.6600000262260437
+    recall: 0.6299999952316284
+    f1: 0.6449999809265137
+  }
+  labeled_attachment_metric {
+    label: nummod
+    count: 173
+    prec: 0.7300000190734863
+    recall: 0.7300000190734863
+    f1: 0.7300000190734863
+  }
+  labeled_attachment_metric {
+    label: obj
+    count: 739
+    prec: 0.6899999976158142
+    recall: 0.6399999856948853
+    f1: 0.6639999747276306
+  }
+  labeled_attachment_metric {
+    label: obl
+    count: 1150
+    prec: 0.5699999928474426
+    recall: 0.6600000262260437
+    f1: 0.6119999885559082
+  }
+  labeled_attachment_metric {
+    label: parataxis
+    count: 22
+    prec: 0.41999998688697815
+    recall: 0.36000001430511475
+    f1: 0.3880000114440918
+  }
+  labeled_attachment_metric {
+    label: punct
+    count: 1993
+    prec: 0.7400000095367432
+    recall: 0.7400000095367432
+    f1: 0.7400000095367432
+  }
+  labeled_attachment_metric {
+    label: root
+    count: 979
+    prec: 0.8500000238418579
+    recall: 0.8600000143051147
+    f1: 0.8550000190734863
+  }
+  labeled_attachment_metric {
+    label: vocative
+    count: 9
+    prec: 0.0
+    recall: 0.0
+    f1: 0.0
+  }
+  labeled_attachment_metric {
+    label: xcomp
+    count: 14
+    prec: 0.6700000166893005
+    recall: 0.7099999785423279
+    f1: 0.6890000104904175
+  }
+  labeled_attachment_metric {
+    label: dislocated
+    count: 3
+    prec: 0.0
+    recall: 0.0
+    f1: 0.0
+  }
+  labeled_attachment_metric {
+    label: iobj
+    count: 22
+    prec: 0.0
+    recall: 0.0
+    f1: 0.0
+  }
+  labeled_attachment_metric {
+    label: orphan
+    count: 3
+    prec: 0.0
+    recall: 0.0
+    f1: 0.0
+  }
+}
+label_accuracy: 0.8302604556083679
+
+
+label_prediction_metrics
+                count  label_precision  label_recall  label_f1
+acl               349             0.84          0.89     0.864
+advcl             298             0.71          0.76     0.734
+advmod            531             0.78          0.74     0.759
+advmod:emph       150             0.90          0.95     0.924
+amod              772             0.77          0.78     0.775
+appos              10             0.53          0.90     0.667
+aux                23             0.65          0.65     0.650
+aux:q              35             0.87          0.97     0.917
+case              305             0.92          0.95     0.935
+cc                260             0.88          0.97     0.923
+cc:preconj         16             0.93          0.88     0.904
+ccomp             174             0.72          0.77     0.744
+clf                16             0.71          0.62     0.662
+compound          229             0.58          0.41     0.480
+compound:lvc      117             0.77          0.82     0.794
+compound:redup     49             0.75          0.55     0.635
+conj              671             0.71          0.71     0.710
+cop               110             0.92          0.95     0.935
+csubj              68             0.63          0.71     0.668
+det               518             0.94          0.97     0.955
+discourse          45             0.59          0.36     0.447
+flat              180             0.82          0.84     0.830
+list                2             1.00          0.50     0.667
+mark               22             0.73          0.50     0.593
+nmod              147             0.55          0.18     0.271
+nmod:poss        1040             0.85          0.86     0.855
+nsubj             851             0.79          0.76     0.775
+nummod            173             0.90          0.90     0.900
+obj               739             0.76          0.71     0.734
+obl              1150             0.74          0.86     0.795
+parataxis          22             0.63          0.55     0.587
+punct            1993             0.99          0.99     0.990
+root              979             0.86          0.87     0.865
+vocative            9             0.33          0.11     0.165
+xcomp              14             0.73          0.79     0.759
+dislocated          3             0.00          0.00     0.000
+iobj               22             0.00          0.00     0.000
+orphan              3             0.00          0.00     0.000
+

@@ -18,7 +18,7 @@ from util.nn import nn_utils
 
 def main(args):
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-  parser_model_name = f"{args.language}_lfp_gold_pos_and_labels_{current_time}"
+  parser_model_name = f"{args.language}_lfp_gold_category_and_labels_{current_time}"
   logging.info(f"Parser model name is {parser_model_name}")
   model_name_check = input("Are you happy with the model name: y/n?")
   if model_name_check != "y":
@@ -89,7 +89,7 @@ def main(args):
                             predict=args.predict,
                             features=args.features,
                             log_dir=log_dir,
-                            test_every=1,
+                            test_every=10,
                             model_name=parser_model_name,
                             pos_embedding_vocab_size=pos_embedding_vocab_size,
                             one_hot_labels=False)
@@ -124,7 +124,7 @@ def main(args):
   # input()
 
   # train the parser
-  metrics = parser.train(dataset=train_dataset, epochs=100, test_data=test_dataset)
+  metrics = parser.train(dataset=train_dataset, epochs=70, test_data=test_dataset)
   print(metrics)
 
   # write metrics

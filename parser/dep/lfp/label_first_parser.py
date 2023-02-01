@@ -56,6 +56,7 @@ class LabelFirstParser(base_parser.BaseParser):
     word_inputs = tf.keras.Input(shape=(None,), name="words")
     pos_inputs = tf.keras.Input(shape=(None,), name="pos")
     morph_inputs = tf.keras.Input(shape=(None, 56), name="morph")
+    category_inputs = tf.keras.Input(shape=(None, ), name="category")
     if not self.one_hot_labels:
       label_inputs = tf.keras.Input(shape=(None, ), name="labels")
     else:
@@ -65,6 +66,8 @@ class LabelFirstParser(base_parser.BaseParser):
       input_dict["pos"] = pos_inputs
     if self._use_morph:
       input_dict["morph"] = morph_inputs
+    if self._use_category:
+      input_dict["category"] = category_inputs
     if self._use_dep_labels:
       input_dict["labels"] = label_inputs
     return input_dict
@@ -75,8 +78,10 @@ class LabelFirstParser(base_parser.BaseParser):
 
   def _parsing_model(self, model_name):
     super()._parsing_model(model_name)
-    print(f"""Using features pos: {self._use_pos}, morph: {self._use_morph},
-              dep_labels: {self._use_dep_labels}""")
+    print(f"""Using features pos: {self._use_pos},
+              morph: {self._use_morph},
+              dep_labels: {self._use_dep_labels},
+              category: {self._use_category}""")
     model = LabelFirstParsingModel(
       n_dep_labels=self._n_output_classes,
       word_embeddings=self.word_embeddings,
@@ -85,6 +90,7 @@ class LabelFirstParser(base_parser.BaseParser):
       use_pos=self._use_pos,
       use_morph=self._use_morph,
       use_dep_labels=self._use_dep_labels,
+      use_category = self._use_category,
       pos_embedding_vocab_size=self.pos_embedding_vocab_size,
       one_hot_labels=self.one_hot_labels,
     )
@@ -101,6 +107,7 @@ class LabelFirstParsingModel(tf.keras.Model):
                use_pos:bool = True,
                use_morph:bool=True,
                use_dep_labels:bool=False,
+               use_category:bool=False,
                pos_embedding_vocab_size=37,
                one_hot_labels: False
                ):
@@ -109,11 +116,13 @@ class LabelFirstParsingModel(tf.keras.Model):
     self.use_pos = use_pos
     self.use_morph = use_morph
     self.use_dep_labels = use_dep_labels
+    self.use_category = use_category
     self.one_hot_labels = one_hot_labels
     self._null_label = tf.constant(0)
 
     assert(not("labels" in self.predict and self.use_dep_labels)), "Can't use dep_labels both as feature and label!"
     logging.info(f"Using dep labels as feature: {self.use_dep_labels}")
+    assert(not(self.use_pos and self.use_category)), "Can't use pos and category together."
 
     self.word_embeddings = layer_utils.EmbeddingLayer(
       pretrained=word_embeddings,
@@ -121,10 +130,18 @@ class LabelFirstParsingModel(tf.keras.Model):
       trainable=False)
 
     if self.use_pos:
+      print("using fine pos as features")
       self.pos_embeddings = layer_utils.EmbeddingLayer(
         input_dim=pos_embedding_vocab_size, output_dim=32,
         name="pos_embeddings",
         trainable=True)
+    if self.use_category:
+      print("using coarse pos as features")
+      self.pos_embeddings = layer_utils.EmbeddingLayer(
+        input_dim=19, output_dim=32,
+        name="category_embeddings",
+        trainable=True
+      )
 
     self.concatenate = layers.Concatenate(name="concat")
     self.lstm_block = LSTMBlock(n_units=256,
@@ -180,6 +197,12 @@ class LabelFirstParsingModel(tf.keras.Model):
       pos_inputs = inputs["pos"]
       pos_features = self.pos_embeddings(pos_inputs)
       concat_list.append(pos_features)
+    if self.use_category:
+      category_inputs = inputs["category"]
+      # print("category inputs ", category_inputs)
+      # input()
+      category_features = self.pos_embeddings(category_inputs)
+      concat_list.append(category_features)
     if self.use_morph:
       morph_inputs = inputs["morph"]
       concat_list.append(morph_inputs)

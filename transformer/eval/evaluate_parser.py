@@ -23,15 +23,19 @@ from data.treebank import treebank_pb2
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230128-202656-multilingual-cased"
+_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230201-062047-multilingual-cased"
 
 class ParserEval:
   """Parses a treebank that has already predicted labels and evals uas/las."""
   def __init__(self, parser_name, labeled_treebank_name, gold_treebank_name):
-    self.word_embeddings = load_models.load_word_embeddings()
+    # self.word_embeddings = load_models.load_word_embeddings()
+    self.word_embeddings = load_models.load_i18n_embeddings(language="tr")
     self.preprocessor = load_models.load_preprocessor(word_embedding_indexes=self.word_embeddings.token_to_index,
-                                                      language="tr")
-    self.parser = load_models.load_parser(
+                                                      language="tr",
+                                                      features=["words", "category"],
+                                                      embedding_type="conll")
+    # TODO: make sure to use load_models.load_parser if not using gold pos features.
+    self.parser = load_models.load_category_gold_parser(
       parser_name=parser_name,
       word_embeddings=self.word_embeddings,
       prep=self.preprocessor)
@@ -43,6 +47,7 @@ class ParserEval:
     self.parsed_and_labeled_treebank = treebank_pb2.Treebank()
 
   def get_dataset(self, treebank_name):
+    """Returns a tf.data.dataset from a treebank."""
     _, _, test_dataset = load_models.load_data(
       preprocessor=self.preprocessor,
       test_data_dir=_DATA_DIR,
@@ -146,8 +151,9 @@ class ParserEval:
       # print("words from gold ", words_from_gold)
       # print("words from labeled ", words_from_labeled)
       assert (words_from_labeled == words_from_gold), "Fatal: Mismatch in identified sentences!"
+      # print(example["words"])
       # input()
-
+      # print("example ", example)
       # Get the head scores and head preds from the parser.
       scores = self.parser.parse(example)
       head_scores = scores["edges"]
@@ -228,7 +234,8 @@ class ParserEval:
 
 if __name__ == "__main__":
   eval = ParserEval(
-    parser_name="label_first_predicted_head_gold_labels_only",
+    parser_name = "tr_lfp_gold_category_and_labels_20230201-081408",
+    # parser_name="label_first_predicted_head_gold_labels_only",
     # This is the treebank where the labels are parsed with the Bert finetuned model (iter6)
     labeled_treebank_name = "labeled_test_treebank.pbtxt",
     gold_treebank_name = "gold_test_treebank.pbtxt"

@@ -67,8 +67,9 @@ class BertInferencePipeline:
       tokens_from_pbtxt = [t.word for t in sentence.token[1:]]
       tokens_from_example = example["tokens"]
       assert (tokens_from_example == tokens_from_pbtxt), "Mistmatch in tokens on test data files!"
-      # print("tokens from pbtxt ", tokens_from_pbtxt)
-      # print("tokes from example ", example["tokens"])
+      print("tokens from pbtxt ", tokens_from_pbtxt)
+      print("tokes from example ", example["tokens"])
+      # print("token ids from pbtxt ", example["token_ids"])
       # input()
       # tokenized = self.tokenizer(example["tokens"], is_split_into_words=True, return_tensors='tf')
       tokenized = self.tokenizer(tokens_from_pbtxt, is_split_into_words=True, return_tensors='tf')
@@ -76,8 +77,8 @@ class BertInferencePipeline:
       # gold_labels = example["dep_labels"]
       gold_label_names = [t.label for t in sentence.token[1:]]
       gold_labels_pbtxt = [self.label_reader.vtoi(label) for label in gold_label_names]
-      # print("gold labels from pbtxt", gold_labels_pbtxt)
-      # print("gold labels from example ", example["dep_labels"])
+      print("gold labels from pbtxt", gold_labels_pbtxt)
+      print("gold labels from example ", example["dep_labels"])
       assert (gold_labels_pbtxt == example["dep_labels"]), "Mistmatch in gold_labels on test data files!"
       # input()
       word_ids = tokenized.word_ids()
