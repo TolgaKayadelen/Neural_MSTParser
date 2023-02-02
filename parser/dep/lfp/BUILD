@@ -10,6 +10,15 @@ py_binary(
 )
 
 py_binary(
+  name = "label_first_parser_all_langs_main",
+  srcs = ["label_first_parser_all_langs_main.py"],
+  deps = [
+    "//parser/utils:load_models",
+    ":label_first_parser",
+  ],
+)
+
+py_binary(
   name = "bert_label_first_parser_main",
   srcs = ["bert_label_first_parser_main.py"],
   deps = [

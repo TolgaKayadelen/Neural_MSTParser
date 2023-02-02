@@ -27,7 +27,7 @@ def load_preprocessor(*, word_embedding_indexes,
                       embedding_type="word2vec"):
   allow_list = ["words", "pos", "morph", "category", "dep_labels"]
   print("features ", features)
-  input()
+  # input()
   assert set(features).issubset(allow_list), "Can use words, pos, morph, category, dep_labels as features!"
   prep = preprocessor.Preprocessor(
     word_embedding_indexes=word_embedding_indexes,
@@ -219,7 +219,7 @@ def load_layer_weights(weights_file):
   return np.load(os.path.join(weights_dir, weights_file))
 
 
-def load_i18n_embeddings(language="tr"):
+def load_i18n_embeddings(language="zh"):
   file = f"./embeddings/{language}/{language}.vectors"
   conll_token_to_index_dict = {"-pad-": 0, "-oov-": 1}
   embed_matrix = {}
@@ -274,5 +274,5 @@ def load_embedding_indexes():
   return loaded
 
 if __name__ == "__main__":
-  # load_i18n_embeddings()
-  write_conll_token_to_index_dict()
+  load_i18n_embeddings()
+  # write_conll_token_to_index_dict()

@@ -9,6 +9,8 @@ py_library(
 	":de_tagset",
 	":fi_tagset",
 	":zh_tagset",
+	":ko_tagset",
+	":ru_tagset",
     "//tagset/fine_pos:fine_tag_enum_py_pb2",
     "//tagset/coarse_pos:coarse_tag_enum_py_pb2",
     "//tagset/dep_labels:dep_label_enum_py_pb2",
@@ -53,6 +55,22 @@ py_library(
     name = "zh_tagset",
     deps = [
         "//tagset/dep_labels/zh:dep_label_enum_py_pb2",
+
+    ]
+)
+
+py_library(
+    name = "ko_tagset",
+    deps = [
+        "//tagset/dep_labels/ko:dep_label_enum_py_pb2",
+
+    ]
+)
+
+py_library(
+    name = "ru_tagset",
+    deps = [
+        "//tagset/dep_labels/ru:dep_label_enum_py_pb2",
 
     ]
 )

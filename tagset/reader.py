@@ -6,6 +6,8 @@ from tagset.dep_labels.en import dep_label_enum_pb2 as dep_labels_en
 from tagset.dep_labels.de import dep_label_enum_pb2 as dep_labels_de
 from tagset.dep_labels.fi import dep_label_enum_pb2 as dep_labels_fi
 from tagset.dep_labels.zh import dep_label_enum_pb2 as dep_labels_zh
+from tagset.dep_labels.ru import dep_label_enum_pb2 as dep_labels_ru
+from tagset.dep_labels.ko import dep_label_enum_pb2 as dep_labels_ko
 
 
 from tagset.arg_str import semantic_role_enum_pb2 as srl
@@ -17,6 +19,8 @@ _LANGUAGE_TO_TAG = {
   "de": {"dep_labels": dep_labels_de},
   "fi": {"dep_labels": dep_labels_fi},
   "zh": {"dep_labels": dep_labels_zh},
+  "ko": {"dep_labels": dep_labels_ko},
+  "ru": {"dep_labels": dep_labels_ru},
   "tr": {"pos": fine_tags,
          "category": coarse_tags,
          "dep_labels": dep_labels,
@@ -117,6 +121,8 @@ class LabelReader:
                    'mark_adv',
                    "nsubj_pass",
                    "nsubj_cop",
+                   "nummod_gov",
+                   "nummod_entity",
                    "nmod_poss",
                    'nmod_tmod',
                    'nmod_npmod',
@@ -125,6 +131,7 @@ class LabelReader:
                    "obl_agent",
                    'obl_npmod',
                    'obl_tmod',
+                   'obl_arg',
                    'obl_patient',
                    "xcomp_ds"}:
           label_dict[key.replace("_", ":")] = tags.Tag.Value(key)
