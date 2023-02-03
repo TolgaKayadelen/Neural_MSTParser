@@ -692,12 +692,8 @@ class BaseParser(ABC):
         loss_metrics=loss_results_for_epoch,
         test_metrics=test_results_for_epoch,
       )
-      if training_results_for_epoch["uas"] > 0.95:
-        c = input("continue training: y/n")
-        if c == "yes" or c == "y":
-          print("continuing")
-        else:
-          break
+      if training_results_for_epoch["uas"] > 0.97:
+        break
     # At the end of training, parse the data with the learned weights and save it as proto.
     self.parse_and_save(test_data)
     return self._metrics

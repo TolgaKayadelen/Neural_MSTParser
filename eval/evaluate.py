@@ -463,7 +463,7 @@ class Evaluator:
       results["label_accuracy"] = label_accuracy
       results["label_confusion_matrix"] = label_confusion_matrix
       results["eval_matrix"] = self.evaluation_matrix
-      results["eval_proto"] = self.evaluation
+      # results["eval_proto"] = self.evaluation
       results["label_prediction_metrics"] = self.label_prediction_metrics
       logging.info("Label Prediction Metrics")
       print(f"{self.label_prediction_metrics}\n\n\n")
@@ -471,16 +471,16 @@ class Evaluator:
       print(f"{label_confusion_matrix}\n\n\n")
       logging.info("Labeled Attachment Evaluation Matrix:")
       print(f"{self.evaluation_matrix}\n\n\n")
-      logging.info(f"Evaluation Proto:")
-      print(self.evaluation)
+    #   logging.info(f"Evaluation Proto:")
+    #  print(self.evaluation)
     else:
       if "uas_total" in requested_metrics:
         results["uas_total"] = self.uas_total
       if "las_total" in requested_metrics:
         results["las_total"] = self.las_total
-      if "typed_uas" in requested_metrics:
-        results["typed_uas"] = pd.Series(self.typed_uas).rename("uas",
-                                         inplace=True).round(2)
+      # if "typed_uas" in requested_metrics:
+      #  results["typed_uas"] = pd.Series(self.typed_uas).rename("uas",
+      #                                   inplace=True).round(2)
       if "label_accuracy" in requested_metrics:
         results["label_accuracy"] = self.compute_label_accuracy(confusion_matrix=False)
       if  "labeled_attachment_precision" in requested_metrics:

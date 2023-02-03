@@ -132,8 +132,10 @@ class LabelFirstParsingModel(tf.keras.Model):
     assert(not("labels" in self.predict and self.use_dep_labels)), "Can't use dep_labels both as feature and label!"
     logging.info(f"Using dep labels as feature: {self.use_dep_labels}")
     assert(not(self.use_pos and self.use_category)), "Can't use pos and category together."
-    assert(not(self._language != "tr" and pos_embedding_vocab_size == 37)), f"Wrong vocab size for language {self._language}."
-    assert(not(self._language != "tr" and label_embedding_vocab_size == 43)), f"Wrong vocab size for language {self._language}."
+    if self.use_pos:
+      assert(not(self._language != "tr" and pos_embedding_vocab_size == 37)), f"Wrong vocab size for language {self._language}."
+    if self.use_dep_labels:
+      assert(not(self._language != "tr" and label_embedding_vocab_size == 43)), f"Wrong vocab size for language {self._language}."
 
     self.word_embeddings = layer_utils.EmbeddingLayer(
       pretrained=word_embeddings,

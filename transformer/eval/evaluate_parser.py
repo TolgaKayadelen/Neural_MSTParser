@@ -23,28 +23,29 @@ from data.treebank import treebank_pb2
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230201-062047-multilingual-cased"
+_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230130-095157-zh-gsd-final"
 
 class ParserEval:
   """Parses a treebank that has already predicted labels and evals uas/las."""
-  def __init__(self, parser_name, labeled_treebank_name, gold_treebank_name):
+  def __init__(self, parser_name, labeled_treebank_name, gold_treebank_name, language="tr"):
     # self.word_embeddings = load_models.load_word_embeddings()
-    self.word_embeddings = load_models.load_i18n_embeddings(language="tr")
+    self.word_embeddings = load_models.load_i18n_embeddings(language=language)
     self.preprocessor = load_models.load_preprocessor(word_embedding_indexes=self.word_embeddings.token_to_index,
-                                                      language="tr",
-                                                      features=["words", "category"],
+                                                      language=language,
+                                                      features=["words", "dep_labels"],
                                                       embedding_type="conll")
-    # TODO: make sure to use load_models.load_parser if not using gold pos features.
-    self.parser = load_models.load_category_gold_parser(
+    self.parser = load_models.load_parser(
       parser_name=parser_name,
       word_embeddings=self.word_embeddings,
-      prep=self.preprocessor)
+      prep=self.preprocessor,
+      language=language)
     self.test_dataset = self.get_dataset(labeled_treebank_name)
     self.gold_treebank = reader.ReadTreebankTextProto(os.path.join(_DATA_DIR, gold_treebank_name))
     self.labeled_treebank = reader.ReadTreebankTextProto(os.path.join(_DATA_DIR, labeled_treebank_name))
     self.stats = collections.Counter()
-    self.label_reader = label_reader.get_labels("dep_labels")
+    self.label_reader = label_reader.get_labels("dep_labels", language)
     self.parsed_and_labeled_treebank = treebank_pb2.Treebank()
+    self.language = language
 
   def get_dataset(self, treebank_name):
     """Returns a tf.data.dataset from a treebank."""
@@ -148,8 +149,8 @@ class ParserEval:
       # Making sure that the two sentences match.
       words_from_gold = [token.word for token in gold_sentence.token]
       words_from_labeled = [token.word for token in labeled_sentence.token]
-      # print("words from gold ", words_from_gold)
-      # print("words from labeled ", words_from_labeled)
+      print("words from gold ", words_from_gold)
+      print("words from labeled ", words_from_labeled)
       assert (words_from_labeled == words_from_gold), "Fatal: Mismatch in identified sentences!"
       # print(example["words"])
       # input()
@@ -181,8 +182,8 @@ class ParserEval:
         self.label_reader.vtoi(value=token.label) for token in labeled_sentence.token]
       l_preds_from_labeled_sent = tf.expand_dims(
         tf.convert_to_tensor(l_preds_from_labeled_sent, dtype=tf.int64), -1)
-      # print("labed preds from example ", label_preds)
-      # print("label preds from labeled sentencen ", l_preds_from_labeled_sent)
+      print("labed preds from example ", label_preds)
+      print("label preds from labeled sentencen ", l_preds_from_labeled_sent)
       assert all(tf.math.equal(label_preds, l_preds_from_labeled_sent)), "Mismatch in predicted labels!"
       # input()
 
@@ -234,11 +235,12 @@ class ParserEval:
 
 if __name__ == "__main__":
   eval = ParserEval(
-    parser_name = "tr_lfp_gold_category_and_labels_20230201-081408",
+    parser_name = "zh_lfp_predicted_head_gold_labels_only_20230202-122109",
     # parser_name="label_first_predicted_head_gold_labels_only",
     # This is the treebank where the labels are parsed with the Bert finetuned model (iter6)
     labeled_treebank_name = "labeled_test_treebank.pbtxt",
-    gold_treebank_name = "gold_test_treebank.pbtxt"
+    gold_treebank_name = "gold_test_treebank.pbtxt",
+    language="zh"
   )
   results = eval.evaluate()
   gold_trb = reader.ReadTreebankTextProto(os.path.join(_DATA_DIR, "gold_test_treebank.pbtxt"))
@@ -246,5 +248,6 @@ if __name__ == "__main__":
                                                                      "parsed_and_labeled_test_treebank.pbtxt"))
   evaluator = evaluate.Evaluator(gold_trb, parsed_and_labeled_trb,
                                  write_results=True,
+                                 language="zh",
                                  write_dir=_DATA_DIR)
   evaluator.evaluate("all")

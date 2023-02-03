@@ -141,7 +141,7 @@ def main(args):
   # input()
 
   # train the parser
-  metrics = parser.train(dataset=train_dataset, epochs=50, test_data=test_dataset)
+  metrics = parser.train(dataset=train_dataset, epochs=70, test_data=test_dataset)
   print(metrics)
 
   # write metrics

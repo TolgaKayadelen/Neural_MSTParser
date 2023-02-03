@@ -78,12 +78,13 @@ def load_parser(parser_name, prep, test_every=0, one_hot_labels=False,
 """
 
 # The predict and features lists are configured to load "label_first_predicted_head_gold_labels_only"
-def load_parser(parser_name, prep, word_embeddings, test_every=0, one_hot_labels=False,
-                predict=["heads"], features=["words", "dep_labels"]):
+def load_parser(*, parser_name, prep, word_embeddings, test_every=0, one_hot_labels=False,
+                predict=["heads"], features=["words", "dep_labels"], language="tr"):
   label_feature = next(
     (f for f in prep.sequence_features_dict.values() if f.name == "dep_labels"),
     None)
-  parser = label_first_parser.LabelFirstParser(word_embeddings=word_embeddings,
+  parser = label_first_parser.LabelFirstParser(language=language,
+                                               word_embeddings=word_embeddings,
                                                n_output_classes=label_feature.n_values,
                                                predict=predict,
                                                features=features,
