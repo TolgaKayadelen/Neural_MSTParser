@@ -23,7 +23,7 @@ from data.treebank import treebank_pb2
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 
-_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230130-203612-ru-pud-final" # TODO
+_DATA_DIR = "./transformer/eval/eval_data/bert-finetuned-20230204-023713-en-pud-final" # TODO
 
 class ParserEval:
   """Parses a treebank that has already predicted labels and evals uas/las."""
@@ -235,12 +235,12 @@ class ParserEval:
 
 if __name__ == "__main__":
   eval = ParserEval(
-    parser_name = "ru_lfp_predicted_head_gold_labels_only_20230203-110058", # TODO
+    parser_name = "en_lfp_predicted_head_gold_labels_only_20230204-060701", # TODO
     # parser_name="label_first_predicted_head_gold_labels_only",
     # This is the treebank where the labels are parsed with the Bert finetuned model (iter6)
     labeled_treebank_name = "labeled_test_treebank.pbtxt",
     gold_treebank_name = "gold_test_treebank.pbtxt",
-    language="ru" # TODO
+    language="en" # TODO
   )
   results = eval.evaluate()
   gold_trb = reader.ReadTreebankTextProto(os.path.join(_DATA_DIR, "gold_test_treebank.pbtxt"))
@@ -248,6 +248,6 @@ if __name__ == "__main__":
                                                                      "parsed_and_labeled_test_treebank.pbtxt"))
   evaluator = evaluate.Evaluator(gold_trb, parsed_and_labeled_trb,
                                  write_results=True,
-                                 language="ru", # TODO
+                                 language="en", # TODO
                                  write_dir=_DATA_DIR)
   evaluator.evaluate("all")

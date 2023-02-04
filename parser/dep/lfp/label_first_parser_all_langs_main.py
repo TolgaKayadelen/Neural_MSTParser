@@ -153,13 +153,13 @@ def main(args):
 
 if __name__ == "__main__":
 
-  languages = ["zh", "fi", "ko", "ru", "de"]
+  languages = ["zh", "fi", "ko", "ru", "de", "en"]
   train_treebanks = ["zh_gsd-ud-train.pbtxt", "fi_tdt-ud-train.pbtxt", "ko_gsd-ud-train.pbtxt",
-                     "ru_gsd-ud-train.pbtxt", "de_gsd-ud-train.pbtxt"]
+                     "ru_gsd-ud-train.pbtxt", "de_gsd-ud-train.pbtxt", "en_ewt-ud-train.pbtxt"]
   test_treebanks = ["zh_gsd-ud-test.pbtxt", "fi_tdt-ud-test.pbtxt", "ko_gsd-ud-test.pbtxt",
-                    "ru_gsd-ud-test.pbtxt", "de_gsd-ud-test.pbtxt"]
+                    "ru_gsd-ud-test.pbtxt", "de_gsd-ud-test.pbtxt", "en_ewt-ud-test.pbtxt"]
   for language, train_treebank, test_treebank in zip(languages, train_treebanks, test_treebanks):
-    if language in ["zh", "fi", "ko"]:
+    if language in ["zh", "fi", "ko", "ru", "de"]:
       continue
     parse_args = Args(
       language=language,
