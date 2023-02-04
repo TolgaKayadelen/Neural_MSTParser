@@ -1,0 +1,163 @@
+uas_total
+0.8394126006631928
+
+las_total
+0.8045160271593241
+
+label_accuracy
+0.9016870771602296
+
+label_confusion_matrix
+Test Labels  acl:relcl  advcl  advmod  amod  appos  aux  case  cc  ccomp  \
+Gold Labels                                                                
+acl:relcl          400      7       2    12      0    0     0   0      0   
+advcl                3    565       7     1      1    0     0   0     12   
+advmod               2     16    1211     1      1    0     5   0      0   
+amod                17      1       0   206      0    0     0   0      0   
+appos                0      1       2     1    165    0     0   0      2   
+aux                  0      0       0     0      0    4     0   0      2   
+case                 0      0       1     0      0    0   217   0      1   
+cc                   0      0       1     0      0    0     2  28      0   
+ccomp                0      8       1     2      0    0     0   0     68   
+conj                 8     10       7     4      1    0     0   0      6   
+cop                  0      0       0     0      1    0     2   0      0   
+csubj                0      0       0     0      0    0     0   0      1   
+dep                 24     12       2     5      3    0     3   0      8   
+det                  0      0       1     3      0    0     0   0      0   
+det:poss             0      0       6     1      0    0     0   0      0   
+fixed                0      1       0     0      0    0     0   0      0   
+flat                 5      6      14     0     12    2    13   0      2   
+iobj                 0      0       2     0      0    0     0   0      0   
+mark                 0      0       0     0      0    0     1   0      0   
+nmod                 0      0      10     0      3    0     1   0      0   
+nsubj                2      3      20     2      1    0     0   0      0   
+nsubj:pass           0      0       0     0      1    0     0   0      0   
+nummod               0      0       1     0      0    0     0   0      0   
+obj                  0      7      21     0      2    0     1   0      1   
+obl                  0      1       5     0      0    0     2   0      0   
+punct                0      0       0     0      0    0     1   0      0   
+root                 3     16       1     1      1    0     1   0      2   
+All                464    654    1315   239    192    6   249  28    105   
+
+Test Labels  conj  cop  dep  det  det:poss  flat  iobj  mark  nmod  nsubj  \
+Gold Labels                                                                 
+acl:relcl       4    0   28    0         0     3     0     0     0      1   
+advcl          17    0   11    0         0    12     0     0     0      2   
+advmod          4    0    3    0         6    18     6     6    17     27   
+amod            1    0    0    0         2     0     0     0     1      2   
+appos           2    0    2    0         0    10     0     0     1      4   
+aux             0    0    0    0         0     0     0     0     0      0   
+case            0    0    0    0         0     3     0     0     0      0   
+cc              0    0    0    0         0     0     0     0     0      0   
+ccomp           4    0   15    0         0     4     0     0     1      0   
+conj          436    0    5    0         3    27     0     0     1     11   
+cop             0   13    2    0         0     0     0     0     0      0   
+csubj           2    0    0    0         0     0     0     0     0      2   
+dep             7    0  239    0         1     4     0     1     1      4   
+det             0    0    0   78         0     0     0     0     4      1   
+det:poss        1    0    2    2       275    10     0     0     2      5   
+fixed           0    0    0    0         0     0     0     0     0      0   
+flat           12    0    3    0         7  1556     1     0     6     21   
+iobj            0    0    0    0         1     0    12     0     0      0   
+mark            0    0    0    0         0     0     0    44     0      1   
+nmod            2    0    1    4         6     4     0     0   216      2   
+nsubj          11    0    5    2         4     6     0     1    10   1147   
+nsubj:pass      0    0    1    0         0     0     0     0     0     13   
+nummod          0    0    0    0         1    13     0     0     3      2   
+obj             9    0    3    0         3    15     0     0     5     20   
+obl             0    0    0    0         0     5     0     1     3      0   
+punct           0    0    1    0         0     0     0     0     0      0   
+root           27    0    2    0         0    11     0     0     0      2   
+All           539   13  323   86       309  1701    19    53   271   1267   
+
+Test Labels  nsubj:pass  nummod  obj  obl  punct  root    All  
+Gold Labels                                                    
+acl:relcl             0       1    1    0      0     0    459  
+advcl                 0       0    2    1      0    25    659  
+advmod                0       5   10    2      0     4   1344  
+amod                  0       0    0    0      0     1    231  
+appos                 0       0    1    0      2     1    194  
+aux                   0       0    0    0      0     0      6  
+case                  0       0    0    4      0     0    226  
+cc                    0       0    0    0      0     0     31  
+ccomp                 0       0    0    0      0     0    103  
+conj                  0       0    8    4      0    20    551  
+cop                   0       0    0    0      0     0     18  
+csubj                 0       0    0    0      0     0      5  
+dep                   1       1    0    0      0     2    318  
+det                   0       2    0    0      0     0     89  
+det:poss              0       0    0    1      0     0    305  
+fixed                 0       0    0    0      0     0      1  
+flat                  2       0   14    6      0    11   1693  
+iobj                  0       0    0    0      0     0     15  
+mark                  0       0    0    2      0     0     48  
+nmod                  0       1    2    1      1     0    254  
+nsubj                26       0   16    1      0     3   1260  
+nsubj:pass           47       0    0    1      0     0     63  
+nummod                0      50    1    0      1     0     72  
+obj                   2       0  779    1      0     0    869  
+obl                   0       0    0  359      0     0    376  
+punct                 0       0    0    1   1495     0   1498  
+root                  0       0    2    1      0   919    989  
+All                  78      60  836  385   1499   986  11677  
+
+eval_matrix
+            count   uas  l_a_prec  l_a_recall  l_a_f1
+acl:relcl     459  0.80      0.70        0.71   0.705
+advcl         659  0.60      0.58        0.57   0.575
+advmod       1344  0.76      0.72        0.71   0.715
+amod          231  0.91      0.79        0.82   0.805
+appos         194  0.78      0.73        0.72   0.725
+aux             6  0.83      0.67        0.67   0.670
+case          226  0.83      0.74        0.82   0.778
+cc             31  0.77      0.75        0.68   0.713
+ccomp         103  0.54      0.46        0.47   0.465
+conj          551  0.71      0.69        0.67   0.680
+cop            18  0.83      0.92        0.67   0.775
+dep           318  0.81      0.66        0.67   0.665
+det            89  0.93      0.85        0.82   0.835
+det:poss      305  0.85      0.82        0.83   0.825
+flat         1693  0.89      0.87        0.87   0.870
+iobj           15  0.47      0.32        0.40   0.356
+mark           48  0.90      0.81        0.90   0.853
+nmod          254  0.65      0.53        0.57   0.549
+nsubj        1260  0.80      0.75        0.75   0.750
+nsubj:pass     63  0.67      0.41        0.51   0.455
+nummod         72  0.67      0.65        0.54   0.590
+obj           869  0.86      0.84        0.81   0.825
+obl           376  0.84      0.81        0.82   0.815
+punct        1498  0.96      0.95        0.95   0.950
+root          989  0.92      0.92        0.92   0.920
+csubj           5  0.00      0.00        0.00   0.000
+fixed           1  0.00      0.00        0.00   0.000
+
+label_prediction_metrics
+            count  label_precision  label_recall  label_f1
+acl:relcl     459             0.86          0.87     0.865
+advcl         659             0.86          0.86     0.860
+advmod       1344             0.92          0.90     0.910
+amod          231             0.86          0.89     0.875
+appos         194             0.86          0.85     0.855
+aux             6             0.67          0.67     0.670
+case          226             0.87          0.96     0.913
+cc             31             1.00          0.90     0.947
+ccomp         103             0.65          0.66     0.655
+conj          551             0.81          0.79     0.800
+cop            18             1.00          0.72     0.837
+dep           318             0.74          0.75     0.745
+det            89             0.91          0.88     0.895
+det:poss      305             0.89          0.90     0.895
+flat         1693             0.91          0.92     0.915
+iobj           15             0.63          0.80     0.705
+mark           48             0.83          0.92     0.873
+nmod          254             0.80          0.85     0.824
+nsubj        1260             0.91          0.91     0.910
+nsubj:pass     63             0.60          0.75     0.667
+nummod         72             0.83          0.69     0.754
+obj           869             0.93          0.90     0.915
+obl           376             0.93          0.95     0.940
+punct        1498             1.00          1.00     1.000
+root          989             0.93          0.93     0.930
+csubj           5             0.00          0.00     0.000
+fixed           1             0.00          0.00     0.000
+
