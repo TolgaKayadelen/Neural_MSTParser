@@ -1,0 +1,424 @@
+uas_total
+0.8914771472731288
+
+las_total
+0.8722308088614117
+
+label_accuracy
+0.9437781408136431
+
+label_confusion_matrix
+Test Labels   acl  acl:relcl  advcl  advmod  amod  appos  aux  aux:pass  case  \
+Gold Labels                                                                     
+acl           151          1      9       0     5      0    0         0     1   
+acl:relcl       1        200      0       0     0      0    1         0     0   
+advcl          11          5    331       1     2      0    0         0     1   
+advmod          0          0      2    1193     9      0    0         0     7   
+amod            3          0      0       6  1194      0    0         0     2   
+appos           0          2      0       0     0    131    0         0     0   
+aux             0          0      1       0     0      0  813         3     0   
+aux:pass        0          0      0       0     0      0    0       109     0   
+case            0          0      0       3     1      1    0         0  1942   
+cc              0          0      0       0     0      0    0         0     2   
+cc:preconj      0          0      0       1     0      0    0         0     0   
+ccomp           2          0      8       1     0      1    0         1     0   
+compound        0          0      1       4    38      5    0         0     2   
+compound:prt    0          0      0      10     0      0    0         0     0   
+conj            0          0      1       3     1      8    1         0     2   
+cop             1          3      1       0     0      0    1         9     0   
+csubj           0          0      2       0     0      0    0         0     0   
+csubj:pass      0          0      1       0     0      0    0         0     0   
+det             0          0      0       0     0      0    0         0     0   
+det:predet      0          0      0       0     0      0    0         0     0   
+discourse       0          0      0       6     0      0    0         0     1   
+dislocated      0          0      0       0     0      0    0         0     0   
+expl            0          0      0       0     0      0    0         0     0   
+fixed           0          0      0       0     0      0    0         0     2   
+flat            0          0      0       0     0      0    0         0     0   
+flat:foreign    0          0      0       0     0      0    0         0     0   
+goeswith        0          0      0       0     1      0    0         0     1   
+iobj            0          0      0       0     0      0    0         0     0   
+list            0          0      0       0    20     21    0         0     0   
+mark            0          0      0       4     0      0    0         0     5   
+nmod            0          0      0       0     2      3    0         0     1   
+nmod:npmod      0          1      0       0     0      2    0         0     0   
+nmod:poss       0          0      0       0     0      0    0         0     0   
+nmod:tmod       0          0      0       0     0      2    0         0     0   
+nsubj           1          0      0       0     0      1    0         0     0   
+nsubj:pass      0          0      0       0     0      0    0         0     0   
+nummod          0          0      0       0     0      0    0         0     0   
+obj             1          0      0       6     0      0    0         0     0   
+obl             0          0      2       1     1      0    0         0     4   
+obl:npmod       0          0      0       2     0      0    0         0     0   
+obl:tmod        0          0      0       3     0      0    0         0     0   
+orphan          0          0      0       0     0      0    0         0     0   
+parataxis       0          2      6       0     2     13    0         0     0   
+punct           0          0      0       0     0      0    0         0     3   
+reparandum      0          0      0       0     0      0    0         0     1   
+root            3          1      4       7     9      3    2         2     2   
+vocative        0          0      0       0     0      0    0         0     0   
+xcomp           5          1      7       4     0      0    0         0     2   
+All           179        216    376    1255  1285    191  818       124  1981   
+
+Test Labels    cc  cc:preconj  ccomp  compound  compound:prt  conj  cop  \
+Gold Labels                                                               
+acl             0           0      2         0             0     1    1   
+acl:relcl       0           0      3         1             0     2    2   
+advcl           0           0      1         0             0     8    1   
+advmod          1           1      0         0            13     1    0   
+amod            0           0      0        40             0     4    0   
+appos           0           0      0         2             0     4    0   
+aux             0           0      1         1             0     0    2   
+aux:pass        0           0      0         0             0     0    4   
+case            3           0      0         3             2     0    0   
+cc            738           0      0         0             0     0    0   
+cc:preconj      0           9      0         0             0     0    0   
+ccomp           0           0    198         0             0     1    1   
+compound        0           0      3       898             0     6    1   
+compound:prt    0           0      0         0            77     0    0   
+conj            0           0      0        10             0   795    1   
+cop             0           0      0         0             0     0  543   
+csubj           0           0      1         0             0     0    0   
+csubj:pass      0           0      0         0             0     0    0   
+det             0           0      0         1             0     0    0   
+det:predet      0           0      0         0             0     0    0   
+discourse       0           0      0         1             0     0    0   
+dislocated      0           0      0         0             0     0    0   
+expl            0           0      0         0             0     0    0   
+fixed           0           0      0         0             0     0    0   
+flat            0           0      0         9             0     0    0   
+flat:foreign    0           0      0         3             0     0    0   
+goeswith        0           0      0         2             0     1    0   
+iobj            0           0      0         0             0     0    0   
+list            0           0      0         7             0     3    0   
+mark            0           0      0         0             0     0    0   
+nmod            0           0      0         6             0     2    0   
+nmod:npmod      0           0      0         2             0     0    0   
+nmod:poss       0           0      0         0             1     0    0   
+nmod:tmod       0           0      0         0             0     0    0   
+nsubj           0           0      0         7             0     3    0   
+nsubj:pass      0           0      0         0             0     0    0   
+nummod          0           0      0         4             0     0    0   
+obj             0           0      1         3             1     2    0   
+obl             0           0      1         9             1     3    0   
+obl:npmod       0           0      0         1             0     0    0   
+obl:tmod        0           0      0         0             0     0    0   
+orphan          0           0      0         0             0     0    0   
+parataxis       0           0      4         3             0     8    1   
+punct           7           0      0         0             0     0    0   
+reparandum      0           0      0         0             0     0    0   
+root            0           0      7        12             0     1    5   
+vocative        0           0      0         1             0     1    0   
+xcomp           0           0      0         0             0     0    0   
+All           749          10    222      1026            95   846  562   
+
+Test Labels   csubj   det  det:predet  discourse  expl  fixed  flat  goeswith  \
+Gold Labels                                                                     
+acl               0     0           0          0     0      0     0         0   
+acl:relcl         0     0           0          0     0      0     0         0   
+advcl             2     0           0          0     0      0     0         0   
+advmod            0     1           0          2     0      0     1         0   
+amod              0     0           0          0     0      0     0         0   
+appos             0     0           0          0     0      0     0         1   
+aux               0     0           0          0     0      0     0         0   
+aux:pass          0     0           0          0     0      0     0         0   
+case              0     0           0          0     0      0     0         0   
+cc                0     0           0          0     0      0     0         0   
+cc:preconj        0     0           0          0     0      0     0         0   
+ccomp             3     0           0          0     0      0     0         0   
+compound          1     0           0          0     0      0     8         1   
+compound:prt      0     0           0          0     0      0     0         0   
+conj              0     0           0          0     0      0     0         0   
+cop               0     0           0          1     0      0     0         0   
+csubj            18     0           0          0     0      0     0         0   
+csubj:pass        0     0           0          0     0      0     0         0   
+det               0  1829           0          0     0      0     0         0   
+det:predet        0     1          24          0     0      0     0         0   
+discourse         0     0           0        105     0      0     0         0   
+dislocated        0     0           0          0     0      0     0         0   
+expl              0     0           0          0    60      0     0         0   
+fixed             0     0           0          0     0     60     0         0   
+flat              0     0           0          0     0      0   231         2   
+flat:foreign      0     0           0          0     0      0     2         0   
+goeswith          0     0           0          0     0      0     0         3   
+iobj              0     0           0          0     0      0     0         0   
+list              0     0           0          0     0      0     0         1   
+mark              0     0           0          0     0      1     0         0   
+nmod              0     0           0          0     0      0     3         0   
+nmod:npmod        0     0           0          0     0      0     0         0   
+nmod:poss         0     1           0          0     0      0     0         0   
+nmod:tmod         0     0           0          0     0      0     0         0   
+nsubj             0     3           0          0     5      0     3         0   
+nsubj:pass        0     0           0          0     0      0     2         0   
+nummod            0     0           0          0     0      0     0         0   
+obj               0     0           0          0     0      0     2         0   
+obl               0     0           0          0     0      1     0         1   
+obl:npmod         0     0           0          1     0      0     0         0   
+obl:tmod          0     0           0          0     0      0     0         0   
+orphan            0     0           0          0     0      0     0         0   
+parataxis         0     0           0          3     0      0     1         0   
+punct             0     0           0          0     0      0     0         0   
+reparandum        0     2           0          0     0      0     0         0   
+root              0     0           0          1     0      0    13         2   
+vocative          0     0           0          0     0      0     0         0   
+xcomp             0     0           0          0     0      0     0         0   
+All              24  1837          24        113    65     62   266        11   
+
+Test Labels   iobj  list  mark  nmod  nmod:npmod  nmod:poss  nmod:tmod  nsubj  \
+Gold Labels                                                                     
+acl              0     0     0     0           0          0          0      1   
+acl:relcl        0     0     1     0           0          0          0      0   
+advcl            0     0     0     0           0          0          0      0   
+advmod           0     0     5     1           0          0          0      0   
+amod             0     0     0     2           0          0          0      0   
+appos            0    28     0     3           0          0          0      1   
+aux              0     0     0     0           0          0          0      1   
+aux:pass         0     0     0     0           0          0          0      0   
+case             0     0     9     3           0          0          0      0   
+cc               0     0     1     0           0          0          0      1   
+cc:preconj       0     0     0     0           0          0          0      0   
+ccomp            0     0     0     1           0          0          0      1   
+compound         0    17     0    13           0          2          0      9   
+compound:prt     0     0     1     0           0          0          0      0   
+conj             0     9     0     4           0          1          0      2   
+cop              0     0     0     0           0          0          0      0   
+csubj            0     0     0     0           0          0          0      1   
+csubj:pass       0     0     0     0           0          0          0      0   
+det              0     0     0     0           0          0          0      1   
+det:predet       0     0     0     0           0          0          0      0   
+discourse        0     0     1     0           0          0          0      0   
+dislocated       0     0     0     0           0          0          0      1   
+expl             0     0     0     0           0          0          0      6   
+fixed            0     0     0     1           0          0          0      0   
+flat             0     3     0     1           0          0          0      3   
+flat:foreign     0     0     0     0           0          0          0      0   
+goeswith         0     0     0     1           0          0          0      1   
+iobj            35     0     0     0           0          0          0      0   
+list             0   143     0     3           0          0         22      0   
+mark             0     0   796     1           0          0          0      0   
+nmod             0     0     0   702           0          0          1      1   
+nmod:npmod       0     1     0     1           0          0          0      0   
+nmod:poss        0     0     0     0           0        382          0      1   
+nmod:tmod        0     0     0     1           1          0         27      0   
+nsubj            0     0     0     3           0          0          0   1909   
+nsubj:pass       0     0     0     0           0          0          0      4   
+nummod           0     4     0     5           0          0          0      0   
+obj              3     0     0     1           0          0          0      2   
+obl              0     0     0    59           0          0          2      3   
+obl:npmod        0     0     0     0           0          0          0      0   
+obl:tmod         0     0     0     0           0          0          0      1   
+orphan           0     0     0     0           0          0          0      0   
+parataxis        0     6     0     2           0          0          1      1   
+punct            0     0     0     2           0          0          0      0   
+reparandum       0     0     0     0           0          0          0      0   
+root             0     1     0     1           0          0          0     12   
+vocative         0     0     0     0           0          0          0      2   
+xcomp            0     1     0     0           0          0          0      0   
+All             38   213   814   811           1        385         53   1965   
+
+Test Labels   nsubj:pass  nummod   obj   obl  obl:npmod  obl:tmod  parataxis  \
+Gold Labels                                                                    
+acl                    0       0     0     0          0         0          0   
+acl:relcl              0       0     0     4          0         0          0   
+advcl                  0       0     0     2          0         0          6   
+advmod                 0       0     0     2          2         1          1   
+amod                   0       0     0     1          0         0          0   
+appos                  0       1     3     3          0         0          5   
+aux                    0       0     0     0          0         0          0   
+aux:pass               0       0     0     0          0         0          0   
+case                   0       1     2     2          0         0          0   
+cc                     0       0     1     1          0         0          0   
+cc:preconj             0       0     0     0          0         0          0   
+ccomp                  0       0     0     1          0         0          5   
+compound               2      13     8     4          5         1          1   
+compound:prt           0       0     0     0          0         0          0   
+conj                   0       1     1     1          0         0         15   
+cop                    0       0     1     0          0         0          0   
+csubj                  0       0     0     0          0         0          0   
+csubj:pass             0       0     0     0          0         0          0   
+det                    0       0     2     0          0         0          0   
+det:predet             0       0     0     0          0         0          0   
+discourse              0       0     0     0          0         0          0   
+dislocated             0       0     0     0          0         0          0   
+expl                   0       0     0     0          0         0          0   
+fixed                  0       0     0     0          0         0          0   
+flat                   0       0     1     3          0         0          0   
+flat:foreign           0       0     1     0          0         0          0   
+goeswith               0       0     0     1          0         0          0   
+iobj                   0       0     6     0          0         0          0   
+list                   0      16     0     0          0         0          2   
+mark                   0       0     0     0          0         0          0   
+nmod                   1       1     1    42          0         0          0   
+nmod:npmod             0       1     0     1          2         0          0   
+nmod:poss              0       0     0     0          0         0          0   
+nmod:tmod              0       0     0     0          0         6          0   
+nsubj                 13       0     5     3          0         0          1   
+nsubj:pass            95       0     0     0          0         0          0   
+nummod                 0     266     0     0          0         0          0   
+obj                    0       0  1155     0          2         0          0   
+obl                    0       0     4   951          0         0          1   
+obl:npmod              0       0     1     1         35         6          0   
+obl:tmod               0       0     4     1          1        56          0   
+orphan                 0       0     0     1          0         0          0   
+parataxis              0       0     3     0          0         1        128   
+punct                  0       0     1     0          0         0          0   
+reparandum             0       0     0     0          0         0          0   
+root                   0       3     4     5          0         0         11   
+vocative               0       0     0     0          0         0          0   
+xcomp                  0       0     1     3          0         0          0   
+All                  111     303  1205  1033         47        71        176   
+
+Test Labels   punct  root  vocative  xcomp    All  
+Gold Labels                                        
+acl               0     0         0      4    176  
+acl:relcl         0     1         0      0    216  
+advcl             0     3         0      4    378  
+advmod            0     8         0      2   1253  
+amod              0     5         0      0   1257  
+appos             0     2         0      0    186  
+aux               0     1         0      0    823  
+aux:pass          0     0         0      1    114  
+case              1     0         0      0   1973  
+cc                3     1         0      0    748  
+cc:preconj        0     0         0      0     10  
+ccomp             0     1         0      7    232  
+compound          0    20         0      1   1064  
+compound:prt      0     0         0      1     89  
+conj              0     5         0      2    863  
+cop               0     3         0      0    563  
+csubj             0     1         0      0     23  
+csubj:pass        0     0         0      0      1  
+det               0     2         0      0   1835  
+det:predet        0     0         0      0     25  
+discourse         2     6         0      0    122  
+dislocated        0     0         0      0      1  
+expl              0     0         0      0     66  
+fixed             0     1         0      0     64  
+flat              3     2         0      0    258  
+flat:foreign      0     0         1      0      7  
+goeswith          0     2         0      0     13  
+iobj              0     0         0      0     41  
+list              3    10         0      0    251  
+mark              0     0         0      0    807  
+nmod              0     2         0      0    768  
+nmod:npmod        0     1         0      0     12  
+nmod:poss         0     0         0      0    385  
+nmod:tmod         0     0         0      0     37  
+nsubj             0    15         0      0   1972  
+nsubj:pass        0     0         0      0    101  
+nummod            0     1         0      0    280  
+obj               0     2         0      4   1185  
+obl               0     7         0      0   1051  
+obl:npmod         0     1         0      1     49  
+obl:tmod          0     0         0      0     66  
+orphan            0     0         0      0      1  
+parataxis         0    16         0      4    205  
+punct          3046     8         0      0   3067  
+reparandum        0     0         0      0      3  
+root              0  1963         2      1   2077  
+vocative          0     5        13      0     22  
+xcomp             0     1         0    332    357  
+All            3058  2096        16    364  25097  
+
+eval_matrix
+              count   uas  l_a_prec  l_a_recall  l_a_f1
+acl             176  0.73      0.69        0.70   0.695
+acl:relcl       216  0.69      0.67        0.67   0.670
+advcl           378  0.79      0.73        0.73   0.730
+advmod         1253  0.84      0.81        0.81   0.810
+amod           1257  0.90      0.85        0.87   0.860
+appos           186  0.61      0.50        0.52   0.510
+aux             823  0.98      0.98        0.97   0.975
+aux:pass        114  0.97      0.87        0.95   0.908
+case           1973  0.93      0.92        0.93   0.925
+cc              748  0.92      0.92        0.92   0.920
+cc:preconj       10  0.50      0.50        0.50   0.500
+ccomp           232  0.91      0.84        0.80   0.820
+compound       1064  0.77      0.75        0.72   0.735
+compound:prt     89  0.97      0.81        0.87   0.839
+conj            863  0.74      0.73        0.71   0.720
+cop             563  0.90      0.88        0.88   0.880
+csubj            23  0.78      0.62        0.65   0.635
+det            1835  0.96      0.96        0.96   0.960
+det:predet       25  0.96      0.96        0.92   0.940
+discourse       122  0.84      0.82        0.76   0.789
+expl             66  0.94      0.88        0.86   0.870
+fixed            64  0.89      0.92        0.89   0.905
+flat            258  0.88      0.82        0.85   0.835
+goeswith         13  0.54      0.27        0.23   0.248
+iobj             41  1.00      0.92        0.85   0.884
+list            251  0.46      0.38        0.32   0.347
+mark            807  0.96      0.95        0.96   0.955
+nmod            768  0.86      0.80        0.84   0.820
+nmod:npmod       12  0.33      0.00        0.00   0.000
+nmod:poss       385  0.96      0.96        0.96   0.960
+nmod:tmod        37  0.78      0.43        0.62   0.508
+nsubj          1972  0.94      0.93        0.93   0.930
+nsubj:pass      101  0.93      0.81        0.89   0.848
+nummod          280  0.76      0.69        0.74   0.714
+obj            1185  0.97      0.94        0.96   0.950
+obl            1051  0.84      0.84        0.82   0.830
+obl:npmod        49  0.80      0.60        0.57   0.585
+obl:tmod         66  0.88      0.70        0.76   0.729
+parataxis       205  0.59      0.55        0.47   0.507
+punct          3067  0.83      0.83        0.83   0.830
+root           2077  0.95      0.94        0.94   0.940
+vocative         22  0.68      0.81        0.59   0.683
+xcomp           357  0.97      0.90        0.92   0.910
+csubj:pass        1  0.00      0.00        0.00   0.000
+dislocated        1  0.00      0.00        0.00   0.000
+flat:foreign      7  0.00      0.00        0.00   0.000
+orphan            1  0.00      0.00        0.00   0.000
+reparandum        3  0.00      0.00        0.00   0.000
+
+label_prediction_metrics
+              count  label_precision  label_recall  label_f1
+acl             176             0.84          0.86     0.850
+acl:relcl       216             0.93          0.93     0.930
+advcl           378             0.88          0.88     0.880
+advmod         1253             0.95          0.95     0.950
+amod           1257             0.93          0.95     0.940
+appos           186             0.69          0.70     0.695
+aux             823             0.99          0.99     0.990
+aux:pass        114             0.88          0.96     0.918
+case           1973             0.98          0.98     0.980
+cc              748             0.99          0.99     0.990
+cc:preconj       10             0.90          0.90     0.900
+ccomp           232             0.89          0.85     0.870
+compound       1064             0.88          0.84     0.860
+compound:prt     89             0.81          0.87     0.839
+conj            863             0.94          0.92     0.930
+cop             563             0.97          0.96     0.965
+csubj            23             0.75          0.78     0.765
+det            1835             1.00          1.00     1.000
+det:predet       25             1.00          0.96     0.980
+discourse       122             0.93          0.86     0.894
+expl             66             0.92          0.91     0.915
+fixed            64             0.97          0.94     0.955
+flat            258             0.87          0.90     0.885
+goeswith         13             0.27          0.23     0.248
+iobj             41             0.92          0.85     0.884
+list            251             0.67          0.57     0.616
+mark            807             0.98          0.99     0.985
+nmod            768             0.87          0.91     0.890
+nmod:npmod       12             0.00          0.00     0.000
+nmod:poss       385             0.99          0.99     0.990
+nmod:tmod        37             0.51          0.73     0.600
+nsubj          1972             0.97          0.97     0.970
+nsubj:pass      101             0.86          0.94     0.898
+nummod          280             0.88          0.95     0.914
+obj            1185             0.96          0.97     0.965
+obl            1051             0.92          0.90     0.910
+obl:npmod        49             0.74          0.71     0.725
+obl:tmod         66             0.79          0.85     0.819
+parataxis       205             0.73          0.62     0.671
+punct          3067             1.00          0.99     0.995
+root           2077             0.94          0.95     0.945
+vocative         22             0.81          0.59     0.683
+xcomp           357             0.91          0.93     0.920
+csubj:pass        1             0.00          0.00     0.000
+dislocated        1             0.00          0.00     0.000
+flat:foreign      7             0.00          0.00     0.000
+orphan            1             0.00          0.00     0.000
+reparandum        3             0.00          0.00     0.000
+
