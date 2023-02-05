@@ -11,6 +11,17 @@ py_binary(
 	],
 )
 
+py_binary(
+	name = "evaluate_v2",
+	srcs = ["evaluate_v2.py"],
+	deps = [
+	    "//util:reader",
+		"//data/treebank:treebank_py_pb2",
+        "//proto:evaluation_py_pb2",
+        "//tagset:reader"
+	],
+)
+
 # Tests
 py_test(
 	name = "evaluate_test",

@@ -795,9 +795,9 @@ class BaseParser(ABC):
   def parse_and_save(self, dataset: Dataset):
     """Parses a set of sentences with this parser and saves the gold and predicted outputs to a directory."""
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    gold_treebank_name = f"{self.model_name}_{current_time}_gold.pbtxt"
-    parsed_treebank_name = f"{self.model_name}_{current_time}_parsed.pbtxt"
-    eval_path = "./eval/eval_data"
+    gold_treebank_name = f"{self.model_name}_gold.pbtxt"
+    parsed_treebank_name = f"{self.model_name}_parsed.pbtxt"
+    eval_path = f"./eval/eval_data/{self.language}"
     gold_treebank = treebank_pb2.Treebank()
     parsed_treebank = treebank_pb2.Treebank()
 

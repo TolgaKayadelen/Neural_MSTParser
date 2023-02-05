@@ -140,7 +140,8 @@ class LabelFirstParsingModel(tf.keras.Model):
     self.word_embeddings = layer_utils.EmbeddingLayer(
       pretrained=word_embeddings,
       name="word_embeddings",
-      trainable=False)
+      trainable=True) # TODO: make this false.
+    print("word embeddings are trainable ", self.word_embeddings.trainable)
 
     if self.use_pos:
       print("using fine pos as features")

@@ -35,11 +35,12 @@ class Args:
 
 def main(args):
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-  parser_model_name = f"{args.language}_lfp_predicted_head_gold_labels_only_{current_time}"
+  # parser_model_name = f"{args.language}_lfp_predicted_head_gold_labels_only_{current_time}"
+  parser_model_name = f"{args.language}_lfp_gold_pos_predicted_heads_and_labels_{current_time}"
   logging.info(f"Parser model name is {parser_model_name}")
-  # model_name_check = input("Are you happy with the model name: y/n?")
-  # if model_name_check != "y":
-  #   raise ValueError("Model name is not set properly!")
+  model_name_check = input("Are you happy with the model name: y/n?")
+  if model_name_check != "y":
+    raise ValueError("Model name is not set properly!")
   log_dir = f"debug/label_first_parser/{args.language}/{parser_model_name}"
   logging.info(f"Logging to {log_dir}")
 
@@ -159,12 +160,12 @@ if __name__ == "__main__":
   test_treebanks = ["zh_gsd-ud-test.pbtxt", "fi_tdt-ud-test.pbtxt", "ko_gsd-ud-test.pbtxt",
                     "ru_gsd-ud-test.pbtxt", "de_gsd-ud-test.pbtxt", "en_ewt-ud-test.pbtxt"]
   for language, train_treebank, test_treebank in zip(languages, train_treebanks, test_treebanks):
-    if language in ["zh", "fi", "ko", "ru", "de"]:
+    if language in ["fi", "ko", "ru"]:
       continue
     parse_args = Args(
       language=language,
-      features=["words", "dep_labels"],
-      predict=["heads"],
+      features=["words"], # ["words", "dep_labels"],
+      predict=["heads", "labels"], # ["heads"]
       train_treebank = train_treebank,
       test_treebank= test_treebank,
       embeddings = "conll"
