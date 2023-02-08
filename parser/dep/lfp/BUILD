@@ -19,6 +19,15 @@ py_binary(
 )
 
 py_binary(
+  name = "label_first_parser_all_langs_main_v2",
+  srcs = ["label_first_parser_all_langs_main_v2.py"],
+  deps = [
+    "//parser/utils:load_models",
+    ":label_first_parser_v2",
+  ],
+)
+
+py_binary(
   name = "bert_label_first_parser_main",
   srcs = ["bert_label_first_parser_main.py"],
   deps = [
@@ -33,6 +42,15 @@ py_library(
   srcs = ["label_first_parser.py"],
   deps = [
     "//parser:base_parser",
+    "//parser:nn_parser_lib",
+  ],
+)
+
+py_library(
+  name = "label_first_parser_v2",
+  srcs = ["label_first_parser_v2.py"],
+  deps = [
+    "//parser:base_parser_v2",
     "//parser:nn_parser_lib",
   ],
 )

@@ -1,6 +1,6 @@
 
 import tensorflow as tf
-from parser import base_parser
+from parser import base_parser_v2
 from parser.utils import architectures, layer_utils
 from proto import metrics_pb2
 from input import embeddor
@@ -14,7 +14,7 @@ from typing import List
 Embeddings = embeddor.Embeddings
 
 
-class LabelFirstParser(base_parser.BaseParser):
+class LabelFirstParser(base_parser_v2.BaseParser):
   """A label first parser predicts labels before predicting heads."""
 
   @property
@@ -24,7 +24,8 @@ class LabelFirstParser(base_parser.BaseParser):
   def _training_metrics(self):
     return {
       "heads": metrics.SparseCategoricalAccuracy(),
-      "labels": metrics.SparseCategoricalAccuracy()
+      "labels": metrics.SparseCategoricalAccuracy(),
+      "pos": metrics.SparseCategoricalAccuracy(),
     }
 
   @property
@@ -86,6 +87,8 @@ class LabelFirstParser(base_parser.BaseParser):
     label_vocab_size = len(reader.LabelReader("dep_labels", self.language).labels.keys())
     # print("labels ", label_vocab_size)
     # input()
+    print("pos vocab size ", self.pos_embedding_vocab_size)
+    # input()
     model = LabelFirstParsingModel(
       n_dep_labels=self._n_output_classes,
       word_embeddings=self.word_embeddings,
@@ -141,6 +144,7 @@ class LabelFirstParsingModel(tf.keras.Model):
       pretrained=word_embeddings,
       name="word_embeddings",
       trainable=True)
+    print("trainable word embeddings ", self.word_embeddings.trainable)
 
     if self.use_pos:
       print("using fine pos as features")
@@ -172,6 +176,10 @@ class LabelFirstParsingModel(tf.keras.Model):
                                                            name="label_embeddings",
                                                            trainable=False)
 
+    if "pos" in self.predict:
+      logging.info("Predicting POS tags")
+      self.pos_labels = layers.Dense(units=pos_embedding_vocab_size, name="pos_tags")
+      # input()
 
 
     self.head_perceptron = layer_utils.Perceptron(n_units=256,
@@ -241,15 +249,21 @@ class LabelFirstParsingModel(tf.keras.Model):
     # sentence_repr = self.attention(sentence_repr)
     if "labels" in self.predict:
       dep_labels = self.dep_labels(sentence_repr)
-      h_arc_head = self.head_perceptron(dep_labels)
-      h_arc_dep = self.dep_perceptron(dep_labels)
-      edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
-      return {"edges": edge_scores,  "labels": dep_labels}
-    else:
-      h_arc_head = self.head_perceptron(sentence_repr)
-      h_arc_dep = self.dep_perceptron(sentence_repr)
-      edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
-      return {"edges": edge_scores,  "labels": self._null_label}
+      # print("dep labels ", dep_labels)
+      # input()
+    if "pos" in self.predict:
+      pos_labels = self.pos_labels(sentence_repr)
+      # print("pos labels ", pos_labels)
+      # input()
+    label_concat = self.concatenate([dep_labels, pos_labels])
+    # print("label concat ", label_concat)
+    # input()
+
+    h_arc_head = self.head_perceptron(label_concat)
+    h_arc_dep = self.dep_perceptron(label_concat)
+    edge_scores = self.edge_scorer(h_arc_head, h_arc_dep)
+    return {"edges": edge_scores,  "labels": dep_labels, "pos": pos_labels}
+
 
 
 class LSTMBlock(layers.Layer):

@@ -38,6 +38,8 @@ def set_up_metrics(*args) -> metrics_pb2.Metrics:
   metrics = metrics_pb2.Metrics()
   for metric in args:
      metrics.metric[metric].tracked = True
+  print("metrics ", metrics)
+  # input()
   return metrics
 
 def convert_to_one_hot(indices, n_labels):

@@ -11,7 +11,7 @@ import datetime
 
 
 from parser.utils import load_models, pos_tag_to_id
-from parser.dep.lfp.label_first_parser import LabelFirstParser
+from parser.dep.lfp.label_first_parser_v2 import LabelFirstParser
 from util import writer, reader
 
 
@@ -36,7 +36,7 @@ class Args:
 def main(args):
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
   # parser_model_name = f"{args.language}_lfp_predicted_head_gold_labels_only_{current_time}"
-  parser_model_name = f"{args.language}_lfp_joint_nobert_predicted_heads_and_labels_{current_time}"
+  parser_model_name = f"{args.language}_lfp_nobert_predicted_pos_heads_labels_{current_time}"
   logging.info(f"Parser model name is {parser_model_name}")
   # model_name_check = input("Are you happy with the model name: y/n?")
   # if model_name_check != "y":
@@ -49,7 +49,7 @@ def main(args):
   train_treebank_name = args.train_treebank
   test_treebank_name = args.test_treebank
 
-  if "pos" in args.features:
+  if "pos" in args.predict:
     if args.language != "tr":
       logging.info(f"Generating pos label to id dictionary for {args.language}..")
       pos_to_id = pos_tag_to_id.postags[args.language]
@@ -65,13 +65,7 @@ def main(args):
 
   # loading pretrained word embeddings
   logging.info(f"Loading word embeddings for {args.language}")
-  if args.language == "tr":
-    if args.embeddings == "conll":
-      word_embeddings = load_models.load_i18n_embeddings(language="tr")
-    else:
-      word_embeddings = load_models.load_word_embeddings()
-  else:
-    word_embeddings = load_models.load_i18n_embeddings(language=args.language)
+  word_embeddings = load_models.load_i18n_embeddings(language=args.language)
 
   # initialize preprocessor
   prep = load_models.load_preprocessor(word_embedding_indexes=word_embeddings.token_to_index,
@@ -94,40 +88,13 @@ def main(args):
   parser = LabelFirstParser(word_embeddings=word_embeddings,
                             language=args.language,
                             n_output_classes=label_feature.n_values,
-                            # predict=["heads",
-                            #         # "labels"
-                            #         ],
-                            # features=["words",
-                            #          # "pos",
-                            #          "morph",
-                            #          # "category",
-                            #          # "heads",
-                            #          "dep_labels"
-                            #          ],
                             predict=args.predict,
                             features=args.features,
                             log_dir=log_dir,
-                            test_every=10,
+                            test_every=3,
                             model_name=parser_model_name,
                             pos_embedding_vocab_size=pos_embedding_vocab_size,
                             one_hot_labels=False)
-
-  """ Uncomment if you want to load pretrained weights
-   labeler, label_feature = load_models.load_labeler("dependency_labeler", prep)
-  # print(parser.model.pos_embeddings.weights)
-  # print(labeler.model.pos_embeddings.weights)
-  parser.model.pos_embeddings.set_weights(labeler.model.pos_embeddings.get_weights())
-  # print("parser pos embeddings after transfer ")
-  # print(parser.model.pos_embeddings.weights)
-
-  for a, b in zip(parser.model.pos_embeddings.weights, labeler.model.pos_embeddings.weights):
-    np.testing.assert_allclose(a.numpy(), b.numpy())
-
-  parser.model.pos_embeddings.trainable = False
-  parser.model.word_embeddings.trainable = False
-  print("pos emb. trainable ", parser.model.pos_embeddings.trainable)
-  print("word emb. trainble ", parser.model.word_embeddings.trainable)
-  """
 
   # load tf.datasets
   logging.info("Loading datasets")
@@ -139,10 +106,10 @@ def main(args):
                                                         language=args.language)
   # for batch in train_dataset:
   #   print(batch)
-  # input()
+  #  input()
 
   # train the parser
-  metrics = parser.train(dataset=train_dataset, epochs=120, test_data=test_dataset)
+  metrics = parser.train(dataset=train_dataset, epochs=100, test_data=test_dataset)
   print(metrics)
 
   # write metrics
@@ -160,12 +127,12 @@ if __name__ == "__main__":
   test_treebanks = ["zh_gsd-ud-test.pbtxt", "fi_tdt-ud-test.pbtxt", "ko_gsd-ud-test.pbtxt",
                     "ru_gsd-ud-test.pbtxt", "de_gsd-ud-test.pbtxt", "en_ewt-ud-test.pbtxt"]
   for language, train_treebank, test_treebank in zip(languages, train_treebanks, test_treebanks):
-    if language in ["zh", "fi", "de", "en"]:
+    if language in ["ko", "fi", "en", "de"]:
       continue
     parse_args = Args(
       language=language,
-      features=["words"], # ["words", "dep_labels"],
-      predict=["heads", "labels"], # ["heads"]
+      features=["words", "pos"], # ["words", "dep_labels"],
+      predict=["heads", "labels", "pos"], # ["heads"]
       train_treebank = train_treebank,
       test_treebank= test_treebank,
       embeddings = "conll"
