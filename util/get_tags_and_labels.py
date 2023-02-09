@@ -22,6 +22,7 @@ def tags_to_ids(data, tagset=None, dict=False, print_dict=False):
     coarse_tags = defaultdict(int)
     fine_tags = defaultdict(int)
     labels = defaultdict(int)
+    srl = defaultdict(int)
     basename = os.path.basename(data)
     if basename.endswith(".pbtxt"):
         treebank = reader.ReadTreebankTextProto(data)
@@ -34,42 +35,64 @@ def tags_to_ids(data, tagset=None, dict=False, print_dict=False):
     for sentence in sentence_list:
         tokens = sentence.token
         for token in tokens:
-            coarse_tags[token.category] += 1
-            fine_tags[token.pos] += 1
-            labels[token.label] += 1
+            if "coarse_tags" in tagset:
+                coarse_tags[token.category] += 1
+            if  "fine_tags" in tagset:
+                fine_tags[token.pos] += 1
+            if "labels" in tagset:
+                labels[token.label] += 1
+            if "srl" in tagset:
+                for srl_tag in token.srl:
+                    srl[srl_tag] += 1
     if dict:
-        coarse, fine, labels = coarse_tags.keys(), fine_tags.keys(), labels.keys()
+        coarse, fine, labels, srl = coarse_tags.keys(), fine_tags.keys(), labels.keys(), srl.keys()
         coarse_tags = {key:index for index,key in enumerate(coarse)}
         fine_tags = {key:index for index,key in enumerate(fine)}
         labels = {key:index for index,key in enumerate(labels)}
+        srl = {key:index for index, key in enumerate(srl)}
+        print(srl)
+        input()
         if print_dict:
-            print("COARSE TAGS")
-            for k, v in coarse_tags.items():
-                print(f"{k} = {v};")
-            print("\n\n")
-            print("FINE TAGS")
-            keys = list(fine_tags.keys())
-            keys.sort()
-            index = 0
-            for k in keys:
-                print(f"{k} = {index};")
-                index += 1
-            print("\n\n")
-            print("LABELS")
-            keys = list(labels.keys())
-            keys.sort()
-            index=0
-            for k in keys:
-                print(f"{k} = {index};")
-                index+=1
-        if tagset == "pos":
+            if "coarse_tags" in tagset:
+                print("COARSE TAGS")
+                for k, v in coarse_tags.items():
+                    print(f"{k} = {v};")
+                print("\n\n")
+            if "fine_tags" in tagset:
+                print("FINE TAGS")
+                keys = list(fine_tags.keys())
+                keys.sort()
+                index = 0
+                for k in keys:
+                    print(f"{k} = {index};")
+                    index += 1
+                print("\n\n")
+            if "labels" in tagset:
+                print("LABELS")
+                keys = list(labels.keys())
+                keys.sort()
+                index=0
+                for k in keys:
+                    print(f"{k} = {index};")
+                    index+=1
+            if  "srl" in tagset:
+                print("SRL")
+                keys = list(srl.keys())
+                keys.sort()
+                index=0
+                for k in keys:
+                    print(f"{k} = {index};")
+                    index+=1
+        if "fine_tags" in tagset:
             return fine_tags
-        elif tagset == "coarse":
+        elif "coarse_tags" in tagset:
             return coarse
-        elif tagset == "dep_labels":
+        elif "labels" in tagset:
             return labels
-        elif tagset == "all":
-            return fine_tags, coarse, labels
+        elif "srl" in tagset:
+            return srl
+        elif "all" in tagset:
+            return fine_tags, coarse, labels, srl
         else:
             sys.exit("No tagset requested!")
     else:
@@ -89,6 +112,7 @@ if __name__ == "__main__":
     parser.add_argument("--data",
                         type=str,
                         help="data to read",
-                        default="./data/UDv29/train/tr/tr_boun-ud-train.pbtxt")
+                        default="./data/propbank/ud/srl/dev_multisent.pbtxt")
     args = parser.parse_args()
-    fine_tags, coarse, labels = tags_to_ids(args.data, tagset="all", dict=True)
+    # fine_tags, coarse, labels = tags_to_ids(args.data, tagset="all", dict=True)
+    srl = tags_to_ids(args.data, tagset=["srl"], dict=True, print_dict=True)

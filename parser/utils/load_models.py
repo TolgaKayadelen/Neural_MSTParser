@@ -244,9 +244,9 @@ def load_i18n_embeddings(language="zh"):
     print(word_embeddings.sanity_check)
     assert (word_embeddings.sanity_check != embeddor.SanityCheck.FAIL)
     assert (word_embeddings.vocab[0] == "-pad-" and word_embeddings.vocab[1] == "-oov-")
-    pickle_save_file = f"./input/{language}_conll_token_to_index_dict.pkl"
-    with open(pickle_save_file, 'wb') as handle:
-      pickle.dump(conll_token_to_index_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    # pickle_save_file = f"./input/{language}_conll_token_to_index_dict.pkl"
+    # with open(pickle_save_file, 'wb') as handle:
+    #   pickle.dump(conll_token_to_index_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
     return word_embeddings
 
 

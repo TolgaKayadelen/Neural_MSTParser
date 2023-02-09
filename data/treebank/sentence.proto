@@ -51,8 +51,9 @@ message Token {
 	optional Head selected_head = 7;
 	optional string label = 8;
 	optional int32 index = 9;
-  optional string srl = 10;
+  repeated string srl = 10;
 	optional int32 predicative = 11;
+	optional string srl_merged = 12;
 	
 	// Morphology is represented as a list of name:value pairs.
 	message Morphology {

@@ -17,6 +17,7 @@ from typing import List, Dict, Generator, Union
 from util.nn import nn_utils
 from util import reader
 from util import converter
+from parser.utils import srl_to_id
 
 import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
@@ -111,6 +112,7 @@ class Preprocessor:
     # Padding value for the heads.
     self.head_padding_value = head_padding_value
     self.embedding_type=embedding_type
+    self.srl_indexes = srl_to_id.srl
 
   def prepare_sentence_protos(self, path: str):
     """Returns a list of sentence_pb2 formatted protocol buffer objects.
@@ -158,6 +160,10 @@ class Preprocessor:
       elif feat == "morph":
         sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.float32)
       elif feat in ["words", "pos", "category"]:
+        sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.int64)
+      elif feat in ["srl"]:
+        sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.float32)
+      elif feat in ["predicates"]:
         sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.int64)
       else:
         raise ValueError(f"{feat} is not a valid feature.")
@@ -243,7 +249,7 @@ class Preprocessor:
     if "dep_labels" in feature_names:
       mappings["dep_labels"] = LabelReader.get_labels("dep_labels", self.language).labels
     if "srl" in feature_names:
-      raise RuntimeError("Semantic role features are not supported yet.")
+      mappings["srl"] = self.srl_indexes
     # print("mappings ", mappings)
     # input("press to cont.")
     return mappings
@@ -264,6 +270,9 @@ class Preprocessor:
         for value in feature.values:
           feature_list.feature.add().float_list.value.extend(value)
           # feature_list.feature.add().int64_list.value.extend(value)
+      elif feature.name == "srl":
+        for value in feature.values:
+          feature_list.feature.add().float_list.value.extend(value)
       else:
         for value in feature.values:
           feature_list.feature.add().int64_list.value.append(value)
@@ -324,6 +333,20 @@ class Preprocessor:
           np.put(morph_vector, morph_indices, [1])
           morph_features.append(morph_vector)
         self.sequence_features_dict["morph"].values = morph_features
+      if "srl" in self.features:
+        srl_features = []
+        for token in sentence.token:
+          srl_vector = np.zeros(len(feature_mappings["srl"]), dtype=float)
+          tags = [srl for srl in token.srl]
+          srl_indices = self.numericalize(
+            values=tags, mapping=feature_mappings["srl"], feature_name="srl"
+          )
+          np.put(srl_vector, srl_indices, [1])
+          srl_features.append(srl_vector)
+        self.sequence_features_dict["srl"].values = srl_features
+      if "predicates" in self.features:
+        predicates = [token.predicative for token in sentence.token]
+        self.sequence_features_dict["predicates"].values = predicates
       # TODO: we cannot make tfexamples with one hot label features.
       if "dep_labels" in self.features:
         sentence.token[0].label = "TOP" # workaround key errors
@@ -337,8 +360,8 @@ class Preprocessor:
           token.selected_head.address for token in sentence.token]
 
       example = self.make_tf_example(features=self.sequence_features_dict.values())
-      # print("example ", example)
-      # input("press to cont.")
+      print("example ", example)
+      input("press to cont.")
       tf_examples.append(example)
     logging.info(f"Converted {counter} sentences to tf examples.")
     return tf_examples
@@ -440,6 +463,9 @@ class Preprocessor:
       if feature.name == "morph":
         _output_shapes[feature.name]=tf.TensorShape([None, 56]) # (, 56)
         _padded_shapes[feature.name]=tf.TensorShape([None, 56])
+      if feature.name == "srl":
+        _output_shapes[feature.name] = tf.TensorShape([None, 34])
+        _padded_shapes[feature.name] = tf.TensorShape([None, 34])
       elif feature.name =="dep_labels" and feature.one_hot is not None:
         _output_shapes[feature.name] = tf.TensorShape([None, 43])
         _padded_shapes[feature.name] = tf.TensorShape([None, 43])
@@ -502,6 +528,21 @@ class Preprocessor:
             np.put(morph_vector, morph_indices, [1])
             morph_features.append(morph_vector)
           yield_dict[feature_name] = morph_features
+        if feature_name == "srl":
+          srl_features = []
+          for token in sentence.token:
+            srl_vector = np.zeros(len(feature_mappings["srl"]), dtype=float)
+            tags = [srl for srl in token.srl]
+            srl_indices = self.numericalize(
+              values=tags, mapping=feature_mappings["srl"],
+              feature_name=feature_name
+            )
+            np.put(srl_vector, srl_indices, [1])
+            srl_features.append(srl_vector)
+          yield_dict[feature_name] = srl_features
+        if feature_name == "predicates":
+          predicates = [token.predicative for token in sentence.token]
+          yield_dict[feature_name] = predicates
         if feature_name == "dep_labels":
           label_feature = self.sequence_features_dict[feature_name]
           sentence.token[0].label = "TOP" # workaround key errors
@@ -523,29 +564,32 @@ class Preprocessor:
 
 def make_tfrecords(path: str, sample: int = 0):
   """Converts a set of tf.Examples to tf_records"""
-  embeddings = nn_utils.load_embeddings()
-  word_embeddings = Embeddings(name="word2vec", matrix=embeddings)
-  input_path = Path(path)
-  # TODO fix the output path to be non one hot.
-  # output_path = str(input_path.parent) + "/" + str(input_path.stem) + "_one_hot_labels"+ ".tfrecords"
-  output_path = str(input_path.parent) + "/" + str(input_path.stem) + ".tfrecords"
-  prep = Preprocessor(word_embeddings=word_embeddings,
-                      features=["words", "tokens", "sent_id", "pos", "category", "morph", "dep_labels", "heads"],
-                      # one_hot_features=["dep_labels"],  # TODO remove this one later.
+  # word_embeddings = load_models.load_i18n_embeddings()
+  # output_path = str(input_path.parent) + "/" + str(input_path.stem) + ".tfrecords"
+  prep = Preprocessor(word_embedding_indexes=None, #word_embeddings.token_to_index,
+                      # features=["words", "tokens", "sent_id", "pos", "category", "morph", "dep_labels", "heads"],
+                      features=["srl", "predicates"],
                       labels=["dep_labels", "heads"])
   sentences = prep.prepare_sentence_protos(path=path)
-  if sample > 0:
-    sentences = random.sample(sentences, sample)
-    output_path = str(input_path.parent) + "/" + str(input_path.stem) + "sample_" + str(sample) + ".tfrecords"
+  # if sample > 0:
+  #   sentences = random.sample(sentences, sample)
+  #   output_path = str(input_path.parent) + "/" + str(input_path.stem) + "sample_" + str(sample) + ".tfrecords"
   tf_examples = prep.make_tf_examples(sentences=sentences)
-  prep.write_tf_records(examples=tf_examples, path=output_path)
-  logging.info(f"tf_records written to {output_path}")
+  # prep.write_tf_records(examples=tf_examples, path=output_path)
+  # logging.info(f"tf_records written to {output_path}")
 
 
 if __name__ == "__main__":
-
-  data = "data/UDv29/train/tr/tr_combined-ud-train.pbtxt"
-  make_tfrecords(data)
+  prep = Preprocessor(word_embedding_indexes=None, #word_embeddings.token_to_index,
+                      # features=["words", "tokens", "sent_id", "pos", "category", "morph", "dep_labels", "heads"],
+                      features=["srl", "predicates"],
+                      labels=["dep_labels", "heads"])
+  data = "data/propbank/ud/srl/dev_multisent.pbtxt"
+  sentences = prep.prepare_sentence_protos(path=data)
+  dataset = prep.make_dataset_from_generator(sentences=sentences, batch_size=1)
+  for batch in dataset:
+    print(batch)
+    input()
 
   ''' Make a dataset with example_generator
   # Load word embeddings

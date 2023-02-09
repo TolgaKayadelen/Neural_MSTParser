@@ -5,7 +5,7 @@ import gensim
 import matplotlib.pyplot as plt
 import numpy as np
 import random
-from util import reader
+from util import reader, writer
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
 from proto import metrics_pb2
@@ -234,9 +234,83 @@ def compute_embedding_occurence(language="fi",
   print("ratio found words ", n_found / n_words)
   print("ratio unique words that are found ", n_found_unique / n_unique)
 
+# for splitting propbank sentenes to predicate-sequence datapoints.
+def generate_multisentence_data(treebank_path):
+  treebank = reader.ReadTreebankTextProto(treebank_path)
+  new_treebank = treebank_pb2.Treebank()
+  new_sentences = []
+  sentences = treebank.sentence
+  for sentence in sentences:
+    counter = 0
+    for arg_str in sentence.argument_structure:
+      counter += 1
+      new_sentence = sentence_pb2.Sentence()
+      new_sentence.CopyFrom(sentence)
+      new_sentence.sent_id = f"{sentence.sent_id}-{counter}"
+      for token in new_sentence.token:
+        token.ClearField("srl")
+        # token.srl = "-0-"
+        token.predicative = 0
+      predicate_token = new_sentence.token[arg_str.predicate_index]
+      predicate_token.predicative = 1
+      for argument in arg_str.argument:
+        # print("argument ", argument)
+        # print(argument.token_index)
+        # print(type(argument.token_index))
+        # input()
+        argument_token = new_sentence.token[argument.token_index[0]]
+        srl = argument_token.srl.append(argument.srl)
+        # argument_token.srl.add(argument.srl)
+      for token in new_sentence.token:
+        if len(token.srl) > 0:
+          continue
+        token.srl.append("-0-")
+      new_sentences.append(new_sentence)
+  for sentence in new_sentences:
+    s = new_treebank.sentence.add()
+    s.CopyFrom(sentence)
+  writer.write_proto_as_text(new_treebank, f"{treebank_path}_multisent")
+
+
+def generate_merged_data(treebank_path):
+  treebank = reader.ReadTreebankTextProto(treebank_path)
+  new_treebank = treebank_pb2.Treebank()
+  new_sentences = []
+  sentences = treebank.sentence
+  for sentence in sentences:
+    new_sentence = sentence_pb2.Sentence()
+    new_sentence.CopyFrom(sentence)
+    for token in new_sentence.token:
+      token.ClearField("srl")
+      # token.srl = "-0-"
+      token.predicative = 0
+    for arg_str in sentence.argument_structure:
+      predicate_token = new_sentence.token[arg_str.predicate_index]
+      predicate_token.predicative = 1
+      for argument in arg_str.argument:
+        # print("argument ", argument)
+        # print(argument.token_index)
+        # print(type(argument.token_index))
+        # input()
+        argument_token = new_sentence.token[argument.token_index[0]]
+        srl = argument_token.srl.append(argument.srl)
+        # argument_token.srl.add(argument.srl)
+    for token in new_sentence.token:
+      if len(token.srl) > 0:
+        continue
+      token.srl.append("-0-")
+    new_sentences.append(new_sentence)
+    print(new_sentence)
+    for sentence in new_sentences:
+      s = new_treebank.sentence.add()
+      s.CopyFrom(sentence)
+    writer.write_proto_as_text(new_treebank, f"{treebank_path}_test")
+
+
 if __name__ == "__main__":
   # generate_multilingual_embeddings("en")
-  compute_embedding_occurence()
+  treebank_path = "./data/propbank/ud/srl/merge.pbtxt"
+  generate_merged_data(treebank_path)
   #trb = reader.ReadTreebankTextProto(
   #  "data/testdata/propbank/propbank_ud_testdata_proto.pbtxt"
   #)

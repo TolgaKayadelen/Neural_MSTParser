@@ -13,6 +13,7 @@ py_binary(
     "//util:reader",
     "//util:converter",
     "//input:embeddor",
+    "//parser/utils:srl_to_id"
   ],
 )
 

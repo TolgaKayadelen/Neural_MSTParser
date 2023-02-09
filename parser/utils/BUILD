@@ -50,3 +50,8 @@ py_library(
   name = "pos_tag_to_id",
   srcs = ["pos_tag_to_id.py"],
 )
+
+py_library(
+  name = "srl_to_id",
+  srcs = ["srl_to_id.py"],
+)
