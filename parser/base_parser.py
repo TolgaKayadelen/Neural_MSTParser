@@ -2,19 +2,15 @@ import collections
 import logging
 import datetime
 import os
-import sys
 import time
 
 from input import embeddor
 import tensorflow as tf
-# import tensorflow_addons as tfa
-import matplotlib as mpl
 import numpy as np
 
 from abc import ABC, abstractmethod
 from data.treebank import sentence_pb2
 from data.treebank import treebank_pb2
-from parser.utils import architectures
 from proto import metrics_pb2
 from tagset.reader import LabelReader
 from tensorflow.keras import layers, metrics, losses, optimizers
@@ -27,6 +23,7 @@ from util import writer
 from util import reader as reader_util
 from util.nn import nn_utils
 from eval import evaluate_v2
+from parser.utils import srl_to_id
 
 # Set up basic configurations
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
@@ -137,6 +134,7 @@ class BaseParser(ABC):
     """
     self._use_pos = "pos" in self.features
     self._use_morph = "morph" in self.features
+    self._use_srl = "srl" in self.features
     self._use_category = "category" in self.features
     self._use_dep_labels = False
     if "dep_labels" in self.features:
@@ -454,7 +452,9 @@ class BaseParser(ABC):
 
   # @tf.function
   def train_step(self, *,
-                 words: tf.Tensor, pos: tf.Tensor,
+                 words: tf.Tensor,
+                 pos: tf.Tensor,
+                 srl: tf.Tensor,
                  category: tf.Tensor,
                  morph: tf.Tensor,
                  dep_labels: tf.Tensor, heads: tf.Tensor) -> Tuple[tf.Tensor, ...]:
@@ -483,7 +483,9 @@ class BaseParser(ABC):
     with tf.GradientTape() as tape:
 
       # Head scores = (batch_size, seq_len, seq_len), Label scores = (batch_size, seq_len, n_labels)
-      scores = self.model({"words": words, "pos": pos,
+      scores = self.model({"words": words,
+                           "pos": pos,
+                           "srl": srl,
                            "category": category,
                            "morph": morph,
                            "labels": dep_labels}, training=True)
@@ -606,12 +608,14 @@ class BaseParser(ABC):
         pos = batch["pos"] if "pos" in batch.keys() else None
         category = batch["category"] if "category" in batch.keys() else None
         morph = batch["morph"] if "morph" in batch.keys() else None
+        srl = batch["srl"] if "srl" in batch.keys() else None
 
         # Get loss values, predictions, and correct heads/labels for this training step.
         predictions, batch_loss, correct, pad_mask = self.train_step(words=words,
                                                                      pos=pos,
                                                                      category=category,
                                                                      morph=morph,
+                                                                     srl=srl,
                                                                      dep_labels=dep_labels,
                                                                      heads=heads)
 
@@ -763,7 +767,10 @@ class BaseParser(ABC):
     pos = example["pos"] if "pos" in example.keys() else None
     category = example["category"] if "category" in example.keys() else None
     morph = example["morph"] if "morph" in example.keys() else None
-    scores = self.model({"words": words, "pos": pos,
+    srl = example["srl"] if "srl" in example.keys() else None
+    scores = self.model({"words": words,
+                         "pos": pos,
+                         "srl": srl,
                          "category": category,
                          "morph": morph,
                          "labels": dep_labels}, training=False)
@@ -799,7 +806,8 @@ class BaseParser(ABC):
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     gold_treebank_name = f"{self.model_name}_gold.pbtxt"
     parsed_treebank_name = f"{self.model_name}_parsed.pbtxt"
-    eval_path = f"./eval/eval_data/{self.language}"
+    eval_path = f"./eval/eval_data/{self.language}/{self.model_name}"
+    os.mkdir(eval_path)
     gold_treebank = treebank_pb2.Treebank()
     parsed_treebank = treebank_pb2.Treebank()
 
@@ -808,11 +816,13 @@ class BaseParser(ABC):
       parsed_sentence_pb2 = parsed_treebank.sentence.add()
       sent_id, tokens, dep_labels, heads = (example["sent_id"], example["tokens"],
                                             example["dep_labels"], example["heads"])
+      srl = example["srl"]
       # first populate gold treebank with the gold annotations
       index = 0
       # print("gold labels ", dep_labels)
       # input()
-      for token, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
+      # for token, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
+      for token, dep_label, head, srl in zip(tokens[0], dep_labels[0], heads[0], srl[0]):
         # print("token ", token, "dep label ", dep_label , "head ", head)
         # input()
         gold_sentence_pb2.sent_id = sent_id[0][0].numpy()
@@ -821,6 +831,11 @@ class BaseParser(ABC):
           label=self._label_index_to_name(tf.keras.backend.get_value(dep_label)),
           index=index)
         token.selected_head.address=tf.keras.backend.get_value(head)
+        srl_indexes = tf.where(srl).numpy()
+        for srl_index in srl_indexes:
+          id = int(tf.keras.backend.get_value(srl_index))
+          tag = srl_to_id.id[id]
+          token.srl.append(tag)
         index += 1
 
       # next populate parsed data

@@ -16,6 +16,9 @@ py_library(
     "//tagset/dep_labels:dep_label_enum_py_pb2",
     "//tagset/arg_str:semantic_role_enum_py_pb2",
     "//tagset/morphology:morph_tag_enum_py_pb2",
+    "//tagset/fine_pos/imst:imst_fine_tag_enum_py_pb2",
+    "//tagset/dep_labels/imst:imst_dep_label_enum_py_pb2",
+    "//tagset/morphology/imst:imst_morph_tag_enum_py_pb2",
 	],
 )
 

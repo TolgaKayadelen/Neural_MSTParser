@@ -17,6 +17,21 @@ py_binary(
   ],
 )
 
+# Binaries
+py_binary(
+  name = "preprocessor_v2",
+  srcs = ["preprocessor_v2.py"],
+  deps = [
+    "//tagset/morphology:morph_tags",
+    "//tagset:reader",
+    "//util/nn:nn_utils",
+    "//util:reader",
+    "//util:converter",
+    "//input:embeddor",
+    "//parser/utils:srl_to_id"
+  ],
+)
+
 py_binary(
   name = "embeddor",
   srcs = ["embeddor.py"],

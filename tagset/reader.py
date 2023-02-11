@@ -2,6 +2,9 @@ from tagset.fine_pos import fine_tag_enum_pb2 as fine_tags
 from tagset.dep_labels import dep_label_enum_pb2 as dep_labels
 from tagset.coarse_pos import coarse_tag_enum_pb2 as coarse_tags
 
+
+from tagset.dep_labels.imst import imst_dep_label_enum_pb2 as imst_dep_labels
+from tagset.fine_pos.imst import imst_fine_tag_enum_pb2 as imst_fine_tags
 from tagset.dep_labels.en import dep_label_enum_pb2 as dep_labels_en
 from tagset.dep_labels.de import dep_label_enum_pb2 as dep_labels_de
 from tagset.dep_labels.fi import dep_label_enum_pb2 as dep_labels_fi
@@ -10,9 +13,9 @@ from tagset.dep_labels.ru import dep_label_enum_pb2 as dep_labels_ru
 from tagset.dep_labels.ko import dep_label_enum_pb2 as dep_labels_ko
 
 
-from tagset.arg_str import semantic_role_enum_pb2 as srl
+# from tagset.arg_str import semantic_role_enum_pb2 as srl
 from tagset.morphology import morph_tag_enum_pb2 as morph_tags
-
+from tagset.morphology.imst import imst_morph_tag_enum_pb2 as imst_morph_tags
 
 _LANGUAGE_TO_TAG = {
   "en": {"dep_labels": dep_labels_en},
@@ -21,11 +24,16 @@ _LANGUAGE_TO_TAG = {
   "zh": {"dep_labels": dep_labels_zh},
   "ko": {"dep_labels": dep_labels_ko},
   "ru": {"dep_labels": dep_labels_ru},
-  "tr": {"pos": fine_tags,
-         "category": coarse_tags,
-         "dep_labels": dep_labels,
-         "srl": srl,
-         "morph": morph_tags}
+  #"tr": {"pos": fine_tags,
+  #       "category": coarse_tags,
+  #      "dep_labels": dep_labels,
+        # "srl": srl,
+  #      "morph": morph_tags}
+   "tr": {"pos": imst_fine_tags, # TODO
+         # "category": coarse_tags,
+         "dep_labels": imst_dep_labels,
+         # "srl": srl,
+         "morph": imst_morph_tags}
 }
 
 _TAGS_TO_REPLACE = {'SEMICOLON': ":", 'COMMA': ",", 'DOT': ".", 'LRB': "-LRB-", 'RRB': "-RRB-",
@@ -74,7 +82,8 @@ class LabelReader:
     elif self._tagset == "srl":
       tags = srl
     elif self._tagset == "morph":
-      tags = morph_tags
+      tags = imst_morph_tags # TODO
+      #tags = morph_tags
     else:
       raise ValueError("Invalid tagset requested.")
       
@@ -89,7 +98,8 @@ class LabelReader:
       labels_list.extend(["O", "V"])
       return {v: k for k, v in enumerate(labels_list)}
 
-    if tags == srl:
+    # if tags == srl:
+    if False:
       label_dict = _get_bio_tags_from_srl()
     else:
       label_dict = {}

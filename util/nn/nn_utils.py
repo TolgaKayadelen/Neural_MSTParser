@@ -277,6 +277,7 @@ def generate_merged_data(treebank_path):
   new_treebank = treebank_pb2.Treebank()
   new_sentences = []
   sentences = treebank.sentence
+  print("total sentence ", len(sentences))
   for sentence in sentences:
     new_sentence = sentence_pb2.Sentence()
     new_sentence.CopyFrom(sentence)
@@ -300,16 +301,18 @@ def generate_merged_data(treebank_path):
         continue
       token.srl.append("-0-")
     new_sentences.append(new_sentence)
-    print(new_sentence)
-    for sentence in new_sentences:
-      s = new_treebank.sentence.add()
-      s.CopyFrom(sentence)
-    writer.write_proto_as_text(new_treebank, f"{treebank_path}_test")
+    # print(new_sentence)
+  for sentence in new_sentences:
+    s = new_treebank.sentence.add()
+    s.CopyFrom(sentence)
+  writer.write_proto_as_text(new_treebank, f"{treebank_path}_merged")
+
+
 
 
 if __name__ == "__main__":
   # generate_multilingual_embeddings("en")
-  treebank_path = "./data/propbank/ud/srl/merge.pbtxt"
+  treebank_path = "./data/propbank/ud/srl/test.pbtxt"
   generate_merged_data(treebank_path)
   #trb = reader.ReadTreebankTextProto(
   #  "data/testdata/propbank/propbank_ud_testdata_proto.pbtxt"

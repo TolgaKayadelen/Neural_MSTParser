@@ -19,6 +19,7 @@ py_library(
     "//parser/utils:layer_utils",
     "//parser/utils:architectures",
     "//parser/utils:pos_tag_to_id",
+    '//parser/utils:srl_to_id',
     "//input:preprocessor",
     "//util/nn:nn_utils",
     "//util:writer",

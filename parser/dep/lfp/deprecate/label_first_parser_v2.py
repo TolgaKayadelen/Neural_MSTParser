@@ -59,6 +59,7 @@ class LabelFirstParser(base_parser_v2.BaseParser):
     pos_inputs = tf.keras.Input(shape=(None,), name="pos")
     morph_inputs = tf.keras.Input(shape=(None, 56), name="morph")
     category_inputs = tf.keras.Input(shape=(None, ), name="category")
+    srl_inputs = tf.keras.Input(shape=(None, 34), name="srl")
     if not self.one_hot_labels:
       label_inputs = tf.keras.Input(shape=(None, ), name="labels")
     else:
@@ -72,6 +73,8 @@ class LabelFirstParser(base_parser_v2.BaseParser):
       input_dict["category"] = category_inputs
     if self._use_dep_labels:
       input_dict["labels"] = label_inputs
+    if self._use_srl:
+      input_dict["srl"] = srl_inputs
     return input_dict
 
   def _n_words_in_batch(self, words, pad_mask=None):
@@ -81,6 +84,7 @@ class LabelFirstParser(base_parser_v2.BaseParser):
   def _parsing_model(self, model_name):
     super()._parsing_model(model_name)
     print(f"""Using features pos: {self._use_pos},
+              "srl": {self._use_srl},
               morph: {self._use_morph},
               dep_labels: {self._use_dep_labels},
               category: {self._use_category}""")
@@ -96,6 +100,7 @@ class LabelFirstParser(base_parser_v2.BaseParser):
       name=model_name,
       use_pos=self._use_pos,
       use_morph=self._use_morph,
+      use_srl = self._use_srl,
       use_dep_labels=self._use_dep_labels,
       use_category = self._use_category,
       pos_embedding_vocab_size=self.pos_embedding_vocab_size,
@@ -115,6 +120,7 @@ class LabelFirstParsingModel(tf.keras.Model):
                predict: List[str],
                use_pos:bool = True,
                use_morph:bool=True,
+               use_srl:bool=True,
                use_dep_labels:bool=False,
                use_category:bool=False,
                pos_embedding_vocab_size=37, # for tr
@@ -126,6 +132,7 @@ class LabelFirstParsingModel(tf.keras.Model):
     self.predict = predict
     self.use_pos = use_pos
     self.use_morph = use_morph
+    self.use_srl = use_srl
     self.use_dep_labels = use_dep_labels
     self.use_category = use_category
     self.one_hot_labels = one_hot_labels
@@ -224,6 +231,9 @@ class LabelFirstParsingModel(tf.keras.Model):
     if self.use_morph:
       morph_inputs = inputs["morph"]
       concat_list.append(morph_inputs)
+    if self.use_srl:
+      srl_inputs = inputs["srl"]
+      concat_list.append(srl_inputs)
     if self.use_dep_labels:
       label_inputs = inputs["labels"]
       # print("label inputs ", label_inputs)

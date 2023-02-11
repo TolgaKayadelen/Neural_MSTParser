@@ -1,6 +1,4 @@
 """The preprocessing module creates tf.data.Dataset objects for the parser."""
-### IMPORTANT: this prep should be used with BOUN datasets.
-
 
 import random
 import numpy as np
@@ -219,7 +217,10 @@ class Preprocessor:
             indices.append(mapping[value])
           else:
             logging.warning(f"Key error for value {value}")
-            indices.append(mapping["-pad-"])
+            if feature_name == "srl":
+              indices.append(mapping["-0-"])
+            else:
+              indices.append(mapping["-pad-"])
       return indices
 
   
@@ -383,9 +384,9 @@ class Preprocessor:
     for feature in self.sequence_features_dict.values():
       if feature.name == "morph":
         _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
-            shape=[56], dtype=feature.dtype)
-        _dataset_shapes[feature.name]=tf.TensorShape([None, 56])
-        _padded_shapes[feature.name]=tf.TensorShape([None, 56])
+            shape=[65], dtype=feature.dtype)
+        _dataset_shapes[feature.name]=tf.TensorShape([None, 71])
+        _padded_shapes[feature.name]=tf.TensorShape([None, 71])
         _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
       elif feature.name in ["tokens", "sent_id"]:
         _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
@@ -402,9 +403,9 @@ class Preprocessor:
         _padding_values[feature.name] = tf.constant(self.head_padding_value, dtype=feature.dtype)
       elif feature.name == ["dep_labels"]  and feature.one_hot is not None:
         _sequence_features[feature.name] = tf.io.FixedLenSequenceFeature(
-          shape=[43], dtype=feature.dtype)
-        _dataset_shapes[feature.name] = tf.TensorShape([None, 43])
-        _padded_shapes[feature.name] = tf.TensorShape([None, 43])
+          shape=[35], dtype=feature.dtype)
+        _dataset_shapes[feature.name] = tf.TensorShape([None, 35])
+        _padded_shapes[feature.name] = tf.TensorShape([None, 35])
         _padding_values[feature.name] = tf.constant(0, dtype=feature.dtype)
       else:
         _sequence_features[feature.name]=tf.io.FixedLenSequenceFeature(
@@ -463,14 +464,14 @@ class Preprocessor:
 
       # Set up the padded output shapes for features.
       if feature.name == "morph":
-        _output_shapes[feature.name]=tf.TensorShape([None, 56]) # (, 56)
-        _padded_shapes[feature.name]=tf.TensorShape([None, 56])
+        _output_shapes[feature.name]=tf.TensorShape([None, 69]) # (, 56)
+        _padded_shapes[feature.name]=tf.TensorShape([None, 69])
       elif feature.name == "srl":
         _output_shapes[feature.name] = tf.TensorShape([None, 34])
         _padded_shapes[feature.name] = tf.TensorShape([None, 34])
       elif feature.name =="dep_labels" and feature.one_hot is not None:
-        _output_shapes[feature.name] = tf.TensorShape([None, 43])
-        _padded_shapes[feature.name] = tf.TensorShape([None, 43])
+        _output_shapes[feature.name] = tf.TensorShape([None, 35])
+        _padded_shapes[feature.name] = tf.TensorShape([None, 35])
       else:
         _output_shapes[feature.name]=[None]
         _padded_shapes[feature.name]=tf.TensorShape([None])
@@ -570,7 +571,7 @@ def make_tfrecords(path: str, sample: int = 0):
   # output_path = str(input_path.parent) + "/" + str(input_path.stem) + ".tfrecords"
   prep = Preprocessor(word_embedding_indexes=None, #word_embeddings.token_to_index,
                       # features=["words", "tokens", "sent_id", "pos", "category", "morph", "dep_labels", "heads"],
-                      features=["morph"],
+                      features=["srl", "predicates"],
                       labels=["dep_labels", "heads"])
   sentences = prep.prepare_sentence_protos(path=path)
   # if sample > 0:
@@ -584,12 +585,11 @@ def make_tfrecords(path: str, sample: int = 0):
 if __name__ == "__main__":
   prep = Preprocessor(word_embedding_indexes=None, #word_embeddings.token_to_index,
                       # features=["words", "tokens", "sent_id", "pos", "category", "morph", "dep_labels", "heads"],
-                      features=["morph"],
+                      features=["morph", "srl", "pos"],
                       labels=["dep_labels", "heads"])
-  data = "./data/UDv29/train/tr/tr_boun-ud-train-random10.pbtxt"
+  data = "data/propbank/ud/srl/dev_multisent_1.pbtxt"
   sentences = prep.prepare_sentence_protos(path=data)
   dataset = prep.make_dataset_from_generator(sentences=sentences, batch_size=1)
-  # make_tfrecords(data)
   for batch in dataset:
     print(batch)
     input()

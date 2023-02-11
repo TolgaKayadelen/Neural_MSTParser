@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package tagset.dep_labels;
+package tagset.dep_labels.imst;
 
 // IMST-UD Dependency Labels.
 enum Tag {

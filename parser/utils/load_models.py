@@ -7,7 +7,7 @@ import pickle
 import numpy as np
 import sys
 from util.nn import nn_utils
-from input import embeddor, preprocessor
+from input import embeddor, preprocessor, preprocessor_v2
 from parser.dep.lfp import label_first_parser
 from parser.utils import layer_utils
 from parser.labeler.bilstm import bilstm_labeler
@@ -25,11 +25,34 @@ def load_preprocessor(*, word_embedding_indexes,
                       head_padding_value=0,
                       one_hot_features=[],
                       embedding_type="word2vec"):
-  allow_list = ["words", "pos", "morph", "category", "dep_labels"]
+  allow_list = ["words", "pos", "morph", "category", "dep_labels", "srl"]
   print("features ", features)
   # input()
-  assert set(features).issubset(allow_list), "Can use words, pos, morph, category, dep_labels as features!"
+  assert set(features).issubset(allow_list), "Can use words, pos, morph, category, dep_labels, srl, as features!"
   prep = preprocessor.Preprocessor(
+    word_embedding_indexes=word_embedding_indexes,
+    pos_indexes=pos_indexes,
+    features=features,
+    labels=["heads"],
+    head_padding_value=head_padding_value,
+    one_hot_features=one_hot_features,
+    language=language,
+    embedding_type=embedding_type
+  )
+  return prep
+
+def load_preprocessor_v2(*, word_embedding_indexes,
+                        language,
+                        features=["words", "pos"], # word, pos, morph
+                        pos_indexes=None,
+                        head_padding_value=0,
+                        one_hot_features=[],
+                        embedding_type="word2vec"):
+  allow_list = ["words", "pos", "morph", "category", "dep_labels", "srl"]
+  print("features ", features)
+  # input()
+  assert set(features).issubset(allow_list), "Can use words, pos, morph, category, dep_labels, srl, as features!"
+  prep = preprocessor_v2.Preprocessor(
     word_embedding_indexes=word_embedding_indexes,
     pos_indexes=pos_indexes,
     features=features,
