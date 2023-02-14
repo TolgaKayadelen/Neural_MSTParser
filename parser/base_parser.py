@@ -625,7 +625,7 @@ class BaseParser(ABC):
           correct_heads=correct["heads"] if "heads" in self._predict else None,
           label_predictions=predictions["labels"] if "labels" in self._predict else None,
           correct_labels=correct["labels"] if "labels" in self._predict else None,
-          top_k_label_predictions=predictions["top_k_labels"] if "labels" in self._predict else None,
+          # top_k_label_predictions=predictions["top_k_labels"] if "labels" in self._predict else None,
           pad_mask=pad_mask
          )
 
@@ -778,12 +778,12 @@ class BaseParser(ABC):
 
   def save_weights(self, suffix: int=0):
     """Saves the model weights to path in tf format."""
-    model_name = self.model.name
+    model_name = self.model_name
     try:
-      path = os.path.join(_MODEL_DIR, self.model.name)
+      path = os.path.join(_MODEL_DIR, self.model_name)
       if suffix > 0:
         path += str(suffix)
-        model_name = self.model.name+str(suffix)
+        model_name = self.model_name+str(suffix)
       os.mkdir(path)
       self.model.save_weights(os.path.join(path, model_name), save_format="tf")
       logging.info(f"Saved model to  {path}")
@@ -816,13 +816,13 @@ class BaseParser(ABC):
       parsed_sentence_pb2 = parsed_treebank.sentence.add()
       sent_id, tokens, dep_labels, heads = (example["sent_id"], example["tokens"],
                                             example["dep_labels"], example["heads"])
-      srl = example["srl"]
+      # srl = example["srl"] # TODO
       # first populate gold treebank with the gold annotations
       index = 0
       # print("gold labels ", dep_labels)
       # input()
-      # for token, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
-      for token, dep_label, head, srl in zip(tokens[0], dep_labels[0], heads[0], srl[0]):
+      # for token, dep_label, head, srl in zip(tokens[0], dep_labels[0], heads[0], srl[0]): #TODO
+      for token, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
         # print("token ", token, "dep label ", dep_label , "head ", head)
         # input()
         gold_sentence_pb2.sent_id = sent_id[0][0].numpy()
@@ -831,11 +831,11 @@ class BaseParser(ABC):
           label=self._label_index_to_name(tf.keras.backend.get_value(dep_label)),
           index=index)
         token.selected_head.address=tf.keras.backend.get_value(head)
-        srl_indexes = tf.where(srl).numpy()
-        for srl_index in srl_indexes:
-          id = int(tf.keras.backend.get_value(srl_index))
-          tag = srl_to_id.id[id]
-          token.srl.append(tag)
+        # srl_indexes = tf.where(srl).numpy() # TODO
+        # for srl_index in srl_indexes: # TODO
+        #  id = int(tf.keras.backend.get_value(srl_index)) /# TODO
+        #  tag = srl_to_id.id[id] # TODO
+        #  token.srl.append(tag) # TODO
         index += 1
 
       # next populate parsed data
@@ -852,6 +852,7 @@ class BaseParser(ABC):
       # print("test labels ", dep_labels)
       # input()
       for token, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
+        # print("token ", token, "dep label ", dep_label , "head ", head)
         parsed_sentence_pb2.sent_id = sent_id[0][0].numpy()
         token = parsed_sentence_pb2.token.add(
           word=tf.keras.backend.get_value(token),

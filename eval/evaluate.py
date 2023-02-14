@@ -97,8 +97,6 @@ class Evaluator:
     self.model_name = model_name
     self.write_dir = write_dir
 
-
-
   def _label_name_to_index(self, label_name):
     return self.label_reader.vtoi(label_name)
 
@@ -494,7 +492,6 @@ class Evaluator:
     if self.write_results:
       if self.model_name:
         output_file_name = self.model_name +"_eval_results.txt"
-
       else:
         current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         output_file_name = f"{current_time}_eval_results"
@@ -505,6 +502,8 @@ class Evaluator:
           f.write(str(results[key]))
           f.write("\n\n")
       logging.info(f"Eval results written to {output_file_name}")
+    else:
+      print(results)
     return results
 
 

@@ -85,7 +85,7 @@ def GetBetweenTokens(sentence, head, child, dummy=0):
         btw_tokens = sentence.token[child.index+1:head.index]
     else:
         btw_tokens = sentence.token[head.index+1+dummy:child.index+dummy]
-    return btw_tokens if btw_tokens else [None]
+    return btw_tokens if btw_tokens else None
 
 
 #type: sentence util

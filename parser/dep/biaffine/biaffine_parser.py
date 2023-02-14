@@ -1,15 +1,23 @@
-
 import os
-import logging
-
+import datetime
+import time
 import tensorflow as tf
 import numpy as np
-
-from parser.nn import base_parser, architectures
+from eval import evaluate_v2
+from parser import base_parser
+from data.treebank import treebank_pb2
+from parser.utils import architectures, layer_utils
+from proto import metrics_pb2
+from input import embeddor
+from util import reader as reader_util
+from util import writer
 from tensorflow.keras import layers, metrics, losses, optimizers
 
-
+import logging
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
+
+from typing import List
+Embeddings = embeddor.Embeddings
 
 class BiaffineParser(base_parser.BaseParser):
   """The Biaffine Parser implementation as presented by Dozat and Manning (2018)"""
@@ -94,7 +102,11 @@ class BiaffineParser(base_parser.BaseParser):
     return model
 
   def train_step(self, *,
-                 words: tf.Tensor, pos: tf.Tensor, morph: tf.Tensor,
+                 words: tf.Tensor,
+                 pos: tf.Tensor,
+                 srl: tf.Tensor,
+                 category: tf.Tensor,
+                 morph: tf.Tensor,
                  dep_labels: tf.Tensor, heads: tf.Tensor):
     """Runs one training step.
     Args:
@@ -240,3 +252,76 @@ class BiaffineParser(base_parser.BaseParser):
     logging.info(f"Test stats: {self.test_stats}")
     test_results = self._compute_metrics(stats="test")
     return test_results
+
+  def parse_and_save(self, dataset):
+    """Parses a set of sentences with this parser and saves the gold and predicted outputs to a directory."""
+    current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    gold_treebank_name = f"{self.model_name}_gold.pbtxt"
+    parsed_treebank_name = f"{self.model_name}_parsed.pbtxt"
+    eval_path = f"./eval/eval_data/{self.language}/{self.model_name}"
+    os.mkdir(eval_path)
+    gold_treebank = treebank_pb2.Treebank()
+    parsed_treebank = treebank_pb2.Treebank()
+
+    for example in dataset:
+      gold_sentence_pb2 = gold_treebank.sentence.add()
+      parsed_sentence_pb2 = parsed_treebank.sentence.add()
+      sent_id, tokens, dep_labels, heads = (example["sent_id"], example["tokens"],
+                                            example["dep_labels"], example["heads"])
+      arc_maps = self._arc_maps(example["heads"], example["dep_labels"])
+      # first populate gold treebank with the gold annotations
+      index = 0
+      # print("gold labels ", dep_labels)
+      # input()
+      for token, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
+        # print("token ", token, "dep label ", dep_label , "head ", head)
+        # input()
+        gold_sentence_pb2.sent_id = sent_id[0][0].numpy()
+        token = gold_sentence_pb2.token.add(
+          word=tf.keras.backend.get_value(token),
+          label=self._label_index_to_name(tf.keras.backend.get_value(dep_label)),
+          index=index)
+        token.selected_head.address=tf.keras.backend.get_value(head)
+        index += 1
+
+      # next populate parsed data
+      scores = self.parse(example)
+      head_scores, label_scores = scores["edges"], scores["labels"]
+      # get the heads and labels from parsed example
+      if "heads" in self._predict:
+        heads = tf.argmax(head_scores, axis=2)
+        # print("parsed_heads ", heads)
+      if "labels" in self._predict:
+        label_scores = tf.transpose(label_scores, perm=[0,2,3,1])
+         # get the logits (label prediction scores) from label scores
+         # logits is of shape: (batch_size*seq_len, n_classes), i.e. (190, 36)
+        logits = tf.gather_nd(label_scores, indices=arc_maps[:, :3])
+
+        # correct labels is of shape (batch_size*seq_len, 1), i.e. (190, 1)
+        correct_labels = tf.expand_dims(tf.convert_to_tensor(arc_maps[:, 3]), axis=-1)
+        label_preds = tf.expand_dims(tf.argmax(logits, axis=1), axis=-1)
+        # print("label preds ", label_preds)
+        index = 0
+        # print("test labels ", dep_labels)
+        # input()
+        for token, dep_label, head in zip(tokens[0], label_preds, heads[0]):
+          # print("token ", token, "dep label ", dep_label , "head ", head)
+          # input()
+          parsed_sentence_pb2.sent_id = sent_id[0][0].numpy()
+          token = parsed_sentence_pb2.token.add(
+            word=tf.keras.backend.get_value(token),
+            label=self._label_index_to_name(tf.keras.backend.get_value(dep_label)),
+            index=index)
+          token.selected_head.address=tf.keras.backend.get_value(head)
+          index += 1
+
+    writer.write_proto_as_text(gold_treebank, os.path.join(eval_path, gold_treebank_name))
+    writer.write_proto_as_text(parsed_treebank, os.path.join(eval_path, parsed_treebank_name))
+    time.sleep(60)
+    gold_trb = reader_util.ReadTreebankTextProto(os.path.join(eval_path, gold_treebank_name))
+    parsed_and_labeled_trb = reader_util.ReadTreebankTextProto(os.path.join(eval_path, parsed_treebank_name))
+    evaluator = evaluate_v2.Evaluator(gold_trb, parsed_and_labeled_trb,
+                                      write_results=True,
+                                      language=self.language,
+                                      write_dir=eval_path)
+    evaluator.evaluate("all")
