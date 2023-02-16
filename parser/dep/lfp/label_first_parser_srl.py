@@ -186,8 +186,6 @@ class LabelFirstParsingModel(tf.keras.Model):
                                                            name="label_embeddings",
                                                            trainable=False)
 
-
-
     self.head_perceptron = layer_utils.Perceptron(n_units=256,
                                                   activation="relu",
                                                   name="head_mlp")
