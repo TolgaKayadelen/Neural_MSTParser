@@ -48,7 +48,7 @@ def load_preprocessor_v2(*, word_embedding_indexes,
                         head_padding_value=0,
                         one_hot_features=[],
                         embedding_type="word2vec"):
-  allow_list = ["words", "pos", "morph", "category", "dep_labels", "srl"]
+  allow_list = ["words", "pos", "morph", "category", "dep_labels", "srl", "predicates"]
   print("features ", features)
   # input()
   assert set(features).issubset(allow_list), "Can use words, pos, morph, category, dep_labels, srl, as features!"

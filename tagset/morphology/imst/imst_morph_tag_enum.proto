@@ -75,5 +75,4 @@ enum Tag {
   negative_neg = 66;
   aspect_imp = 67;
   tense_futpast = 68;
-
 }

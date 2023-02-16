@@ -1,7 +1,7 @@
 # Use like:
 # bazel-bin/parser/dep/lfp/label_first_parser_main \
-# --language=en --predict heads labels --train_treebank=en_ewt-ud-train.pbtxt \
-# --test_treebank=en_ewt-ud-test.pbtxt --features words pos dep_labels
+# --language=tr --predict heads labels --train_treebank=train_dev_merged.pbtxt \
+# --test_treebank=test_merged.pbtxt --features words pos morph srl
 
 
 import tensorflow as tf
@@ -22,9 +22,9 @@ def main(args):
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
   parser_model_name = f"{args.language}_with_srl_{current_time}"
   logging.info(f"Parser model name is {parser_model_name}")
-  # model_name_check = input("Are you happy with the model name: y/n?")
-  # if model_name_check != "y":
-  #   raise ValueError("Model name is not set properly!")
+  model_name_check = input("Are you happy with the model name: y/n?")
+  if model_name_check != "y":
+    raise ValueError("Model name is not set properly!")
   log_dir = f"debug/label_first_parser/{args.language}/{parser_model_name}"
   logging.info(f"Logging to {log_dir}")
 
@@ -75,7 +75,7 @@ def main(args):
                             predict=args.predict,
                             features=args.features,
                             log_dir=log_dir,
-                            test_every=1,
+                            test_every=5,
                             model_name=parser_model_name,
                             pos_embedding_vocab_size=pos_embedding_vocab_size,
                             one_hot_labels=False)
@@ -87,7 +87,7 @@ def main(args):
     path=os.path.join(train_data_dir, train_treebank_name)
   )
   train_dataset = prep.make_dataset_from_generator(
-    sentences=train_sentences, batch_size=200
+    sentences=train_sentences, batch_size=250
   )
   test_sentences = prep.prepare_sentence_protos(
     path=os.path.join(test_data_dir, test_treebank_name)
@@ -96,7 +96,9 @@ def main(args):
     sentences = test_sentences,
     batch_size=1
   )
-  gold_treebank = treebank_pb2.Treebank()
+  # for example in train_dataset:
+  #  print(example)
+  #  input()
   """
   for example in train_dataset:
     print(example)
@@ -133,7 +135,7 @@ def main(args):
       input()
   """
   # train the parser
-  metrics = parser.train(dataset=train_dataset, epochs=70, test_data=test_dataset)
+  metrics = parser.train(dataset=train_dataset, epochs=100, test_data=test_dataset)
   print(metrics)
 
   # write metrics

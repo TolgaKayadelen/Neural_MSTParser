@@ -4,7 +4,7 @@
 # --test_treebank=en_ewt-ud-test.pbtxt --features words pos dep_labels
 
 
-import sys
+import os
 import argparse
 import logging
 
@@ -12,13 +12,14 @@ import datetime
 
 
 from parser.utils import load_models, pos_tag_to_id
-from parser.dep.lfp.label_first_parser import LabelFirstParser
+# from parser.dep.lfp.label_first_parser import LabelFirstParser
+from parser.dep.lfp.label_first_parser_srl import LabelFirstParser # TODO
 from util import writer, reader
 
 
 def main(args):
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-  parser_model_name = f"{args.language}_lfp_gold_category_and_labels_{current_time}"
+  parser_model_name = f"{args.language}_lfp_without_srl_test_{current_time}"
   logging.info(f"Parser model name is {parser_model_name}")
   model_name_check = input("Are you happy with the model name: y/n?")
   if model_name_check != "y":
@@ -26,8 +27,8 @@ def main(args):
   log_dir = f"debug/label_first_parser/{args.language}/{parser_model_name}"
   logging.info(f"Logging to {log_dir}")
 
-  train_data_dir = f"./data/UDv29/train/{args.language}"
-  test_data_dir = f"./data/UDv29/test/{args.language}"
+  train_data_dir = f"./data/propbank/ud/srl/"
+  test_data_dir = f"./data/propbank/ud/srl/"
   train_treebank_name = args.train_treebank
   test_treebank_name = args.test_treebank
 
@@ -39,7 +40,7 @@ def main(args):
       print(f"{args.language} pos to id {pos_to_id}")
       print(f"pos vocab size ", pos_embedding_vocab_size)
     else:
-      pos_embedding_vocab_size = 37 # for turkish.
+      pos_embedding_vocab_size = 38 # for turkish.
       pos_to_id=None
   else:
     pos_to_id=None
@@ -56,14 +57,18 @@ def main(args):
     word_embeddings = load_models.load_i18n_embeddings(language=args.language)
 
   # initialize preprocessor
-  prep = load_models.load_preprocessor(word_embedding_indexes=word_embeddings.token_to_index,
-                                       pos_indexes=pos_to_id,
-                                       language=args.language,
-                                       features=args.features,
-                                       embedding_type=args.embeddings)
+  # prep = load_models.load_preprocessor(word_embedding_indexes=word_embeddings.token_to_index,
+  #                                    pos_indexes=pos_to_id,
+  #                                     language=args.language,
+  #                                     features=args.features,
+  #                                     embedding_type=args.embeddings)
+  prep = load_models.load_preprocessor_v2(word_embedding_indexes=word_embeddings.token_to_index,
+                                          pos_indexes=pos_to_id,
+                                          language=args.language,
+                                          features=args.features,
+                                          embedding_type=args.embeddings)
   logging.info(f"features used to train are {args.features}")
   logging.info(f"parser will output predictions for {args.predict}")
-  print(prep.word_embedding_indexes[b"test"])
 
 
   label_feature = next(
@@ -76,20 +81,10 @@ def main(args):
   parser = LabelFirstParser(word_embeddings=word_embeddings,
                             language=args.language,
                             n_output_classes=label_feature.n_values,
-                            # predict=["heads",
-                            #         # "labels"
-                            #         ],
-                            # features=["words",
-                            #          # "pos",
-                            #          "morph",
-                            #          # "category",
-                            #          # "heads",
-                            #          "dep_labels"
-                            #          ],
                             predict=args.predict,
                             features=args.features,
                             log_dir=log_dir,
-                            test_every=10,
+                            test_every=5,
                             model_name=parser_model_name,
                             pos_embedding_vocab_size=pos_embedding_vocab_size,
                             one_hot_labels=False)
@@ -113,18 +108,30 @@ def main(args):
 
   # load tf.datasets
   logging.info("Loading datasets")
-  train_dataset, _, test_dataset = load_models.load_data(preprocessor=prep,
-                                                        train_treebank=train_treebank_name,
-                                                        batch_size=200,
-                                                        test_treebank=test_treebank_name,
-                                                        type="pbtxt",
-                                                        language=args.language)
-  # for batch in train_dataset:
-  #   print(batch)
-  # input()
+  # train_dataset, _, test_dataset = load_models.load_data(preprocessor=prep,
+  #                                                      train_treebank=train_treebank_name,
+  #                                                      batch_size=200,
+  #                                                      test_treebank=test_treebank_name,
+  #                                                      type="pbtxt",
+  #                                                      language=args.language)
+
+  logging.info("Loading datasets")
+  train_sentences = prep.prepare_sentence_protos(
+    path=os.path.join(train_data_dir, train_treebank_name)
+  )
+  train_dataset = prep.make_dataset_from_generator(
+    sentences=train_sentences, batch_size=250
+  )
+  test_sentences = prep.prepare_sentence_protos(
+    path=os.path.join(test_data_dir, test_treebank_name)
+  )
+  test_dataset = prep.make_dataset_from_generator(
+    sentences = test_sentences,
+    batch_size=1)
+
 
   # train the parser
-  metrics = parser.train(dataset=train_dataset, epochs=1, test_data=test_dataset)
+  metrics = parser.train(dataset=train_dataset, epochs=100, test_data=test_dataset)
   print(metrics)
 
   # write metrics

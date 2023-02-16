@@ -164,7 +164,7 @@ class Preprocessor:
       elif feat in ["srl"]:
         sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.float32)
       elif feat in ["predicates"]:
-        sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.int64)
+        sequence_features[feat] = SequenceFeature(name=feat, dtype=tf.float32)
       else:
         raise ValueError(f"{feat} is not a valid feature.")
 
@@ -216,7 +216,7 @@ class Preprocessor:
             value = "Zero"
             indices.append(mapping[value])
           else:
-            logging.warning(f"Key error for value {value}")
+            # logging.warning(f"Key error for value {value}")
             if feature_name == "srl":
               indices.append(mapping["-0-"])
             else:
@@ -238,6 +238,7 @@ class Preprocessor:
         mappings["words"] = word_embeddings.token_to_index
     if "morph" in feature_names:
       mappings["morph"] = LabelReader.get_labels("morph", self.language).labels
+      # print("morph mappings ", mappings["morph"])
     if "pos" in feature_names:
       if self.pos_indexes is not None:
         mappings["pos"] = self.pos_indexes
@@ -472,6 +473,9 @@ class Preprocessor:
       elif feature.name =="dep_labels" and feature.one_hot is not None:
         _output_shapes[feature.name] = tf.TensorShape([None, 35])
         _padded_shapes[feature.name] = tf.TensorShape([None, 35])
+      elif feature.name == "predicates":
+        _output_shapes[feature.name] = tf.TensorShape([None])
+        _padded_shapes[feature.name] = tf.TensorShape([None])
       else:
         _output_shapes[feature.name]=[None]
         _padded_shapes[feature.name]=tf.TensorShape([None])
@@ -522,13 +526,18 @@ class Preprocessor:
           morph_features = []
           for token in sentence.token:
             morph_vector = np.zeros(len(feature_mappings["morph"]), dtype=float)
+            # print("token ", token)
             tags = morph_tags.from_token(token=token)
+            # print("morph tags ", tags)
             morph_indices = self.numericalize(
                             values=tags,
                             mapping=feature_mappings["morph"],
                             feature_name=feature_name
             )
+            # print("morph indices ", morph_indices)
             np.put(morph_vector, morph_indices, [1])
+            # print("morph vector ", morph_vector)
+            # input()
             morph_features.append(morph_vector)
           yield_dict[feature_name] = morph_features
         if feature_name == "srl":
@@ -545,6 +554,8 @@ class Preprocessor:
           yield_dict[feature_name] = srl_features
         if feature_name == "predicates":
           predicates = [token.predicative for token in sentence.token]
+          # print("predicates ", predicates)
+          # input()
           yield_dict[feature_name] = predicates
         if feature_name == "dep_labels":
           label_feature = self.sequence_features_dict[feature_name]

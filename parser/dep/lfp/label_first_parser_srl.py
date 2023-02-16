@@ -19,7 +19,7 @@ class LabelFirstParser(base_parser.BaseParser):
 
   @property
   def _optimizer(self):
-    return tf.keras.optimizers.Adam(0.001, beta_1=0.9, beta_2=0.9)
+    return tf.keras.optimizers.Adam(0.0005, beta_1=0.9, beta_2=0.9)
 
   def _training_metrics(self):
     return {
@@ -58,6 +58,7 @@ class LabelFirstParser(base_parser.BaseParser):
     pos_inputs = tf.keras.Input(shape=(None,), name="pos")
     morph_inputs = tf.keras.Input(shape=(None, 69), name="morph")
     srl_inputs = tf.keras.Input(shape=(None, 34), name="srl")
+    predicate_inputs = tf.keras.Input(shape=(None, ), name="predicates")
     category_inputs = tf.keras.Input(shape=(None, ), name="category")
     if not self.one_hot_labels:
       label_inputs = tf.keras.Input(shape=(None, ), name="labels")
@@ -70,6 +71,8 @@ class LabelFirstParser(base_parser.BaseParser):
       input_dict["morph"] = morph_inputs
     if self._use_srl:
       input_dict["srl"] = srl_inputs
+    if self._use_predicates:
+      input_dict["predicates"] = predicate_inputs
     if self._use_category:
       input_dict["category"] = category_inputs
     if self._use_dep_labels:
@@ -86,6 +89,7 @@ class LabelFirstParser(base_parser.BaseParser):
               morph: {self._use_morph},
               dep_labels: {self._use_dep_labels},
               srl: {self._use_srl},
+              predicates: {self._use_predicates},
               category: {self._use_category}""")
     label_vocab_size = len(reader.LabelReader("dep_labels", self.language).labels.keys())
     # print("labels ", label_vocab_size)
@@ -98,6 +102,7 @@ class LabelFirstParser(base_parser.BaseParser):
       use_pos=self._use_pos,
       use_morph=self._use_morph,
       use_srl=self._use_srl,
+      use_predicates=self._use_predicates,
       use_dep_labels=self._use_dep_labels,
       use_category = self._use_category,
       pos_embedding_vocab_size=self.pos_embedding_vocab_size,
@@ -118,6 +123,7 @@ class LabelFirstParsingModel(tf.keras.Model):
                use_pos:bool = True,
                use_morph:bool=True,
                use_srl:bool=True,
+               use_predicates:bool=True,
                use_dep_labels:bool=False,
                use_category:bool=False,
                pos_embedding_vocab_size=37, # for tr
@@ -130,6 +136,7 @@ class LabelFirstParsingModel(tf.keras.Model):
     self.use_pos = use_pos
     self.use_morph = use_morph
     self.use_srl= use_srl
+    self.use_predicates = use_predicates
     self.use_dep_labels = use_dep_labels
     self.use_category = use_category
     self.one_hot_labels = one_hot_labels
@@ -152,7 +159,7 @@ class LabelFirstParsingModel(tf.keras.Model):
     if self.use_pos:
       print("using fine pos as features")
       self.pos_embeddings = layer_utils.EmbeddingLayer(
-        input_dim=pos_embedding_vocab_size, output_dim=32,
+        input_dim=pos_embedding_vocab_size, output_dim=50, # 32
         name="pos_embeddings",
         trainable=True)
     if self.use_category:
@@ -228,6 +235,15 @@ class LabelFirstParsingModel(tf.keras.Model):
       concat_list.append(srl_inputs)
       # print("srl inputs ", srl_inputs)
       # input()
+    if self.use_predicates:
+      predicate_inputs = inputs["predicates"]
+      # print("predicate inputs ", predicate_inputs)
+      # input()
+      predicate_inputs = tf.expand_dims(predicate_inputs, -1)
+      # print("predicate inputs ", predicate_inputs)
+      # input()
+      concat_list.append(predicate_inputs)
+
     if self.use_dep_labels:
       label_inputs = inputs["labels"]
       # print("label inputs ", label_inputs)

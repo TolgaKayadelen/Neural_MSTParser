@@ -112,7 +112,7 @@ class LabelReader:
                    "aux_q",
                    "aux_pass",
                    'acl_relcl',
-                   "case_loc",
+                   # "case_loc",
                    "compound_lvc",
                    "compound_redup",
                    "compound_ext",

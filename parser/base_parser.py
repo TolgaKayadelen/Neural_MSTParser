@@ -135,6 +135,7 @@ class BaseParser(ABC):
     self._use_pos = "pos" in self.features
     self._use_morph = "morph" in self.features
     self._use_srl = "srl" in self.features
+    self._use_predicates = "predicates" in self.features
     self._use_category = "category" in self.features
     self._use_dep_labels = False
     if "dep_labels" in self.features:
@@ -455,6 +456,7 @@ class BaseParser(ABC):
                  words: tf.Tensor,
                  pos: tf.Tensor,
                  srl: tf.Tensor,
+                 predicates: tf.Tensor,
                  category: tf.Tensor,
                  morph: tf.Tensor,
                  dep_labels: tf.Tensor, heads: tf.Tensor) -> Tuple[tf.Tensor, ...]:
@@ -486,6 +488,7 @@ class BaseParser(ABC):
       scores = self.model({"words": words,
                            "pos": pos,
                            "srl": srl,
+                           "predicates": predicates,
                            "category": category,
                            "morph": morph,
                            "labels": dep_labels}, training=True)
@@ -609,6 +612,7 @@ class BaseParser(ABC):
         category = batch["category"] if "category" in batch.keys() else None
         morph = batch["morph"] if "morph" in batch.keys() else None
         srl = batch["srl"] if "srl" in batch.keys() else None
+        predicates = batch["predicates"] if "predicates" in batch.keys() else None
 
         # Get loss values, predictions, and correct heads/labels for this training step.
         predictions, batch_loss, correct, pad_mask = self.train_step(words=words,
@@ -616,6 +620,7 @@ class BaseParser(ABC):
                                                                      category=category,
                                                                      morph=morph,
                                                                      srl=srl,
+                                                                     predicates=predicates,
                                                                      dep_labels=dep_labels,
                                                                      heads=heads)
 
@@ -768,9 +773,11 @@ class BaseParser(ABC):
     category = example["category"] if "category" in example.keys() else None
     morph = example["morph"] if "morph" in example.keys() else None
     srl = example["srl"] if "srl" in example.keys() else None
+    predicates = example["predicates"] if "predicates" in example.keys() else None
     scores = self.model({"words": words,
                          "pos": pos,
                          "srl": srl,
+                         "predicates": predicates,
                          "category": category,
                          "morph": morph,
                          "labels": dep_labels}, training=False)
@@ -817,25 +824,34 @@ class BaseParser(ABC):
       sent_id, tokens, dep_labels, heads = (example["sent_id"], example["tokens"],
                                             example["dep_labels"], example["heads"])
       # srl = example["srl"] # TODO
+      # print("srl ", srl)
+      # input()
+      # predicates = example["predicates"] # TODO
+      # input()
       # first populate gold treebank with the gold annotations
       index = 0
       # print("gold labels ", dep_labels)
       # input()
-      # for token, dep_label, head, srl in zip(tokens[0], dep_labels[0], heads[0], srl[0]): #TODO
-      for token, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
+      # for tok, dep_label, head, srl, predicate in zip(tokens[0], dep_labels[0], heads[0], srl[0], predicates[0]): #TODO
+      for tok, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
         # print("token ", token, "dep label ", dep_label , "head ", head)
         # input()
         gold_sentence_pb2.sent_id = sent_id[0][0].numpy()
         token = gold_sentence_pb2.token.add(
-          word=tf.keras.backend.get_value(token),
+          word=tf.keras.backend.get_value(tok),
           label=self._label_index_to_name(tf.keras.backend.get_value(dep_label)),
           index=index)
         token.selected_head.address=tf.keras.backend.get_value(head)
         # srl_indexes = tf.where(srl).numpy() # TODO
+        # print("srl indexes ", srl_indexes)
         # for srl_index in srl_indexes: # TODO
-        #  id = int(tf.keras.backend.get_value(srl_index)) /# TODO
-        #  tag = srl_to_id.id[id] # TODO
-        #  token.srl.append(tag) # TODO
+        #   id = int(tf.keras.backend.get_value(srl_index)) # TODO
+        #   tag = srl_to_id.id[id] # TODO
+        #   token.srl.append(tag) # TODO
+        # print("token ", token)
+        # token.predicative = int(predicate)
+        # print("token ", token)
+        # input()
         index += 1
 
       # next populate parsed data
@@ -851,11 +867,11 @@ class BaseParser(ABC):
       index = 0
       # print("test labels ", dep_labels)
       # input()
-      for token, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
+      for tok, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
         # print("token ", token, "dep label ", dep_label , "head ", head)
         parsed_sentence_pb2.sent_id = sent_id[0][0].numpy()
         token = parsed_sentence_pb2.token.add(
-          word=tf.keras.backend.get_value(token),
+          word=tf.keras.backend.get_value(tok),
           label=self._label_index_to_name(tf.keras.backend.get_value(dep_label)),
           index=index)
         token.selected_head.address=tf.keras.backend.get_value(head)
@@ -863,7 +879,7 @@ class BaseParser(ABC):
 
     writer.write_proto_as_text(gold_treebank, os.path.join(eval_path, gold_treebank_name))
     writer.write_proto_as_text(parsed_treebank, os.path.join(eval_path, parsed_treebank_name))
-    time.sleep(20)
+    time.sleep(60)
     gold_trb = reader_util.ReadTreebankTextProto(os.path.join(eval_path, gold_treebank_name))
     parsed_and_labeled_trb = reader_util.ReadTreebankTextProto(os.path.join(eval_path, parsed_treebank_name))
     evaluator = evaluate_v2.Evaluator(gold_trb, parsed_and_labeled_trb,

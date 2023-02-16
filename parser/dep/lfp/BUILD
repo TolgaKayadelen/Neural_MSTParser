@@ -6,6 +6,7 @@ py_binary(
   deps = [
     "//parser/utils:load_models",
     ":label_first_parser",
+    ":label_first_parser_srl",
   ],
 )
 
