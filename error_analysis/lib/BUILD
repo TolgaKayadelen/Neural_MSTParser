@@ -10,3 +10,14 @@ py_binary(
         "//util:common",
     ]
 )
+
+
+py_binary(
+    name = "global_stats",
+    srcs = ["global_stats.py"],
+    deps= [
+        "//util:reader",
+        "//util:writer",
+        "//util:common",
+    ]
+)

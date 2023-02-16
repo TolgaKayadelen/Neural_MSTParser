@@ -13,8 +13,9 @@ accuracy for UAS.
 Usage:
 bazel build parser_main:evaluate && 
 bazel-bin/parser_main/evaluate \
---gold_data=./data/testdata/parser_main/eval_data_gold.pbtxt \
---test_data= ./data/testdata/parser_main/eval_data_test.pbtxt \
+--gold_data=eval_data_gold \
+--test_data= eval_data_test \
+--eval_dir=./error_analysis/tr-pud/sentence_length/10
 --metrics all \
 --print_results=True
 """

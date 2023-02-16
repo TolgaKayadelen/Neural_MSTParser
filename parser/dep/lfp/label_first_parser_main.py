@@ -19,7 +19,7 @@ from util import writer, reader
 
 def main(args):
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-  parser_model_name = f"{args.language}_lfp_without_srl_test_{current_time}"
+  parser_model_name = f"{args.language}_lfp_without_srl_no_p_{current_time}"
   logging.info(f"Parser model name is {parser_model_name}")
   model_name_check = input("Are you happy with the model name: y/n?")
   if model_name_check != "y":
@@ -131,7 +131,7 @@ def main(args):
 
 
   # train the parser
-  metrics = parser.train(dataset=train_dataset, epochs=100, test_data=test_dataset)
+  metrics = parser.train(dataset=train_dataset, epochs=75, test_data=test_dataset)
   print(metrics)
 
   # write metrics

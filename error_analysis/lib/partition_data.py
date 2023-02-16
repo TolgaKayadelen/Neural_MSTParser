@@ -196,8 +196,6 @@ class Partition:
     sentences_with_const = []
     multiclause_sentences_with_const = []
     multiclause_sentences_with_errors = []
-
-
     n_correct_grammatical_role_attached_to_wrong_pred = 0
     errors_for_const = 0
     errors_for_const_in_multiclause = 0
@@ -214,6 +212,16 @@ class Partition:
       print(sentence_gold.sent_id, sentence_test.sent_id)
       assert sentence_gold.sent_id == sentence_test.sent_id, "Mismatching sentences"
       labels = [token.label for token in sentence_gold.token]
+      if len(sentence_gold.token) < 10:
+        sentence_length = 10
+      elif len(sentence_gold.token) < 20:
+        sentence_length = 20
+      elif len(sentence_gold.token) < 30:
+        sentence_length = 30
+      elif len(sentence_gold.token) < 40:
+        sentence_length = 40
+      else:
+        sentence_length = 50
       if multiclause:
         multiclause_sentence = False
         multiclause_labels = ["csubj", "ccomp", "xcomp"]
@@ -244,11 +252,12 @@ class Partition:
         only_label_error, only_head_error, both_head_and_label = False, False, False
         for gold_token, test_token in zip(gold_tokens, test_tokens):
           assert (gold_token.word == test_token.word), "Mismatching tokens"
-          csv_line = collections.OrderedDict({"sent_id": None, "multiclause": None, "token": None,  "error": False, "error_type": "none",
+          csv_line = collections.OrderedDict({"sent_id": None, "length": 0, "multiclause": None, "token": None,  "error": False, "error_type": "none",
                                               "correct_label": None, "confused_label": "none", "pred_arg_error": False,
                                               "multiclause_wrong_pred": False})
           stats += 1
           csv_line["sent_id"] = sent_id
+          csv_line["length"] = sentence_length
           csv_line["multiclause"] = multiclause_sentence
           csv_line["token"] = gold_token.word
           csv_line["correct_label"] = gold_token.label
@@ -324,8 +333,8 @@ class Partition:
       for k, v in stats_dict.items():
         csv_writer.writerow(v)
 
-    writer.write_proto_as_text(test, os.path.join(os.path.join(data_dir, construction), "test.pbtxt"))
-    writer.write_proto_as_text(gold, os.path.join(os.path.join(data_dir, construction), "gold.pbtxt"))
+    # writer.write_proto_as_text(test, os.path.join(os.path.join(data_dir, construction), "test.pbtxt"))
+    # writer.write_proto_as_text(gold, os.path.join(os.path.join(data_dir, construction), "gold.pbtxt"))
     """
     print("Basic Stats ")
     print(f"sentences including {construction}: {sentences_with_const}")
@@ -357,10 +366,6 @@ class Partition:
     print()
     """
 
-
-
-
-
   def by_dependency_distance(self):
     distance = collections.Counter()
     accurate = collections.Counter()
@@ -384,11 +389,13 @@ class Partition:
 
 if __name__ == "__main__":
   partition = Partition(
-    gold_treebank = "./error_analysis/tr-pud/sentence_length/10/gold.pbtxt",
-    test_treebank = "./error_analysis/tr-pud/sentence_length/10/test.pbtxt",
+    gold_treebank = "./error_analysis/tr-pud/gold_test_treebank.pbtxt",
+    test_treebank = "./error_analysis/tr-pud/parsed_and_labeled_test_treebank.pbtxt",
     language = "tr"
   )
-  partition.by_construction("nsubj", data_dir="./error_analysis/tr-pud/sentence_length/10/", multiclause=True)
+  for tag in ["advcl", "ccomp", "csubj", "iobj", "obj", "obl", "xcomp"]:
+  # for tag in ["nsubj"]:
+    partition.by_construction(tag, data_dir=f"./error_analysis/tr-pud/argstr", multiclause=True)
   # partition = Partition(
   #  gold_treebank = "./error_analysis/tr-pud/gold_test_treebank.pbtxt",
   #  test_treebank = "./error_analysis/tr-pud/parsed_and_labeled_test_treebank.pbtxt",
