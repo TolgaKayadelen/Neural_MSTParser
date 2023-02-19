@@ -312,7 +312,7 @@ def generate_merged_data(treebank_path):
 
 if __name__ == "__main__":
   # generate_multilingual_embeddings("en")
-  treebank_path = "./data/propbank/ud/srl/test.pbtxt"
+  treebank_path = "./data/propbank/ud/srl/dev.pbtxt"
   generate_merged_data(treebank_path)
   #trb = reader.ReadTreebankTextProto(
   #  "data/testdata/propbank/propbank_ud_testdata_proto.pbtxt"

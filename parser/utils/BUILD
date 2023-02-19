@@ -25,6 +25,7 @@ py_binary(
     "//parser/dep/lfp:label_first_parser",
     "//parser/labeler/bilstm:bilstm_labeler",
     "//input:preprocessor_v2",
+    "//input:preprocessor_v3",
   ],
 )
 

@@ -834,7 +834,7 @@ class BaseParser(ABC):
       # input()
       # for tok, dep_label, head, srl, predicate in zip(tokens[0], dep_labels[0], heads[0], srl[0], predicates[0]): #TODO
       for tok, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
-        # print("token ", token, "dep label ", dep_label , "head ", head)
+        # print("token ", tok, "dep label ", dep_label , "head ", head)
         # input()
         gold_sentence_pb2.sent_id = sent_id[0][0].numpy()
         token = gold_sentence_pb2.token.add(
@@ -845,9 +845,9 @@ class BaseParser(ABC):
         # srl_indexes = tf.where(srl).numpy() # TODO
         # print("srl indexes ", srl_indexes)
         # for srl_index in srl_indexes: # TODO
-        #   id = int(tf.keras.backend.get_value(srl_index)) # TODO
-        #   tag = srl_to_id.id[id] # TODO
-        #   token.srl.append(tag) # TODO
+        #  id = int(tf.keras.backend.get_value(srl_index)) # TODO
+        #  tag = srl_to_id.id[id] # TODO
+        #  token.srl.append(tag) # TODO
         # print("token ", token)
         # token.predicative = int(predicate)
         # print("token ", token)
@@ -864,6 +864,7 @@ class BaseParser(ABC):
       if "labels" in self._predict:
         dep_labels = tf.argmax(label_scores, axis=2)
         # print("parsed_labels ", dep_labels)
+        # input()
       index = 0
       # print("test labels ", dep_labels)
       # input()

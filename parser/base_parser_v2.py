@@ -27,6 +27,7 @@ from util import writer
 from util import reader as reader_util
 from util.nn import nn_utils
 from eval import evaluate_v2
+from parser.utils import srl_to_id
 
 # Set up basic configurations
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
@@ -118,8 +119,7 @@ class BaseParser(ABC):
 
     self._head_loss_custom = CustomNonPaddingTokenLoss(name="lfp_head_loss", ignore_index=0)
     self._label_loss_custom = CustomNonPaddingTokenLoss(name="lfp_label_loss", ignore_index=0)
-    self._pos_loss_custom = CustomNonPaddingTokenLoss(name="lfp_pos_loss_", ignore_index=0)
-
+    self._srl_loss_custom = CustomNonPaddingTokenLoss(name="lfp_srl_loss_", ignore_index=0)
     self.label_reader = reader.LabelReader.get_labels("dep_labels", self.language)
 
     if top_k and k <= 1:
@@ -132,7 +132,7 @@ class BaseParser(ABC):
       self.test_summary_writer = tf.summary.create_file_writer(log_dir + "/test")
       logging.info(f"Logging to {self._log_dir}")
 
-    assert(all(val in ["heads", "labels", "pos"] for val in self._predict)), "Invalid prediction target!"
+    assert(all(val in ["heads", "labels", "srl"] for val in self._predict)), "Invalid prediction target!"
 
   # TODO: Make it an attribute. Making it a property causes tf.function fail in subclasses.
   @property
@@ -178,6 +178,8 @@ class BaseParser(ABC):
     self._use_pos = "pos" in self.features and not "pos" in self._predict
     self._use_morph = "morph" in self.features
     self._use_category = "category" in self.features
+    self._use_predicates = "predicates" in self.features
+    self._use_srl = False
     self._use_dep_labels = False
     if "dep_labels" in self.features:
       if "labels" in self._predict and not sequential:
@@ -219,8 +221,8 @@ class BaseParser(ABC):
     return n_correct_labels / n_tokens
 
   @staticmethod
-  def pos_score(n_pos, n_tokens):
-    return n_pos / n_tokens
+  def srl_score(n_correct_srl, n_tokens):
+    return n_correct_srl / n_tokens
 
   @staticmethod
   def load(name: str, path=None):
@@ -309,8 +311,8 @@ class BaseParser(ABC):
       metrics_list += ("uas", "uas_test", "head_loss")
     if "labels" in self._predict:
       metrics_list += ("ls", "ls_test", "las", "las_test", "label_loss")
-    if "pos" in self._predict:
-      metrics_list += ("pos", "pos_test", "pos_loss")
+    if "srl" in self._predict:
+      metrics_list += ("srl", "srl_test", "srl_loss")
     return nn_utils.set_up_metrics(*metrics_list)
 
   # @tf.function
@@ -319,8 +321,8 @@ class BaseParser(ABC):
                             correct_heads=None,
                             label_predictions=None,
                             correct_labels=None,
-                            pos_predictions=None,
-                            correct_pos=None,
+                            srl_predictions=None,
+                            correct_srl=None,
                             top_k_label_predictions=None,
                             pad_mask=None
                             ):
@@ -380,12 +382,12 @@ class BaseParser(ABC):
         # input()
         correct_predictions_dict["n_clp_topk"] = n_corr_in_topk
         # input("press to cont.")
-    if "pos" in self._predict:
-      correct_pos_preds = tf.boolean_mask(pos_predictions == correct_pos, pad_mask)
-      n_correct_pos_preds = tf.math.reduce_sum(tf.cast(correct_pos_preds, tf.int32))
+    if "srl" in self._predict:
+      correct_srl_preds = tf.boolean_mask(srl_predictions == correct_srl, pad_mask)
+      n_correct_srl_preds = tf.math.reduce_sum(tf.cast(correct_srl_preds, tf.int32))
 
-      correct_predictions_dict["pos"] = correct_pos_preds
-      correct_predictions_dict["n_pos"] = n_correct_pos_preds.numpy()
+      correct_predictions_dict["srl"] = correct_srl_preds
+      correct_predictions_dict["n_srl"] = n_correct_srl_preds.numpy()
 
     return correct_predictions_dict
 
@@ -394,8 +396,8 @@ class BaseParser(ABC):
                                head_scores=None,
                                labels=None,
                                label_scores=None,
-                               pos=None,
-                               pos_scores=None,
+                               srl=None,
+                               srl_scores=None,
                                pad_mask=None):
     """Updates the training metrics after each epoch.
 
@@ -414,7 +416,7 @@ class BaseParser(ABC):
     if labels is not None:
       self._training_metrics["labels"].update_state(labels, label_scores, sample_weight=pad_mask)
 
-    self._training_metrics["pos"].update_state(pos, pos_scores, sample_weight=pad_mask)
+    self._training_metrics["srl"].update_state(srl, srl_scores, sample_weight=pad_mask)
 
   def _update_all_metrics(self, train_metrics, loss_metrics, test_metrics):
     """Updates eval metrics (UAS, LAS, LS) for training and test data as well as loss metrics."""
@@ -427,7 +429,6 @@ class BaseParser(ABC):
         logging.info(f"Metric {key} is not tracked.")
       else:
         try:
-          # TODO: fix this at the point of the caller site and always send a real number.
           if tf.is_tensor(value):
             value = value.numpy()
           # input("press to cont.")
@@ -459,8 +460,8 @@ class BaseParser(ABC):
     h, l = None, None
 
     # Correct pos preds
-    if correct_predictions_dict["n_pos"] is not None:
-      stats["n_pos"] += correct_predictions_dict["n_pos"]
+    if correct_predictions_dict["n_srl"] is not None:
+      stats["n_srl"] += correct_predictions_dict["n_srl"]
 
     # Correct head predictions.
     if correct_predictions_dict["n_chp"] is not None:
@@ -503,8 +504,8 @@ class BaseParser(ABC):
         _metrics[metric_suffix("ls_topk")] = self.ls(stats["n_clp_topk"], stats["n_tokens"])
     if "heads" in self._predict and "labels" in self._predict:
       _metrics[metric_suffix("las")] = self.las(stats["n_chlp"], stats["n_tokens"])
-    if "pos" in self._predict:
-      _metrics[metric_suffix("pos")] = self.pos_score(stats["n_pos"], stats["n_tokens"])
+    if "srl" in self._predict:
+      _metrics[metric_suffix("srl")] = self.srl_score(stats["n_srl"], stats["n_tokens"])
     return _metrics
 
   @tf.function
@@ -518,15 +519,19 @@ class BaseParser(ABC):
     return self._label_loss_function(correct_labels, label_scores)
 
   @tf.function
-  def _pos_loss(self, pos_scores, correct_pos):
-    return self._pos_loss_function(correct_pos, pos_scores)
+  def _srl_loss(self, srl_scores, correct_srl):
+    return self._srl_loss_function(correct_srl, srl_scores)
 
   # @tf.function
   def train_step(self, *,
-                 words: tf.Tensor, pos: tf.Tensor,
+                 words: tf.Tensor,
+                 pos: tf.Tensor,
+                 srl: tf.Tensor,
+                 predicates: tf.Tensor,
                  category: tf.Tensor,
                  morph: tf.Tensor,
-                 dep_labels: tf.Tensor, heads: tf.Tensor) -> Tuple[tf.Tensor, ...]:
+                 dep_labels: tf.Tensor,
+                 heads: tf.Tensor):
     """Runs one training step.
     Args:
         words: tf.Tensor of word indices of shape (batch_size, seq_len) where the seq_len
@@ -552,12 +557,15 @@ class BaseParser(ABC):
     with tf.GradientTape() as tape:
 
       # Head scores = (batch_size, seq_len, seq_len), Label scores = (batch_size, seq_len, n_labels)
-      scores = self.model({"words": words, "pos": pos,
+      scores = self.model({"words": words,
+                           "pos": pos,
+                           "srl": srl,
+                           "predicates": predicates,
                            "category": category,
                            "morph": morph,
                            "labels": dep_labels}, training=True)
 
-      head_scores, label_scores, pos_scores = scores["edges"], scores["labels"], scores["pos"]
+      head_scores, label_scores, srl_scores = scores["edges"], scores["labels"], scores["srl"]
 
       pad_mask = self._flatten((words != 0))
 
@@ -614,25 +622,22 @@ class BaseParser(ABC):
         # input()
         joint_loss = head_loss_custom + label_loss_custom
 
-      if "pos" in self._predict:
-        # print("correct pos ", pos)
-        pos_preds = self._flatten(tf.argmax(pos_scores, axis=2))
-        # print("pos preds ", pos_preds)
+      if "srl" in self._predict:
+        # print("correct srl ", srl)
+        srl_preds = self._flatten(tf.argmax(srl_scores, axis=2))
+        # print("srl preds ", srl_preds)
         # input()
-        pos_scores_flat = self._flatten(pos_scores, outer_dim=pos_scores.shape[2])
-        correct_pos = self._flatten(pos)
-        # print("correct pos flat ", correct_pos)
+        srl_scores_flat = self._flatten(srl_scores, outer_dim=srl_scores.shape[2])
+        correct_srl = self._flatten(srl)
+        # print("correct srl flat ", correct_srl)
         # input()
-        # pos_loss = tf.expand_dims(self._pos_loss(pos_scores_flat, correct_pos), axis=-1)
-        # print("pos loss usual ", pos_loss)
+        srl_loss_custom = self._srl_loss_custom(srl, srl_scores)
+        # print("srl loss custom ", srl_loss_custom)
         # input()
-        pos_loss_custom = self._pos_loss_custom(pos, pos_scores)
-        # print("pos loss custom ", pos_loss_custom)
-        # input()
-        joint_loss = head_loss_custom + label_loss_custom + pos_loss_custom
+        joint_loss = head_loss_custom + label_loss_custom + srl_loss_custom
 
 
-    grads = tape.gradient([head_loss_custom, label_loss_custom, pos_loss_custom], self.model.trainable_weights)
+    grads = tape.gradient([head_loss_custom, label_loss_custom, srl_loss_custom], self.model.trainable_weights)
     self._optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
     # input("applied gradients")
 
@@ -642,8 +647,8 @@ class BaseParser(ABC):
       head_scores=head_scores_flat if "heads" in self._predict else None,
       labels=correct_labels if "labels" in self._predict else None,
       label_scores=label_scores_flat if "labels" in self._predict else None,
-      pos = correct_pos,
-      pos_scores = pos_scores_flat,
+      srl = correct_srl,
+      srl_scores = srl_scores_flat,
       pad_mask=pad_mask)
 
     # Fill in the return values
@@ -658,10 +663,10 @@ class BaseParser(ABC):
       predictions["labels"] = label_preds
       predictions["top_k_labels"] = top_k_label_preds if self._top_k else None
 
-    if "pos" in self._predict:
-      losses["pos"] = pos_loss_custom
-      correct["pos"] = correct_pos
-      predictions["pos"] = pos_preds
+    if "srl" in self._predict:
+      losses["srl"] = srl_loss_custom
+      correct["srl"] = correct_srl
+      predictions["srl"] = srl_preds
 
     return predictions, losses, correct, pad_mask
 
@@ -698,17 +703,25 @@ class BaseParser(ABC):
       for step, batch in enumerate(dataset):
         words = batch["words"]
         dep_labels, heads = batch["dep_labels"], batch["heads"]
-        pos = batch["pos"]
+        pos = batch["pos"] if "pos" in batch.keys() else None
         category = batch["category"] if "category" in batch.keys() else None
         morph = batch["morph"] if "morph" in batch.keys() else None
+        srl = batch["srl"] if "srl" in batch.keys() else None
+        predicates = batch["predicates"] if "predicates" in batch.keys() else None
+
+        # input()
 
         # Get loss values, predictions, and correct heads/labels for this training step.
         predictions, batch_loss, correct, pad_mask = self.train_step(words=words,
                                                                      pos=pos,
                                                                      category=category,
                                                                      morph=morph,
+                                                                     srl=srl,
+                                                                     predicates=predicates,
                                                                      dep_labels=dep_labels,
                                                                      heads=heads)
+        print("srl ", srl)
+        print("preds ", predictions["srl"])
 
         # Get the correct heads/labels and correctly predicted heads/labels for this step.
         correct_predictions_dict = self._correct_predictions(
@@ -716,8 +729,8 @@ class BaseParser(ABC):
           correct_heads=correct["heads"] if "heads" in self._predict else None,
           label_predictions=predictions["labels"] if "labels" in self._predict else None,
           correct_labels=correct["labels"] if "labels" in self._predict else None,
-          pos_predictions=predictions["pos"],
-          correct_pos=correct["pos"],
+          srl_predictions=predictions["srl"],
+          correct_srl=correct["srl"],
           top_k_label_predictions=predictions["top_k_labels"] if "labels" in self._predict else None,
           pad_mask=pad_mask
          )
@@ -733,8 +746,8 @@ class BaseParser(ABC):
           losses["labels"].append(batch_loss["labels"])
         if "heads" in self._predict:
           losses["heads"].append(batch_loss["heads"])
-        if "pos" in self._predict:
-          losses["pos"].append(batch_loss["pos"])
+        if "srl" in self._predict:
+          losses["srl"].append(batch_loss["srl"])
         # end inner for
 
       # Log stats at the end of epoch
@@ -746,7 +759,7 @@ class BaseParser(ABC):
       loss_results_for_epoch = {
         "head_loss": tf.reduce_mean(losses["heads"]).numpy() if "heads" in self._predict else None,
         "label_loss": tf.reduce_mean(losses["labels"]).numpy() if "labels" in self._predict else None,
-        "pos_loss": tf.reduce_mean(losses["pos"]).numpy() if "pos" in self._predict else None
+        "srl_loss": tf.reduce_mean(losses["srl"]).numpy() if "srl" in self._predict else None
       }
 
       self._log(description=f"Training results after epoch {epoch}",
@@ -776,11 +789,11 @@ class BaseParser(ABC):
               if log_las:
                 tf.summary.scalar("las", training_results_for_epoch["las"], step=epoch)
 
-          if "pos" in self._predict:
+          if "srl" in self._predict:
             with self.loss_summary_writer.as_default():
-              tf.summary.scalar("pos loss", loss_results_for_epoch["pos_loss"], step=epoch)
+              tf.summary.scalar("srl loss", loss_results_for_epoch["srl_loss"], step=epoch)
             with self.train_summary_writer.as_default():
-              tf.summary.scalar("pos", training_results_for_epoch["pos"], step=epoch)
+              tf.summary.scalar("srl", training_results_for_epoch["srl"], step=epoch)
 
         if test_data is not None:
           test_results_for_epoch = self.test(dataset=test_data)
@@ -811,7 +824,7 @@ class BaseParser(ABC):
     print("Testing on the test set..")
     head_accuracy = tf.keras.metrics.Accuracy()
     label_accuracy = tf.keras.metrics.Accuracy()
-    pos_accuracy = tf.keras.metrics.Accuracy()
+    srl_accuracy = tf.keras.metrics.Accuracy()
 
     # resetting test stats at the beginning.
     for key in self.test_stats:
@@ -820,7 +833,7 @@ class BaseParser(ABC):
     # We traverse the test dataset not batch by batch, but example by example.
     for example in dataset:
       scores = self.parse(example)
-      head_scores, label_scores, pos_scores = scores["edges"], scores["labels"], scores["pos"]
+      head_scores, label_scores, srl_scores = scores["edges"], scores["labels"], scores["srl"]
       if "heads" in self._predict:
         head_preds = self._flatten(tf.argmax(head_scores, 2))
         # print("head preds ", head_preds)
@@ -837,11 +850,11 @@ class BaseParser(ABC):
         correct_labels = self._flatten(example["dep_labels"])
         label_accuracy.update_state(correct_labels, label_preds)
 
-      if "pos" in self._predict:
-        pos_preds = self._flatten(tf.argmax(pos_scores, 2))
+      if "srl" in self._predict:
+        srl_preds = self._flatten(tf.argmax(srl_scores, 2))
         # print("pos preds ", pos_preds)
-        correct_pos = self._flatten(example["pos"])
-        pos_accuracy.update_state(correct_pos, pos_preds)
+        correct_srl = self._flatten(example["srl"])
+        srl_accuracy.update_state(correct_srl, srl_preds)
         # print("correct pos ", correct_pos)
 
       correct_predictions_dict = self._correct_predictions(
@@ -850,8 +863,8 @@ class BaseParser(ABC):
         label_predictions=label_preds  if "labels" in self._predict else None,
         correct_labels=correct_labels  if "labels" in self._predict else None,
         top_k_label_predictions=top_k_label_preds if self._top_k else None,
-        pos_predictions=pos_preds,
-        correct_pos=correct_pos,
+        srl_predictions=srl_preds,
+        correct_srl=correct_srl,
       )
       self._update_correct_prediction_stats(correct_predictions_dict,
                                             example["words"].shape[1],
@@ -879,7 +892,12 @@ class BaseParser(ABC):
     pos = example["pos"] if "pos" in example.keys() else None
     category = example["category"] if "category" in example.keys() else None
     morph = example["morph"] if "morph" in example.keys() else None
-    scores = self.model({"words": words, "pos": pos,
+    srl = example["srl"] if "srl" in example.keys() else None
+    predicates = example["predicates"] if "predicates" in example.keys() else None
+    scores = self.model({"words": words,
+                         "pos": pos,
+                         "srl": srl,
+                         "predicates": predicates,
                          "category": category,
                          "morph": morph,
                          "labels": dep_labels}, training=False)
@@ -928,20 +946,28 @@ class BaseParser(ABC):
       index = 0
       # print("gold labels ", dep_labels)
       # input()
-      for token, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
+      for tok, dep_label, head, srl, predicate in zip(tokens[0], dep_labels[0], heads[0], srl[0], predicates[0]):
         # print("token ", token, "dep label ", dep_label , "head ", head)
         # input()
         gold_sentence_pb2.sent_id = sent_id[0][0].numpy()
         token = gold_sentence_pb2.token.add(
-          word=tf.keras.backend.get_value(token),
+          word=tf.keras.backend.get_value(tok),
           label=self._label_index_to_name(tf.keras.backend.get_value(dep_label)),
           index=index)
         token.selected_head.address=tf.keras.backend.get_value(head)
+        srl_indexes = tf.where(srl).numpy() # TODO
+        # print("srl indexes ", srl_indexes)
+        for srl_index in srl_indexes: # TODO
+          id = int(tf.keras.backend.get_value(srl_index)) # TODO
+          tag = srl_to_id.id[id] # TODO
+          token.srl.append(tag) # TODO
+          # print("token ", token)
+        token.predicative = int(predicate)
         index += 1
 
       # next populate parsed data
       scores = self.parse(example)
-      head_scores, label_scores = scores["edges"], scores["labels"]
+      head_scores, label_scores, srl_scores = scores["edges"], scores["labels"], scores["srl"]
       # get the heads and labels from parsed example
       if "heads" in self._predict:
         heads = tf.argmax(head_scores, axis=2)
@@ -949,21 +975,27 @@ class BaseParser(ABC):
       if "labels" in self._predict:
         dep_labels = tf.argmax(label_scores, axis=2)
         # print("parsed_labels ", dep_labels)
+      if "srl" in self.predict:
+        srl_labels = tf.argmax(srl_scores, axis=2)
       index = 0
       # print("test labels ", dep_labels)
       # input()
-      for token, dep_label, head in zip(tokens[0], dep_labels[0], heads[0]):
+      for tok, dep_label, head, srl, predicate in zip(tokens[0], dep_labels[0], heads[0], srl_labels[0], predicates[0]):
         parsed_sentence_pb2.sent_id = sent_id[0][0].numpy()
         token = parsed_sentence_pb2.token.add(
-          word=tf.keras.backend.get_value(token),
+          word=tf.keras.backend.get_value(tok),
           label=self._label_index_to_name(tf.keras.backend.get_value(dep_label)),
           index=index)
+        id = int(tf.keras.backend.get_value(srl_index)) # TODO
+        tag = srl_to_id.id[id] # TODO
+        token.srl.append(tag) # TODO
+        token.predicative = int(predicate)
         token.selected_head.address=tf.keras.backend.get_value(head)
         index += 1
 
     writer.write_proto_as_text(gold_treebank, os.path.join(eval_path, gold_treebank_name))
     writer.write_proto_as_text(parsed_treebank, os.path.join(eval_path, parsed_treebank_name))
-    time.sleep(20)
+    time.sleep(45)
     gold_trb = reader_util.ReadTreebankTextProto(os.path.join(eval_path, gold_treebank_name))
     parsed_and_labeled_trb = reader_util.ReadTreebankTextProto(os.path.join(eval_path, parsed_treebank_name))
     evaluator = evaluate_v2.Evaluator(gold_trb, parsed_and_labeled_trb,

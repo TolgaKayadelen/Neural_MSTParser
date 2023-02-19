@@ -186,8 +186,6 @@ class Partition:
     total_sentence_including_const = 0
     total_multiclause_including_const = 0
     tokens_marked_with_const = 0
-
-
     sent_ids_with_both_errors = []
     sent_ids_only_label_errors = []
     sent_ids_only_head_errors = []
@@ -250,17 +248,29 @@ class Partition:
         assert (len(gold_tokens) == len(test_tokens)), "Mismatching tokens"
         wrong_head, wrong_grammatical_role, erroneous = False, False, False
         only_label_error, only_head_error, both_head_and_label = False, False, False
+
+        # check whether root is correct.
+        root_token_gold = [token for token in sentence_gold.token if token.label == "root"]
+        root_token_test = [token for token in sentence_test.token if token.label == "root"]
+        # print("gold root ", root_token_gold, "test root ", root_token_test)
+        if not root_token_test:
+          root_correct = False
+        else:
+          root_correct = root_token_gold[0].index == root_token_test[0].index
+        # print("root correct ", root_correct)
+        # input()
         for gold_token, test_token in zip(gold_tokens, test_tokens):
           assert (gold_token.word == test_token.word), "Mismatching tokens"
           csv_line = collections.OrderedDict({"sent_id": None, "length": 0, "multiclause": None, "token": None,  "error": False, "error_type": "none",
                                               "correct_label": None, "confused_label": "none", "pred_arg_error": False,
-                                              "multiclause_wrong_pred": False})
+                                              "multiclause_wrong_pred": False, "root_correct": None, "attached_label": None})
           stats += 1
           csv_line["sent_id"] = sent_id
           csv_line["length"] = sentence_length
           csv_line["multiclause"] = multiclause_sentence
           csv_line["token"] = gold_token.word
           csv_line["correct_label"] = gold_token.label
+          csv_line["root_correct"] = root_correct
           if test_token.label != gold_token.label:
             wrong_grammatical_role = True
           if test_token.selected_head.address != gold_token.selected_head.address:
@@ -300,6 +310,11 @@ class Partition:
               n_only_head_errors += 1
               csv_line["error_type"] = "ATTACHMENT"
               csv_line["pred_arg_error"] = True
+              attached_token = [token for token in sentence_test.token if token.index == test_token.selected_head.address]
+              # print("attached token ", attached_token)
+              assert(len(attached_token) == 1)
+              csv_line["attached_label"] = attached_token[0].label
+              # input()
               if multiclause_sentence:
                 n_only_head_errors_when_multiclause += 1
                 test_token_head = [token for token in sentence_test.token if token.index == test_token.selected_head.address]
@@ -327,7 +342,7 @@ class Partition:
           sentence = test.sentence.add()
           sentence.CopyFrom(sentence_test)
 
-    with open(os.path.join(os.path.join(data_dir, construction), "errors.csv"), "w") as f:
+    with open(os.path.join(os.path.join(data_dir, construction), f"{construction}_errors.csv"), "w") as f:
       csv_writer = csv.DictWriter(f, fieldnames=csv_line.keys())
       csv_writer.writeheader()
       for k, v in stats_dict.items():
@@ -393,7 +408,7 @@ if __name__ == "__main__":
     test_treebank = "./error_analysis/tr-pud/parsed_and_labeled_test_treebank.pbtxt",
     language = "tr"
   )
-  for tag in ["advcl", "ccomp", "csubj", "iobj", "obj", "obl", "xcomp"]:
+  for tag in ["nsubj", "advcl", "ccomp", "csubj", "iobj", "obj", "obl", "xcomp"]:
   # for tag in ["nsubj"]:
     partition.by_construction(tag, data_dir=f"./error_analysis/tr-pud/argstr", multiclause=True)
   # partition = Partition(
