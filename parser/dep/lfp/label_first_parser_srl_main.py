@@ -20,7 +20,7 @@ from util import writer, reader
 
 def main(args):
   current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-  parser_model_name = f"{args.language}_without_srl_on_dev_{current_time}"
+  parser_model_name = f"{args.language}_without_srl_on_dev_{current_time}_wp"
   logging.info(f"Parser model name is {parser_model_name}")
   # model_name_check = input("Are you happy with the model name: y/n?")
   # if model_name_check != "y":
@@ -75,7 +75,7 @@ def main(args):
                             predict=args.predict,
                             features=args.features,
                             log_dir=log_dir,
-                            test_every=10,
+                            test_every=15,
                             model_name=parser_model_name,
                             pos_embedding_vocab_size=pos_embedding_vocab_size,
                             one_hot_labels=False)

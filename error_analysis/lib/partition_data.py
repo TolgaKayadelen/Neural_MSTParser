@@ -263,7 +263,7 @@ class Partition:
           assert (gold_token.word == test_token.word), "Mismatching tokens"
           csv_line = collections.OrderedDict({"sent_id": None, "length": 0, "multiclause": None, "token": None,  "error": False, "error_type": "none",
                                               "correct_label": None, "confused_label": "none", "pred_arg_error": False,
-                                              "multiclause_wrong_pred": False, "root_correct": None, "attached_label": None})
+                                              "multiclause_wrong_pred": False, "root_correct": None, "attached_label": None, "srl1": "none", "srl2": "none", "srl3": "none"})
           stats += 1
           csv_line["sent_id"] = sent_id
           csv_line["length"] = sentence_length
@@ -271,6 +271,16 @@ class Partition:
           csv_line["token"] = gold_token.word
           csv_line["correct_label"] = gold_token.label
           csv_line["root_correct"] = root_correct
+          srl_labels = gold_token.srl
+          if len(srl_labels) == 1:
+            csv_line["srl1"] = srl_labels[0]
+          elif len(srl_labels) == 2:
+            csv_line["srl1"] = srl_labels[0]
+            csv_line["srl2"] = srl_labels[1]
+          elif len(srl_labels) > 2:
+            csv_line["srl1"] = srl_labels[0]
+            csv_line["srl2"] = srl_labels[1]
+            csv_line["srl3"] = srl_labels[2]
           if test_token.label != gold_token.label:
             wrong_grammatical_role = True
           if test_token.selected_head.address != gold_token.selected_head.address:
@@ -404,13 +414,13 @@ class Partition:
 
 if __name__ == "__main__":
   partition = Partition(
-    gold_treebank = "./error_analysis/tr-pud/gold_test_treebank.pbtxt",
-    test_treebank = "./error_analysis/tr-pud/parsed_and_labeled_test_treebank.pbtxt",
-    language = "tr"
+    gold_treebank = "./error_analysis/en-pud/gold_test_treebank.pbtxt",
+    test_treebank = "./error_analysis/en-pud/parsed_and_labeled_test_treebank.pbtxt",
+    language = "en"
   )
-  for tag in ["nsubj", "advcl", "ccomp", "csubj", "iobj", "obj", "obl", "xcomp"]:
+  for tag in ["nsubj", "obj", "obl", "iobj", "ccomp", "csubj", "advcl",  "xcomp"]:
   # for tag in ["nsubj"]:
-    partition.by_construction(tag, data_dir=f"./error_analysis/tr-pud/argstr", multiclause=True)
+    partition.by_construction(tag, data_dir=f"./error_analysis/en-pud/argstr", multiclause=True)
   # partition = Partition(
   #  gold_treebank = "./error_analysis/tr-pud/gold_test_treebank.pbtxt",
   #  test_treebank = "./error_analysis/tr-pud/parsed_and_labeled_test_treebank.pbtxt",

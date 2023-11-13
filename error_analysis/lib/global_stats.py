@@ -103,7 +103,7 @@ def main(data_dir, gold_treebank, test_treebank):
       csv_writer.writerow(v)
 
 if __name__ == "__main__":
-  data_dir = "./error_analysis/tr-propbank/"
+  data_dir = "./error_analysis/tr-propbank/dev"
   gold_treebank = "tr_without_srl_gold.pbtxt"
   test_treebank = "tr_without_srl_parsed.pbtxt"
   main(data_dir, gold_treebank=gold_treebank, test_treebank=test_treebank)
