@@ -128,7 +128,7 @@ class BaseParser(ABC):
     pass
 
   @abstractmethod
-  def _parsing_model(self, model_name, sequential=False):
+  def _parsing_model(self, model_name):
     """Defines the parsing/labeling model. Subclasses should call the model they want
     from architectures.
     """
@@ -139,7 +139,7 @@ class BaseParser(ABC):
     self._use_category = "category" in self.features
     self._use_dep_labels = False
     if "dep_labels" in self.features:
-      if "labels" in self._predict and not sequential:
+      if "labels" in self._predict:
         logging.warning(
           """Dep labels are requested as features but setting labels as prediction target.
           Ignoring the dep_labels as feature.""")
