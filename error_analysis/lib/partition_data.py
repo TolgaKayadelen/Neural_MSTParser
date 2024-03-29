@@ -6,6 +6,34 @@ from data.treebank import treebank_pb2
 from data.treebank import sentence_pb2
 from util import reader, writer, common
 
+def is_projective(sentence):
+  """Determines whether a sentence is projective.
+
+  Projectivity means that a head can reach all its dependents via other dependents.
+  """
+  for token in sentence.token[1:]:
+    deps = [tok for tok in sentence.token if tok.selected_head.address == token.index]
+    for dep in deps:
+      btw_tokens = common.GetBetweenTokens(sentence, token, dep)
+      if not btw_tokens:
+        continue
+      for btw_token in btw_tokens:
+        if _can_reach(sentence, btw_token, head=token):
+          continue
+        else:
+          return False
+  return True
+
+
+def _can_reach(sentence, dependent_token, head):
+  if dependent_token.selected_head.address == head.index:
+    return True
+  next_head = [tok for tok in sentence.token if tok.index == dependent_token.selected_head.address][0]
+  if next_head.word == "ROOT":
+    return False
+  # Recursive call to _can_ready with the next head.
+  return _can_reach(sentence, next_head, head)
+
 class Partition:
   def __init__(self, gold_treebank, test_treebank, language):
     self.gold = reader.ReadTreebankTextProto(gold_treebank)
@@ -13,6 +41,10 @@ class Partition:
     self.gold_sentences = {sentence.sent_id: sentence for sentence in self.gold.sentence}
     self.test_sentences = {sentence.sent_id: sentence for sentence in self.test.sentence}
     self.language = language
+
+  @staticmethod
+  def write(treebank, lang_dir: str, subdir: str, filename: str):
+    writer.write_proto_as_text(treebank, os.path.join(os.path.join(lang_dir, subdir), filename))
 
   def by_sentence_length(self):
     less_ten_test, less_ten_gold = treebank_pb2.Treebank(), treebank_pb2.Treebank()
@@ -76,7 +108,6 @@ class Partition:
     writer.write_proto_as_text(over_fifty_test, os.path.join(os.path.join(lang_dir, "over50"), "test.pbtxt"))
     writer.write_proto_as_text(over_fifty_gold, os.path.join(os.path.join(lang_dir, "over50"), "gold.pbtxt"))
 
-
   def by_projectivity(self):
     projective_gold = treebank_pb2.Treebank()
     projective_test = treebank_pb2.Treebank()
@@ -101,66 +132,6 @@ class Partition:
     writer.write_proto_as_text(projective_gold, os.path.join(os.path.join(lang_dir, "projective"), "gold.pbtxt"))
     writer.write_proto_as_text(non_proj_test, os.path.join(os.path.join(lang_dir, "non-projective"), "test.pbtxt"))
     writer.write_proto_as_text(non_proj_gold, os.path.join(os.path.join(lang_dir, "non-projective"), "gold.pbtxt"))
-
-  def is_projective(self, sentence):
-    for token in sentence.token[1:]:
-      # print("token is ", token.word)
-      deps = [tok for tok in sentence.token if tok.selected_head.address == token.index]
-      # print("token deps ", deps)
-      # input()
-      for dep in deps:
-        # print("dep ", dep)
-        btw_tokens = common.GetBetweenTokens(sentence, token, dep)
-        # print("btw tokens", btw_tokens)
-        # print("---")
-        if not btw_tokens:
-          continue
-        for btw_token in btw_tokens:
-          if self._can_reach(sentence, btw_token, head=token):
-            continue
-          else:
-            return False
-    return True
-
-  def _can_reach(self, sentence, token, head):
-    # print("token ", token, "head ", head)
-    # input()
-    if token.selected_head.address == head.index:
-      return True
-    next_head = [tok for tok in sentence.token if tok.index == token.selected_head.address][0]
-    # print("next head ", next_head)
-    # input()
-    if next_head.word == "ROOT":
-      return False
-    return self._can_reach(sentence, next_head, head)
-
-  def _by_projectivity_test(self):
-    sentence = sentence_pb2.Sentence()
-    s  = OrderedDict({"ROOT": 0, "John": 2, "cancelled": 0, "our": 4, "flight": 2,
-                      "this": 6, "morning": 2, "which": 8, "was": 4, "late": 8})
-    index = 0
-    for word, head in s.items():
-      token = sentence.token.add(
-        word=word,
-      )
-      token.selected_head.address = head
-      token.index = index
-      index+=1
-    print(self.is_projective(sentence))
-    sentence = sentence_pb2.Sentence()
-    s_proj  = OrderedDict({"ROOT": 0, "John": 2, "is": 0, "a": 4, "smart": 5,
-                           "kid": 2})
-    print("s_proj ", s_proj)
-    input()
-    index = 0
-    for word, head in s_proj.items():
-      token = sentence.token.add(
-        word=word,
-      )
-      token.selected_head.address = head
-      token.index = index
-      index+=1
-    print(self.is_projective(sentence))
 
   def by_xcomp(self):
     control_gold = treebank_pb2.Treebank()

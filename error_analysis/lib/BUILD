@@ -21,3 +21,12 @@ py_binary(
         "//util:common",
     ]
 )
+
+py_test(
+    name = "partition_test",
+    srcs = ["partition_test.py"],
+    deps = [
+        ":partition_data",
+        "//data/treebank:sentence_py_pb2"
+    ]
+)

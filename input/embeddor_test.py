@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """Tests for the preprocessor."""
-import pickle
 import unittest
 from input import embeddor
-from util.nn import nn_utils
 from parser.utils import load_models
 
 import logging
